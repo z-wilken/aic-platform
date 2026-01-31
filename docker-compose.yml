@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # The Core API / Frontend Service
+  app:
+    image: node:20-alpine
+    container_name: enterprise_core
+    user: "node"
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    # Healthcheck to ensure plug-and-play reliability
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: Database (Postgres) for reliable data persistence
+  db:
+    image: postgres:15-alpine
+    container_name: enterprise_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: enterprise_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
