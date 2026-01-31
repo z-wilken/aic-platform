@@ -1,39 +1,30 @@
 version: '3.8'
 
 services:
-  # The Core API / Frontend Service
-  app:
-    image: node:20-alpine
-    container_name: enterprise_core
-    user: "node"
-    working_dir: /app
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    ports:
-      - "3000:3000"
-    command: npm run dev
-    # Healthcheck to ensure plug-and-play reliability
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # Optional: Database (Postgres) for reliable data persistence
+  # The Database
   db:
     image: postgres:15-alpine
-    container_name: enterprise_db
+    container_name: aic_db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: enterprise_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      POSTGRES_USER: aic_admin
+      POSTGRES_PASSWORD: aic_password_secure
+      POSTGRES_DB: aic_platform
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Admin Panel for Database (Optional, good for demos/debugging)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: aic_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@aic.co.za
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
