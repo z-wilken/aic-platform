@@ -13,7 +13,7 @@ export default function AssessmentQuiz() {
   const [showEmailGate, setShowEmailGate] = useState(false);
 
   // Constants
-  const EMAIL_GATE_INDEX = 5; // Simulating gate early for demo (normally Q15)
+  const EMAIL_GATE_INDEX = 5; 
 
   const handleAnswer = (score: number) => {
     const questionId = questions[currentStep].id;
@@ -31,9 +31,42 @@ export default function AssessmentQuiz() {
     }
   };
 
-  const handleGateSubmit = (e: React.FormEvent) => {
+  const getScore = () => {
+      const totalPossible = questions.length * 4;
+      const currentScore = Object.values(answers).reduce((a, b) => a + b, 0);
+      return Math.round((currentScore / totalPossible) * 100);
+  };
+
+  const integrityScore = getScore();
+
+  const getTier = () => {
+    if (integrityScore < 50) return { name: 'Tier 1', color: 'text-aic-red', title: 'Critical Risk', desc: 'Your infrastructure does not match your risk profile.' };
+    if (integrityScore < 80) return { name: 'Tier 2', color: 'text-aic-orange', title: 'Elevated Risk', desc: 'Good foundation, but gaps in transparency.' };
+    return { name: 'Tier 3', color: 'text-aic-green', title: 'Standard Risk', desc: 'You are likely compliant for low-stakes AI.' };
+  };
+
+  const result = getTier();
+
+  const handleGateSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setShowEmailGate(false);
+      
+      // REAL DATA TRANSMISSION
+      try {
+          await fetch('/api/assessment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  email,
+                  answers,
+                  score: integrityScore,
+                  tier: result.name
+              })
+          });
+      } catch (err) {
+          console.error("Transmission failed", err);
+      }
+
       if (currentStep < questions.length - 1) {
           setCurrentStep(currentStep + 1);
       }
@@ -43,25 +76,8 @@ export default function AssessmentQuiz() {
       setShowResult(true);
   };
 
-  const getScore = () => {
-      // Simple aggregation for MVP - usually this would use the weighted formula
-      const totalPossible = questions.length * 4;
-      const currentScore = Object.values(answers).reduce((a, b) => a + b, 0);
-      return Math.round((currentScore / totalPossible) * 100);
-  };
-
-  const integrityScore = getScore();
-
-  const getTier = () => {
-    // Logic: Low Oversight + High Risk = Tier 1
-    // Logic: High Oversight + Low Risk = Tier 3
-    if (integrityScore < 50) return { name: 'Tier 1', color: 'text-aic-red', title: 'Critical Risk', desc: 'Your infrastructure does not match your risk profile.' };
-    if (integrityScore < 80) return { name: 'Tier 2', color: 'text-aic-orange', title: 'Elevated Risk', desc: 'Good foundation, but gaps in transparency.' };
-    return { name: 'Tier 3', color: 'text-aic-green', title: 'Standard Risk', desc: 'You are likely compliant for low-stakes AI.' };
-  };
-
-  const result = getTier();
-
+  // ... (Render Logic remains similar, using updated handlers)
+  
   if (showEmailGate) {
       return (
         <div className="glass-card p-8 rounded-2xl max-w-lg mx-auto mt-12 text-center animate-in fade-in zoom-in">
