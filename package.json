@@ -1,22 +1,16 @@
 {
-  "name": "enterprise-platform",
-  "version": "0.1.0",
+  "name": "aic-platform-monorepo",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:platform\" \"npm run dev:admin\"",
+    "dev:web": "cd apps/web && npm run dev",
+    "dev:platform": "cd apps/platform && npm run dev -- -p 3001",
+    "dev:admin": "cd apps/admin && npm run dev -- -p 3002",
+    "build": "concurrently \"cd apps/web && npm run build\" \"cd apps/platform && npm run build\" \"cd apps/admin && npm run build\"",
+    "start": "concurrently \"cd apps/web && npm run start\" \"cd apps/platform && npm run start\" \"cd apps/admin && npm run start\""
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "concurrently": "^8.2.0"
   }
 }

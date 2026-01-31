@@ -13,12 +13,13 @@ export default function Navbar() {
           <Link href="#framework" className="font-mono text-sm font-medium text-gray-600 hover:text-aic-black transition-colors">
             THE FRAMEWORK
           </Link>
-          <Link href="#process" className="font-mono text-sm font-medium text-gray-600 hover:text-aic-black transition-colors">
-            PROCESS
-          </Link>
           <Link href="#about" className="font-mono text-sm font-medium text-gray-600 hover:text-aic-black transition-colors">
             ABOUT
           </Link>
+          {/* External Link to Dashboard */}
+          <a href="http://localhost:3001/login" className="font-mono text-sm font-medium text-gray-600 hover:text-aic-black transition-colors">
+            CLIENT LOGIN
+          </a>
         </div>
         <div className="flex items-center">
           <Link
