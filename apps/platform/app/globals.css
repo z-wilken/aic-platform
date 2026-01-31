@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography */
+  --font-serif: var(--font-crimson-pro), serif;
+  --font-mono: var(--font-ibm-plex-mono), monospace;
+  --font-sans: var(--font-ibm-plex-mono), monospace; /* Default to MONO for data-heavy dashboard */
+
+  /* Color Palette */
+  --color-aic-black: #1a1a1a;
+  --color-aic-bg: #faf8f4;
+  --color-aic-red: #c41e3a;
+  --color-aic-orange: #ff8c42;
+  --color-aic-green: #2c5f2d;
+  --color-aic-gold: #d4af37;
+}
+
+/* Base Styles */
+body {
+  background-color: #f3f4f6; /* Gray-100 for dashboard background */
+  color: var(--color-aic-black);
+}
