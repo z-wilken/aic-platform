@@ -19,6 +19,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "AIC Pulse | Compliance Dashboard",
   description: "Real-time AI integrity monitoring.",
+  robots: "noindex, nofollow", // Keep the dashboard private from Google
 };
 
 export default function RootLayout({

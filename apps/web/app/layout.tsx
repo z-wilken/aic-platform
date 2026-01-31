@@ -19,6 +19,18 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "AIC | AI Integrity Certification",
   description: "The first POPIA Section 71 compliant accountability certification for South African AI.",
+  openGraph: {
+    title: "AIC | AI Integrity Certification",
+    description: "Validate your AI accountability. POPIA Section 71 Compliant.",
+    type: "website",
+    locale: "en_ZA",
+    siteName: "AI Integrity Certification",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AIC | AI Integrity Certification",
+    description: "Validate your AI accountability.",
+  },
 };
 
 export default function RootLayout({
