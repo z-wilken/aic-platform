@@ -4,21 +4,41 @@
   /* Typography */
   --font-serif: var(--font-crimson-pro), serif;
   --font-mono: var(--font-ibm-plex-mono), monospace;
-  --font-sans: var(--font-crimson-pro), sans-serif; /* Default to serif for editorial feel */
+  --font-sans: var(--font-crimson-pro), sans-serif;
 
   /* Color Palette */
   --color-aic-black: #1a1a1a;
-  --color-aic-bg: #faf8f4;
-  --color-aic-red: #c41e3a;    /* Tier 1 */
-  --color-aic-orange: #ff8c42; /* Tier 2 */
-  --color-aic-green: #2c5f2d;  /* Tier 3 */
-  --color-aic-gold: #d4af37;   /* Accent */
+  --color-aic-bg: #f5f5f7; /* Apple-like light gray background */
+  --color-aic-red: #c41e3a;
+  --color-aic-orange: #ff8c42;
+  --color-aic-green: #2c5f2d;
+  --color-aic-gold: #d4af37;
 }
 
 /* Base Styles */
 body {
   background-color: var(--color-aic-bg);
   color: var(--color-aic-black);
+  background-image: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.1) 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, rgba(196, 30, 58, 0.05) 0px, transparent 50%); /* Subtle premium glow */
+  background-attachment: fixed;
+}
+
+/* Glassmorphism Utilities */
+@utility glass {
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+@utility glass-card {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
 }
 
 /* Editorial Typography Utilities */
