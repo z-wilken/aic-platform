@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --color-admin-bg: #111111;
+  --color-admin-card: #1c1c1c;
+  --color-admin-accent: #3b82f6; /* Blue for Internal Ops */
+}
+
+body {
+  background-color: var(--color-admin-bg);
+  color: white;
+}
