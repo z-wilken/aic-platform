@@ -2,48 +2,64 @@ import Navbar from '../components/Navbar';
 
 export default function BountyPage() {
   return (
-    <main className="min-h-screen bg-aic-black text-white">
+    <main className="min-h-screen bg-black text-green-500 font-mono selection:bg-green-900 selection:text-white">
       <Navbar />
-      <div className="relative isolate px-6 pt-14 lg:px-8">
-        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl font-mono">
+      
+      <div className="py-24 sm:py-32 px-6">
+        <div className="mx-auto max-w-4xl">
+          <div className="border-b border-green-800 pb-12 mb-12">
+            <h1 className="text-6xl font-bold tracking-tighter text-white mb-4">
               BIAS_BOUNTY_PROGRAM
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-400 font-mono">
-              Break the algorithm. Get paid.
-              <br />
-              We pay ethical hackers to prove discrimination in Tier 1 systems.
+            <p className="text-xl text-green-700">
+              // Identify Discrimination. Prove Harm. Get Paid.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
-                className="rounded-md bg-green-500 px-3.5 py-2.5 text-sm font-semibold text-black shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500 font-mono uppercase"
-              >
-                View Active Targets
-              </a>
-              <a href="#" className="text-sm font-semibold leading-6 text-white font-mono">
-                Submision Guidelines <span aria-hidden="true">→</span>
-              </a>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Target List */}
+            <div className="border border-green-900 bg-green-900/5 p-6">
+                <h3 className="text-white text-sm uppercase tracking-widest border-b border-green-900 pb-2 mb-4">Active Targets</h3>
+                <ul className="space-y-4">
+                    <li className="flex justify-between items-center group cursor-pointer">
+                        <span className="group-hover:text-white transition-colors">BANK_CHATBOT_V4</span>
+                        <span className="bg-green-900 text-green-300 px-2 py-1 text-xs">$5,000</span>
+                    </li>
+                    <li className="flex justify-between items-center group cursor-pointer">
+                        <span className="group-hover:text-white transition-colors">INSURER_RISK_MODEL_A</span>
+                        <span className="bg-green-900 text-green-300 px-2 py-1 text-xs">$12,000</span>
+                    </li>
+                    <li className="flex justify-between items-center group cursor-pointer">
+                        <span className="group-hover:text-white transition-colors">HR_FILTER_DELTA</span>
+                        <span className="bg-green-900 text-green-300 px-2 py-1 text-xs">$3,500</span>
+                    </li>
+                </ul>
+            </div>
+
+            {/* Leaderboard */}
+            <div className="border border-green-900 bg-green-900/5 p-6">
+                <h3 className="text-white text-sm uppercase tracking-widest border-b border-green-900 pb-2 mb-4">Top Hunters</h3>
+                <ul className="space-y-4">
+                    <li className="flex justify-between items-center">
+                        <span>0x99...a12</span>
+                        <span className="text-gray-500">22 Flags</span>
+                    </li>
+                    <li className="flex justify-between items-center">
+                        <span>NullPointer</span>
+                        <span className="text-gray-500">18 Flags</span>
+                    </li>
+                    <li className="flex justify-between items-center">
+                        <span>BiasBreaker</span>
+                        <span className="text-gray-500">14 Flags</span>
+                    </li>
+                </ul>
             </div>
           </div>
-        </div>
-        
-        {/* Terminal Effect Targets */}
-        <div className="mx-auto max-w-4xl font-mono text-sm">
-            <div className="border border-green-900 bg-black p-4 rounded-lg">
-                <p className="text-green-500">$ TARGET_LIST_LOADED</p>
-                <div className="mt-4 grid grid-cols-1 gap-4">
-                    <div className="flex justify-between border-b border-green-900 pb-2">
-                        <span>BANK_CHATBOT_V4</span>
-                        <span className="text-green-400">$5,000 BOUNTY</span>
-                    </div>
-                    <div className="flex justify-between border-b border-green-900 pb-2">
-                        <span>INSURER_RISK_MODEL_A</span>
-                        <span className="text-green-400">$12,000 BOUNTY</span>
-                    </div>
-                </div>
-            </div>
+
+          <div className="mt-12 border border-green-500 p-8 text-center hover:bg-green-500 hover:text-black transition-colors cursor-pointer">
+            <h2 className="text-2xl font-bold uppercase">Initialize Hunter Environment</h2>
+            <p className="text-sm mt-2 opacity-80">Download the testing kit and access the sandbox.</p>
+          </div>
         </div>
       </div>
     </main>

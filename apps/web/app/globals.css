@@ -6,48 +6,56 @@
   --font-mono: var(--font-ibm-plex-mono), monospace;
   --font-sans: var(--font-crimson-pro), sans-serif;
 
-  /* Color Palette */
-  --color-aic-black: #1a1a1a;
-  --color-aic-bg: #f5f5f7; /* Apple-like light gray background */
-  --color-aic-red: #c41e3a;
-  --color-aic-orange: #ff8c42;
-  --color-aic-green: #2c5f2d;
-  --color-aic-gold: #d4af37;
+  /* Color Palette - The "Justice" System */
+  --color-aic-black: #0a0a0a; /* Deep, void black */
+  --color-aic-paper: #f0f0ed; /* Off-white paper texture */
+  --color-aic-red: #d90429;    /* Alert Red */
+  --color-aic-gold: #c9a227;   /* Legal Gold */
+  --color-aic-gray: #8d99ae;
 }
 
 /* Base Styles */
 body {
-  background-color: var(--color-aic-bg);
+  background-color: var(--color-aic-paper);
   color: var(--color-aic-black);
-  background-image: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.1) 0px, transparent 50%),
-                    radial-gradient(at 100% 0%, rgba(196, 30, 58, 0.05) 0px, transparent 50%); /* Subtle premium glow */
-  background-attachment: fixed;
 }
 
-/* Glassmorphism Utilities */
+/* The "Film Grain" Overlay - Adds texture/reality */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Utilities */
 @utility glass {
-  background-color: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-@utility glass-card {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+@utility glass-dark {
+  background-color: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-/* Editorial Typography Utilities */
-@utility text-editorial {
-  font-family: var(--font-serif);
-  line-height: 1.4;
+/* The "Redacted" Effect */
+@utility redacted {
+  background-color: black;
+  color: black;
+  transition: all 0.3s ease;
+  cursor: help;
 }
-
-@utility text-technical {
-  font-family: var(--font-mono);
-  letter-spacing: -0.02em;
+@utility redacted:hover {
+  background-color: transparent;
+  color: black;
 }

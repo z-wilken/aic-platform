@@ -2,63 +2,54 @@ import Navbar from '../components/Navbar';
 
 export default function ReportAbusePage() {
   return (
-    <main className="min-h-screen bg-aic-bg">
+    <main className="min-h-screen bg-aic-black text-white relative overflow-hidden">
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#222_1px,transparent_1px),linear-gradient(to_bottom,#222_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20"></div>
+      
       <Navbar />
-      <div className="py-24 sm:py-32">
+      
+      <div className="py-24 sm:py-32 relative z-10">
         <div className="mx-auto max-w-xl px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10 font-mono mb-4">
-                WHISTLEBLOWER SECURE
-            </span>
-            <h1 className="text-4xl font-bold tracking-tight text-aic-black sm:text-5xl font-serif">
-              Report Algorithmic Abuse
+          <div className="mb-12 border-l-4 border-aic-red pl-6">
+            <h1 className="text-5xl font-bold tracking-tight text-white font-serif mb-4">
+              Secure Drop
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600 font-serif">
-              Did an AI deny your loan? Ignore your CV? Reject your claim?
-              We aggregate reports to trigger hostile audits of uncertified systems.
+            <p className="text-lg text-gray-400 font-mono">
+              Anonymous reporting of algorithmic harm. <br/>
+              Your identity is encrypted. The evidence is immutable.
             </p>
           </div>
 
-          <div className="glass-card p-8 rounded-2xl shadow-xl ring-1 ring-gray-900/5">
-            <form className="space-y-6">
+          <div className="glass-dark p-8 rounded-none border border-gray-800 shadow-2xl">
+            <form className="space-y-8">
                 <div>
-                    <label className="block text-sm font-semibold leading-6 text-gray-900 font-mono">Offending Organization</label>
-                    <input type="text" className="block w-full rounded-md border-0 bg-white/50 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-aic-red sm:text-sm sm:leading-6" placeholder="e.g. Bank X" />
+                    <label className="block text-xs font-bold text-aic-red uppercase tracking-widest font-mono mb-2">Target Organization</label>
+                    <input type="text" className="block w-full bg-black/50 border border-gray-700 text-white p-3 font-mono focus:border-aic-red focus:ring-0" placeholder="NAME_OF_ENTITY" />
                 </div>
                 
                 <div>
-                    <label className="block text-sm font-semibold leading-6 text-gray-900 font-mono">What happened?</label>
-                    <select className="block w-full rounded-md border-0 bg-white/50 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-aic-red sm:text-sm sm:leading-6">
-                        <option>Unjust Denial (Loan/Credit)</option>
-                        <option>Hiring Discrimination</option>
-                        <option>Medical Malpractice (AI)</option>
-                        <option>Account Termination</option>
-                        <option>Other</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-semibold leading-6 text-gray-900 font-mono">Description</label>
-                    <textarea rows={4} className="block w-full rounded-md border-0 bg-white/50 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-aic-red sm:text-sm sm:leading-6" placeholder="They rejected me instantly at 2am..."></textarea>
-                </div>
-
-                <div>
-                    <label className="block text-sm font-semibold leading-6 text-gray-900 font-mono">Evidence (Optional)</label>
-                    <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                        <div className="text-center">
-                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                                <label htmlFor="file-upload" className="relative cursor-pointer rounded-md bg-white font-semibold text-aic-red focus-within:outline-none focus-within:ring-2 focus-within:ring-aic-red focus-within:ring-offset-2 hover:text-red-500">
-                                    <span>Upload a screenshot</span>
-                                    <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                </label>
-                            </div>
-                        </div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest font-mono mb-2">Violation Type</label>
+                    <div className="grid grid-cols-2 gap-4">
+                        <button type="button" className="border border-gray-700 p-4 text-left hover:bg-aic-red hover:border-aic-red hover:text-white transition-all text-sm font-mono">Unjust Denial</button>
+                        <button type="button" className="border border-gray-700 p-4 text-left hover:bg-aic-red hover:border-aic-red hover:text-white transition-all text-sm font-mono">Bias / Racism</button>
+                        <button type="button" className="border border-gray-700 p-4 text-left hover:bg-aic-red hover:border-aic-red hover:text-white transition-all text-sm font-mono">No Human Appeal</button>
+                        <button type="button" className="border border-gray-700 p-4 text-left hover:bg-aic-red hover:border-aic-red hover:text-white transition-all text-sm font-mono">Opacity</button>
                     </div>
                 </div>
 
-                <button type="submit" className="block w-full rounded-md bg-aic-red px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aic-red font-mono uppercase tracking-wide">
-                    Submit Report
-                </button>
+                <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest font-mono mb-2">Incident Detail</label>
+                    <textarea rows={5} className="block w-full bg-black/50 border border-gray-700 text-white p-3 font-mono focus:border-aic-red focus:ring-0" placeholder="Describe the interaction..."></textarea>
+                </div>
+
+                <div className="pt-4 border-t border-gray-800">
+                    <button type="submit" className="w-full bg-aic-red text-white py-4 font-mono font-bold uppercase tracking-widest hover:bg-red-700 transition-all">
+                        Encrypt & Submit
+                    </button>
+                    <p className="text-center text-[10px] text-gray-600 mt-4 font-mono">
+                        SUBMISSION ID: {Math.floor(Math.random() * 100000000)} // ENCRYPTED
+                    </p>
+                </div>
             </form>
           </div>
         </div>
