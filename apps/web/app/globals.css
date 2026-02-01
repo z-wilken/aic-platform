@@ -49,13 +49,13 @@ body::before {
 }
 
 /* The "Redacted" Effect */
-@utility redacted {
+.redacted {
   background-color: black;
   color: black;
   transition: all 0.3s ease;
   cursor: help;
 }
-@utility redacted:hover {
+.redacted:hover {
   background-color: transparent;
   color: black;
 }
