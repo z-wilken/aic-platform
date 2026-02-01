@@ -2,23 +2,23 @@ export default function TierFramework() {
   const tiers = [
     {
       id: 1,
-      name: 'Tier 1: Critical',
+      name: 'Tier 1: Human-Approved',
       color: 'text-aic-red',
       borderColor: 'border-aic-red/20',
       bgColor: 'bg-aic-red/5',
-      description: 'High-stakes decisions affecting life, liberty, or livelihood.',
-      examples: ['Credit Scoring', 'Hiring Algorithms', 'Medical Diagnosis'],
-      requirements: ['Full Human Review', 'Explainability Audit', 'Bias Testing'],
+      description: 'Critical decisions affecting life, liberty, or livelihood. No machine decides alone.',
+      examples: ['Credit Scoring', 'Hiring Algorithms', 'Medical Diagnosis', 'Parole Decisions'],
+      requirements: ['Empathy Verification', '100% Human Review', 'Right to Appeal', 'Explainability Audit'],
     },
     {
       id: 2,
-      name: 'Tier 2: Elevated',
+      name: 'Tier 2: Human-Supervised',
       color: 'text-aic-orange',
       borderColor: 'border-aic-orange/20',
       bgColor: 'bg-aic-orange/5',
-      description: 'Significant impact but reversible or lower stakes.',
-      examples: ['Dynamic Pricing', 'Customer Service Chatbots', 'Personalized Ads'],
-      requirements: ['Periodic Audit', 'Opt-out Mechanism', 'Clear Disclosure'],
+      description: 'Consequential but reversible. AI executes, but humans monitor the edge cases.',
+      examples: ['Dynamic Pricing', 'Fraud Flags', 'Personalized Ads'],
+      requirements: ['Periodic Audit', 'Opt-out Mechanism', 'Bias Stress Testing'],
     },
     {
       id: 3,
@@ -26,8 +26,8 @@ export default function TierFramework() {
       color: 'text-aic-green',
       borderColor: 'border-aic-green/20',
       bgColor: 'bg-aic-green/5',
-      description: 'Low-risk automation with minimal human impact.',
-      examples: ['Spam Filters', 'Inventory Management', 'Playlist Recommendations'],
+      description: 'Low-risk routine tasks. Efficiency is the goal, transparency is the requirement.',
+      examples: ['Spam Filters', 'Inventory Management', 'Music Recommendations'],
       requirements: ['Standard Disclosure', 'Data Privacy Basics'],
     },
   ];
@@ -41,7 +41,7 @@ export default function TierFramework() {
             A Risk-Based Approach
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600 font-serif">
-            Our 3-Tier Framework maps directly to the "legal consequences" clause of POPIA Section 71.
+            We map accountability to consequence. Tier 1 isn't just about accuracy; it's about <span className="font-bold text-aic-black">ensuring empathy</span> in the loop.
           </p>
         </div>
         <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-8">
