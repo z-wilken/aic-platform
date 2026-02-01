@@ -10,26 +10,41 @@ CREATE TABLE organizations (
     tier tier_enum DEFAULT 'TIER_3',
     integrity_score INTEGER DEFAULT 0 CHECK (integrity_score BETWEEN 0 AND 100),
     is_alpha BOOLEAN DEFAULT FALSE,
+    api_key VARCHAR(255), -- Hashed in production
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     org_id UUID REFERENCES organizations(id),
-    action VARCHAR(255) NOT NULL, -- e.g. "CREDIT_DECISION"
-    input_type VARCHAR(255) NOT NULL, -- e.g. "APPLICATION_V2"
-    outcome VARCHAR(255) NOT NULL, -- e.g. "DENIED"
+    action VARCHAR(255) NOT NULL,
+    input_type VARCHAR(255) NOT NULL,
+    outcome VARCHAR(255) NOT NULL,
     status audit_status DEFAULT 'PENDING',
     metadata JSONB DEFAULT '{}',
-    immutable_hash VARCHAR(64), -- SHA-256 for tampering detection
+    immutable_hash VARCHAR(64),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Seed Data for Demo
-INSERT INTO organizations (id, name, tier, integrity_score, is_alpha)
-VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'FirstRand Bank (Demo)', 'TIER_1', 94, TRUE);
+-- CRM Tables
+CREATE TABLE leads (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) NOT NULL,
+    company VARCHAR(255),
+    source VARCHAR(50) DEFAULT 'WEB', -- 'QUIZ', 'ALPHA_FORM'
+    score INTEGER,
+    status VARCHAR(50) DEFAULT 'NEW',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
-INSERT INTO audit_logs (org_id, action, input_type, outcome, status, created_at)
-VALUES 
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'CREDIT_DECISION', 'Loan Application', 'DENIED', 'FLAGGED', NOW()),
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'CREDIT_DECISION', 'Loan Application', 'APPROVED', 'VERIFIED', NOW() - INTERVAL '15 minutes');
+CREATE TABLE notifications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    recipient VARCHAR(255),
+    type VARCHAR(50), -- 'WELCOME', 'REPORT', 'ALERT'
+    status VARCHAR(50) DEFAULT 'SENT',
+    sent_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Seed Data
+INSERT INTO organizations (id, name, tier, integrity_score, is_alpha, api_key)
+VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'FirstRand Bank (Demo)', 'TIER_1', 94, TRUE, 'aic_live_demo_key_123');
