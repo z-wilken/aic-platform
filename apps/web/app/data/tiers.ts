@@ -1,0 +1,32 @@
+export const tiers = [
+  {
+    id: 1,
+    name: 'Tier 1: Human-Approved',
+    color: 'text-aic-red',
+    borderColor: 'border-aic-red/20',
+    bgColor: 'bg-aic-red/5',
+    description: 'Critical decisions affecting life, liberty, or livelihood. No machine decides alone.',
+    examples: ['Credit Scoring', 'Hiring Algorithms', 'Medical Diagnosis', 'Parole Decisions'],
+    requirements: ['Empathy Verification', '100% Human Review', 'Right to Appeal', 'Explainability Audit'],
+  },
+  {
+    id: 2,
+    name: 'Tier 2: Human-Supervised',
+    color: 'text-aic-orange',
+    borderColor: 'border-aic-orange/20',
+    bgColor: 'bg-aic-orange/5',
+    description: 'Consequential but reversible. AI executes, but humans monitor the edge cases.',
+    examples: ['Dynamic Pricing', 'Fraud Flags', 'Personalized Ads'],
+    requirements: ['Periodic Audit', 'Opt-out Mechanism', 'Bias Stress Testing'],
+  },
+  {
+    id: 3,
+    name: 'Tier 3: Automated',
+    color: 'text-aic-green',
+    borderColor: 'border-aic-green/20',
+    bgColor: 'bg-aic-green/5',
+    description: 'Low-risk routine tasks. Efficiency is the goal, transparency is the requirement.',
+    examples: ['Spam Filters', 'Inventory Management', 'Music Recommendations'],
+    requirements: ['Standard Disclosure', 'Data Privacy Basics'],
+  },
+];

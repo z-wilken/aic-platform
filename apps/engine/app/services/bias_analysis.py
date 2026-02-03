@@ -1,155 +1,14 @@
-"""
-AIC Audit Engine - AI Integrity Certification
-Version 2.0.0
-
-Enforcing the 5 Algorithmic Rights:
-1. Right to Human Agency - Bias detection, disparate impact analysis
-2. Right to Explanation - Decision explainability
-3. Right to Empathy - Tone and sentiment analysis
-4. Right to Correction - Appeal workflow validation
-5. Right to Truth - AI disclosure detection
-
-Supports compliance frameworks:
-- POPIA Section 71 (South Africa)
-- EU AI Act (European Union)
-- EEOC/Title VII (United States)
-- IEEE 7000-2021, ISO/IEC 42001, NIST AI RMF
-"""
-
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Dict, Optional, Any
-from enum import Enum
 import pandas as pd
 import numpy as np
 from scipy import stats
-from textblob import TextBlob
 import hashlib
+import json
+from typing import List, Dict, Any
+from textblob import TextBlob
+import re
 import uuid
 from datetime import datetime
-import json
-import re
-
-app = FastAPI(
-    title="AIC Audit Engine",
-    description="AI Integrity Certification - Enforcing the 5 Algorithmic Rights",
-    version="2.0.0"
-)
-
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# In-memory storage (use Redis/Postgres in production)
-batch_jobs: Dict[str, Dict] = {}
-correction_requests: Dict[str, Dict] = {}
-
-
-# ==================== ENUMS ====================
-
-class FrameworkType(str, Enum):
-    POPIA = "popia"
-    EU_AI_ACT = "eu_ai_act"
-    EEOC = "eeoc"
-    IEEE = "ieee"
-    ISO_42001 = "iso_42001"
-    NIST_RMF = "nist_rmf"
-
-class TierLevel(str, Enum):
-    TIER_1 = "TIER_1"  # Human-Approved (Critical)
-    TIER_2 = "TIER_2"  # Human-Supervised (Consequential)
-    TIER_3 = "TIER_3"  # Automated (Low-stakes)
-
-class BiasStatus(str, Enum):
-    PASS = "PASS"
-    FAIL = "FAIL"
-    WARNING = "WARNING"
-
-class EmpathyLevel(str, Enum):
-    HOSTILE = "HOSTILE"
-    COLD = "COLD"
-    NEUTRAL = "NEUTRAL"
-    WARM = "WARM"
-    EMPATHETIC = "EMPATHETIC"
-
-
-# ==================== REQUEST MODELS ====================
-
-# RIGHT 1: Human Agency - Bias Detection
-class BiasAuditRequest(BaseModel):
-    data: List[Dict]
-    protected_attribute: str
-    outcome_variable: str
-
-class EqualizedOddsRequest(BaseModel):
-    data: List[Dict]
-    protected_attribute: str
-    actual_outcome: str
-    predicted_outcome: str
-    threshold: float = Field(default=0.1)
-
-class IntersectionalRequest(BaseModel):
-    data: List[Dict]
-    protected_attributes: List[str]
-    outcome_variable: str
-    min_group_size: int = Field(default=30)
-
-# RIGHT 2: Explanation
-class ExplainRequest(BaseModel):
-    model_type: str
-    input_features: Dict[str, Any]
-    decision: str
-    feature_weights: Optional[Dict[str, float]] = None
-    confidence: Optional[float] = None
-
-# RIGHT 3: Empathy
-class EmpathyRequest(BaseModel):
-    text: str
-    context: Optional[str] = Field(default="rejection", description="rejection, notification, support")
-
-# RIGHT 4: Correction
-class CorrectionRequest(BaseModel):
-    decision_id: str
-    original_decision: str
-    requested_outcome: str
-    reason: str
-    supporting_evidence: Optional[Dict[str, Any]] = None
-
-class CorrectionValidationRequest(BaseModel):
-    has_appeal_mechanism: bool
-    response_time_hours: int
-    human_reviewer_assigned: bool
-    clear_instructions: bool
-    accessible_format: bool
-
-# RIGHT 5: Truth
-class DisclosureRequest(BaseModel):
-    interface_text: str
-    interaction_type: str = Field(default="chatbot", description="chatbot, email, web, phone")
-
-# Comprehensive Audit
-class ComprehensiveAuditRequest(BaseModel):
-    organization_name: str
-    ai_systems: List[Dict[str, Any]]
-    framework: FrameworkType = FrameworkType.POPIA
-
-# Assessment
-class AssessmentRequest(BaseModel):
-    answers: Dict[str, int]  # question_id -> score
-
-class TierAssessmentRequest(BaseModel):
-    ai_affects_rights: int = Field(..., ge=1, le=3)
-    special_personal_info: int = Field(..., ge=1, le=3)
-    human_oversight: int = Field(..., ge=1, le=3)
-
-
-# ==================== HELPER FUNCTIONS ====================
+from app.api.v1.schemas.analysis import BiasStatus, EmpathyLevel, TierLevel, FrameworkType
 
 def generate_audit_hash(data: Dict) -> str:
     """Generate SHA-256 hash for audit trail integrity"""
@@ -179,56 +38,16 @@ def calculate_confusion_metrics(df: pd.DataFrame, actual: str, predicted: str, g
         }
     return results
 
+def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome_variable: str):
+    df = pd.DataFrame(data)
 
-# ==================== HEALTH & INFO ====================
-
-@app.get("/")
-def health_check():
-    """Health check with capabilities"""
-    return {
-        "status": "AIC Audit Engine Operational",
-        "version": "2.0.0",
-        "timestamp": datetime.utcnow().isoformat(),
-        "rights_enforced": [
-            "Right to Human Agency",
-            "Right to Explanation",
-            "Right to Empathy",
-            "Right to Correction",
-            "Right to Truth"
-        ],
-        "frameworks_supported": [f.value for f in FrameworkType],
-        "endpoints": {
-            "bias": ["/analyze", "/analyze/equalized-odds", "/analyze/intersectional", "/analyze/statistical"],
-            "empathy": ["/analyze/empathy"],
-            "explanation": ["/explain"],
-            "correction": ["/validate/correction-process"],
-            "truth": ["/analyze/disclosure"],
-            "comprehensive": ["/audit/comprehensive", "/assess", "/assess/tier"]
-        }
-    }
-
-
-# ==================== RIGHT 1: HUMAN AGENCY (Bias Detection) ====================
-
-@app.post("/analyze")
-def analyze_disparate_impact(request: BiasAuditRequest):
-    """
-    Disparate Impact Analysis - Four-Fifths Rule
-
-    RIGHT TO HUMAN AGENCY: No AI should discriminate. This endpoint detects
-    if selection rates violate the 80% rule indicating potential bias.
-
-    Used by: EEOC (US), POPIA Section 71 (SA), EU AI Act
-    """
-    df = pd.DataFrame(request.data)
-
-    if request.protected_attribute not in df.columns:
-        raise HTTPException(400, f"Column '{request.protected_attribute}' not found")
-    if request.outcome_variable not in df.columns:
-        raise HTTPException(400, f"Column '{request.outcome_variable}' not found")
+    if protected_attribute not in df.columns:
+        return {"error": f"Column '{protected_attribute}' not found"}
+    if outcome_variable not in df.columns:
+        return {"error": f"Column '{outcome_variable}' not found"}
 
     # Calculate selection rates
-    group_stats = df.groupby(request.protected_attribute)[request.outcome_variable].agg(['mean', 'count', 'sum'])
+    group_stats = df.groupby(protected_attribute)[outcome_variable].agg(['mean', 'count', 'sum'])
     group_stats.columns = ['selection_rate', 'total', 'selected']
 
     best_group = group_stats['selection_rate'].idxmax()
@@ -279,23 +98,15 @@ def analyze_disparate_impact(request: BiasAuditRequest):
 
     return result
 
+def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_outcome: str, predicted_outcome: str, threshold: float):
+    df = pd.DataFrame(data)
 
-@app.post("/analyze/equalized-odds")
-def analyze_equalized_odds(request: EqualizedOddsRequest):
-    """
-    Equalized Odds Analysis
-
-    Tests if TPR and FPR are equal across groups - ensuring the model
-    performs equally well regardless of protected attributes.
-    """
-    df = pd.DataFrame(request.data)
-
-    for col in [request.protected_attribute, request.actual_outcome, request.predicted_outcome]:
+    for col in [protected_attribute, actual_outcome, predicted_outcome]:
         if col not in df.columns:
-            raise HTTPException(400, f"Column '{col}' not found")
+            return {"error": f"Column '{col}' not found"}
 
     metrics = calculate_confusion_metrics(
-        df, request.actual_outcome, request.predicted_outcome, request.protected_attribute
+        df, actual_outcome, predicted_outcome, protected_attribute
     )
 
     tprs = [m["true_positive_rate"] for m in metrics.values()]
@@ -304,14 +115,14 @@ def analyze_equalized_odds(request: EqualizedOddsRequest):
     tpr_diff = max(tprs) - min(tprs)
     fpr_diff = max(fprs) - min(fprs)
 
-    tpr_parity = tpr_diff <= request.threshold
-    fpr_parity = fpr_diff <= request.threshold
+    tpr_parity = tpr_diff <= threshold
+    fpr_parity = fpr_diff <= threshold
 
     flags = []
     if not tpr_parity:
-        flags.append(f"TPR disparity: {tpr_diff:.3f} exceeds threshold {request.threshold}")
+        flags.append(f"TPR disparity: {tpr_diff:.3f} exceeds threshold {threshold}")
     if not fpr_parity:
-        flags.append(f"FPR disparity: {fpr_diff:.3f} exceeds threshold {request.threshold}")
+        flags.append(f"FPR disparity: {fpr_diff:.3f} exceeds threshold {threshold}")
 
     return {
         "right_enforced": "Right to Human Agency",
@@ -321,38 +132,30 @@ def analyze_equalized_odds(request: EqualizedOddsRequest):
         "tpr_difference": round(tpr_diff, 4),
         "fpr_parity": fpr_parity,
         "fpr_difference": round(fpr_diff, 4),
-        "threshold": request.threshold,
+        "threshold": threshold,
         "flags": flags,
         "detailed_analysis": metrics,
         "audit_hash": generate_audit_hash(metrics)
     }
 
+def analyze_intersectional(data: List[Dict], protected_attributes: List[str], outcome_variable: str, min_group_size: int):
+    df = pd.DataFrame(data)
 
-@app.post("/analyze/intersectional")
-def analyze_intersectional(request: IntersectionalRequest):
-    """
-    Intersectional Fairness Analysis
-
-    Analyzes bias across combinations of protected attributes
-    (e.g., Black women, elderly disabled) where hidden bias often lurks.
-    """
-    df = pd.DataFrame(request.data)
-
-    for attr in request.protected_attributes:
+    for attr in protected_attributes:
         if attr not in df.columns:
-            raise HTTPException(400, f"Column '{attr}' not found")
+            return {"error": f"Column '{attr}' not found"}
 
     # Create intersectional groups
-    df['intersectional_group'] = df[request.protected_attributes].astype(str).agg(' + '.join, axis=1)
+    df['intersectional_group'] = df[protected_attributes].astype(str).agg(' + '.join, axis=1)
 
     group_stats = df.groupby('intersectional_group').agg({
-        request.outcome_variable: ['mean', 'count']
+        outcome_variable: ['mean', 'count']
     })
     group_stats.columns = ['selection_rate', 'total']
-    group_stats = group_stats[group_stats['total'] >= request.min_group_size]
+    group_stats = group_stats[group_stats['total'] >= min_group_size]
 
     if len(group_stats) == 0:
-        raise HTTPException(400, f"No groups with minimum size {request.min_group_size}")
+        return {"error": f"No groups with minimum size {min_group_size}"}
 
     best_rate = group_stats['selection_rate'].max()
     best_group = group_stats['selection_rate'].idxmax()
@@ -379,7 +182,7 @@ def analyze_intersectional(request: IntersectionalRequest):
         "right_enforced": "Right to Human Agency",
         "overall_status": "BIASED" if flags else "FAIR",
         "methodology": "Intersectional Fairness Analysis",
-        "attributes_analyzed": request.protected_attributes,
+        "attributes_analyzed": protected_attributes,
         "groups_analyzed": len(results),
         "reference_group": best_group,
         "flags": flags,
@@ -387,18 +190,10 @@ def analyze_intersectional(request: IntersectionalRequest):
         "audit_hash": generate_audit_hash(results)
     }
 
+def analyze_statistical_significance(data: List[Dict], protected_attribute: str, outcome_variable: str):
+    df = pd.DataFrame(data)
 
-@app.post("/analyze/statistical")
-def analyze_statistical_significance(request: BiasAuditRequest):
-    """
-    Statistical Significance Testing
-
-    Chi-square test to determine if differences are statistically
-    significant or could be random chance.
-    """
-    df = pd.DataFrame(request.data)
-
-    contingency = pd.crosstab(df[request.protected_attribute], df[request.outcome_variable])
+    contingency = pd.crosstab(df[protected_attribute], df[outcome_variable])
     chi2, p_value, dof, expected = stats.chi2_contingency(contingency)
 
     is_significant = p_value < 0.05
@@ -422,45 +217,33 @@ def analyze_statistical_significance(request: BiasAuditRequest):
         "audit_hash": generate_audit_hash({"chi2": chi2, "p": p_value})
     }
 
-
-# ==================== RIGHT 2: EXPLANATION ====================
-
-@app.post("/explain")
-def explain_decision(request: ExplainRequest):
-    """
-    Generate Human-Readable Explanation
-
-    RIGHT TO EXPLANATION: Every person has the right to know WHY an
-    algorithmic decision was made. "Black box" is not a defense.
-
-    Required by: POPIA Section 71, GDPR Article 22
-    """
+def explain_decision(model_type: str, input_features: Dict[str, Any], decision: str, feature_weights: Dict[str, float] = None, confidence: float = None):
     model_descriptions = {
         "credit_scoring": "a credit scoring model that evaluates loan applications",
         "fraud_detection": "a fraud detection system that flags suspicious transactions",
         "hiring": "an applicant screening tool that evaluates job candidates",
-        "insurance": "an insurance risk assessment model",
+        "insurance": "an_insurance risk assessment model",
         "healthcare": "a healthcare decision support system",
         "recommendation": "a recommendation engine that suggests products or content"
     }
 
-    model_desc = model_descriptions.get(request.model_type, "an automated decision-making system")
+    model_desc = model_descriptions.get(model_type, "an automated decision-making system")
 
     explanation_parts = [
         f"## Decision Explanation",
         f"",
         f"**System:** This decision was made by {model_desc}.",
-        f"**Outcome:** {request.decision}",
+        f"**Outcome:** {decision}",
     ]
 
-    if request.confidence:
-        explanation_parts.append(f"**Confidence:** {request.confidence:.1%}")
+    if confidence:
+        explanation_parts.append(f"**Confidence:** {confidence:.1%}")
 
     # Feature importance
-    if request.feature_weights:
+    if feature_weights:
         explanation_parts.append("")
         explanation_parts.append("### Key Factors")
-        sorted_features = sorted(request.feature_weights.items(), key=lambda x: abs(x[1]), reverse=True)[:5]
+        sorted_features = sorted(feature_weights.items(), key=lambda x: abs(x[1]), reverse=True)[:5]
         for feature, weight in sorted_features:
             direction = "increased" if weight > 0 else "decreased"
             explanation_parts.append(f"- **{feature}**: {direction} the likelihood ({abs(weight):.2f} importance)")
@@ -468,7 +251,7 @@ def explain_decision(request: ExplainRequest):
     # Input summary
     explanation_parts.append("")
     explanation_parts.append("### Information Used")
-    for feature, value in request.input_features.items():
+    for feature, value in input_features.items():
         explanation_parts.append(f"- {feature}: {value}")
 
     # Rights notice
@@ -486,28 +269,16 @@ def explain_decision(request: ExplainRequest):
     return {
         "right_enforced": "Right to Explanation",
         "explanation": "\n".join(explanation_parts),
-        "model_type": request.model_type,
-        "decision": request.decision,
-        "explainability_score": 100 if request.feature_weights else 60,
+        "model_type": model_type,
+        "decision": decision,
+        "explainability_score": 100 if feature_weights else 60,
         "popia_compliant": True,
         "timestamp": datetime.utcnow().isoformat(),
-        "audit_hash": generate_audit_hash({"decision": request.decision, "features": request.input_features})
+        "audit_hash": generate_audit_hash({"decision": decision, "features": input_features})
     }
 
-
-# ==================== RIGHT 3: EMPATHY ====================
-
-@app.post("/analyze/empathy")
-def analyze_empathy(request: EmpathyRequest):
-    """
-    Empathy Analysis - Tone Detection
-
-    RIGHT TO EMPATHY: Automated interactions must preserve human dignity.
-    Cruelty, dismissal, and cold bureaucratic rejection are design failures.
-
-    Analyzes rejection letters, chatbot responses, and automated communications.
-    """
-    blob = TextBlob(request.text)
+def analyze_empathy(text: str, context: str):
+    blob = TextBlob(text)
 
     # Sentiment analysis (-1 to 1)
     polarity = blob.sentiment.polarity
@@ -527,7 +298,7 @@ def analyze_empathy(request: EmpathyRequest):
         r'\bhelp\b', r'\bsupport\b', r'\boptions\b', r'\balternative\b'
     ]
 
-    text_lower = request.text.lower()
+    text_lower = text.lower()
     hostile_count = sum(1 for p in hostile_patterns if re.search(p, text_lower))
     empathetic_count = sum(1 for p in empathetic_patterns if re.search(p, text_lower))
 
@@ -559,7 +330,7 @@ def analyze_empathy(request: EmpathyRequest):
 
     # Specific feedback for rejections
     feedback = []
-    if request.context == "rejection":
+    if context == "rejection":
         if not re.search(r'\balternative|option|next step\b', text_lower):
             feedback.append("Missing: Provide alternative options or next steps")
         if not re.search(r'\bappeal|review|reconsider\b', text_lower):
@@ -583,63 +354,51 @@ def analyze_empathy(request: EmpathyRequest):
         "recommendation": recommendation,
         "specific_feedback": feedback,
         "popia_compliant": status != "FAIL",
-        "audit_hash": generate_audit_hash({"score": empathy_score, "text_hash": hashlib.md5(request.text.encode()).hexdigest()})
+        "audit_hash": generate_audit_hash({"score": empathy_score, "text_hash": hashlib.md5(text.encode()).hexdigest()})
     }
 
-
-# ==================== RIGHT 4: CORRECTION ====================
-
-@app.post("/validate/correction-process")
-def validate_correction_process(request: CorrectionValidationRequest):
-    """
-    Correction Process Validation
-
-    RIGHT TO CORRECTION: Every system must provide a clear, accessible,
-    and human-staffed mechanism to correct errors and appeal decisions.
-
-    Validates if an organization's appeal mechanism meets requirements.
-    """
+def validate_correction_process(has_appeal_mechanism: bool, response_time_hours: int, human_reviewer_assigned: bool, clear_instructions: bool, accessible_format: bool):
     score = 0
     max_score = 100
     issues = []
     recommendations = []
 
     # Has appeal mechanism (30 points)
-    if request.has_appeal_mechanism:
+    if has_appeal_mechanism:
         score += 30
     else:
         issues.append("CRITICAL: No appeal mechanism exists")
         recommendations.append("Implement formal appeal process with human review")
 
     # Response time (25 points)
-    if request.response_time_hours <= 24:
+    if response_time_hours <= 24:
         score += 25
-    elif request.response_time_hours <= 72:
+    elif response_time_hours <= 72:
         score += 15
-        issues.append(f"Response time ({request.response_time_hours}h) exceeds 24h best practice")
-    elif request.response_time_hours <= 168:
+        issues.append(f"Response time ({response_time_hours}h) exceeds 24h best practice")
+    elif response_time_hours <= 168:
         score += 5
-        issues.append(f"Response time ({request.response_time_hours}h) is slow")
+        issues.append(f"Response time ({response_time_hours}h) is slow")
     else:
-        issues.append(f"CRITICAL: Response time ({request.response_time_hours}h) is unacceptable")
+        issues.append(f"CRITICAL: Response time ({response_time_hours}h) is unacceptable")
         recommendations.append("Reduce appeal response time to under 72 hours")
 
     # Human reviewer (25 points)
-    if request.human_reviewer_assigned:
+    if human_reviewer_assigned:
         score += 25
     else:
         issues.append("No dedicated human reviewer for appeals")
         recommendations.append("Assign trained staff to review appeals")
 
     # Clear instructions (10 points)
-    if request.clear_instructions:
+    if clear_instructions:
         score += 10
     else:
         issues.append("Appeal instructions not clear")
         recommendations.append("Provide step-by-step appeal instructions")
 
     # Accessible format (10 points)
-    if request.accessible_format:
+    if accessible_format:
         score += 10
     else:
         issues.append("Appeal process not accessible")
@@ -663,19 +422,17 @@ def validate_correction_process(request: CorrectionValidationRequest):
         "audit_hash": generate_audit_hash({"score": score, "issues": issues})
     }
 
-
-@app.post("/correction/submit")
-def submit_correction_request(request: CorrectionRequest):
-    """Submit a correction/appeal request for tracking"""
+def submit_correction_request(decision_id: str, original_decision: str, requested_outcome: str, reason: str, supporting_evidence: Dict[str, Any] = None):
     request_id = str(uuid.uuid4())
 
-    correction_requests[request_id] = {
+    # This would be a database insert in a real application
+    correction_requests = {
         "id": request_id,
-        "decision_id": request.decision_id,
-        "original_decision": request.original_decision,
-        "requested_outcome": request.requested_outcome,
-        "reason": request.reason,
-        "evidence": request.supporting_evidence,
+        "decision_id": decision_id,
+        "original_decision": original_decision,
+        "requested_outcome": requested_outcome,
+        "reason": reason,
+        "evidence": supporting_evidence,
         "status": "SUBMITTED",
         "submitted_at": datetime.utcnow().isoformat(),
         "reviewed_at": None,
@@ -695,20 +452,8 @@ def submit_correction_request(request: CorrectionRequest):
         ]
     }
 
-
-# ==================== RIGHT 5: TRUTH ====================
-
-@app.post("/analyze/disclosure")
-def analyze_ai_disclosure(request: DisclosureRequest):
-    """
-    AI Disclosure Analysis
-
-    RIGHT TO TRUTH: A person has the right to know if they are interacting
-    with an artificial intelligence. Deception is a violation of trust.
-
-    Analyzes interface text to check for proper AI disclosure.
-    """
-    text_lower = request.interface_text.lower()
+def analyze_ai_disclosure(interface_text: str, interaction_type: str):
+    text_lower = interface_text.lower()
 
     # Disclosure patterns
     explicit_disclosures = [
@@ -768,7 +513,7 @@ def analyze_ai_disclosure(request: DisclosureRequest):
             "clear_disclosure": has_clear,
             "potentially_deceptive": has_deceptive
         },
-        "recommendation": recommendations.get(request.interaction_type, "Add clear AI disclosure"),
+        "recommendation": recommendations.get(interaction_type, "Add clear AI disclosure"),
         "popia_compliant": score >= 70,
         "eu_ai_act_compliant": score >= 70,
         "best_practices": [
@@ -780,22 +525,12 @@ def analyze_ai_disclosure(request: DisclosureRequest):
         "audit_hash": generate_audit_hash({"score": score, "status": status})
     }
 
-
-# ==================== COMPREHENSIVE AUDIT ====================
-
-@app.post("/audit/comprehensive")
-def comprehensive_audit(request: ComprehensiveAuditRequest):
-    """
-    Comprehensive Rights Audit
-
-    Evaluates an organization across all 5 Algorithmic Rights
-    and generates a unified compliance report.
-    """
+def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]], framework: FrameworkType):
     results = {
-        "organization": request.organization_name,
-        "framework": request.framework.value,
+        "organization": organization_name,
+        "framework": framework.value,
         "timestamp": datetime.utcnow().isoformat(),
-        "systems_audited": len(request.ai_systems),
+        "systems_audited": len(ai_systems),
         "rights_assessment": {},
         "overall_score": 0,
         "recommendations": []
@@ -831,21 +566,13 @@ def comprehensive_audit(request: ComprehensiveAuditRequest):
         FrameworkType.EU_AI_ACT: "High-risk systems require conformity assessment",
         FrameworkType.EEOC: "Employment decisions subject to Four-Fifths Rule"
     }
-    results["framework_note"] = framework_notes.get(request.framework, "")
+    results["framework_note"] = framework_notes.get(framework, "")
 
     results["audit_hash"] = generate_audit_hash(results)
 
     return results
 
-
-@app.post("/assess")
-def assess_organization(request: AssessmentRequest):
-    """
-    Self-Assessment Scoring
-
-    Processes assessment questionnaire answers and calculates
-    Integrity Score and Tier Recommendation.
-    """
+def assess_organization(answers: Dict[str, int]):
     # Category weights from PRD
     weights = {
         "USAGE": 0.20,
@@ -855,8 +582,8 @@ def assess_organization(request: AssessmentRequest):
     }
 
     # Calculate weighted score (simplified)
-    total_score = sum(request.answers.values())
-    max_possible = len(request.answers) * 4  # Assuming max 4 per question
+    total_score = sum(answers.values())
+    max_possible = len(answers) * 4  # Assuming max 4 per question
 
     integrity_score = (total_score / max_possible) * 100 if max_possible > 0 else 0
 
@@ -875,7 +602,7 @@ def assess_organization(request: AssessmentRequest):
         "integrity_score": round(integrity_score, 1),
         "recommended_tier": tier.value,
         "tier_description": tier_desc,
-        "questions_answered": len(request.answers),
+        "questions_answered": len(answers),
         "next_steps": [
             "Schedule consultation with AIC advisor",
             "Prepare documentation for audit",
@@ -883,11 +610,8 @@ def assess_organization(request: AssessmentRequest):
         ]
     }
 
-
-@app.post("/assess/tier")
-def assess_tier(request: TierAssessmentRequest):
-    """Quick tier assessment based on key criteria"""
-    score = request.ai_affects_rights + request.special_personal_info + request.human_oversight
+def assess_tier(ai_affects_rights: int, special_personal_info: int, human_oversight: int):
+    score = ai_affects_rights + special_personal_info + human_oversight
 
     if score >= 7:
         tier = TierLevel.TIER_1
@@ -929,12 +653,7 @@ def assess_tier(request: TierAssessmentRequest):
         }[tier.value]
     }
 
-
-# ==================== FRAMEWORKS ====================
-
-@app.get("/frameworks")
 def list_frameworks():
-    """List all supported compliance frameworks"""
     return {
         "frameworks": [
             {
@@ -981,10 +700,3 @@ def list_frameworks():
             }
         ]
     }
-
-
-# ==================== MAIN ====================
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
