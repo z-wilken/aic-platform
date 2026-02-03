@@ -533,20 +533,150 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
         "systems_audited": len(ai_systems),
         "rights_assessment": {},
         "overall_score": 0,
-        "recommendations": []
+        "recommendations": [],
+        "system_details": []
     }
 
-    # Placeholder scores (in production, would run full audits)
-    rights_scores = {
-        "human_agency": {"score": 75, "status": "PARTIAL"},
-        "explanation": {"score": 60, "status": "NEEDS_IMPROVEMENT"},
-        "empathy": {"score": 80, "status": "GOOD"},
-        "correction": {"score": 70, "status": "PARTIAL"},
-        "truth": {"score": 90, "status": "EXCELLENT"}
-    }
+    # Collect scores across all systems for each right
+    human_agency_scores = []
+    explanation_scores = []
+    empathy_scores = []
+    correction_scores = []
+    truth_scores = []
+
+    for system in ai_systems:
+        system_result = {"name": system.get("name", "Unnamed System"), "audits": {}}
+
+        # Human Agency: Run disparate impact analysis if outcome data is provided
+        if "outcome_data" in system and "protected_attribute" in system and "outcome_variable" in system:
+            bias_result = analyze_disparate_impact(
+                system["outcome_data"],
+                system["protected_attribute"],
+                system["outcome_variable"]
+            )
+            if "error" not in bias_result:
+                # Convert status to score: FAIR=100, WARNING=70, BIASED=30
+                status = bias_result.get("overall_status", "BIASED")
+                score = 100 if status == "FAIR" else 70 if status == "WARNING" else 30
+                human_agency_scores.append(score)
+                system_result["audits"]["human_agency"] = bias_result
+                if bias_result.get("recommendations"):
+                    results["recommendations"].extend(bias_result["recommendations"])
+
+        # Explanation: Check if system provides decision explanations
+        if "has_explanations" in system:
+            # Score based on explanation capability
+            if system.get("has_explanations") and system.get("feature_weights_available"):
+                score = 100
+            elif system.get("has_explanations"):
+                score = 70
+            else:
+                score = 30
+                results["recommendations"].append(f"Add decision explanations for {system.get('name', 'system')}")
+            explanation_scores.append(score)
+            system_result["audits"]["explanation"] = {"score": score, "has_explanations": system.get("has_explanations")}
+
+        # Empathy: Analyze sample communications if provided
+        if "sample_communications" in system:
+            comm_scores = []
+            for text in system["sample_communications"]:
+                context = system.get("communication_context", "notification")
+                empathy_result = analyze_empathy(text, context)
+                comm_scores.append(empathy_result.get("empathy_score", 50))
+                if empathy_result.get("specific_feedback"):
+                    results["recommendations"].extend(empathy_result["specific_feedback"])
+            if comm_scores:
+                avg_score = sum(comm_scores) / len(comm_scores)
+                empathy_scores.append(avg_score)
+                system_result["audits"]["empathy"] = {"avg_score": round(avg_score, 2), "samples_analyzed": len(comm_scores)}
+
+        # Correction: Validate correction process if provided
+        if "correction_process" in system:
+            cp = system["correction_process"]
+            correction_result = validate_correction_process(
+                has_appeal_mechanism=cp.get("has_appeal_mechanism", False),
+                response_time_hours=cp.get("response_time_hours", 168),
+                human_reviewer_assigned=cp.get("human_reviewer_assigned", False),
+                clear_instructions=cp.get("clear_instructions", False),
+                accessible_format=cp.get("accessible_format", False)
+            )
+            correction_scores.append(correction_result.get("compliance_score", 0))
+            system_result["audits"]["correction"] = correction_result
+            if correction_result.get("recommendations"):
+                results["recommendations"].extend(correction_result["recommendations"])
+
+        # Truth: Analyze AI disclosure if interface texts provided
+        if "interface_texts" in system:
+            disclosure_scores = []
+            interaction_type = system.get("interaction_type", "web")
+            for text in system["interface_texts"]:
+                disclosure_result = analyze_ai_disclosure(text, interaction_type)
+                disclosure_scores.append(disclosure_result.get("disclosure_score", 0))
+                if disclosure_result.get("status") in ["NOT_DISCLOSED", "DECEPTIVE"]:
+                    results["recommendations"].append(disclosure_result.get("recommendation", "Add clear AI disclosure"))
+            if disclosure_scores:
+                avg_score = sum(disclosure_scores) / len(disclosure_scores)
+                truth_scores.append(avg_score)
+                system_result["audits"]["truth"] = {"avg_score": round(avg_score, 2), "samples_analyzed": len(disclosure_scores)}
+
+        results["system_details"].append(system_result)
+
+    # Calculate aggregate scores for each right
+    def get_status(score):
+        if score >= 85:
+            return "EXCELLENT"
+        elif score >= 70:
+            return "GOOD"
+        elif score >= 50:
+            return "PARTIAL"
+        else:
+            return "NEEDS_IMPROVEMENT"
+
+    rights_scores = {}
+
+    if human_agency_scores:
+        avg = sum(human_agency_scores) / len(human_agency_scores)
+        rights_scores["human_agency"] = {"score": round(avg, 1), "status": get_status(avg), "systems_evaluated": len(human_agency_scores)}
+    else:
+        rights_scores["human_agency"] = {"score": 0, "status": "NOT_EVALUATED", "systems_evaluated": 0}
+        results["recommendations"].append("Provide outcome data with protected attributes for human agency assessment")
+
+    if explanation_scores:
+        avg = sum(explanation_scores) / len(explanation_scores)
+        rights_scores["explanation"] = {"score": round(avg, 1), "status": get_status(avg), "systems_evaluated": len(explanation_scores)}
+    else:
+        rights_scores["explanation"] = {"score": 0, "status": "NOT_EVALUATED", "systems_evaluated": 0}
+        results["recommendations"].append("Document explanation capabilities for each AI system")
+
+    if empathy_scores:
+        avg = sum(empathy_scores) / len(empathy_scores)
+        rights_scores["empathy"] = {"score": round(avg, 1), "status": get_status(avg), "systems_evaluated": len(empathy_scores)}
+    else:
+        rights_scores["empathy"] = {"score": 0, "status": "NOT_EVALUATED", "systems_evaluated": 0}
+        results["recommendations"].append("Provide sample communications for empathy assessment")
+
+    if correction_scores:
+        avg = sum(correction_scores) / len(correction_scores)
+        rights_scores["correction"] = {"score": round(avg, 1), "status": get_status(avg), "systems_evaluated": len(correction_scores)}
+    else:
+        rights_scores["correction"] = {"score": 0, "status": "NOT_EVALUATED", "systems_evaluated": 0}
+        results["recommendations"].append("Document correction/appeal processes for each AI system")
+
+    if truth_scores:
+        avg = sum(truth_scores) / len(truth_scores)
+        rights_scores["truth"] = {"score": round(avg, 1), "status": get_status(avg), "systems_evaluated": len(truth_scores)}
+    else:
+        rights_scores["truth"] = {"score": 0, "status": "NOT_EVALUATED", "systems_evaluated": 0}
+        results["recommendations"].append("Provide interface texts to assess AI disclosure compliance")
 
     results["rights_assessment"] = rights_scores
-    results["overall_score"] = sum(r["score"] for r in rights_scores.values()) / len(rights_scores)
+
+    # Calculate overall score only from evaluated rights
+    evaluated_scores = [r["score"] for r in rights_scores.values() if r["status"] != "NOT_EVALUATED"]
+    results["overall_score"] = round(sum(evaluated_scores) / len(evaluated_scores), 1) if evaluated_scores else 0
+
+    # Deduplicate recommendations
+    results["recommendations"] = list(dict.fromkeys(results["recommendations"]))
 
     # Tier recommendation
     if results["overall_score"] >= 85:
