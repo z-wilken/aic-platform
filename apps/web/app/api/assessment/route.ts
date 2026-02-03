@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '../../../lib/db';
+import { query } from '../../../lib/db';
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -11,12 +11,22 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await pool.query(
+    // 1. Insert into assessments table
+    const assessmentResult = await query(
       'INSERT INTO assessments (email, score, tier, answers) VALUES ($1, $2, $3, $4) RETURNING id',
       [email, score, tier, answers]
     );
 
-    const newId = result.rows[0].id;
+    // 2. Insert or Update leads table
+    await query(
+      `INSERT INTO leads (email, score, source, status) 
+       VALUES ($1, $2, 'QUIZ', 'NEW') 
+       ON CONFLICT (email) DO UPDATE 
+       SET score = EXCLUDED.score, status = 'RE-ENGAGED'`,
+      [email, score]
+    );
+
+    const newId = assessmentResult.rows[0].id;
 
     console.log('🚀 [AIC-API] Assessment Received and Stored:', {
       id: newId,
@@ -28,10 +38,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       success: true, 
       id: newId,
-      message: 'Assessment archived securely.' 
+      message: 'Assessment archived securely and lead recorded.' 
     });
   } catch (error) {
-    console.error('Error inserting assessment into database:', error);
+    console.error('Error processing assessment:', error);
     return NextResponse.json({ success: false, message: 'Internal server error.' }, { status: 500 });
   }
 }

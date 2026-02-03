@@ -16,6 +16,9 @@ export default function Navbar() {
           <Link href="/about" className="font-mono text-sm font-medium text-gray-600 hover:text-aic-black transition-colors">
             ABOUT
           </Link>
+          <Link href="/contact" className="font-mono text-sm font-medium text-gray-600 hover:text-aic-black transition-colors">
+            CONTACT
+          </Link>
           {/* External Link to Dashboard */}
           <a href="http://localhost:3001/login" className="font-mono text-sm font-medium text-gray-600 hover:text-aic-black transition-colors">
             CLIENT LOGIN

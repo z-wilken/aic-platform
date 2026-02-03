@@ -29,11 +29,30 @@ CREATE TABLE audit_logs (
 -- CRM Tables
 CREATE TABLE leads (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
     company VARCHAR(255),
     source VARCHAR(50) DEFAULT 'WEB', -- 'QUIZ', 'ALPHA_FORM'
     score INTEGER,
     status VARCHAR(50) DEFAULT 'NEW',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE assessments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) NOT NULL,
+    score INTEGER NOT NULL,
+    tier VARCHAR(50) NOT NULL,
+    answers JSONB NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE alpha_applications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    company VARCHAR(255),
+    use_case TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

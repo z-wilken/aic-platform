@@ -1,5 +1,4 @@
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { auth } from '@/app/api/auth/[...nextauth]/route'
 import { redirect } from 'next/navigation'
 
 export type UserRole = 'ADMIN' | 'COMPLIANCE_OFFICER' | 'AUDITOR' | 'VIEWER'
@@ -14,14 +13,13 @@ export interface SessionUser {
   tier: string
 }
 
-// Role hierarchy - higher index = more permissions
 const ROLE_HIERARCHY: UserRole[] = ['VIEWER', 'AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN']
 
 /**
  * Get the current session (server-side)
  */
 export async function getSession() {
-  return await getServerSession(authOptions)
+  return await auth()
 }
 
 /**
@@ -34,7 +32,7 @@ export async function getCurrentUser(): Promise<SessionUser> {
     redirect('/login')
   }
 
-  return session.user as SessionUser
+  return session.user as unknown as SessionUser
 }
 
 /**
@@ -51,23 +49,16 @@ export function hasRole(userRole: UserRole, requiredRole: UserRole): boolean {
  */
 export function hasPermission(userRole: UserRole, permission: string): boolean {
   const permissions: Record<string, UserRole[]> = {
-    // Read permissions
     'read:dashboard': ['VIEWER', 'AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN'],
     'read:audit-logs': ['AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN'],
     'read:incidents': ['AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN'],
     'read:certificate': ['VIEWER', 'AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN'],
-
-    // Write permissions
     'write:audit-logs': ['COMPLIANCE_OFFICER', 'ADMIN'],
     'write:incidents': ['COMPLIANCE_OFFICER', 'ADMIN'],
     'write:settings': ['ADMIN'],
-
-    // Admin permissions
     'manage:users': ['ADMIN'],
     'manage:api-keys': ['ADMIN'],
     'manage:organization': ['ADMIN'],
-
-    // Verification permissions
     'verify:decisions': ['AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN'],
     'approve:certifications': ['COMPLIANCE_OFFICER', 'ADMIN'],
   }

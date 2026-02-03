@@ -1,33 +1,60 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import AdminShell from './components/AdminShell'
 import Link from 'next/link'
 
 export default function AdminDashboard() {
-  // Mock data - in production would come from API
-  const stats = {
-    pendingApplications: 12,
-    activeCertifications: 84,
-    mrr: 'R 420k',
-    engineHealth: 100,
-    auditsThisMonth: 8,
-    incidentsOpen: 3,
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/dashboard')
+      .then(res => res.json())
+      .then(d => {
+        setData(d);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <AdminShell>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+      </AdminShell>
+    );
   }
 
-  const recentActivity = [
-    { id: 1, type: 'APPLICATION', message: 'New application from Capitec Bank', time: '10 min ago', icon: '📝' },
-    { id: 2, type: 'AUDIT', message: 'Discovery Health audit completed', time: '1 hour ago', icon: '✅' },
-    { id: 3, type: 'INCIDENT', message: 'Bias alert flagged at Standard Bank', time: '2 hours ago', icon: '🚨' },
-    { id: 4, type: 'CERTIFICATION', message: 'Vodacom SA certification expiring in 10 days', time: '3 hours ago', icon: '⏰' },
-    { id: 5, type: 'LEAD', message: 'New alpha program signup: Old Mutual', time: '5 hours ago', icon: '🎯' },
-  ]
+  const stats = data?.stats || {
+    pendingApplications: 0,
+    activeCertifications: 0,
+    totalLeads: 0,
+    auditsTotal: 0
+  };
 
-  const quickActions = [
-    { label: 'Review Applications', href: '/applications', icon: '📋', count: stats.pendingApplications },
-    { label: 'Active Audits', href: '/audits', icon: '🔍', count: stats.auditsThisMonth },
-    { label: 'Open Incidents', href: '/incidents', icon: '🚨', count: stats.incidentsOpen },
-    { label: 'Manage Certs', href: '/certifications', icon: '🏆', count: stats.activeCertifications },
-  ]
+  // Merge recent apps and leads for activity feed
+  const recentActivity = [
+    ...(data?.recentApplications || []).map((a: any) => ({
+        id: `app-${a.id}`,
+        type: 'APPLICATION',
+        message: `New application from ${a.company}`,
+        time: new Date(a.created_at).toLocaleDateString(),
+        icon: '📝'
+    })),
+    ...(data?.recentLeads || []).map((l: any) => ({
+        id: `lead-${l.id}`,
+        type: 'LEAD',
+        message: `New ${l.source} lead: ${l.email}`,
+        time: new Date(l.created_at).toLocaleDateString(),
+        icon: '🎯'
+    }))
+  ].sort((a, b) => 0.5 - Math.random()).slice(0, 5); // Simple shuffle for demo
 
   return (
     <AdminShell>
@@ -41,30 +68,22 @@ export default function AdminDashboard() {
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Pending Apps</p>
+            <p className="text-gray-500 text-xs uppercase mb-2">Alpha Apps</p>
             <p className="text-3xl font-bold text-blue-500">{stats.pendingApplications}</p>
           </div>
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Active Certs</p>
+            <p className="text-gray-500 text-xs uppercase mb-2">Active Orgs</p>
             <p className="text-3xl font-bold text-green-500">{stats.activeCertifications}</p>
           </div>
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">MRR</p>
-            <p className="text-3xl font-bold text-yellow-500">{stats.mrr}</p>
+            <p className="text-gray-500 text-xs uppercase mb-2">Total Leads</p>
+            <p className="text-3xl font-bold text-yellow-500">{stats.totalLeads}</p>
           </div>
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Audits (MTD)</p>
-            <p className="text-3xl font-bold">{stats.auditsThisMonth}</p>
-          </div>
-          <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Open Incidents</p>
-            <p className="text-3xl font-bold text-red-500">{stats.incidentsOpen}</p>
-          </div>
-          <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Engine Health</p>
-            <p className="text-3xl font-bold text-green-500">{stats.engineHealth}%</p>
+            <p className="text-gray-500 text-xs uppercase mb-2">Total Audits</p>
+            <p className="text-3xl font-bold">{stats.auditsTotal}</p>
           </div>
         </div>
 
@@ -73,21 +92,18 @@ export default function AdminDashboard() {
           <div className="col-span-1">
             <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
             <div className="space-y-3">
-              {quickActions.map((action) => (
-                <Link
-                  key={action.href}
-                  href={action.href}
-                  className="flex items-center justify-between bg-[#1c1c1c] p-4 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
-                >
+                <Link href="/applications" className="flex items-center justify-between bg-[#1c1c1c] p-4 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{action.icon}</span>
-                    <span className="font-medium">{action.label}</span>
+                    <span className="text-2xl">📋</span>
+                    <span className="font-medium">Review Applications</span>
                   </div>
-                  <span className="bg-gray-800 px-3 py-1 rounded-full text-sm font-mono">
-                    {action.count}
-                  </span>
                 </Link>
-              ))}
+                <Link href="/audits" className="flex items-center justify-between bg-[#1c1c1c] p-4 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">🔍</span>
+                    <span className="font-medium">System Audits</span>
+                  </div>
+                </Link>
             </div>
           </div>
 
@@ -95,7 +111,7 @@ export default function AdminDashboard() {
           <div className="col-span-2">
             <h2 className="text-lg font-bold mb-4">Recent Activity</h2>
             <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 divide-y divide-gray-800">
-              {recentActivity.map((activity) => (
+              {recentActivity.map((activity: any) => (
                 <div
                   key={activity.id}
                   className="flex items-center gap-4 p-4 hover:bg-gray-800/30 transition-colors"
@@ -106,67 +122,49 @@ export default function AdminDashboard() {
                     <p className="text-sm text-gray-500">{activity.time}</p>
                   </div>
                   <span className={`text-xs font-mono px-2 py-1 rounded ${
-                    activity.type === 'INCIDENT' ? 'bg-red-500/20 text-red-400' :
                     activity.type === 'APPLICATION' ? 'bg-blue-500/20 text-blue-400' :
-                    activity.type === 'AUDIT' ? 'bg-green-500/20 text-green-400' :
-                    activity.type === 'CERTIFICATION' ? 'bg-yellow-500/20 text-yellow-400' :
                     'bg-purple-500/20 text-purple-400'
                   }`}>
                     {activity.type}
                   </span>
                 </div>
               ))}
+              {recentActivity.length === 0 && (
+                  <p className="p-8 text-center text-gray-500">No recent activity found.</p>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Certification Queue Preview */}
+        {/* Alpha Application Queue */}
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Certification Queue</h2>
-            <Link href="/applications" className="text-blue-400 text-sm hover:text-blue-300">
-              View All →
-            </Link>
+            <h2 className="text-lg font-bold">Alpha Program Queue</h2>
           </div>
           <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
             <table className="w-full text-left text-sm">
               <thead className="bg-gray-900/50 text-gray-500 uppercase text-xs">
                 <tr>
-                  <th className="p-4">Organization</th>
-                  <th className="p-4">Tier</th>
-                  <th className="p-4">Status</th>
-                  <th className="p-4">Submitted</th>
-                  <th className="p-4">Actions</th>
+                  <th className="p-4">Applicant</th>
+                  <th className="p-4">Company</th>
+                  <th className="p-4">Email</th>
+                  <th className="p-4">Date</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800">
-                <tr className="hover:bg-gray-800/30">
-                  <td className="p-4 font-medium">Capitec Bank</td>
-                  <td className="p-4"><span className="text-red-400 font-mono">TIER 1</span></td>
-                  <td className="p-4"><span className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">NEW</span></td>
-                  <td className="p-4 text-gray-400">Today, 10:30 AM</td>
-                  <td className="p-4">
-                    <button className="text-blue-400 hover:underline">Review</button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-800/30">
-                  <td className="p-4 font-medium">Discovery Health</td>
-                  <td className="p-4"><span className="text-red-400 font-mono">TIER 1</span></td>
-                  <td className="p-4"><span className="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded text-xs">REVIEWING</span></td>
-                  <td className="p-4 text-gray-400">Jan 28, 2026</td>
-                  <td className="p-4">
-                    <button className="text-blue-400 hover:underline">Continue</button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-gray-800/30">
-                  <td className="p-4 font-medium">Takealot Group</td>
-                  <td className="p-4"><span className="text-orange-400 font-mono">TIER 2</span></td>
-                  <td className="p-4"><span className="bg-orange-500/20 text-orange-400 px-2 py-1 rounded text-xs">AWAITING DOCS</span></td>
-                  <td className="p-4 text-gray-400">Jan 25, 2026</td>
-                  <td className="p-4">
-                    <button className="text-gray-400 hover:underline">Follow Up</button>
-                  </td>
-                </tr>
+                {(data?.recentApplications || []).map((app: any) => (
+                    <tr key={app.id} className="hover:bg-gray-800/30">
+                        <td className="p-4 font-medium">{app.first_name} {app.last_name}</td>
+                        <td className="p-4">{app.company}</td>
+                        <td className="p-4 text-gray-400">{app.email}</td>
+                        <td className="p-4 text-gray-400">{new Date(app.created_at).toLocaleDateString()}</td>
+                    </tr>
+                ))}
+                {(data?.recentApplications || []).length === 0 && (
+                    <tr>
+                        <td colSpan={4} className="p-8 text-center text-gray-500">No applications in queue.</td>
+                    </tr>
+                )}
               </tbody>
             </table>
           </div>

@@ -98,20 +98,46 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const {
-      org_id,
-      action,
-      input_type,
-      outcome,
+      test_mode,
+      protected_attribute,
+      outcome_variable,
+      data
+    } = body;
+
+    let {
+      org_id = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', // Default demo org
+      action = 'BIAS_AUDIT',
+      input_type = 'Dataset',
+      outcome = 'COMPLETED',
       status = 'PENDING',
       metadata = {}
     } = body;
 
-    // Validate required fields
-    if (!org_id || !action || !input_type || !outcome) {
-      return NextResponse.json(
-        { error: 'Missing required fields: org_id, action, input_type, outcome' },
-        { status: 400 }
-      );
+    let engineAnalysis = null;
+
+    // If data and attributes are provided, call Audit Engine
+    if (test_mode && data && protected_attribute && outcome_variable) {
+        try {
+            const engineResponse = await fetch('http://localhost:8000/api/v1/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    data,
+                    protected_attribute,
+                    outcome_variable
+                })
+            });
+            
+            if (engineResponse.ok) {
+                engineAnalysis = await engineResponse.json();
+                status = engineAnalysis.overall_status === 'FAIR' ? 'VERIFIED' : 'FLAGGED';
+                outcome = engineAnalysis.overall_status;
+                metadata = { ...metadata, analysis: engineAnalysis };
+            }
+        } catch (err) {
+            console.error("Failed to connect to Audit Engine:", err);
+            // Continue with default values if engine is down
+        }
     }
 
     // Generate immutable hash for audit trail integrity
@@ -134,6 +160,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Audit log created successfully',
       log: result.rows[0],
+      analysis: engineAnalysis,
       immutable_hash
     }, { status: 201 });
 

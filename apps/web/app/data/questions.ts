@@ -142,5 +142,86 @@ export const questions: Question[] = [
       { label: 'Yes, full decision logic is interpretable', score: 4 },
     ],
   },
-  // ... (Truncated for brevity, normally I'd do all 20, but this proves the architecture)
+  {
+    id: 'q13',
+    category: 'TRANSPARENCY',
+    text: 'Is there a public-facing policy regarding AI ethics or accountability?',
+    options: [
+      { label: 'No policy exists', score: 0 },
+      { label: 'Internal policy only', score: 2 },
+      { label: 'Publicly accessible and regularly updated', score: 4 },
+    ],
+  },
+  {
+    id: 'q14',
+    category: 'TRANSPARENCY',
+    text: 'How are "false positives" or "false negatives" explained to affected users?',
+    options: [
+      { label: 'No explanation provided', score: 0 },
+      { label: 'Generic error message', score: 1 },
+      { label: 'Specific explanation of the error possibility and recourse', score: 4 },
+    ],
+  },
+  {
+    id: 'q15',
+    category: 'TRANSPARENCY',
+    text: 'Do you publish annual or periodic transparency reports on AI performance and bias?',
+    options: [
+      { label: 'No reports', score: 0 },
+      { label: 'Internal reports only', score: 2 },
+      { label: 'Public transparency reports', score: 4 },
+    ],
+  },
+
+  // --- Category 4: Infrastructure & Data (20% Weight) ---
+  {
+    id: 'q16',
+    category: 'INFRASTRUCTURE',
+    text: 'Where is your AI training and production data stored?',
+    options: [
+      { label: 'International cloud (no local presence)', score: 1 },
+      { label: 'International cloud with local region (e.g. AWS Cape Town)', score: 3 },
+      { label: 'On-premise / South African sovereign cloud', score: 4 },
+    ],
+  },
+  {
+    id: 'q17',
+    category: 'INFRASTRUCTURE',
+    text: 'Do you maintain a formal "Model Registry" to track versions and deployments?',
+    options: [
+      { label: 'No formal tracking', score: 0 },
+      { label: 'Basic version control (Git)', score: 2 },
+      { label: 'Dedicated Model Management platform', score: 4 },
+    ],
+  },
+  {
+    id: 'q18',
+    category: 'INFRASTRUCTURE',
+    text: 'Are there automated alerts for model drift or performance degradation?',
+    options: [
+      { label: 'No monitoring', score: 0 },
+      { label: 'Manual periodic checks', score: 2 },
+      { label: 'Real-time automated alerting', score: 4 },
+    ],
+  },
+  {
+    id: 'q19',
+    category: 'INFRASTRUCTURE',
+    text: 'Is the AI system integrated with a centralized audit logging service?',
+    options: [
+      { label: 'Logs are scattered or non-existent', score: 0 },
+      { label: 'Standard application logs', score: 2 },
+      { label: 'Immutable, centralized audit logs for all AI decisions', score: 4 },
+    ],
+  },
+  {
+    id: 'q20',
+    category: 'INFRASTRUCTURE',
+    text: 'Does your Disaster Recovery plan include manual fallback for AI-driven processes?',
+    options: [
+      { label: 'No manual fallback exists', score: 0 },
+      { label: 'Manual fallback exists but is untested', score: 2 },
+      { label: 'Regularly tested manual fallback procedures', score: 4 },
+    ],
+  },
 ];

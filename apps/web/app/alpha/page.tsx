@@ -7,15 +7,33 @@ export default function AlphaPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API delay
-    setTimeout(() => {
+    
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        const response = await fetch('/api/alpha', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            setIsSubmitted(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            const errorData = await response.json();
+            alert(errorData.message || 'Something went wrong. Please try again.');
+        }
+    } catch (error) {
+        console.error('Submission error:', error);
+        alert('Failed to connect to the server. Please check your connection.');
+    } finally {
         setIsLoading(false);
-        setIsSubmitted(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 2000);
+    }
   };
 
   return (

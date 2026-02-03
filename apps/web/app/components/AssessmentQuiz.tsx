@@ -1,23 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-import { questions, Option } from '../data/questions';
+import { questions } from '../data/questions';
+import { calculateAssessmentResult, AssessmentResult } from '../../lib/scoring';
+import { generatePDFReport } from '../../lib/report-generator';
 
 export default function AssessmentQuiz() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [showResult, setShowResult] = useState(false);
   const [email, setEmail] = useState('');
+  const [company, setCompany] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
   const [showEmailGate, setShowEmailGate] = useState(false);
 
   // Constants
-  const EMAIL_GATE_INDEX = 5; 
+  const EMAIL_GATE_INDEX = 14; 
 
   const handleAnswer = (score: number) => {
     const questionId = questions[currentStep].id;
-    setAnswers(prev => ({ ...prev, [questionId]: score }));
+    const newAnswers = { ...answers, [questionId]: score };
+    setAnswers(newAnswers);
     
     if (currentStep === EMAIL_GATE_INDEX && !email) {
         setShowEmailGate(true);
@@ -27,40 +30,26 @@ export default function AssessmentQuiz() {
     if (currentStep < questions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      calculateResults();
+      setShowResult(true);
     }
   };
 
-  const getScore = () => {
-      const totalPossible = questions.length * 4;
-      const currentScore = Object.values(answers).reduce((a, b) => a + b, 0);
-      return Math.round((currentScore / totalPossible) * 100);
-  };
-
-  const integrityScore = getScore();
-
-  const getTier = () => {
-    if (integrityScore < 50) return { name: 'Tier 1', color: 'text-aic-red', title: 'Critical Risk', desc: 'Your infrastructure does not match your risk profile.' };
-    if (integrityScore < 80) return { name: 'Tier 2', color: 'text-aic-orange', title: 'Elevated Risk', desc: 'Good foundation, but gaps in transparency.' };
-    return { name: 'Tier 3', color: 'text-aic-green', title: 'Standard Risk', desc: 'You are likely compliant for low-stakes AI.' };
-  };
-
-  const result = getTier();
+  const result = calculateAssessmentResult(answers);
 
   const handleGateSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setShowEmailGate(false);
       
-      // REAL DATA TRANSMISSION
+      // Submit lead data
       try {
           await fetch('/api/assessment', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                   email,
-                  answers,
-                  score: integrityScore,
-                  tier: result.name
+                  score: result.integrityScore,
+                  tier: result.tier.name,
+                  answers: answers
               })
           });
       } catch (err) {
@@ -72,32 +61,50 @@ export default function AssessmentQuiz() {
       }
   };
 
-  const calculateResults = () => {
-      setShowResult(true);
+  const handleDownload = async () => {
+      setIsSubmitting(true);
+      await generatePDFReport(result, company || 'Your Organization');
+      setIsSubmitting(false);
   };
 
-  // ... (Render Logic remains similar, using updated handlers)
-  
   if (showEmailGate) {
       return (
         <div className="glass-card p-8 rounded-2xl max-w-lg mx-auto mt-12 text-center animate-in fade-in zoom-in">
+            <div className="mb-6">
+                <span className="inline-flex items-center rounded-full bg-aic-gold/10 px-3 py-1 text-xs font-bold text-aic-gold ring-1 ring-inset ring-aic-gold/20 font-mono uppercase tracking-wider">
+                    Tier {result.integrityScore < 50 ? '1' : result.integrityScore < 80 ? '2' : '3'} Detected
+                </span>
+            </div>
             <h3 className="font-serif text-2xl font-bold mb-4">Unlock Your Full Report</h3>
-            <p className="text-gray-600 mb-6 font-serif">You are halfway through. To generate your custom Integrity Score and Tier Recommendation, we need to know where to send the PDF.</p>
-            <form onSubmit={handleGateSubmit} className="space-y-4">
-                <input 
-                    type="email" 
-                    required 
-                    placeholder="work@email.com" 
-                    className="w-full border rounded-lg p-3"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <button type="submit" className="w-full bg-aic-black text-white py-3 rounded-lg font-mono font-bold hover:bg-gray-800">
-                    CONTINUE ASSESSMENT
+            <p className="text-gray-600 mb-6 font-serif">You are halfway through. To generate your custom Integrity Score and detailed PDF recommendation, we need a few details.</p>
+            <form onSubmit={handleGateSubmit} className="space-y-4 text-left">
+                <div>
+                    <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-1">Work Email</label>
+                    <input 
+                        type="email" 
+                        required 
+                        placeholder="you@company.co.za" 
+                        className="w-full border rounded-lg p-3 font-serif"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label className="block text-xs font-mono font-bold text-gray-500 uppercase mb-1">Organization Name</label>
+                    <input 
+                        type="text" 
+                        placeholder="Company Name (for the report)" 
+                        className="w-full border rounded-lg p-3 font-serif"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                    />
+                </div>
+                <button type="submit" className="w-full bg-aic-black text-white py-3 rounded-lg font-mono font-bold hover:bg-gray-800 transition-colors">
+                    CONTINUE & GENERATE REPORT
                 </button>
             </form>
-            <button onClick={() => setShowEmailGate(false)} className="mt-4 text-xs text-gray-400 hover:text-gray-600 underline">
-                Skip (Show partial results only)
+            <button onClick={() => setShowEmailGate(false)} className="mt-4 text-xs text-gray-400 hover:text-gray-600 underline font-mono uppercase tracking-widest">
+                Skip (Show limited results)
             </button>
         </div>
       );
@@ -152,22 +159,39 @@ export default function AssessmentQuiz() {
             </h3>
             
             <div className="mb-8 relative inline-block">
-                <div className="text-6xl font-mono font-bold text-aic-black mb-2">{integrityScore}/100</div>
+                <div className="text-6xl font-mono font-bold text-aic-black mb-2">{result.integrityScore}/100</div>
                 <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Integrity Score</p>
             </div>
 
-            <div className={`p-6 rounded-xl border mb-8 ${result.color.replace('text-', 'bg-').replace('500', '50')} ${result.color.replace('text-', 'border-').replace('500', '200')}`}>
-                <h2 className={`font-serif text-3xl font-bold mb-2 ${result.color}`}>
-                    {result.name}: {result.title}
+            <div className={`p-6 rounded-xl border mb-8 text-left ${result.tier.color.replace('text-', 'bg-').replace('500', '50')} ${result.tier.color.replace('text-', 'border-').replace('500', '200')}`}>
+                <h2 className={`font-serif text-2xl font-bold mb-2 ${result.tier.color}`}>
+                    {result.tier.name}: {result.tier.title}
                 </h2>
-                <p className="font-serif text-gray-700">
-                    {result.desc}
+                <p className="font-serif text-gray-700 text-sm leading-relaxed">
+                    {result.tier.desc}
                 </p>
             </div>
 
-            <a href="/alpha" className="inline-block bg-aic-black text-white px-8 py-4 rounded-lg font-mono font-bold hover:bg-aic-gold hover:text-black transition-all">
-                APPLY FOR CERTIFICATION
-            </a>
+            <div className="grid grid-cols-2 gap-4 mb-8">
+                <button 
+                    onClick={handleDownload}
+                    disabled={isSubmitting}
+                    className="flex items-center justify-center gap-2 bg-white border-2 border-aic-black text-aic-black px-6 py-4 rounded-lg font-mono font-bold hover:bg-gray-50 transition-all disabled:opacity-50"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    {isSubmitting ? 'GENERATING...' : 'DOWNLOAD PDF'}
+                </button>
+                <a href="/alpha" className="flex items-center justify-center bg-aic-black text-white px-6 py-4 rounded-lg font-mono font-bold hover:bg-gray-800 transition-all">
+                    JOIN ALPHA
+                </a>
+            </div>
+
+            <div className="pt-6 border-t border-gray-100">
+                <p className="text-xs text-gray-400 font-mono uppercase tracking-widest mb-4">Recommended Next Step</p>
+                <a href="/contact" className="text-sm font-bold text-aic-gold hover:text-yellow-600 transition-colors font-mono">
+                    SCHEDULE A COMPLIANCE CONSULTATION &rarr;
+                </a>
+            </div>
         </div>
       )}
     </div>
