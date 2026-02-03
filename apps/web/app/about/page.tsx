@@ -1,4 +1,10 @@
 import Navbar from '../components/Navbar';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "AIC | About - Our Mission & Approach",
+  description: "Learn why AIC exists and how we bridge the trust gap in South African AI deployment.",
+};
 
 export default function AboutPage() {
   return (

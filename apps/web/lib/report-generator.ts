@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { AssessmentResult } from './scoring';
+import { AssessmentResult } from '@/lib/scoring';
 
 export async function generatePDFReport(result: AssessmentResult, organizationName: string = 'Your Organization') {
     const doc = new jsPDF({

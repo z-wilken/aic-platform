@@ -1,5 +1,8 @@
 // components/HeroSection.tsx
+'use client';
+
 import Marquee from './Marquee';
+import * as analytics from '@/lib/analytics';
 
 const HeroSection = () => {
   return (
@@ -15,30 +18,35 @@ const HeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="text-left">
             <p className="font-mono text-aic-gold uppercase tracking-widest">
-              The Global Standard for Algorithmic Justice
+              POPIA Section 71 Compliance Framework
             </p>
             <h1 className="mt-4 text-6xl font-bold tracking-tighter text-aic-black sm:text-8xl font-serif">
-              No Robot <br />
-              <span className="text-aic-red italic">Judges.</span>
+              Accountability <br />
+              <span className="text-aic-red italic">by Design.</span>
             </h1>
           </div>
           <div className="space-y-8">
+            <div className="glass-card p-4 border-l-4 border-aic-red bg-white/50 inline-block">
+                <p className="text-sm font-mono font-bold text-aic-red uppercase mb-1">MARKET ALERT</p>
+                <p className="text-lg font-serif italic text-gray-800">"85.1% of AI resume screening tools favored white-associated names in 2024 University of Washington study."</p>
+            </div>
             <p className="text-xl leading-8 text-gray-700 font-serif">
-              We define the line between automation and humanity. If your AI decides a human fate, it must have{' '}
-              <span className="font-bold border-b-2 border-aic-red">Human Empathy</span> in the loop.
+              AIC is the definitive trust infrastructure for South African AI. We certify the humans accountable for algorithmic outcomes, ensuring compliance with Section 71 of POPIA.
             </p>
-            <div className="flex items-center gap-x-6">
+            <div className="flex flex-wrap items-center gap-4">
               <a
                 href="/assessment"
+                onClick={() => analytics.trackCTAClick('hero_assessment')}
                 className="rounded-none bg-aic-black px-8 py-4 text-sm font-semibold text-white shadow-sm hover:bg-aic-red focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aic-black font-mono uppercase tracking-widest transition-colors"
               >
-                Audit Your System
+                Take Self-Assessment
               </a>
               <a
-                href="/report"
-                className="text-sm font-semibold leading-6 text-gray-900 font-mono border-b border-gray-300 hover:border-aic-black transition-colors"
+                href="/alpha"
+                onClick={() => analytics.trackCTAClick('hero_alpha')}
+                className="rounded-none bg-white border-2 border-aic-black px-8 py-4 text-sm font-semibold text-aic-black shadow-sm hover:bg-gray-50 font-mono uppercase tracking-widest transition-colors"
               >
-                Report an Abuse <span aria-hidden="true">→</span>
+                Join Alpha Program
               </a>
             </div>
           </div>

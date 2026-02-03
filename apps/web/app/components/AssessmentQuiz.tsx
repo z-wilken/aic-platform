@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { questions } from '../data/questions';
-import { calculateAssessmentResult, AssessmentResult } from '../../lib/scoring';
-import { generatePDFReport } from '../../lib/report-generator';
+import { useState, useEffect } from 'react';
+import { questions } from '@/app/data/questions';
+import { calculateAssessmentResult, AssessmentResult } from '@/lib/scoring';
+import { generatePDFReport } from '@/lib/report-generator';
+import * as analytics from '@/lib/analytics';
 
 export default function AssessmentQuiz() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -14,11 +15,18 @@ export default function AssessmentQuiz() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showEmailGate, setShowEmailGate] = useState(false);
 
+  // Track start
+  useEffect(() => {
+    analytics.trackAssessmentStart();
+  }, []);
+
   // Constants
   const EMAIL_GATE_INDEX = 14; 
 
   const handleAnswer = (score: number) => {
     const questionId = questions[currentStep].id;
+    analytics.trackAssessmentAnswer(questionId);
+    
     const newAnswers = { ...answers, [questionId]: score };
     setAnswers(newAnswers);
     
@@ -31,6 +39,7 @@ export default function AssessmentQuiz() {
       setCurrentStep(currentStep + 1);
     } else {
       setShowResult(true);
+      analytics.trackAssessmentComplete(calculateAssessmentResult(newAnswers).tier.name);
     }
   };
 
@@ -39,6 +48,7 @@ export default function AssessmentQuiz() {
   const handleGateSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setShowEmailGate(false);
+      analytics.trackEmailCaptured('assessment');
       
       // Submit lead data
       try {
