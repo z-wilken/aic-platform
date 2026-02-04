@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { motion } from 'framer-motion';
+import EvidenceModal from '../components/EvidenceModal';
 
 interface Requirement {
     id: string;
@@ -17,6 +18,8 @@ interface Requirement {
 export default function RoadmapPage() {
     const [requirements, setRequirements] = useState<Requirement[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedReq, setSelectedReq] = useState<Requirement | null>(null);
 
     const fetchRequirements = () => {
         fetch('/api/requirements')
@@ -36,19 +39,22 @@ export default function RoadmapPage() {
         fetchRequirements();
     }, []);
 
-    const handleSubmitEvidence = async (id: string) => {
-        const url = prompt("Please enter the URL to your evidence (e.g. Google Drive link, PDF URL):");
-        if (!url) return;
+    const openUploadModal = (req: Requirement) => {
+        setSelectedReq(req);
+        setIsModalOpen(true);
+    };
+
+    const handleEvidenceSubmit = async (url: string) => {
+        if (!selectedReq) return;
 
         try {
             const response = await fetch('/api/requirements', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, evidence_url: url })
+                body: JSON.stringify({ id: selectedReq.id, evidence_url: url })
             });
 
             if (response.ok) {
-                alert("Evidence submitted for review.");
                 fetchRequirements();
             }
         } catch (err) {
@@ -116,7 +122,7 @@ export default function RoadmapPage() {
                                             {req.description}
                                         </p>
                                         <button 
-                                            onClick={() => req.status === 'PENDING' || req.status === 'REJECTED' ? handleSubmitEvidence(req.id) : null}
+                                            onClick={() => req.status === 'PENDING' || req.status === 'REJECTED' ? openUploadModal(req) : null}
                                             className="w-full py-2 border border-aic-black/10 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-black hover:text-white transition-colors disabled:opacity-50"
                                         >
                                             {req.status === 'PENDING' || req.status === 'REJECTED' ? 'Submit Evidence' : 'Under Review'}
@@ -161,6 +167,13 @@ export default function RoadmapPage() {
                     </div>
                 </div>
             </div>
+
+            <EvidenceModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                requirement={selectedReq}
+                onSubmit={handleEvidenceSubmit}
+            />
         </DashboardShell>
     );
 }
