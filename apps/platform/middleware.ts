@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
   if (isProtected) {
     const token = await getToken({
       req: request,
-      secret: process.env.NEXTAUTH_SECRET || 'aic-secret-key-change-in-production'
+      secret: process.env.NEXTAUTH_SECRET
     })
 
     // Not authenticated - redirect to login

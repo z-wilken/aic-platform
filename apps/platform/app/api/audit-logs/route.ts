@@ -1,174 +1,76 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '../../../lib/db';
-import crypto from 'crypto';
+import { getSession } from '../../../lib/auth';
 
-// GET /api/audit-logs - List audit logs with filtering
-export async function GET(request: NextRequest) {
+const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
+
+export async function POST(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const orgId = searchParams.get('org_id');
-    const status = searchParams.get('status');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const session: any = await getSession();
+    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    
+    const body = await request.json();
+    const { systemName, data } = body;
 
-    let queryText = `
-      SELECT
-        al.*,
-        o.name as organization_name
-      FROM audit_logs al
-      LEFT JOIN organizations o ON al.org_id = o.id
-      WHERE 1=1
-    `;
-    const values: any[] = [];
-    let paramIndex = 1;
-
-    if (orgId) {
-      queryText += ` AND al.org_id = $${paramIndex++}`;
-      values.push(orgId);
-    }
-
-    if (status) {
-      queryText += ` AND al.status = $${paramIndex++}`;
-      values.push(status);
-    }
-
-    queryText += ` ORDER BY al.created_at DESC LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
-    values.push(limit, offset);
-
-    const result = await query(queryText, values);
-
-    // Get total count for pagination
-    let countQuery = 'SELECT COUNT(*) FROM audit_logs WHERE 1=1';
-    const countValues: any[] = [];
-    let countParamIndex = 1;
-
-    if (orgId) {
-      countQuery += ` AND org_id = $${countParamIndex++}`;
-      countValues.push(orgId);
-    }
-    if (status) {
-      countQuery += ` AND status = $${countParamIndex++}`;
-      countValues.push(status);
-    }
-
-    const countResult = await query(countQuery, countValues);
-    const total = parseInt(countResult.rows[0].count);
-
-    return NextResponse.json({
-      logs: result.rows,
-      pagination: {
-        total,
-        limit,
-        offset,
-        hasMore: offset + result.rows.length < total
-      }
+    // 1. Forward to Python Engine for Rigorous Bias Audit
+    const engineResponse = await fetch(`${ENGINE_URL}/analyze/bias`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            organization_id: orgId,
+            system_name: systemName,
+            payload: data // Expected EEOC Four-Fifths format
+        })
     });
 
-  } catch (error) {
-    console.error('Error fetching audit logs:', error);
+    if (!engineResponse.ok) {
+        const errorDetail = await engineResponse.text();
+        throw new Error(`Engine analysis failed: ${errorDetail}`);
+    }
 
-    // Fallback mock data
-    return NextResponse.json({
-      logs: [
-        {
-          id: 'mock-001',
-          action: 'CREDIT_DECISION',
-          input_type: 'Loan Application',
-          outcome: 'APPROVED',
-          status: 'VERIFIED',
-          created_at: new Date().toISOString()
-        },
-        {
-          id: 'mock-002',
-          action: 'CREDIT_DECISION',
-          input_type: 'Loan Application',
-          outcome: 'DENIED',
-          status: 'FLAGGED',
-          created_at: new Date().toISOString()
-        }
-      ],
-      pagination: { total: 2, limit: 50, offset: 0, hasMore: false },
-      mode: 'MOCK'
+    const analysisResult = await engineResponse.json();
+
+    // 2. Save Audit Log to Database
+    const logResult = await query(
+        `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash) 
+         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        [
+            orgId, 
+            systemName, 
+            'BIAS_AUDIT', 
+            JSON.stringify(analysisResult),
+            analysisResult.metadata?.hash || 'SHA256-PENDING'
+        ]
+    );
+
+    return NextResponse.json({ 
+        success: true, 
+        auditId: logResult.rows[0].id,
+        analysis: analysisResult 
     });
+
+  } catch (error: any) {
+    console.error('Audit Engine Integration Error:', error.message);
+    return NextResponse.json({ 
+        error: 'Technical validation failed', 
+        detail: error.message 
+    }, { status: 500 });
   }
 }
 
-// POST /api/audit-logs - Create new audit log entry
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const {
-      test_mode,
-      protected_attribute,
-      outcome_variable,
-      data
-    } = body;
+export async function GET() {
+    try {
+        const session: any = await getSession();
+        const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
 
-    let {
-      org_id = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', // Default demo org
-      action = 'BIAS_AUDIT',
-      input_type = 'Dataset',
-      outcome = 'COMPLETED',
-      status = 'PENDING',
-      metadata = {}
-    } = body;
+        const result = await query(
+            'SELECT * FROM audit_logs WHERE org_id = $1 ORDER BY created_at DESC',
+            [orgId]
+        );
 
-    let engineAnalysis = null;
-
-    // If data and attributes are provided, call Audit Engine
-    if (test_mode && data && protected_attribute && outcome_variable) {
-        try {
-            const engineResponse = await fetch('http://localhost:8000/api/v1/analyze', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    data,
-                    protected_attribute,
-                    outcome_variable
-                })
-            });
-            
-            if (engineResponse.ok) {
-                engineAnalysis = await engineResponse.json();
-                status = engineAnalysis.overall_status === 'FAIR' ? 'VERIFIED' : 'FLAGGED';
-                outcome = engineAnalysis.overall_status;
-                metadata = { ...metadata, analysis: engineAnalysis };
-            }
-        } catch (err) {
-            console.error("Failed to connect to Audit Engine:", err);
-            // Continue with default values if engine is down
-        }
+        return NextResponse.json({ logs: result.rows });
+    } catch (error) {
+        console.error('Audit Logs Retrieval Error:', error);
+        return NextResponse.json({ error: 'Failed to retrieve logs' }, { status: 500 });
     }
-
-    // Generate immutable hash for audit trail integrity
-    const hashData = JSON.stringify({
-      org_id,
-      action,
-      input_type,
-      outcome,
-      metadata,
-      timestamp: new Date().toISOString()
-    });
-    const immutable_hash = crypto.createHash('sha256').update(hashData).digest('hex');
-
-    const result = await query(`
-      INSERT INTO audit_logs (org_id, action, input_type, outcome, status, metadata, immutable_hash)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *
-    `, [org_id, action, input_type, outcome, status, JSON.stringify(metadata), immutable_hash]);
-
-    return NextResponse.json({
-      message: 'Audit log created successfully',
-      log: result.rows[0],
-      analysis: engineAnalysis,
-      immutable_hash
-    }, { status: 201 });
-
-  } catch (error) {
-    console.error('Error creating audit log:', error);
-    return NextResponse.json(
-      { error: 'Failed to create audit log' },
-      { status: 500 }
-    );
-  }
 }
