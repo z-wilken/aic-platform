@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Crimson_Pro, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
 
 const crimsonPro = Crimson_Pro({
   variable: "--font-crimson-pro",
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body
         className={`${crimsonPro.variable} ${ibmPlexMono.variable} antialiased bg-black text-white font-sans`}
       >
-        {children}
+        <Providers>
+            {children}
+        </Providers>
       </body>
     </html>
   );
