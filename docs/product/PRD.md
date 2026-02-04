@@ -17,7 +17,7 @@ Comprehensive Product Definition & Future State Vision
 
   **Classification**      **CONFIDENTIAL**
 
-  **Status**              **Active --- Phase 1 In Development**
+  **Status**              **Active --- Marketing MVP Complete**
   ----------------------- -----------------------------------------------
 
 We do not regulate AI. We certify that humans remain accountable.
@@ -1103,40 +1103,28 @@ participant or certification client.
 
 **10.1 Brand Identity**
 
-AIC\'s visual identity is editorial and authoritative --- inspired by
-quality journalism rather than generic technology aesthetics. It
-communicates seriousness without being intimidating, and credibility
-without being corporate.
+AIC\'s visual identity is a high-end **\"Gallery/Minimalist\"** aesthetic --- inspired by boutique architecture and design firms. It communicates sophistication, precision, and institutional trust through generous whitespace and smooth motion.
 
 **Colour Palette**
 
   ----------------- -------------- ---------------------------------------
   **Name**          **Hex Code**   **Usage**
 
-  Primary Black     #1A1A1A        Headlines, body text, primary buttons,
-                                   borders
+  Deep Charcoal     #121212        Primary text, headlines, core UI
+                                   elements
 
-  Background        #FAF8F4        Page backgrounds --- warm off-white
-                                   creates editorial feel
+  Gallery White     #FAF9F6        Backgrounds --- warm, soft cream for a
+                                   premium feel
 
-  Tier 1 Critical   #C41E3A        Tier 1 badges, borders, alerts. Red
-                                   signals consequence.
+  Heritage Red      #C41E3A        Tier 1 signals, critical alerts,
+                                   heritage accents
 
-  Tier 2 Supervised #FF8C42        Tier 2 badges, borders, warnings.
-                                   Orange signals caution.
+  Metallic Gold     #D4AF37        Highlights, certification badges,
+                                   procedural precision
 
-  Tier 3 Automated  #2C5F2D        Tier 3 badges, borders, success states.
-                                   Green signals routine.
+  Soft Gray         #6B7280        Secondary text, captions, placeholders
 
-  Accent Gold       #D4AF37        Highlights, certification badges,
-                                   premium elements
-
-  Gray Text         #666666        Secondary text, captions, placeholders
-
-  Border Light      #E0E0E0        Card borders, dividers, input borders
-                                   (default state)
-
-  White             #FFFFFF        Card backgrounds, contrast sections
+  Subtle Border     rgba(18,18,18,0.08) Dividers and glass edges
   ----------------- -------------- ---------------------------------------
 
 **Typography**
@@ -1144,38 +1132,30 @@ without being corporate.
   -------------- -------------------- -------------- ----------------------
   **Role**       **Font Family**      **Weights**    **Rationale**
 
-  Headings       Crimson Pro (serif)  400, 600, 700  Editorial authority.
-                                                     Serif fonts signal
-                                                     credibility and
-                                                     seriousness in
-                                                     professional contexts.
+  Display        Crimson Pro (serif)  400, 500       Heritage authority.
+                                                     Used for key headlines
+                                                     and pull quotes.
 
-  Body / UI      IBM Plex Mono        400, 600       Technical credibility.
-                 (monospace)                         Monospace signals
-                                                     precision ---
-                                                     appropriate for a
-                                                     certification body.
-
-  Fallback       Arial, Helvetica,    400, 700       Universal
-                 sans-serif                          availability. Renders
-                                                     consistently if Google
-                                                     Fonts fails to load.
+  Body / UI      IBM Plex Mono        400, 600       Technical precision.
+                 (monospace)                         Used for all data,
+                                                     labels, and narrative
+                                                     copy.
   -------------- -------------------- -------------- ----------------------
 
 **Design Principles**
 
--   High contrast, bold typography over decorative elements
+-   **Precision over Decoration:** Every line and element has a
+    procedural purpose.
 
--   Generous white space --- content breathes
+-   **Generous Whitespace:** Content is given significant room to
+    breathe, signalling premium positioning.
 
--   Real data and examples over stock photography or abstract
-    illustration
+-   **Motion as Meaning:** Framer Motion integrated for scroll-triggered
+    reveals and staggered entry, making the framework feel alive and
+    responsive.
 
--   Clean borders and structured layouts over gradients, shadows, or
-    glassmorphism
-
--   Tier colours used consistently and only for their designated purpose
-    --- never decoratively
+-   **Glassmorphism Lite:** Subtle backdrop blurs on navigation and
+    cards to create depth without visual clutter.
 
 **10.2 Component Library**
 
