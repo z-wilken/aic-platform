@@ -36,6 +36,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   const navItems = [
     { label: 'Overview', href: '/', section: 'Monitoring' },
+    { label: 'Pulse Telemetry', href: '/pulse', section: 'Monitoring' },
     { label: 'Audit Logs', href: '/audits', section: 'Monitoring' },
     { label: 'Roadmap', href: '/roadmap', section: 'Certification' },
     { label: 'Certificate', href: '/certificate', section: 'Certification' },
