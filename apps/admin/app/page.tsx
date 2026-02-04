@@ -3,22 +3,23 @@
 import { useEffect, useState } from 'react'
 import AdminShell from './components/AdminShell'
 import Link from 'next/link'
+import { getSession } from '../lib/auth'
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/dashboard')
-      .then(res => res.json())
-      .then(d => {
-        setData(d);
+    // Fetch Session & Dashboard Data
+    Promise.all([
+        fetch('/api/dashboard').then(res => res.json()),
+        // We'll simulate getting session on client side for the UI
+        // In reality, you'd use a provider, but this works for the refactor
+    ]).then(([dashData]) => {
+        setData(dashData);
         setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
+    });
   }, []);
 
   if (loading) {
@@ -61,8 +62,8 @@ export default function AdminDashboard() {
       <div className="space-y-8">
         {/* Welcome Header */}
         <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl p-8 border border-blue-500/20">
-          <h1 className="text-3xl font-bold mb-2">Good morning, Admin</h1>
-          <p className="text-gray-400">
+          <h1 className="text-3xl font-bold mb-2 font-serif tracking-tight">Active Portal</h1>
+          <p className="text-gray-400 font-serif">
             AIC Internal Operations Dashboard. {stats.pendingApplications} applications pending review.
           </p>
         </div>

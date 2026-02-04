@@ -9,21 +9,36 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  try {
-    // 1. Get overall stats
-    const orgsCount = await query('SELECT count(*) FROM organizations')
-    const appsCount = await query('SELECT count(*) FROM alpha_applications')
-    const leadsCount = await query('SELECT count(*) FROM leads')
-    const auditsCount = await query('SELECT count(*) FROM audit_logs')
+  const isOnlyAuditor = session.user.role === 'AUDITOR';
+  const auditorId = session.user.id;
 
-    // 2. Get recent applications
+  try {
+    // 1. Get overall stats (Admins see global, Auditors see assigned only)
+    const orgsCount = await query(
+        `SELECT count(*) FROM organizations ${isOnlyAuditor ? 'WHERE auditor_id = $1' : ''}`, 
+        isOnlyAuditor ? [auditorId] : []
+    )
+    const appsCount = await query('SELECT count(*) FROM alpha_applications') // Apps are always global for now
+    const leadsCount = await query('SELECT count(*) FROM leads')
+    const auditsCount = await query(
+        `SELECT count(*) FROM audit_logs al 
+         ${isOnlyAuditor ? 'JOIN organizations o ON al.org_id = o.id WHERE o.auditor_id = $1' : ''}`,
+        isOnlyAuditor ? [auditorId] : []
+    )
+
+    // 2. Get recent applications (Global)
     const recentApps = await query('SELECT * FROM alpha_applications ORDER BY created_at DESC LIMIT 5')
 
-    // 3. Get recent leads
+    // 3. Get recent leads (Global)
     const recentLeads = await query('SELECT * FROM leads ORDER BY created_at DESC LIMIT 5')
 
-    // 4. Get active organizations for the table
-    const activeOrgs = await query('SELECT id, name, tier, integrity_score FROM organizations LIMIT 10')
+    // 4. Get active organizations (Filtered for Auditors)
+    const activeOrgs = await query(
+        `SELECT id, name, tier, integrity_score FROM organizations 
+         ${isOnlyAuditor ? 'WHERE auditor_id = $1' : ''} 
+         ORDER BY created_at DESC LIMIT 10`,
+        isOnlyAuditor ? [auditorId] : []
+    )
 
     return NextResponse.json({
       stats: {
