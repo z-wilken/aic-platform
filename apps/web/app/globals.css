@@ -4,23 +4,25 @@
   /* Typography */
   --font-serif: var(--font-crimson-pro), serif;
   --font-mono: var(--font-ibm-plex-mono), monospace;
-  --font-sans: var(--font-crimson-pro), sans-serif;
+  --font-sans: var(--font-ibm-plex-mono), sans-serif;
 
-  /* Color Palette - The "Justice" System */
-  --color-aic-black: #0a0a0a; /* Deep, void black */
-  --color-aic-paper: #f0f0ed; /* Off-white paper texture */
-  --color-aic-red: #d90429;    /* Alert Red */
-  --color-aic-gold: #c9a227;   /* Legal Gold */
-  --color-aic-gray: #8d99ae;
+  /* Color Palette - Refined "Gallery" Aesthetic */
+  --color-aic-black: #121212; /* Deep Charcoal */
+  --color-aic-paper: #FAF9F6; /* Soft Cream/Gallery White */
+  --color-aic-red: #C41E3A;    /* Heritage Red */
+  --color-aic-gold: #D4AF37;   /* Metallic Gold */
+  --color-aic-gray: #6B7280;
+  --color-aic-border: rgba(18, 18, 18, 0.08);
 }
 
 /* Base Styles */
 body {
   background-color: var(--color-aic-paper);
   color: var(--color-aic-black);
+  scroll-behavior: smooth;
 }
 
-/* The "Film Grain" Overlay - Adds texture/reality */
+/* The "Mesh" Overlay - Subtler than film grain */
 body::before {
   content: "";
   position: fixed;
@@ -29,9 +31,30 @@ body::before {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-  z-index: 9999;
-  opacity: 0.4;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.03) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(196, 30, 58, 0.02) 0, transparent 50%);
+  z-index: -1;
+}
+
+/* Glass Utilities */
+@utility glass {
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-aic-border);
+}
+
+/* Reveal Animation Utilities */
+.mask-fade-up {
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.stagger-child > * {
+  opacity: 0;
 }
 
 /* Utilities */

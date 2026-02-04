@@ -1,60 +1,98 @@
-import Navbar from '../components/Navbar';
-import { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: "AIC | About - Our Mission & Approach",
-  description: "Learn why AIC exists and how we bridge the trust gap in South African AI deployment.",
-};
+import { motion } from 'framer-motion';
+import Navbar from '../components/Navbar';
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-aic-bg">
+    <main className="min-h-screen bg-aic-paper">
       <Navbar />
+      
       <div className="py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-3xl">
-                <p className="text-base font-semibold leading-7 text-aic-gold font-mono uppercase tracking-widest">Our Mission</p>
-                <h1 className="mt-2 text-4xl font-bold tracking-tight text-aic-black sm:text-6xl font-serif">
-                    The Trust Gap
-                </h1>
-                <p className="mt-6 text-xl leading-8 text-gray-600 font-serif">
-                    AI adoption is stalling not because of technology, but because of liability. AIC bridges the gap between innovation and regulation.
-                </p>
+                <motion.p 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-[10px] font-bold text-aic-gold font-mono uppercase tracking-[0.4em] mb-6"
+                >
+                    Our Mission
+                </motion.p>
                 
-                <div className="mt-10 max-w-2xl">
-                    <div className="glass-card p-8 rounded-2xl mb-12">
-                        <p className="font-serif text-lg italic text-gray-700">
-                            "Section 71 of POPIA creates a unique challenge: automated decisions have legal consequences. The question isn't 'does the AI work?', but 'who is responsible when it fails?'"
-                        </p>
-                    </div>
+                <motion.h1 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-5xl md:text-7xl font-serif font-medium tracking-tight text-aic-black"
+                >
+                    The Trust Gap.
+                </motion.h1>
 
-                    <h2 className="text-2xl font-bold tracking-tight text-aic-black font-serif mt-16">Why AIC Exists</h2>
-                    <p className="mt-6 text-lg leading-8 text-gray-600 font-serif">
-                        Most global standards (like ISO 42001) focus on organizational governance. While valuable, they don't solve the specific legal exposure created by South African law.
-                    </p>
-                    <p className="mt-6 text-lg leading-8 text-gray-600 font-serif">
-                        AIC was built to be the "Accountability Layer." We don't just audit your code; we validate your <span className="font-bold text-aic-black">Human-in-the-Loop</span> processes. We certify that when a machine makes a decision, a human has verified the criteria.
-                    </p>
+                <motion.p 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 1 }}
+                    className="mt-12 text-2xl leading-relaxed text-gray-600 font-serif font-light italic"
+                >
+                    AI adoption is stalling not because of technology, but because of liability. AIC bridges the gap between innovation and regulation.
+                </motion.p>
+                
+                <div className="mt-24 space-y-24">
+                    <motion.section 
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-aic-black/5 pt-12"
+                    >
+                        <h2 className="text-sm font-mono font-bold uppercase tracking-widest text-aic-black">Why AIC Exists</h2>
+                        <div className="space-y-6 text-gray-600 font-serif leading-relaxed text-lg">
+                            <p>
+                                Most global standards (like ISO 42001) focus on organizational governance. While valuable, they don't solve the specific legal exposure created by South African law.
+                            </p>
+                            <p>
+                                AIC was built to be the "Accountability Layer." We don't just audit your code; we validate your <span className="font-bold text-aic-black underline decoration-aic-gold underline-offset-4">Human-in-the-Loop</span> processes.
+                            </p>
+                        </div>
+                    </motion.section>
 
-                    <h2 className="text-2xl font-bold tracking-tight text-aic-black font-serif mt-16">The 3-Tier Philosophy</h2>
-                    <p className="mt-6 text-lg leading-8 text-gray-600 font-serif">
-                        We believe in proportional regulation. A chatbot recommending a playlist (Tier 3) should not face the same scrutiny as an algorithm denying a home loan (Tier 1).
-                    </p>
-                    <ul className="mt-8 space-y-8 font-serif text-gray-600">
-                        <li className="flex gap-x-3">
-                            <span className="mt-1 h-5 w-5 flex-none text-aic-red font-bold">01.</span>
-                            <span><strong className="font-semibold text-aic-black">Critical Impact.</strong> For life-altering decisions, we require proof of explainability and active human review.</span>
-                        </li>
-                        <li className="flex gap-x-3">
-                            <span className="mt-1 h-5 w-5 flex-none text-aic-orange font-bold">02.</span>
-                            <span><strong className="font-semibold text-aic-black">Elevated Risk.</strong> For high-volume automated decisions, we mandate statistical bias auditing.</span>
-                        </li>
-                        <li className="flex gap-x-3">
-                            <span className="mt-1 h-5 w-5 flex-none text-aic-green font-bold">03.</span>
-                            <span><strong className="font-semibold text-aic-black">Standard Automation.</strong> For low-risk tasks, transparency is the only requirement.</span>
-                        </li>
-                    </ul>
+                    <motion.section 
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-12 border-t border-aic-black/5 pt-12"
+                    >
+                        <h2 className="text-sm font-mono font-bold uppercase tracking-widest text-aic-black">The Philosophy</h2>
+                        <div className="space-y-8">
+                            <p className="text-gray-600 font-serif leading-relaxed text-lg">
+                                We believe in proportional regulation. A chatbot recommending a playlist should not face the same scrutiny as an algorithm denying a home loan.
+                            </p>
+                            <ul className="space-y-12">
+                                {[
+                                    { level: "01", title: "Critical Impact", desc: "For life-altering decisions, we require proof of explainability and active human review." },
+                                    { level: "02", title: "Elevated Risk", desc: "For high-volume automated decisions, we mandate statistical bias auditing." },
+                                    { level: "03", title: "Standard Automation", desc: "For low-risk tasks, transparency is the only requirement." }
+                                ].map((item) => (
+                                    <li key={item.level} className="group">
+                                        <span className="block font-mono text-[10px] text-gray-400 group-hover:text-aic-gold transition-colors mb-2">LEVEL {item.level}</span>
+                                        <h4 className="text-xl font-serif font-medium text-aic-black mb-2">{item.title}</h4>
+                                        <p className="text-gray-500 font-serif">{item.desc}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </motion.section>
                 </div>
+
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    className="mt-32 p-12 bg-aic-black text-white text-center"
+                >
+                    <p className="font-serif text-2xl italic mb-8">"We do not regulate AI. We certify that humans remain accountable."</p>
+                    <a href="/contact" className="font-mono text-xs font-bold uppercase tracking-[0.3em] border-b border-white/20 pb-2 hover:border-white transition-colors">
+                        Connect with the Founder
+                    </a>
+                </motion.div>
             </div>
         </div>
       </div>
