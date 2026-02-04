@@ -47,12 +47,38 @@ export default function OrganizationsPage() {
     }
   };
 
+  const handleAddOrganization = async () => {
+    const name = prompt("Enter Organization Name:");
+    if (!name) return;
+    const tier = prompt("Enter Tier (TIER_1, TIER_2, TIER_3):", "TIER_3");
+    if (!tier) return;
+
+    try {
+        const response = await fetch('/api/organizations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, tier })
+        });
+
+        if (response.ok) {
+            alert("Organization added successfully.");
+            fetchData();
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Failed to add organization.");
+    }
+  };
+
   return (
     <AdminShell>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Managed Organizations</h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500 transition-colors">
+          <button 
+            onClick={handleAddOrganization}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500 transition-colors"
+          >
             + Add Organization
           </button>
         </div>

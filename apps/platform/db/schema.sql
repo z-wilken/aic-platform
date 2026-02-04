@@ -91,6 +91,28 @@ CREATE TABLE compliance_reports (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- CMS Tables for HQ
+CREATE TABLE posts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    excerpt TEXT,
+    content TEXT, -- Markdown or HTML
+    category VARCHAR(50),
+    author_id UUID REFERENCES users(id),
+    status VARCHAR(20) DEFAULT 'DRAFT', -- 'DRAFT', 'PUBLISHED', 'ARCHIVED'
+    published_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE newsletter_subscribers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    status VARCHAR(20) DEFAULT 'ACTIVE', -- 'ACTIVE', 'UNSUBSCRIBED'
+    subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Users & Authentication
 CREATE TYPE user_role AS ENUM ('ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER');
 
@@ -102,6 +124,8 @@ CREATE TABLE users (
     role user_role DEFAULT 'VIEWER',
     org_id UUID REFERENCES organizations(id),
     is_active BOOLEAN DEFAULT TRUE,
+    is_super_admin BOOLEAN DEFAULT FALSE,
+    permissions JSONB DEFAULT '{}', -- e.g., {"can_publish": true, "can_verify_audit": false}
     last_login TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

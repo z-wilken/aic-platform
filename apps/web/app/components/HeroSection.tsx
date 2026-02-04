@@ -41,16 +41,39 @@ const HeroSection = () => {
             transition={{ duration: 1, delay: 0.8 }}
             className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-start"
           >
-            <p className="text-lg leading-relaxed text-gray-600 font-serif">
-              AIC is the definitive trust infrastructure for South African AI. We certify the humans accountable for algorithmic outcomes, ensuring compliance with Section 71 of POPIA.
-            </p>
+            <div>
+                <p className="text-lg leading-relaxed text-gray-600 font-serif mb-8">
+                    AIC is the definitive trust infrastructure for South African AI. We certify the humans accountable for algorithmic outcomes, ensuring compliance with Section 71 of POPIA.
+                </p>
+                <div className="flex flex-col gap-4">
+                    <motion.a
+                        whileHover={{ x: 10 }}
+                        href="/business"
+                        onClick={() => analytics.trackCTAClick('hero_business')}
+                        className="group flex items-center justify-between border-b border-aic-black py-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] transition-colors hover:text-aic-gold hover:border-aic-gold"
+                    >
+                        <span>For Organizations</span>
+                        <span className="text-xl">→</span>
+                    </motion.a>
+                    
+                    <motion.a
+                        whileHover={{ x: 10 }}
+                        href="/citizens"
+                        onClick={() => analytics.trackCTAClick('hero_citizens')}
+                        className="group flex items-center justify-between border-b border-aic-black py-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] transition-colors hover:text-aic-red hover:border-aic-red"
+                    >
+                        <span>For the Public</span>
+                        <span className="text-xl">→</span>
+                    </motion.a>
+                </div>
+            </div>
             
             <div className="flex flex-col gap-4">
               <motion.a
                 whileHover={{ x: 10 }}
                 href="/assessment"
                 onClick={() => analytics.trackCTAClick('hero_assessment')}
-                className="group flex items-center justify-between border-b border-aic-black py-4 font-mono text-sm uppercase tracking-widest transition-colors hover:text-aic-red hover:border-aic-red"
+                className="group flex items-center justify-between border-b border-aic-black/5 py-4 font-mono text-[10px] uppercase tracking-widest transition-colors hover:text-aic-red hover:border-aic-red"
               >
                 <span>Take Self-Assessment</span>
                 <span className="text-xl">→</span>
@@ -60,9 +83,9 @@ const HeroSection = () => {
                 whileHover={{ x: 10 }}
                 href="/alpha"
                 onClick={() => analytics.trackCTAClick('hero_alpha')}
-                className="group flex items-center justify-between border-b border-aic-black py-4 font-mono text-sm uppercase tracking-widest transition-colors hover:text-aic-gold hover:border-aic-gold"
+                className="group flex items-center justify-between border-b border-aic-black/5 py-4 font-mono text-[10px] uppercase tracking-widest transition-colors hover:text-aic-gold hover:border-aic-gold"
               >
-                <span>Join Alpha Program</span>
+                <span>Alpha Recruitment</span>
                 <span className="text-xl">→</span>
               </motion.a>
             </div>
