@@ -22,11 +22,12 @@ export default function RoadmapPage() {
         fetch('/api/requirements')
             .then(res => res.json())
             .then(data => {
-                setRequirements(data.requirements);
+                setRequirements(data.requirements || []);
                 setLoading(false);
             })
             .catch(err => {
                 console.error(err);
+                setRequirements([]);
                 setLoading(false);
             });
     }

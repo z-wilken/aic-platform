@@ -27,6 +27,14 @@ export default function Navbar() {
             THE FRAMEWORK
             <span className="absolute -bottom-1 left-0 w-0 h-px bg-aic-black transition-all group-hover:w-full" />
           </Link>
+          <Link 
+            href="/process" 
+            className="relative font-mono text-[10px] font-bold text-gray-500 hover:text-aic-black transition-colors tracking-widest group"
+            onClick={() => analytics.trackCTAClick('nav_process')}
+          >
+            PROCESS
+            <span className="absolute -bottom-1 left-0 w-0 h-px bg-aic-black transition-all group-hover:w-full" />
+          </Link>
           {['ABOUT', 'CONTACT'].map((item) => (
             <Link 
               key={item}

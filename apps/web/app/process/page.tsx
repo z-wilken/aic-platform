@@ -1,81 +1,130 @@
+'use client';
+
+import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 
-export default function ProcessPage() {
-  const steps = [
-    {
-      id: '01',
-      title: 'Application & Triage',
-      duration: 'Week 1',
-      desc: 'You submit the Alpha Application. Our intake team reviews your AI usage context to determine eligibility and preliminary tier classification.',
-    },
-    {
-      id: '02',
-      title: 'Gap Analysis',
-      duration: 'Weeks 2-3',
-      desc: 'We conduct a deep-dive audit of your current governance. We interview your product owners and review your technical documentation against POPIA Section 71.',
-    },
-    {
-      id: '03',
-      title: 'Remediation',
-      duration: 'Weeks 4-6',
-      desc: 'We provide a "findings report". You implement the necessary human oversight mechanisms (e.g., appeal workflows, bias testing) with our guidance.',
-    },
-    {
-      id: '04',
-      title: 'Final Validation',
-      duration: 'Week 7',
-      desc: 'Our lead auditor verifies the changes. We test your "Human-in-the-Loop" protocols with real-world scenarios.',
-    },
-    {
-      id: '05',
-      title: 'Certification',
-      duration: 'Week 8',
-      desc: 'You receive the AIC Seal and the detailed Compliance Report. We integrate with your insurer to trigger premium discounts.',
-    }
-  ];
+const steps = [
+  {
+    id: '01',
+    title: 'Intake & Triage',
+    tagline: 'Defining the scope of accountability.',
+    desc: 'We analyze your AI portfolio to determine which systems produce legal or high-stakes effects. This stage maps your infrastructure to our 3-tier framework.',
+    deliverable: 'Audit Scope Document',
+    duration: 'Week 1'
+  },
+  {
+    id: '02',
+    title: 'Gap Analysis',
+    tagline: 'Pressure-testing the Human-in-the-Loop.',
+    desc: 'Our lead auditors conduct deep-dive interviews and technical reviews. We look for the "Accountability Gap"—the space between model output and human approval.',
+    deliverable: 'POPIA Section 71 Risk Report',
+    duration: 'Week 2-3'
+  },
+  {
+    id: '03',
+    title: 'Bias Auditing',
+    tagline: 'Technical validation of fairness.',
+    desc: 'Using the AIC Audit Engine, we run statistical tests (Four-Fifths Rule) on your model datasets to identify disparate impact across protected groups.',
+    deliverable: 'Statistical Bias Certificate',
+    duration: 'Week 4'
+  },
+  {
+    id: '04',
+    title: 'Remediation',
+    tagline: 'Bridging the trust gap.',
+    desc: 'We provide specific, actionable protocols to bring non-compliant systems into alignment. This often involves building new human-review interfaces.',
+    deliverable: 'Accountability Protocol Manual',
+    duration: 'Week 5-7'
+  },
+  {
+    id: '05',
+    title: 'Certification',
+    tagline: 'The seal of integrity.',
+    desc: 'Final validation of protocols. Once verified, your organization receives the AIC Seal and is integrated into the AIC Pulse monitoring platform.',
+    deliverable: 'Official AIC Certificate',
+    duration: 'Week 8'
+  }
+];
 
+export default function ProcessPage() {
   return (
-    <main className="min-h-screen bg-aic-bg">
+    <main className="min-h-screen bg-aic-paper">
       <Navbar />
-      <div className="py-24 sm:py-32">
+      
+      <div className="py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl lg:text-center">
-            <h2 className="text-base font-semibold leading-7 text-aic-gold font-mono uppercase tracking-widest">The Journey</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-aic-black sm:text-4xl font-serif">
-              From "Black Box" to Benchmark
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-2xl mb-32"
+          >
+            <h2 className="font-mono text-[10px] font-bold text-aic-gold uppercase tracking-[0.4em] mb-6">The Methodology</h2>
+            <p className="font-serif text-5xl md:text-7xl font-medium tracking-tight text-aic-black leading-tight">
+              From Black Box <br />to Benchmark.
             </p>
-            <p className="mt-6 text-lg leading-8 text-gray-600 font-serif">
-              Our certification process is designed to be rigorous but non-disruptive. We certify your governance, not your code.
+            <p className="mt-12 text-xl text-gray-500 font-serif leading-relaxed italic">
+              "Meaningful human intervention" is a legal requirement, not a suggestion. Our 8-week certification process makes it a technical reality.
             </p>
-          </div>
-          
-          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-            <div className="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-5">
-              {steps.map((step) => (
-                <div key={step.id} className="flex flex-col relative group">
-                  {/* Connector Line */}
-                  <div className="hidden lg:block absolute top-4 left-8 w-full h-0.5 bg-gray-200 -z-10 group-last:hidden"></div>
-                  
-                  <div className="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900 font-mono">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-aic-black text-white text-xs">
+          </motion.div>
+
+          <div className="space-y-32">
+            {steps.map((step, i) => (
+              <motion.div 
+                key={step.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start"
+              >
+                <div className="md:col-span-1">
+                    <span className="font-mono text-4xl font-bold text-aic-black/5 block">
                         {step.id}
                     </span>
-                    <span className="text-sm text-gray-500">{step.duration}</span>
-                  </div>
-                  <div className="mt-4 flex flex-col gap-y-3">
-                    <h3 className="text-xl font-bold text-aic-black font-serif">{step.title}</h3>
-                    <p className="text-base leading-7 text-gray-600 font-serif text-sm">{step.desc}</p>
-                  </div>
                 </div>
-              ))}
-            </div>
+                
+                <div className="md:col-span-4 sticky top-32">
+                    <span className="font-mono text-[9px] font-bold text-aic-gold uppercase tracking-widest block mb-2">{step.duration}</span>
+                    <h3 className="font-serif text-3xl font-medium text-aic-black mb-4">{step.title}</h3>
+                    <p className="font-serif italic text-gray-400 text-lg">{step.tagline}</p>
+                </div>
+
+                <div className="md:col-span-7 pt-2">
+                    <div className="bg-white p-12 border border-aic-black/5 shadow-sm">
+                        <p className="font-serif text-lg text-gray-600 leading-relaxed mb-12">
+                            {step.desc}
+                        </p>
+                        
+                        <div className="pt-8 border-t border-aic-black/5 flex justify-between items-center">
+                            <div>
+                                <p className="font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Primary Deliverable</p>
+                                <p className="font-mono text-xs font-bold text-aic-black uppercase tracking-wider">{step.deliverable}</p>
+                            </div>
+                            <div className="w-8 h-8 rounded-full border border-aic-black/10 flex items-center justify-center text-aic-black/20 font-mono text-[10px]">
+                                OK
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          <div className="mt-20 flex justify-center">
-            <a href="/alpha" className="rounded-none bg-aic-gold px-8 py-3 text-sm font-semibold text-aic-black shadow-sm hover:bg-yellow-500 font-mono uppercase tracking-wide">
-                Start the Process
-            </a>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="mt-48 bg-aic-black p-24 text-center rounded-[3rem] overflow-hidden relative"
+          >
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-aic-gold/10 to-transparent pointer-events-none" />
+            <h3 className="font-serif text-4xl text-white mb-8 relative z-10">Ready to secure your AI future?</h3>
+            <div className="flex flex-col md:flex-row justify-center gap-8 relative z-10">
+                <a href="/alpha" className="bg-white text-aic-black px-12 py-4 font-mono text-xs font-bold uppercase tracking-widest hover:bg-aic-gold transition-colors">
+                    Apply for Alpha
+                </a>
+                <a href="/contact" className="border border-white/20 text-white px-12 py-4 font-mono text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-colors">
+                    Talk to an Auditor
+                </a>
+            </div>
+          </motion.div>
         </div>
       </div>
     </main>
