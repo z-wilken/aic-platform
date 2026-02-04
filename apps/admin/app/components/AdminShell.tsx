@@ -13,6 +13,7 @@ export default function AdminShell({ children }: AdminShellProps) {
 
   const navItems = [
     { href: '/', label: 'Dashboard', icon: '📊' },
+    { href: '/leads', label: 'Leads', icon: '🎯' },
     { href: '/applications', label: 'Applications', icon: '📝' },
     { href: '/certifications', label: 'Certifications', icon: '🏆' },
     { href: '/audits', label: 'Audits', icon: '🔍' },
