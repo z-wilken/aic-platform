@@ -22,6 +22,32 @@ export default function LeadsPage() {
 
   const highIntentLeads = leads.filter(l => (l.score || 0) > 70).length;
 
+  const handleEnroll = async (lead: any) => {
+    const tier = prompt(`Enroll ${lead.company || lead.email} in Alpha Program. Select Tier (TIER_1, TIER_2, TIER_3):`, "TIER_1");
+    if (!tier) return;
+
+    try {
+        const response = await fetch('/api/organizations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                name: lead.company || lead.email, 
+                tier: tier,
+                lead_id: lead.id 
+            })
+        });
+
+        if (response.ok) {
+            alert("Lead successfully enrolled as Alpha Participant.");
+            // Refresh leads
+            fetch('/api/leads').then(res => res.json()).then(data => setLeads(data.leads || []));
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Enrollment failed.");
+    }
+  };
+
   return (
     <AdminShell>
       <div className="space-y-6">
@@ -36,7 +62,7 @@ export default function LeadsPage() {
                 <p className="text-2xl font-bold">{leads.length}</p>
             </div>
             <div className="text-right border-l border-gray-800 pl-4">
-                <p className="text-[10px] font-mono text-blue-500 uppercase tracking-widest">High Intent (>70)</p>
+                <p className="text-[10px] font-mono text-blue-500 uppercase tracking-widest">High Intent (&gt;70)</p>
                 <p className="text-2xl font-bold text-blue-400">{highIntentLeads}</p>
             </div>
           </div>
@@ -95,6 +121,14 @@ export default function LeadsPage() {
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-2">
+                        {lead.status !== 'ALPHA_ENROLLED' && (
+                            <button 
+                                onClick={() => handleEnroll(lead)}
+                                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 transition-all text-[10px] font-bold uppercase tracking-widest"
+                            >
+                                Enroll
+                            </button>
+                        )}
                         <button className="text-blue-400 hover:text-blue-300 text-xs">
                           Email
                         </button>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import DashboardShell from '../components/DashboardShell';
-import { AlphaSeal } from '@/../packages/ui/AlphaSeal';
+import { AlphaSeal } from '@aic/ui';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CertificatePage() {

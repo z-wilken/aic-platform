@@ -11,6 +11,7 @@ CREATE TABLE organizations (
     integrity_score INTEGER DEFAULT 0 CHECK (integrity_score BETWEEN 0 AND 100),
     is_alpha BOOLEAN DEFAULT FALSE,
     api_key VARCHAR(255), -- Hashed in production
+    auditor_id UUID, -- Reference to a user with role 'AUDITOR'
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -71,10 +72,12 @@ CREATE TABLE audit_requirements (
 
 CREATE TABLE notifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    recipient VARCHAR(255),
-    type VARCHAR(50), -- 'WELCOME', 'REPORT', 'ALERT'
-    status VARCHAR(50) DEFAULT 'SENT',
-    sent_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+    title VARCHAR(255),
+    message TEXT,
+    type VARCHAR(50), -- 'WELCOME', 'AUDIT_UPDATE', 'ALERT', 'CERTIFIED'
+    status VARCHAR(50) DEFAULT 'UNREAD', -- 'UNREAD', 'READ'
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Users & Authentication

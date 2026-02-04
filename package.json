@@ -2,6 +2,10 @@
   "name": "aic-platform-monorepo",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "npx concurrently \"npm run dev:web\" \"npm run dev:platform\" \"npm run dev:admin\"",
     "dev:web": "cd apps/web && npm run dev",

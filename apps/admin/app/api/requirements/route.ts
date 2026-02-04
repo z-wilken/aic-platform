@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '../../../lib/db';
+import { getSession } from '../../../lib/auth';
 
 export async function GET(request: NextRequest) {
+  const session: any = await getSession();
+
+  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const orgId = searchParams.get('org_id');
@@ -25,6 +32,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const session: any = await getSession();
+
+  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { id, status, findings, org_id } = body;
@@ -41,8 +54,23 @@ export async function PATCH(request: NextRequest) {
       [status, findings || '', id]
     );
 
+    // 1.5 Send Automated Notification to Client
+    const reqResult = await query('SELECT title FROM audit_requirements WHERE id = $1', [id]);
+    const reqTitle = reqResult.rows[0]?.title;
+    
+    await query(
+        'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4)',
+        [
+            org_id, 
+            status === 'VERIFIED' ? 'Requirement Verified' : 'Action Required',
+            status === 'VERIFIED' 
+                ? `Your submission for "${reqTitle}" has been verified by an auditor.` 
+                : `Your submission for "${reqTitle}" requires further action. Findings: ${findings}`,
+            'AUDIT_UPDATE'
+        ]
+    );
+
     // 2. Recalculate Org Integrity Score
-    // Logic: (Verified Requirements / Total Requirements) * 100
     const countResult = await query(
         `SELECT 
             COUNT(*) as total,
@@ -53,7 +81,7 @@ export async function PATCH(request: NextRequest) {
     );
 
     const { total, verified } = countResult.rows[0];
-    const newScore = Math.round((parseInt(verified) / parseInt(total)) * 100);
+    const newScore = total > 0 ? Math.round((parseInt(verified) / parseInt(total)) * 100) : 0;
 
     await query(
         `UPDATE organizations SET integrity_score = $1 WHERE id = $2`,
