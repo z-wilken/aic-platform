@@ -196,10 +196,10 @@ def analyze_statistical_significance(data: List[Dict], protected_attribute: str,
     contingency = pd.crosstab(df[protected_attribute], df[outcome_variable])
     chi2, p_value, dof, expected = stats.chi2_contingency(contingency)
 
-    is_significant = p_value < 0.05
+    is_significant = bool(p_value < 0.05)
     n = len(df)
     min_dim = min(contingency.shape) - 1
-    cramers_v = np.sqrt(chi2 / (n * min_dim)) if min_dim > 0 else 0
+    cramers_v = float(np.sqrt(chi2 / (n * min_dim)) if min_dim > 0 else 0)
 
     effect = "negligible" if cramers_v < 0.1 else \
              "small" if cramers_v < 0.3 else \
@@ -209,12 +209,12 @@ def analyze_statistical_significance(data: List[Dict], protected_attribute: str,
         "right_enforced": "Right to Human Agency",
         "overall_status": "SIGNIFICANT_BIAS" if is_significant else "NOT_SIGNIFICANT",
         "methodology": "Chi-Square Test for Independence",
-        "chi_square": round(chi2, 4),
-        "p_value": round(p_value, 6),
+        "chi_square": float(round(chi2, 4)),
+        "p_value": float(round(p_value, 6)),
         "is_significant": is_significant,
-        "effect_size": {"cramers_v": round(cramers_v, 4), "interpretation": effect},
+        "effect_size": {"cramers_v": float(round(cramers_v, 4)), "interpretation": effect},
         "recommendation": "Differences are statistically significant - investigate root causes" if is_significant else "Differences may be random variation",
-        "audit_hash": generate_audit_hash({"chi2": chi2, "p": p_value})
+        "audit_hash": generate_audit_hash({"chi2": float(chi2), "p": float(p_value)})
     }
 
 def explain_decision(model_type: str, input_features: Dict[str, Any], decision: str, feature_weights: Dict[str, float] = None, confidence: float = None):
