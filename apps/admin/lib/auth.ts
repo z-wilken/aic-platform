@@ -1,4 +1,5 @@
-import { auth } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "./auth-options"
 import { redirect } from 'next/navigation'
 
 export type UserRole = 'ADMIN' | 'COMPLIANCE_OFFICER' | 'AUDITOR' | 'VIEWER'
@@ -15,14 +16,14 @@ export interface SessionUser {
  * Get the current session (server-side)
  */
 export async function getSession() {
-  return await auth()
+  return await getServerSession(authOptions as any)
 }
 
 /**
  * Get current user or redirect to login
  */
 export async function getCurrentUser(): Promise<SessionUser> {
-  const session = await getSession()
+  const session: any = await getSession()
 
   if (!session?.user) {
     redirect('/login')

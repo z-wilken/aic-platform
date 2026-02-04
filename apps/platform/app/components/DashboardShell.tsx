@@ -1,10 +1,38 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifs, setShowNotifications] = useState(false);
+
+  const fetchNotifs = () => {
+    fetch('/api/notifications')
+        .then(res => res.json())
+        .then(data => setNotifications(data.notifications || []))
+        .catch(err => console.error(err));
+  };
+
+  useEffect(() => {
+    fetchNotifs();
+    const interval = setInterval(fetchNotifs, 30000); // Polling every 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  const markAsRead = async (id: string) => {
+    await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+    });
+    fetchNotifs();
+  };
+
+  const unreadCount = notifications.filter(n => n.status === 'UNREAD').length;
 
   const navItems = [
     { label: 'Overview', href: '/', section: 'Monitoring' },
@@ -20,7 +48,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   return (
     <div className="min-h-screen flex bg-aic-paper">
-      {/* Sidebar - Dark Glass */}
+      {/* Sidebar */}
       <div className="w-72 glass-sidebar text-white p-6 hidden md:flex flex-col fixed h-full z-20">
         <div className="mb-12 flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
@@ -80,20 +108,74 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         </div>
       </div>
       
-      {/* Main Content - Pushed over to make room for fixed sidebar */}
+      {/* Main Content */}
       <div className="flex-1 p-8 md:ml-72">
-        <header className="flex justify-between items-center mb-10 glass-panel p-4 rounded-2xl sticky top-4 z-10">
+        <header className="flex justify-between items-center mb-10 glass-panel p-4 rounded-2xl sticky top-4 z-30">
             <div>
                 <h2 className="text-sm font-mono font-bold text-gray-400 uppercase tracking-[0.2em]">
                     {pathname === '/' ? 'Overview' : pathname.substring(1).replace('-', ' ').toUpperCase()}
                 </h2>
             </div>
-            <div className="flex items-center gap-4">
-                <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold text-gray-900 font-serif leading-none">Dr. Sarah Khumalo</p>
-                    <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mt-1">Compliance Lead</p>
+            <div className="flex items-center gap-6">
+                {/* Notifications Bell */}
+                <div className="relative">
+                    <button 
+                        onClick={() => setShowNotifications(!showNotifs)}
+                        className="relative p-2 text-gray-400 hover:text-aic-black transition-colors"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        {unreadCount > 0 && (
+                            <span className="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-aic-red ring-2 ring-white"></span>
+                        )}
+                    </button>
+
+                    <AnimatePresence>
+                        {showNotifs && (
+                            <>
+                                <div className="fixed inset-0 z-10" onClick={() => setShowNotifications(false)}></div>
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="absolute right-0 mt-4 w-80 bg-white border border-aic-black/5 shadow-2xl rounded-2xl overflow-hidden z-20"
+                                >
+                                    <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-aic-paper/30">
+                                        <h4 className="font-mono text-[10px] font-bold uppercase tracking-widest">System Alerts</h4>
+                                        <span className="text-[9px] font-mono text-gray-400">{unreadCount} New</span>
+                                    </div>
+                                    <div className="max-h-96 overflow-y-auto">
+                                        {notifications.map(n => (
+                                            <div 
+                                                key={n.id} 
+                                                onClick={() => markAsRead(n.id)}
+                                                className={`p-4 border-b border-gray-50 cursor-pointer hover:bg-aic-paper/50 transition-colors ${n.status === 'UNREAD' ? 'bg-aic-gold/5' : ''}`}
+                                            >
+                                                <p className="text-[10px] font-bold text-aic-black mb-1">{n.title}</p>
+                                                <p className="text-[10px] text-gray-500 leading-relaxed line-clamp-2">{n.message}</p>
+                                                <p className="text-[8px] font-mono text-gray-300 mt-2 uppercase">{new Date(n.created_at).toLocaleTimeString()}</p>
+                                            </div>
+                                        ))}
+                                        {notifications.length === 0 && (
+                                            <div className="p-12 text-center text-gray-400 font-serif italic text-xs">
+                                                No notifications at this time.
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
                 </div>
-                <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-aic-black to-gray-700 border-2 border-white shadow-md"></div>
+
+                <div className="flex items-center gap-4 border-l border-gray-100 pl-6">
+                    <div className="text-right hidden sm:block">
+                        <p className="text-xs font-bold text-gray-900 font-serif leading-none">Dr. Sarah Khumalo</p>
+                        <p className="text-[9px] text-gray-500 font-mono uppercase tracking-widest mt-1">Compliance Lead</p>
+                    </div>
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-aic-black to-gray-700 border-2 border-white shadow-md"></div>
+                </div>
             </div>
         </header>
         {children}

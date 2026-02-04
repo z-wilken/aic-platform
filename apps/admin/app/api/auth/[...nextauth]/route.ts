@@ -14,5 +14,5 @@ declare module "next-auth" {
   }
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth(authOptions)
-export const { GET, POST } = handlers
+const handler = NextAuth(authOptions as any)
+export { handler as GET, handler as POST }

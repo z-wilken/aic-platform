@@ -10,10 +10,13 @@ export async function GET() {
   }
 
   try {
-    const result = await query('SELECT * FROM alpha_applications ORDER BY created_at DESC');
-    return NextResponse.json({ applications: result.rows });
+    // Fetch users with the role of 'AUDITOR' or 'ADMIN' (who can also audit)
+    const result = await query(
+      "SELECT id, name, email, role FROM users WHERE role IN ('AUDITOR', 'ADMIN') AND is_active = TRUE ORDER BY name ASC"
+    );
+    return NextResponse.json({ auditors: result.rows });
   } catch (error) {
-    console.error('Admin Applications API Error:', error);
+    console.error('Admin Auditors API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
