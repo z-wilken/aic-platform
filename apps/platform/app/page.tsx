@@ -80,7 +80,7 @@ export default function PlatformHome() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-aic-red opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-4 w-4 bg-aic-red"></span>
                 </div>
-                <span className="text-xl font-serif font-bold text-aic-red">{currentStats.tier.replace('_', ' ')}</span>
+                <span className="text-xl font-serif font-bold text-aic-red">{(currentStats.tier || 'PENDING').replace('_', ' ')}</span>
             </div>
             <p className="text-sm text-gray-600 mt-4 font-serif leading-relaxed">
                 {currentStats.tier === 'TIER_1' ? 'System handles high-stakes data.' : 'Automated processing active.'} <br/>
@@ -124,7 +124,7 @@ export default function PlatformHome() {
                     </tr>
                 </thead>
                 <tbody className="bg-white/40 divide-y divide-gray-200/50 text-sm font-mono">
-                    {currentStats.logs.map((log: any) => (
+                    {(currentStats.logs || []).map((log: any) => (
                         <tr key={log.id} className="hover:bg-white/60 transition-colors">
                             <td className="px-6 py-4 whitespace-nowrap text-gray-900 font-bold">{log.id.substring(0, 8)}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-gray-500">
@@ -151,7 +151,7 @@ export default function PlatformHome() {
                             </td>
                         </tr>
                     ))}
-                    {currentStats.logs.length === 0 && (
+                    {(currentStats.logs || []).length === 0 && (
                         <tr>
                             <td colSpan={5} className="px-6 py-12 text-center text-gray-500 italic font-serif">
                                 No recent decisions found. Ensure your API integration is active.
