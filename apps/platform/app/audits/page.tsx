@@ -29,10 +29,16 @@ export default function AuditsPage() {
     const handleRunAudit = async () => {
         setIsRunning(true);
         try {
-            // Mocking sample EEOC data for the demo of the integration
+            // Correct format for API/v1/analyze
             const sampleData = {
-                "protected_groups": ["Group A", "Group B"],
-                "outcomes": [100, 80] // Perfect 4/5ths rule example
+                "protected_attribute": "race",
+                "outcome_variable": "hired",
+                "rows": [
+                    {"race": "Group A", "hired": 1},
+                    {"race": "Group A", "hired": 1},
+                    {"race": "Group B", "hired": 1},
+                    {"race": "Group B", "hired": 0}
+                ]
             };
 
             const response = await fetch('/api/audit-logs', {
@@ -101,7 +107,7 @@ export default function AuditsPage() {
                                     <td className="p-6 font-mono text-xs">{log.event_type}</td>
                                     <td className="p-6 text-right">
                                         <span className="font-mono text-[9px] bg-gray-100 px-2 py-1 rounded text-gray-500 select-all group-hover:text-aic-gold transition-colors">
-                                            {log.integrity_hash.substring(0, 16)}...
+                                            {log.integrity_hash ? log.integrity_hash.substring(0, 16) : 'PENDING'}...
                                         </span>
                                     </td>
                                 </motion.tr>

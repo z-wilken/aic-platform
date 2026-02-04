@@ -6,33 +6,33 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PulsePage() {
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [systemLogs, setSystemLogs] = useState([
-        { id: 1, event: 'Model Deployment', status: 'VERIFIED', time: '10:42:01' },
-        { id: 2, event: 'Bias Check (EEOC)', status: 'PASS', time: '10:45:12' },
-        { id: 3, event: 'Human Intervention', status: 'LOGGED', time: '10:50:05' },
-    ]);
+    const [systemLogs, setSystemLogs] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchLogs = () => {
+        fetch('/api/audit-logs')
+            .then(res => res.json())
+            .then(data => {
+                setSystemLogs(data.logs || []);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error(err);
+                setLoading(false);
+            });
+    };
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        return () => clearInterval(timer);
-    }, []);
-
-    // Random log simulator
-    useEffect(() => {
-        const events = [
-            'Bias Drift Check', 'Right to Explanation Request', 'Log Integrity Verified', 
-            'Model Retraining Detected', 'Human Override Logged', 'SPI Data Check'
-        ];
-        const logTimer = setInterval(() => {
-            const newLog = {
-                id: Date.now(),
-                event: events[Math.floor(Math.random() * events.length)],
-                status: Math.random() > 0.1 ? 'PASS' : 'WARN',
-                time: new Date().toLocaleTimeString()
-            };
-            setSystemLogs(prev => [newLog, ...prev.slice(0, 4)]);
-        }, 5000);
-        return () => clearInterval(logTimer);
+        fetchLogs();
+        
+        // Polling for real logs
+        const logTimer = setInterval(fetchLogs, 10000);
+        
+        return () => {
+            clearInterval(timer);
+            clearInterval(logTimer);
+        };
     }, []);
 
     return (
@@ -122,7 +122,11 @@ export default function PulsePage() {
 
                         <div className="space-y-4">
                             <AnimatePresence>
-                                {systemLogs.map((log) => (
+                                {loading ? (
+                                    <div className="text-center p-12 text-gray-500 font-serif italic">Accessing encrypted telemetry...</div>
+                                ) : systemLogs.length === 0 ? (
+                                    <div className="text-center p-12 text-gray-500 font-serif italic">No live events recorded. System waiting for model triggers.</div>
+                                ) : systemLogs.slice(0, 5).map((log) => (
                                     <motion.div 
                                         key={log.id}
                                         initial={{ opacity: 0, x: -20 }}
@@ -131,15 +135,14 @@ export default function PulsePage() {
                                         className="flex items-center justify-between p-6 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-colors"
                                     >
                                         <div className="flex items-center gap-6">
-                                            <span className="font-mono text-[10px] text-gray-500">{log.time}</span>
-                                            <span className="font-serif text-lg">{log.event}</span>
+                                            <span className="font-mono text-[10px] text-gray-500">{new Date(log.created_at).toLocaleTimeString()}</span>
+                                            <div>
+                                                <span className="font-serif text-lg block">{log.event_type}</span>
+                                                <span className="text-[10px] font-mono text-gray-500 uppercase">{log.system_name}</span>
+                                            </div>
                                         </div>
-                                        <span className={`font-mono text-[10px] font-bold px-3 py-1 rounded-full border ${
-                                            log.status === 'PASS' || log.status === 'VERIFIED' 
-                                            ? 'text-green-400 border-green-400/20 bg-green-400/5' 
-                                            : 'text-aic-gold border-aic-gold/20 bg-aic-gold/5'
-                                        }`}>
-                                            {log.status}
+                                        <span className={`font-mono text-[10px] font-bold px-3 py-1 rounded-full border border-green-400/20 bg-green-400/5 text-green-400`}>
+                                            VERIFIED
                                         </span>
                                     </motion.div>
                                 ))}

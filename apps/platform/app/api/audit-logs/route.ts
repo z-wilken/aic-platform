@@ -13,13 +13,13 @@ export async function POST(request: NextRequest) {
     const { systemName, data } = body;
 
     // 1. Forward to Python Engine for Rigorous Bias Audit
-    const engineResponse = await fetch(`${ENGINE_URL}/analyze/bias`, {
+    const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            organization_id: orgId,
-            system_name: systemName,
-            payload: data // Expected EEOC Four-Fifths format
+            protected_attribute: data.protected_attribute || 'group',
+            outcome_variable: data.outcome_variable || 'hired',
+            data: data.rows || [] // The engine expects a list of dicts
         })
     });
 
