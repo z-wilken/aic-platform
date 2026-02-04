@@ -22,6 +22,6 @@ body {
   perspective: 1000px;
 }
 
-.rotate-y-[-10deg] {
+.rotate-y-tilt {
   transform: rotateY(-10deg);
 }

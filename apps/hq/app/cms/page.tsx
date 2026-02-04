@@ -3,22 +3,50 @@
 import { useEffect, useState } from 'react'
 import HQShell from '../components/HQShell'
 import { motion, AnimatePresence } from 'framer-motion'
-import Link from 'next/link'
 
 export default function CMSPage() {
   const [posts, setPosts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
+  const fetchPosts = () => {
+    fetch('/api/posts')
+      .then(res => res.json())
+      .then(data => {
+        setPosts(data.posts || [])
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
-    // In reality, this would fetch from /api/posts
-    // Mocking for the scaffold
-    setPosts([
-        { id: 1, title: 'POPIA Section 71 and Your Loan Application', status: 'PUBLISHED', date: '2026-02-04', category: 'Consumer Rights' },
-        { id: 2, title: 'Spotting AI in the Hiring Process', status: 'PUBLISHED', date: '2026-01-28', category: 'Fairness' },
-        { id: 3, title: 'The Right to an Explanation', status: 'DRAFT', date: '2026-01-15', category: 'Legal' }
-    ]);
-    setLoading(false);
+    fetchPosts();
   }, []);
+
+  const handleCreatePost = async () => {
+    const title = prompt("Post Title:");
+    if (!title) return;
+    const content = prompt("Post Content (Markdown/Text):");
+    if (!content) return;
+
+    try {
+        const response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, content, status: 'DRAFT' })
+        });
+
+        if (response.ok) {
+            alert("Draft saved.");
+            fetchPosts();
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Failed to save draft.");
+    }
+  }
 
   return (
     <HQShell>
@@ -28,7 +56,10 @@ export default function CMSPage() {
                 <h1 className="text-4xl font-serif font-medium tracking-tight">Public Insights</h1>
                 <p className="text-gray-500 font-serif mt-2 italic text-lg">Managing the "Public Voice" of AI Integrity Certification.</p>
             </div>
-            <button className="bg-aic-gold text-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-colors">
+            <button 
+                onClick={handleCreatePost}
+                className="bg-aic-gold text-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-colors"
+            >
                 + Draft New Post
             </button>
         </div>
@@ -37,14 +68,22 @@ export default function CMSPage() {
             <div className="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center">
                 <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Active Articles</span>
                 <div className="flex gap-4">
-                    <span className="text-[10px] font-mono text-green-400 uppercase tracking-widest">2 Published</span>
-                    <span className="text-[10px] font-mono text-aic-gold uppercase tracking-widest">1 Draft</span>
+                    <span className="text-[10px] font-mono text-green-400 uppercase tracking-widest">
+                        {posts.filter(p => p.status === 'PUBLISHED').length} Published
+                    </span>
+                    <span className="text-[10px] font-mono text-aic-gold uppercase tracking-widest">
+                        {posts.filter(p => p.status === 'DRAFT').length} Drafts
+                    </span>
                 </div>
             </div>
             
             <div className="divide-y divide-white/5">
                 <AnimatePresence>
-                    {posts.map((post, i) => (
+                    {loading ? (
+                        <tr><td className="p-12 text-center text-gray-500 font-serif italic">Syncing with content core...</td></tr>
+                    ) : posts.length === 0 ? (
+                        <div className="p-12 text-center text-gray-500">No posts found. Create your first insight.</div>
+                    ) : posts.map((post, i) => (
                         <motion.div 
                             key={post.id}
                             initial={{ opacity: 0, y: 10 }}
@@ -62,7 +101,7 @@ export default function CMSPage() {
                                     <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{post.category}</span>
                                 </div>
                                 <h3 className="text-xl font-serif text-white group-hover:text-aic-gold transition-colors">{post.title}</h3>
-                                <p className="text-[10px] font-mono text-gray-600 uppercase tracking-widest">Modified: {post.date}</p>
+                                <p className="text-[10px] font-mono text-gray-600 uppercase tracking-widest">Modified: {new Date(post.updated_at).toLocaleDateString()}</p>
                             </div>
                             
                             <div className="flex gap-4">
@@ -75,7 +114,6 @@ export default function CMSPage() {
             </div>
         </div>
 
-        {/* Visual Cue for "No Plugins" / Custom build */}
         <div className="p-12 border border-dashed border-white/10 rounded-3xl text-center">
             <span className="text-2xl block mb-4">🛡️</span>
             <p className="text-gray-500 font-serif italic text-sm">
