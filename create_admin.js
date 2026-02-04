@@ -20,12 +20,12 @@ async function createSuperAdmin() {
     const hash = await bcrypt.hash(password, salt);
 
     const res = await pool.query(
-      `INSERT INTO users (email, password_hash, name, role, is_active)
-       VALUES ($1, $2, $3, $4, TRUE)
+      `INSERT INTO users (email, password_hash, name, role, is_active, is_super_admin, permissions)
+       VALUES ($1, $2, $3, $4, TRUE, TRUE, $5)
        ON CONFLICT (email) DO UPDATE 
-       SET password_hash = $2, role = $4, name = $3
+       SET password_hash = $2, role = $4, name = $3, is_super_admin = TRUE, permissions = $5
        RETURNING id`,
-      [email, hash, name, role]
+      [email, hash, name, role, JSON.stringify({ can_publish: true, can_verify: true })]
     );
 
     console.log('Super Admin user created/updated successfully. ID:', res.rows[0].id);
