@@ -10,6 +10,7 @@ export async function GET() {
 
     const recentApps = await query('SELECT * FROM alpha_applications ORDER BY created_at DESC LIMIT 5');
     const recentLeads = await query('SELECT * FROM leads ORDER BY created_at DESC LIMIT 5');
+    const activeOrgs = await query('SELECT * FROM organizations ORDER BY created_at DESC LIMIT 5');
 
     return NextResponse.json({
         stats: {
@@ -19,7 +20,8 @@ export async function GET() {
             auditsTotal: parseInt(logsCount.rows[0].count),
         },
         recentApplications: recentApps.rows,
-        recentLeads: recentLeads.rows
+        recentLeads: recentLeads.rows,
+        activeOrgs: activeOrgs.rows
     });
   } catch (error) {
     console.error('Admin Dashboard API Error:', error);

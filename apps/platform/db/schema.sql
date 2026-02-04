@@ -56,6 +56,19 @@ CREATE TABLE alpha_applications (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE audit_requirements (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    category VARCHAR(50), -- 'DOCUMENTATION', 'TECHNICAL', 'OVERSIGHT'
+    status VARCHAR(50) DEFAULT 'PENDING', -- 'PENDING', 'SUBMITTED', 'VERIFIED', 'REJECTED'
+    evidence_url TEXT,
+    findings TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE notifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     recipient VARCHAR(255),
@@ -132,3 +145,11 @@ VALUES (
     'ADMIN',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'
 );
+
+-- Seed Audit Requirements for Demo Org
+INSERT INTO audit_requirements (org_id, title, description, category, status)
+VALUES 
+('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'POPIA Section 71 Policy', 'Formal document outlining human intervention procedures for automated decisions.', 'DOCUMENTATION', 'VERIFIED'),
+('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Model Bias Stress Test', 'Technical report proving four-fifths rule compliance across gender and race.', 'TECHNICAL', 'SUBMITTED'),
+('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Human-in-the-Loop Interface', 'UI walk-through showing the manual override button for loan officers.', 'OVERSIGHT', 'PENDING'),
+('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Data Sovereignty Proof', 'Verification that AI production data remains within South African borders.', 'TECHNICAL', 'PENDING');

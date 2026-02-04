@@ -137,37 +137,68 @@ export default function AdminDashboard() {
         </div>
 
         {/* Alpha Application Queue */}
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Alpha Program Queue</h2>
-          </div>
-          <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-gray-900/50 text-gray-500 uppercase text-xs">
-                <tr>
-                  <th className="p-4">Applicant</th>
-                  <th className="p-4">Company</th>
-                  <th className="p-4">Email</th>
-                  <th className="p-4">Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800">
-                {(data?.recentApplications || []).map((app: any) => (
-                    <tr key={app.id} className="hover:bg-gray-800/30">
-                        <td className="p-4 font-medium">{app.first_name} {app.last_name}</td>
-                        <td className="p-4">{app.company}</td>
-                        <td className="p-4 text-gray-400">{app.email}</td>
-                        <td className="p-4 text-gray-400">{new Date(app.created_at).toLocaleDateString()}</td>
-                    </tr>
-                ))}
-                {(data?.recentApplications || []).length === 0 && (
-                    <tr>
-                        <td colSpan={4} className="p-8 text-center text-gray-500">No applications in queue.</td>
-                    </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+                <h2 className="text-lg font-bold mb-4">Alpha Program Queue</h2>
+                <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
+                    <table className="w-full text-left text-sm">
+                    <thead className="bg-gray-900/50 text-gray-500 uppercase text-xs">
+                        <tr>
+                        <th className="p-4">Applicant</th>
+                        <th className="p-4">Company</th>
+                        <th className="p-4">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-800">
+                        {(data?.recentApplications || []).map((app: any) => (
+                            <tr key={app.id} className="hover:bg-gray-800/30">
+                                <td className="p-4 font-medium">{app.first_name} {app.last_name}</td>
+                                <td className="p-4">{app.company}</td>
+                                <td className="p-4 text-gray-400">{new Date(app.created_at).toLocaleDateString()}</td>
+                            </tr>
+                        ))}
+                        {(data?.recentApplications || []).length === 0 && (
+                            <tr>
+                                <td colSpan={3} className="p-8 text-center text-gray-500">No applications.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h2 className="text-lg font-bold mb-4">Active Certifications</h2>
+                <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
+                    <table className="w-full text-left text-sm">
+                    <thead className="bg-gray-900/50 text-gray-500 uppercase text-xs">
+                        <tr>
+                        <th className="p-4">Organization</th>
+                        <th className="p-4">Tier</th>
+                        <th className="p-4">Score</th>
+                        <th className="p-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-800">
+                        {(data?.activeOrgs || []).map((org: any) => (
+                            <tr key={org.id} className="hover:bg-gray-800/30">
+                                <td className="p-4 font-medium">{org.name}</td>
+                                <td className="p-4"><span className="text-xs font-mono text-aic-gold">{org.tier}</span></td>
+                                <td className="p-4 font-mono">{org.integrity_score}%</td>
+                                <td className="p-4">
+                                    <Link href={`/audits/${org.id}`} className="text-blue-400 hover:underline">Manage Audit</Link>
+                                </td>
+                            </tr>
+                        ))}
+                        {(data?.activeOrgs || []).length === 0 && (
+                            <tr>
+                                <td colSpan={4} className="p-8 text-center text-gray-500">No active certs.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
       </div>
     </AdminShell>
