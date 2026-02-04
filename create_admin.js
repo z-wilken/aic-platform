@@ -1,0 +1,40 @@
+const bcrypt = require('bcryptjs');
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: process.env.POSTGRES_USER || 'aic_admin',
+  password: process.env.POSTGRES_PASSWORD || 'aic_password_secure',
+  host: process.env.POSTGRES_HOST || 'localhost',
+  port: parseInt(process.env.POSTGRES_PORT || '5432'),
+  database: process.env.POSTGRES_DB || 'aic_platform',
+});
+
+async function createSuperAdmin() {
+  const email = 'zanderwilken2005@gmail.com';
+  const password = 'Sherlocked221B!';
+  const name = 'Zander Wilken (Super Admin)';
+  const role = 'ADMIN';
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    const res = await pool.query(
+      `INSERT INTO users (email, password_hash, name, role, is_active)
+       VALUES ($1, $2, $3, $4, TRUE)
+       ON CONFLICT (email) DO UPDATE 
+       SET password_hash = $2, role = $4, name = $3
+       RETURNING id`,
+      [email, hash, name, role]
+    );
+
+    console.log('Super Admin user created/updated successfully. ID:', res.rows[0].id);
+  } catch (err) {
+    console.error('Error creating Super Admin:', err);
+    process.exit(1);
+  } finally {
+    await pool.end();
+  }
+}
+
+createSuperAdmin();
