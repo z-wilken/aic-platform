@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography */
+  --font-serif: var(--font-crimson-pro), serif;
+  --font-mono: var(--font-ibm-plex-mono), monospace;
+  --font-sans: var(--font-ibm-plex-mono), sans-serif;
+
+  /* HQ Specific Palette - Dark Mode Only */
+  --color-aic-black: #000000;
+  --color-aic-gold: #D4AF37;
+  --color-aic-paper: #FAF9F6;
+  --color-aic-red: #C41E3A;
+}
+
+body {
+  background-color: black;
+  color: white;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.rotate-y-[-10deg] {
+  transform: rotateY(-10deg);
+}

@@ -7,12 +7,13 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npx concurrently \"npm run dev:web\" \"npm run dev:platform\" \"npm run dev:admin\"",
+    "dev": "npx concurrently \"npm run dev:web\" \"npm run dev:platform\" \"npm run dev:admin\" \"npm run dev:hq\"",
     "dev:web": "cd apps/web && npm run dev",
     "dev:platform": "cd apps/platform && npm run dev -- -p 3001",
     "dev:admin": "cd apps/admin && npm run dev -- -p 3002",
-    "build": "npx concurrently \"cd apps/web && npm run build\" \"cd apps/platform && npm run build\" \"cd apps/admin && npm run build\"",
-    "start": "npx concurrently \"cd apps/web && npm run start\" \"cd apps/platform && npm run start\" \"cd apps/admin && npm run start\""
+    "dev:hq": "cd apps/hq && npm run dev",
+    "build": "npx concurrently \"cd apps/web && npm run build\" \"cd apps/platform && npm run build\" \"cd apps/admin && npm run build\" \"cd apps/hq && npm run build\"",
+    "start": "npx concurrently \"cd apps/web && npm run start\" \"cd apps/platform && npm run start\" \"cd apps/admin && npm run start\" \"cd apps/hq && npm run start\""
   },
   "devDependencies": {
     "concurrently": "^8.2.0"

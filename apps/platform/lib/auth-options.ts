@@ -1,4 +1,4 @@
-import type { NextAuthConfig } from "next-auth"
+import { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { query } from "./db"
 import bcrypt from "bcryptjs"
@@ -17,7 +17,6 @@ export const authOptions: NextAuthConfig = {
         }
 
         try {
-          // Try database lookup first
           const result = await query(`
             SELECT
               u.id,
@@ -27,6 +26,8 @@ export const authOptions: NextAuthConfig = {
               u.role,
               u.org_id,
               u.is_active,
+              u.is_super_admin,
+              u.permissions,
               o.name as org_name,
               o.tier
             FROM users u
@@ -41,7 +42,6 @@ export const authOptions: NextAuthConfig = {
               throw new Error("Account is deactivated")
             }
 
-            // Verify password
             const isValid = await bcrypt.compare(credentials.password.toString(), user.password_hash)
 
             if (!isValid) {
@@ -61,27 +61,13 @@ export const authOptions: NextAuthConfig = {
               role: user.role,
               orgId: user.org_id,
               orgName: user.org_name || 'Unknown',
-              tier: user.tier || 'TIER_3'
+              tier: user.tier || 'TIER_3',
+              isSuperAdmin: user.is_super_admin,
+              permissions: user.permissions
             }
           }
         } catch (dbError) {
-          console.warn("Database auth failed, trying demo credentials:", dbError)
-        }
-
-        // Fallback: Demo credentials for development
-        if (
-          credentials.email === "admin@enterprise.co.za" &&
-          credentials.password === "demo123"
-        ) {
-          return {
-            id: "demo-user-1",
-            email: "admin@enterprise.co.za",
-            name: "Dr. Sarah Khumalo",
-            role: "ADMIN",
-            orgId: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-            orgName: "FirstRand Bank (Demo)",
-            tier: "TIER_1"
-          }
+          console.warn("Database auth failed:", dbError)
         }
 
         throw new Error("Invalid credentials")
@@ -94,7 +80,7 @@ export const authOptions: NextAuthConfig = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 hours
+    maxAge: 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }: any) {
@@ -104,6 +90,8 @@ export const authOptions: NextAuthConfig = {
         token.orgId = user.orgId
         token.orgName = user.orgName
         token.tier = user.tier
+        token.isSuperAdmin = user.isSuperAdmin
+        token.permissions = user.permissions
       }
       return token
     },
@@ -114,6 +102,8 @@ export const authOptions: NextAuthConfig = {
         session.user.orgId = token.orgId as string
         session.user.orgName = token.orgName as string
         session.user.tier = token.tier as string
+        session.user.isSuperAdmin = token.isSuperAdmin as boolean
+        session.user.permissions = token.permissions
       }
       return session
     }

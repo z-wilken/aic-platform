@@ -48,6 +48,28 @@ export default function LeadsPage() {
     }
   };
 
+  const handleAddLead = async () => {
+    const company = prompt("Enter Organization Name:");
+    const email = prompt("Enter Primary Contact Email:");
+    if (!email) return;
+
+    try {
+        const response = await fetch('/api/leads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, company, status: 'PROSPECT' })
+        });
+
+        if (response.ok) {
+            alert("Outreach target added.");
+            fetch('/api/leads').then(res => res.json()).then(data => setLeads(data.leads || []));
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Failed to add target.");
+    }
+  };
+
   return (
     <AdminShell>
       <div className="space-y-6">
@@ -56,8 +78,14 @@ export default function LeadsPage() {
             <h1 className="text-2xl font-bold">Inbound Leads</h1>
             <p className="text-gray-500 font-serif mt-1 text-sm italic">Prospective organizations captured via Self-Assessment and Contact forms.</p>
           </div>
-          <div className="flex gap-4">
-            <div className="text-right">
+          <div className="flex items-center gap-6">
+            <button 
+                onClick={handleAddLead}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-blue-500 transition-all"
+            >
+                + Add Outreach Target
+            </button>
+            <div className="text-right border-l border-gray-800 pl-6">
                 <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Total Leads</p>
                 <p className="text-2xl font-bold">{leads.length}</p>
             </div>

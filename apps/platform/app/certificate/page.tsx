@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { AlphaSeal } from '@aic/ui';
 import { motion, AnimatePresence } from 'framer-motion';
+import { generateCertificatePDF } from '@/lib/cert-generator';
 
 export default function CertificatePage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     fetch('/api/stats')
@@ -22,6 +24,19 @@ export default function CertificatePage() {
       });
   }, []);
 
+  const handleDownloadCert = async () => {
+    if (!stats) return;
+    setIsGenerating(true);
+    await generateCertificatePDF({
+        orgName: stats.orgName || 'Your Organization',
+        tier: stats.tier || 'TIER_1',
+        orgId: stats.orgId || '0000',
+        issuedDate: new Date().toLocaleDateString(),
+        expiryDate: '01 FEB 2027'
+    });
+    setIsGenerating(false);
+  };
+
   if (loading) return <DashboardShell><div className="p-12 text-center text-gray-500">Retrieving credentials...</div></DashboardShell>;
 
   const isCertified = stats?.score === 100;
@@ -35,8 +50,12 @@ export default function CertificatePage() {
                 <p className="text-gray-500 font-serif mt-2 italic">Official credentials generated via POPIA Sec. 71 Audit.</p>
             </div>
             {isCertified && (
-                <button className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors">
-                    Download Official PDF
+                <button 
+                    onClick={handleDownloadCert}
+                    disabled={isGenerating}
+                    className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors disabled:opacity-50"
+                >
+                    {isGenerating ? 'PREPARING DOCUMENT...' : 'Download Official PDF'}
                 </button>
             )}
         </div>
