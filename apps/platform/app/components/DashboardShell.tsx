@@ -41,6 +41,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     { label: 'Compliance Reports', href: '/reports', section: 'Monitoring' },
     { label: 'Roadmap', href: '/roadmap', section: 'Certification' },
     { label: 'Incidents', href: '/incidents', section: 'Certification' },
+    { label: 'API Integrations', href: '/settings/keys', section: 'Certification' },
     { label: 'Certificate', href: '/certificate', section: 'Certification' },
   ];
 

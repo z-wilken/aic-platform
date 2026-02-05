@@ -136,6 +136,17 @@ CREATE TABLE incidents (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE api_keys (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+    key_prefix VARCHAR(10) NOT NULL, -- e.g., 'aic_live_'
+    key_hash VARCHAR(255) NOT NULL, -- Hashed for security
+    label VARCHAR(255), -- e.g., 'CI/CD Production'
+    last_used_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
 -- Users & Authentication
 CREATE TYPE user_role AS ENUM ('ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER');
 

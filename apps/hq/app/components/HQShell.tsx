@@ -17,6 +17,7 @@ export default function HQShell({ children }: HQShellProps) {
     { href: '/crm', label: 'Outreach CRM', icon: '🎯' },
     { href: '/cms', label: 'Content CMS', icon: '✍️' },
     { href: '/subscribers', label: 'Subscribers', icon: '📬' },
+    { href: '/training', label: 'Academy', icon: '🎓' },
     { href: '/governance', label: 'Governance', icon: '⚖️' },
     { href: '/settings', label: 'Settings', icon: '⚙️' },
   ]

@@ -3,18 +3,21 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import * as analytics from '@/lib/analytics';
 
 export default function Navbar() {
   const pathname = usePathname();
   
   const isCitizenPath = pathname.startsWith('/citizens');
-  const isOrgPath = pathname.startsWith('/organizations');
+  const isOrgPath = pathname.startsWith('/business'); // Fix check for /business
+
+  const [lang, setLang] = useState('EN');
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-aic-paper/80 backdrop-blur-md border-b border-aic-black/5">
       {/* Approach/Audience Switcher */}
-      <div className="bg-aic-black text-[8px] font-mono font-bold tracking-[0.3em] uppercase py-2 flex justify-center gap-8">
+      <div className="bg-aic-black text-[8px] font-mono font-bold tracking-[0.3em] uppercase py-2 flex justify-center gap-8 items-center">
         <Link 
             href="/citizens" 
             className={`hover:text-white transition-colors ${isCitizenPath ? 'text-aic-gold underline underline-offset-4' : 'text-gray-500'}`}
@@ -27,6 +30,19 @@ export default function Navbar() {
         >
             For Organizations
         </Link>
+        
+        {/* Language Toggles */}
+        <div className="flex gap-4 border-l border-white/10 pl-8 ml-4">
+            {['EN', 'AF', 'ZU'].map(l => (
+                <button 
+                    key={l}
+                    onClick={() => setLang(l)}
+                    className={`hover:text-white transition-colors ${lang === l ? 'text-aic-gold' : 'text-gray-600'}`}
+                >
+                    {l}
+                </button>
+            ))}
+        </div>
       </div>
 
       <div className="mx-auto max-w-7xl flex h-20 items-center justify-between px-6 lg:px-8">
