@@ -82,15 +82,30 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // 3. Generate Initial Audit Requirements for the new Alpha Participant
-    const initialRequirements = [
+    // 3. Generate Tier-Specific Audit Requirements
+    const reqs: any[] = [
         ['POPIA Section 71 Policy', 'Formal document outlining human intervention procedures.', 'DOCUMENTATION'],
         ['AI System Inventory', 'List of all production models and their business purpose.', 'DOCUMENTATION'],
         ['Human-in-the-Loop Interface', 'Technical proof of manual override capabilities.', 'OVERSIGHT'],
-        ['Initial Bias Audit', 'Baseline statistical analysis of primary model datasets.', 'TECHNICAL']
+        ['Initial Bias Audit', 'Baseline statistical analysis of primary model datasets.', 'TECHNICAL'],
+        ['Data Sovereignty Proof', 'Verification that SPI remains within jurisdiction.', 'TECHNICAL']
     ];
 
-    for (const [title, desc, cat] of initialRequirements) {
+    // Tier 1 & 2 need more rigorous oversight proof
+    if (tier === 'TIER_1' || tier === 'TIER_2') {
+        reqs.push(['Human Intervention Logs', 'Actual logs of human overrides being triggered.', 'OVERSIGHT']);
+        reqs.push(['Impact Assessment (DPIA)', 'Privacy and algorithmic impact assessment reports.', 'REPORTS']);
+        reqs.push(['Bias Drift Monitoring', 'Evidence of continuous bias tracking.', 'TECHNICAL']);
+    }
+
+    // Tier 1 needs mandatory training and board-level oversight
+    if (tier === 'TIER_1') {
+        reqs.push(['Board Accountability Charter', 'Formal board-level accountability sign-off.', 'DOCUMENTATION']);
+        reqs.push(['Auditor Training Records', 'Proof of certification for human reviewers.', 'OVERSIGHT']);
+        reqs.push(['Public Transparency Report', 'Public-facing document explaining AI logic.', 'REPORTS']);
+    }
+
+    for (const [title, desc, cat] of reqs) {
         await query(
             'INSERT INTO audit_requirements (org_id, title, description, category, status) VALUES ($1, $2, $3, $4, $5)',
             [orgId, title, desc, cat, 'PENDING']

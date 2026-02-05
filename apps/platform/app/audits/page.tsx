@@ -72,13 +72,41 @@ export default function AuditsPage() {
                         <h1 className="text-3xl font-serif font-bold text-aic-black underline decoration-aic-gold underline-offset-8">Technical Audit Logs</h1>
                         <p className="text-gray-500 font-serif mt-4">Immutable verification of your algorithmic outcomes via the AIC Engine.</p>
                     </div>
-                    <button 
-                        onClick={handleRunAudit}
-                        disabled={isRunning}
-                        className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all shadow-xl disabled:opacity-50"
-                    >
-                        {isRunning ? 'ENGINE ANALYZING...' : 'RUN LIVE BIAS AUDIT'}
-                    </button>
+                    <div className="flex gap-4">
+                        <button 
+                            onClick={handleRunAudit}
+                            disabled={isRunning}
+                            className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all shadow-xl disabled:opacity-50"
+                        >
+                            {isRunning ? 'ANALYZING...' : 'RUN BIAS AUDIT'}
+                        </button>
+                        <button 
+                            onClick={async () => {
+                                setIsRunning(true);
+                                try {
+                                    const sampleOddsData = {
+                                        "protected_attribute": "gender",
+                                        "actual_outcome": "repaid",
+                                        "predicted_outcome": "pred_repaid",
+                                        "rows": [
+                                            {"gender": "M", "repaid": 1, "pred_repaid": 1},
+                                            {"gender": "F", "repaid": 1, "pred_repaid": 0}
+                                        ]
+                                    };
+                                    const res = await fetch('/api/audit-logs', {
+                                        method: 'PATCH',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ systemName: 'Advanced Risk Model', data: sampleOddsData })
+                                    });
+                                    if (res.ok) { alert("Advanced Equalized Odds audit recorded."); fetchLogs(); }
+                                } finally { setIsRunning(false); }
+                            }}
+                            disabled={isRunning}
+                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:text-white transition-all disabled:opacity-50"
+                        >
+                            RUN ADVANCED ODDS AUDIT
+                        </button>
+                    </div>
                 </div>
 
                 <div className="bg-white border border-aic-black/5 rounded-3xl overflow-hidden shadow-sm">

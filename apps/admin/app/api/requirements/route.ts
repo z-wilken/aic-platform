@@ -88,6 +88,18 @@ export async function PATCH(request: NextRequest) {
         [newScore, org_id]
     );
 
+    // 3. Log the administrative action for accountability
+    await query(
+        `INSERT INTO security_logs (actor_id, action, entity_id, details) 
+         VALUES ($1, $2, $3, $4)`,
+        [
+            session.user.id, 
+            status === 'VERIFIED' ? 'VERIFIED_REQUIREMENT' : 'REJECTED_REQUIREMENT',
+            id,
+            JSON.stringify({ org_id, new_score: newScore, findings: findings || 'None' })
+        ]
+    );
+
     return NextResponse.json({ success: true, newScore });
   } catch (error) {
     console.error('Admin Requirements Update Error:', error);

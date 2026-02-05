@@ -1,26 +1,48 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { query } from '../../../../lib/db';
 
-export async function GET(request: Request) {
-  // 1. Authenticate the Insurer (e.g. "Santam" or "iToo")
-  // const insurer = authenticate(request); 
-  
-  // 2. Fetch the Organization's Score
-  const score = 94; // Mocked for now
-  const tier = 'TIER_1';
-  
-  // 3. Calculate Risk Multiplier
-  // Score < 50 = 2.0x Premium (or Cancel)
-  // Score > 90 = 0.8x Premium
-  
-  let riskMultiplier = 1.0;
-  if (score > 90) riskMultiplier = 0.8;
-  if (score < 50) riskMultiplier = 100.0; // effectively uninsurable
+export async function GET(request: NextRequest) {
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const orgId = searchParams.get('org_id');
 
-  return NextResponse.json({
-    org_id: 'ORG-8821',
-    integrity_score: score,
-    risk_multiplier: riskMultiplier,
-    status: score < 50 ? 'UNINSURABLE' : 'COVERED',
-    timestamp: new Date().toISOString()
-  });
+    if (!orgId) {
+        return NextResponse.json({ error: 'org_id is required' }, { status: 400 });
+    }
+
+    // 1. Fetch current integrity score
+    const result = await query(
+        'SELECT name, integrity_score, tier FROM organizations WHERE id = $1',
+        [orgId]
+    );
+
+    if (result.rows.length === 0) {
+        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    }
+
+    const org = result.rows[0];
+    
+    // 2. Map Integrity Score to Insurance Risk Rating
+    // High Integrity = Low Risk
+    const riskRating = org.integrity_score > 90 ? 'AAA' : 
+                       org.integrity_score > 80 ? 'AA' :
+                       org.integrity_score > 70 ? 'A' :
+                       org.integrity_score > 50 ? 'BBB' : 'C (UNINSURABLE)';
+
+    return NextResponse.json({
+        success: true,
+        organization: org.name,
+        timestamp: new Date().toISOString(),
+        assessment: {
+            integrity_score: org.integrity_score,
+            tier: org.tier,
+            insurance_risk_rating: riskRating,
+            recommendation: org.integrity_score > 80 ? 'APPROVED_FOR_DISCOUNT' : 'REQUIRE_REMEDIATION'
+        }
+    });
+
+  } catch (error) {
+    console.error('Insurance API Error:', error);
+    return NextResponse.json({ error: 'Failed to retrieve risk profile' }, { status: 500 });
+  }
 }

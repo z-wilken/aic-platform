@@ -48,6 +48,23 @@ export default function CMSPage() {
     }
   }
 
+  const handlePublish = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'PUBLISHED' ? 'DRAFT' : 'PUBLISHED';
+    try {
+        const response = await fetch('/api/posts', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, status: newStatus })
+        });
+
+        if (response.ok) {
+            fetchPosts();
+        }
+    } catch (err) {
+        console.error(err);
+    }
+  }
+
   return (
     <HQShell>
       <div className="max-w-5xl space-y-12">
@@ -105,8 +122,15 @@ export default function CMSPage() {
                             </div>
                             
                             <div className="flex gap-4">
+                                <button 
+                                    onClick={() => handlePublish(post.id, post.status)}
+                                    className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+                                        post.status === 'PUBLISHED' ? 'text-aic-red hover:text-white' : 'text-green-400 hover:text-white'
+                                    }`}
+                                >
+                                    {post.status === 'PUBLISHED' ? 'Unpublish' : 'Publish Now'}
+                                </button>
                                 <button className="text-[10px] font-mono font-bold uppercase text-gray-500 hover:text-white transition-colors tracking-widest">Edit</button>
-                                <button className="text-[10px] font-mono font-bold uppercase text-gray-500 hover:text-white transition-colors tracking-widest">Preview</button>
                             </div>
                         </motion.div>
                     ))}
