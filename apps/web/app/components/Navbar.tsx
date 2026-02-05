@@ -47,6 +47,10 @@ export default function Navbar() {
                     KNOW YOUR RIGHTS
                     <span className="absolute -bottom-1 left-0 w-0 h-px bg-aic-black transition-all group-hover:w-full" />
                 </Link>
+                <Link href="/citizens/appeal" className="relative font-mono text-[10px] font-bold text-gray-500 hover:text-aic-black transition-colors tracking-widest group">
+                    APPEAL A DECISION
+                    <span className="absolute -bottom-1 left-0 w-0 h-px bg-aic-black transition-all group-hover:w-full" />
+                </Link>
                 <Link href="/citizens/blog" className="relative font-mono text-[10px] font-bold text-gray-500 hover:text-aic-black transition-colors tracking-widest group">
                     INSIGHTS
                     <span className="absolute -bottom-1 left-0 w-0 h-px bg-aic-black transition-all group-hover:w-full" />

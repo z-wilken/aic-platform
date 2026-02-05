@@ -35,9 +35,26 @@ export default function PulsePage() {
         };
     }, []);
 
+    const [empathyText, setEmpathyText] = useState('');
+    const [empathyResult, setEmpathyResult] = useState<any>(null);
+
+    const handleEmpathyCheck = async () => {
+        const res = await fetch('/api/empathy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: empathyText })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setEmpathyResult(data);
+            fetchLogs();
+        }
+    };
+
     return (
         <DashboardShell>
             <div className="max-w-6xl mx-auto pb-24">
+                {/* ... existing header ... */}
                 <div className="flex justify-between items-end mb-12">
                     <div>
                         <h1 className="text-3xl font-serif font-bold text-aic-black underline decoration-aic-gold underline-offset-8 decoration-2">AIC Pulse™</h1>
@@ -46,6 +63,57 @@ export default function PulsePage() {
                     <div className="text-right">
                         <p className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-1">Telemetry Clock</p>
                         <p className="text-xl font-mono text-aic-black font-bold">{currentTime.toLocaleTimeString()}</p>
+                    </div>
+                </div>
+
+                {/* Empathy Auditor - NEW SECTION */}
+                <div className="mb-12 bg-white border border-aic-black/5 rounded-[2.5rem] p-12 shadow-sm">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div>
+                            <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-6">Empathy Auditor</h3>
+                            <p className="font-serif text-lg text-gray-500 mb-8 italic">Ensure your automated communications maintain human dignity (Right to Empathy).</p>
+                            <textarea 
+                                className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-2xl p-6 font-serif text-sm focus:border-aic-gold outline-none transition-all"
+                                rows={4}
+                                placeholder="Paste your automated rejection or notification text here..."
+                                value={empathyText}
+                                onChange={(e) => setEmpathyText(e.target.value)}
+                            />
+                            <button 
+                                onClick={handleEmpathyCheck}
+                                className="mt-6 bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
+                            >
+                                ANALYZE TONE
+                            </button>
+                        </div>
+                        
+                        <AnimatePresence>
+                            {empathyResult && (
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="bg-aic-paper/30 border border-aic-black/5 rounded-3xl p-8"
+                                >
+                                    <div className="flex justify-between items-center mb-8">
+                                        <span className={`text-[10px] font-mono font-bold px-3 py-1 rounded-full border ${
+                                            empathyResult.status === 'PASS' ? 'text-green-600 bg-green-50 border-green-200' : 'text-aic-red bg-red-50 border-red-200'
+                                        }`}>
+                                            {empathyResult.empathy_level}
+                                        </span>
+                                        <span className="text-4xl font-serif">{Math.round(empathyResult.empathy_score)}%</span>
+                                    </div>
+                                    <p className="text-sm font-serif text-gray-600 leading-relaxed mb-6">"{empathyResult.recommendation}"</p>
+                                    <div className="space-y-2">
+                                        {empathyResult.specific_feedback.map((f: string, i: number) => (
+                                            <div key={i} className="flex gap-2 text-[10px] font-mono text-aic-red">
+                                                <span>⚠️</span>
+                                                <span>{f}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </div>
 
