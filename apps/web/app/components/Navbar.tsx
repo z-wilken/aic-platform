@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full bg-aic-paper/80 backdrop-blur-md border-b border-aic-black/5">
       {/* Approach/Audience Switcher */}
-      <div className="bg-aic-black text-[8px] font-mono font-bold tracking-[0.3em] uppercase py-2 flex justify-center gap-8 items-center">
+      <div className="bg-aic-black text-[9px] font-mono font-bold tracking-[0.3em] uppercase py-4 flex justify-center gap-8 items-center">
         <Link 
             href="/citizens" 
             className={`hover:text-white transition-colors ${isCitizenPath ? 'text-aic-gold underline underline-offset-4' : 'text-gray-500'}`}
