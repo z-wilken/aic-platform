@@ -113,6 +113,16 @@ CREATE TABLE newsletter_subscribers (
     subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE security_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    actor_id UUID REFERENCES users(id),
+    action VARCHAR(255) NOT NULL, -- e.g., 'VERIFIED_REQUIREMENT', 'PUBLISHED_POST'
+    entity_id UUID, -- ID of the requirement, post, or organization
+    details JSONB,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Users & Authentication
 CREATE TYPE user_role AS ENUM ('ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER');
 

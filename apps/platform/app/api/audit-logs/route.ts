@@ -58,6 +58,49 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+    try {
+      const session: any = await getSession();
+      const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+      
+      const body = await request.json();
+      const { systemName, data, type = 'EQUALIZED_ODDS' } = body;
+  
+      if (type !== 'EQUALIZED_ODDS') {
+          return NextResponse.json({ error: 'Unsupported audit type' }, { status: 400 });
+      }
+  
+      // Forward to Python Engine for Equalized Odds (Advanced)
+      const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze/equalized-odds`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              protected_attribute: data.protected_attribute || 'group',
+              actual_outcome: data.actual_outcome || 'actual',
+              predicted_outcome: data.predicted_outcome || 'predicted',
+              data: data.rows || []
+          })
+      });
+  
+      if (!engineResponse.ok) {
+          throw new Error('Engine advanced analysis failed');
+      }
+  
+      const analysisResult = await engineResponse.json();
+  
+      await query(
+          `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash) 
+           VALUES ($1, $2, $3, $4, $5)`,
+          [orgId, systemName, 'ADVANCED_BIAS_AUDIT', JSON.stringify(analysisResult), 'SHA256-ADV-ODDS']
+      );
+  
+      return NextResponse.json({ success: true, analysis: analysisResult });
+  
+    } catch (error: any) {
+      return NextResponse.json({ error: 'Advanced validation failed' }, { status: 500 });
+    }
+}
+
 export async function GET() {
     try {
         const session: any = await getSession();

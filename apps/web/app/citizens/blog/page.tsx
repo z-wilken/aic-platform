@@ -3,39 +3,42 @@
 import { motion } from 'framer-motion';
 import Navbar from '@/app/components/Navbar';
 import Link from 'next/link';
-import { useState } from 'react';
-
-const posts = [
-  {
-    id: 1,
-    title: 'POPIA Section 71 and Your Loan Application',
-    excerpt: 'Understand why South African banks cannot deny your credit purely based on machine logic without a human fallback.',
-    date: 'Feb 4, 2026',
-    category: 'Consumer Rights'
-  },
-  {
-    id: 2,
-    title: 'Spotting AI in the Hiring Process',
-    excerpt: 'From resume filters to video analysis, here is how to identify where automated decisions are being made about your career.',
-    date: 'Jan 28, 2026',
-    category: 'Fairness'
-  },
-  {
-    id: 3,
-    title: 'The Right to an Explanation',
-    excerpt: 'You are legally entitled to know WHY an AI reached a specific conclusion. We explore the technical requirements of Sec. 71.',
-    date: 'Jan 15, 2026',
-    category: 'Legal'
-  }
-];
+import { useState, useEffect } from 'react';
 
 export default function CitizensBlogPage() {
+  const [posts, setPosts] = useState<any[]>([]);
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch('/api/blog')
+        .then(res => res.json())
+        .then(data => {
+            setPosts(data.posts || []);
+            setLoading(false);
+        })
+        .catch(err => {
+            console.error(err);
+            setLoading(false);
+        });
+  }, []);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubscribed(true);
+    try {
+        const response = await fetch('/api/subscribers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        if (response.ok) {
+            setIsSubscribed(true);
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Subscription failed.");
+    }
   };
 
   return (
@@ -61,7 +64,11 @@ export default function CitizensBlogPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-24">
             {/* Blog List */}
             <div className="lg:col-span-8 space-y-24">
-                {posts.map((post, i) => (
+                {loading ? (
+                    <div className="p-12 text-center text-gray-400 font-serif italic">Accessing archive...</div>
+                ) : posts.length === 0 ? (
+                    <div className="p-12 text-center text-gray-500 font-serif">No public insights published yet. Check back soon.</div>
+                ) : posts.map((post, i) => (
                     <motion.article 
                         key={post.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -72,17 +79,17 @@ export default function CitizensBlogPage() {
                     >
                         <div className="flex items-center gap-4 mb-6">
                             <span className="text-[9px] font-mono font-bold text-aic-gold uppercase tracking-widest bg-aic-gold/5 px-2 py-1 rounded">{post.category}</span>
-                            <span className="text-[9px] font-mono text-gray-400 uppercase tracking-widest">{post.date}</span>
+                            <span className="text-[9px] font-mono text-gray-400 uppercase tracking-widest">{new Date(post.published_at).toLocaleDateString()}</span>
                         </div>
-                        <Link href={`/citizens/blog/${post.id}`} className="block">
+                        <Link href={`/citizens/blog/${post.slug}`} className="block">
                             <h3 className="font-serif text-4xl font-medium text-aic-black group-hover:text-aic-red transition-colors mb-6 leading-tight">
                                 {post.title}
                             </h3>
                         </Link>
                         <p className="font-serif text-lg text-gray-500 leading-relaxed mb-8 max-w-2xl italic">
-                            {post.excerpt}
+                            {post.excerpt || 'Read our latest analysis on AI integrity and human accountability.'}
                         </p>
-                        <Link href={`/citizens/blog/${post.id}`} className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] border-b border-aic-black/10 pb-1 group-hover:border-aic-black transition-all">
+                        <Link href={`/citizens/blog/${post.slug}`} className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] border-b border-aic-black/10 pb-1 group-hover:border-aic-black transition-all">
                             Read Full Article →
                         </Link>
                     </motion.article>

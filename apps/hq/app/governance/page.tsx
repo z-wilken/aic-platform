@@ -8,24 +8,49 @@ export default function GovernancePage() {
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
+  const fetchUsers = () => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => {
+        setUsers(data.users || [])
+        setLoading(false);
+      });
+  }
+
   useEffect(() => {
-    // In production, this would fetch from /api/users
-    setUsers([
-        { id: '1', name: 'Zander Wilken', email: 'zander@aic.co.za', role: 'ADMIN', is_super_admin: true, permissions: { can_publish: true, can_verify: true } },
-        { id: '2', name: 'Sarah Khumalo', email: 'sarah@aic.co.za', role: 'AUDITOR', is_super_admin: false, permissions: { can_publish: false, can_verify: true } },
-        { id: '3', name: 'John Doe', email: 'john@aic.co.za', role: 'VIEWER', is_super_admin: false, permissions: { can_publish: true, can_verify: false } },
-    ]);
-    setLoading(false);
+    fetchUsers();
   }, []);
 
+  const handleProvision = async () => {
+    const name = prompt("Full Name:");
+    if (!name) return;
+    const email = prompt("Email:");
+    if (!email) return;
+    const password = prompt("Temporary Password:");
+    if (!password) return;
+    const role = prompt("Role (ADMIN, AUDITOR, VIEWER):", "AUDITOR");
+    if (!role) return;
+
+    try {
+        const response = await fetch('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, role })
+        });
+
+        if (response.ok) {
+            alert("Personnel provisioned successfully.");
+            fetchUsers();
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Provisioning failed.");
+    }
+  }
+
   const handleToggle = (userId: string, permission: string) => {
-      setUsers(prev => prev.map(u => {
-          if (u.id === userId) {
-              return { ...u, permissions: { ...u.permissions, [permission]: !u.permissions[permission] } };
-          }
-          return u;
-      }));
-      // In production, this would call a PATCH API
+      // In production, this would call a PATCH /api/users
+      alert("Permission PATCH logic required for this row.");
   };
 
   return (
@@ -36,7 +61,10 @@ export default function GovernancePage() {
                 <h1 className="text-4xl font-serif font-medium tracking-tight underline decoration-aic-gold underline-offset-8">Institutional Control</h1>
                 <p className="text-gray-500 font-serif mt-4 italic text-lg max-w-xl">Super-Admin Governance: Managing team access, roles, and functional permissions across the AIC ecosystem.</p>
             </div>
-            <button className="bg-white text-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-colors">
+            <button 
+                onClick={handleProvision}
+                className="bg-white text-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-colors"
+            >
                 + Provision New Account
             </button>
         </div>
@@ -63,14 +91,13 @@ export default function GovernancePage() {
                     <tr>
                         <th className="p-6 font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest">User Details</th>
                         <th className="p-6 font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest">Assigned Role</th>
-                        <th className="p-6 font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">Can Publish</th>
-                        <th className="p-6 font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">Can Verify</th>
-                        <th className="p-6 text-right font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                        <th className="p-6 font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest text-center">Permissions</th>
+                        <th className="p-6 text-right font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest">Last Access</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
                     {loading ? (
-                        <tr><td colSpan={5} className="p-12 text-center text-gray-500 font-serif">Accessing personnel database...</td></tr>
+                        <tr><td colSpan={4} className="p-12 text-center text-gray-500 font-serif">Accessing personnel database...</td></tr>
                     ) : users.map((user, i) => (
                         <motion.tr 
                             key={user.id}
@@ -81,27 +108,30 @@ export default function GovernancePage() {
                         >
                             <td className="p-6">
                                 <p className="font-bold text-white text-lg leading-none mb-1">
-                                    {user.name} {user.is_super_admin && <span className="text-[8px] text-aic-gold border border-aic-gold/20 px-1 ml-2">SA</span>}
+                                    {user.name} {user.is_super_admin && <span className="text-[8px] text-aic-gold border border-aic-gold/20 px-1 ml-2 font-mono">SUPER</span>}
                                 </p>
                                 <p className="text-[10px] font-mono text-gray-500">{user.email}</p>
                             </td>
                             <td className="p-6">
-                                <span className="text-[9px] font-mono uppercase text-white bg-white/10 px-2 py-0.5 rounded">{user.role}</span>
+                                <span className={`text-[9px] font-mono uppercase px-2 py-0.5 rounded border ${
+                                    user.role === 'ADMIN' ? 'border-aic-gold text-aic-gold bg-aic-gold/5' : 'border-white/10 text-gray-400'
+                                }`}>
+                                    {user.role}
+                                </span>
                             </td>
                             <td className="p-6 text-center">
-                                <button 
-                                    onClick={() => handleToggle(user.id, 'can_publish')}
-                                    className={`w-4 h-4 rounded border transition-colors mx-auto ${user.permissions.can_publish ? 'bg-aic-gold border-aic-gold' : 'border-white/20'}`}
-                                />
-                            </td>
-                            <td className="p-6 text-center">
-                                <button 
-                                    onClick={() => handleToggle(user.id, 'can_verify')}
-                                    className={`w-4 h-4 rounded border transition-colors mx-auto ${user.permissions.can_verify ? 'bg-aic-gold border-aic-gold' : 'border-white/20'}`}
-                                />
+                                <div className="flex justify-center gap-2">
+                                    {Object.entries(user.permissions || {}).map(([key, val]) => (
+                                        <span key={key} className={`text-[7px] font-mono px-1 border ${val ? 'border-green-500/20 text-green-500' : 'border-red-500/20 text-red-500'}`}>
+                                            {key.replace('can_', '')}
+                                        </span>
+                                    ))}
+                                </div>
                             </td>
                             <td className="p-6 text-right">
-                                <span className="text-[9px] font-mono font-bold text-green-400 uppercase tracking-widest">Active</span>
+                                <span className="text-[9px] font-mono text-gray-500 uppercase">
+                                    {user.last_login ? new Date(user.last_login).toLocaleString() : 'Never'}
+                                </span>
                             </td>
                         </motion.tr>
                     ))}

@@ -45,3 +45,34 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  const session: any = await getSession();
+
+  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const { id, status, title, content } = body;
+
+    if (!id) return NextResponse.json({ error: 'Post ID required' }, { status: 400 });
+
+    const result = await query(
+      `UPDATE posts 
+       SET status = COALESCE($1, status), 
+           title = COALESCE($2, title),
+           content = COALESCE($3, content),
+           published_at = CASE WHEN $1 = 'PUBLISHED' AND published_at IS NULL THEN NOW() ELSE published_at END,
+           updated_at = NOW()
+       WHERE id = $4 RETURNING *`,
+      [status, title, content, id]
+    );
+
+    return NextResponse.json({ success: true, post: result.rows[0] });
+  } catch (error) {
+    console.error('HQ Post Update Error:', error);
+    return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
+  }
+}
