@@ -131,9 +131,19 @@ export default function AssessmentQuiz() {
       {!showResult ? (
         <div className="relative">
           <div className="mb-12 flex items-center justify-between border-b border-aic-black/5 pb-6">
-            <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-[0.3em]">
-              Question {currentStep + 1} / {questions.length}
-            </span>
+            <div className="flex items-center gap-4">
+                {currentStep > 0 && (
+                    <button 
+                        onClick={() => setCurrentStep(currentStep - 1)}
+                        className="text-[10px] font-mono font-bold text-gray-400 hover:text-aic-black transition-colors uppercase tracking-widest"
+                    >
+                        ← Back
+                    </button>
+                )}
+                <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-[0.3em]">
+                Question {currentStep + 1} / {questions.length}
+                </span>
+            </div>
             <div className="flex gap-1">
                 {questions.map((_, i) => (
                     <div key={i} className={`h-1 w-4 transition-colors ${i <= currentStep ? 'bg-aic-black' : 'bg-aic-black/5'}`} />

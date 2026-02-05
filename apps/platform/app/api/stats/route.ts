@@ -54,20 +54,30 @@ export async function GET() {
         }
     });
 
-    // Update the organization's score in the background if it differs
-    const roundedScore = Math.round(calculatedScore);
-    if (roundedScore !== org.integrity_score) {
-        await query('UPDATE organizations SET integrity_score = $1 WHERE id = $2', [roundedScore, orgId]);
+    // 3. Apply Penalty for unresolved Citizen Appeals (Incidents)
+    const incidentResult = await query(
+        "SELECT count(*) FROM incidents WHERE org_id = $1 AND status = 'OPEN'",
+        [orgId]
+    );
+    const openIncidents = parseInt(incidentResult.rows[0].count);
+    const penalty = openIncidents * 5; // -5 points per open incident
+
+    const finalScore = Math.max(0, Math.round(calculatedScore) - penalty);
+
+    // Update the organization's score if it differs
+    if (finalScore !== org.integrity_score) {
+        await query('UPDATE organizations SET integrity_score = $1 WHERE id = $2', [finalScore, orgId]);
     }
 
     return NextResponse.json({
       orgName: org.name,
       orgId: orgId,
       tier: org.tier,
-      score: roundedScore,
+      score: finalScore,
+      openIncidents: openIncidents,
       totalRequirements: requirements.length,
       verifiedRequirements: requirements.filter(r => r.status === 'VERIFIED').length,
-      status: roundedScore === 100 ? 'CERTIFIED' : 'ACTIVE_AUDIT'
+      status: finalScore === 100 ? 'CERTIFIED' : 'ACTIVE_AUDIT'
     });
   } catch (error) {
     console.error('Stats API Error:', error);

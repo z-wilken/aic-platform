@@ -40,6 +40,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     { label: 'Audit Logs', href: '/audits', section: 'Monitoring' },
     { label: 'Compliance Reports', href: '/reports', section: 'Monitoring' },
     { label: 'Roadmap', href: '/roadmap', section: 'Certification' },
+    { label: 'Incidents', href: '/incidents', section: 'Certification' },
     { label: 'Certificate', href: '/certificate', section: 'Certification' },
   ];
 

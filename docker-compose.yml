@@ -1,28 +1,96 @@
 version: '3.8'
 
 services:
-  # The Database
+  # 1. The Database
   db:
     image: postgres:15-alpine
     container_name: aic_db
     environment:
-      POSTGRES_USER: aic_admin
-      POSTGRES_PASSWORD: aic_password_secure
-      POSTGRES_DB: aic_platform
+      POSTGRES_USER: ${POSTGRES_USER:-aic_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aic_password_secure}
+      POSTGRES_DB: ${POSTGRES_DB:-aic_platform}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # Admin Panel for Database (Optional, good for demos/debugging)
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: aic_pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@aic.co.za
-      PGADMIN_DEFAULT_PASSWORD: admin
+  # 2. The Python Audit Engine
+  engine:
+    build: 
+      context: ./apps/engine
+    container_name: aic_engine
     ports:
-      - "5050:80"
+      - "8000:8000"
+    environment:
+      - PORT=8000
+
+  # 3. Marketing Web (Port 3000)
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: web
+    container_name: aic_web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - POSTGRES_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      - db
+
+  # 4. Client Platform (Port 3001)
+  platform:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: platform
+    container_name: aic_platform
+    ports:
+      - "3001:3000"
+    environment:
+      - NEXTAUTH_URL=http://localhost:3001
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - ENGINE_URL=http://engine:8000
+      - POSTGRES_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      - db
+      - engine
+
+  # 5. Audit Factory / Admin (Port 3002)
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: admin
+    container_name: aic_admin_portal
+    ports:
+      - "3002:3000"
+    environment:
+      - NEXTAUTH_URL=http://localhost:3002
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - POSTGRES_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      - db
+
+  # 6. Growth HQ (Port 3004)
+  hq:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: hq
+    container_name: aic_hq
+    ports:
+      - "3004:3000"
+    environment:
+      - NEXTAUTH_URL=http://localhost:3004
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - POSTGRES_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     depends_on:
       - db
 
