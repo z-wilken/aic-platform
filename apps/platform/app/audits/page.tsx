@@ -110,29 +110,43 @@ export default function AuditsPage() {
                             onClick={async () => {
                                 setIsRunning(true);
                                 try {
-                                    const sampleIntersectionalData = {
-                                        "protected_attributes": ["race", "gender"],
-                                        "outcome_variable": "hired",
-                                        "min_group_size": 1,
-                                        "rows": [
-                                            {"race": "A", "gender": "M", "hired": 1},
-                                            {"race": "A", "gender": "F", "hired": 0},
-                                            {"race": "B", "gender": "M", "hired": 1},
-                                            {"race": "B", "gender": "F", "hired": 1}
-                                        ]
+                                    const samplePrivacyData = {
+                                        "columns": ["user_id", "race", "biometric_data", "transaction_amount", "religious_affiliation"]
                                     };
-                                    const res = await fetch('/api/audit-logs', {
-                                        method: 'PATCH',
+                                    const res = await fetch('/api/audit-logs/privacy', {
+                                        method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ systemName: 'Global Hiring Engine', data: sampleIntersectionalData, type: 'INTERSECTIONAL' })
+                                        body: JSON.stringify({ systemName: 'Customer Data Lake', data: samplePrivacyData })
                                     });
-                                    if (res.ok) { alert("Intersectional Bias Audit complete."); fetchLogs(); }
+                                    if (res.ok) { alert("Privacy Schema Audit complete. SPI risks identified."); fetchLogs(); }
                                 } finally { setIsRunning(false); }
                             }}
                             disabled={isRunning}
-                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:text-white transition-all disabled:opacity-50"
                         >
-                            RUN INTERSECTIONAL AUDIT
+                            RUN PRIVACY AUDIT
+                        </button>
+                        <button 
+                            onClick={async () => {
+                                setIsRunning(true);
+                                try {
+                                    const sampleLaborData = {
+                                        "total_decisions": 1000,
+                                        "human_interventions": 150,
+                                        "human_overrides": 45
+                                    };
+                                    const res = await fetch('/api/audit-logs/labor', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ systemName: 'Automated Hiring Bot', data: sampleLaborData })
+                                    });
+                                    if (res.ok) { alert("Labor Agency audit complete. Automation density recorded."); fetchLogs(); }
+                                } finally { setIsRunning(false); }
+                            }}
+                            disabled={isRunning}
+                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all disabled:opacity-50"
+                        >
+                            RUN LABOR AGENCY AUDIT
                         </button>
                     </div>
                 </div>

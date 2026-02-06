@@ -1,135 +1,134 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ReactNode } from 'react'
-import { motion } from 'framer-motion'
-import { useSession } from 'next-auth/react'
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
-interface HQShellProps {
-  children: ReactNode
-}
-
-export default function HQShell({ children }: HQShellProps) {
-  const pathname = usePathname()
-  const { data: session }: any = useSession()
-
-  const permissions = session?.user?.permissions || {}
-  const isSuperAdmin = session?.user?.isSuperAdmin
-
-  const navGroups = [
-    {
-        label: 'Intelligence',
-        items: [
-            { href: '/', label: 'Command Center', icon: '🏠', permission: 'view_dashboard' },
+export default function HQShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  
+  const departments = [
+    { 
+        id: 'governance', 
+        label: 'Governance', 
+        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
+        routes: [
+            { label: 'Regulatory Stack', href: '/governance/legal' },
+            { label: 'Information Regulator', href: '/governance/regulator' },
+            { label: 'Constitutional Rights', href: '/governance/constitution' }
         ]
     },
-    {
-        label: 'Growth HQ',
-        items: [
-            { href: '/crm', label: 'Outreach CRM', icon: '🎯', permission: 'view_crm' },
-            { href: '/cms', label: 'Content CMS', icon: '✍️', permission: 'view_cms' },
-            { href: '/subscribers', label: 'Subscribers', icon: '📬', permission: 'view_cms' },
+    { 
+        id: 'operations', 
+        label: 'Operations', 
+        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>,
+        routes: [
+            { label: 'Audit Queue', href: '/audits' },
+            { label: 'Quality Control', href: '/operations/qc' },
+            { label: 'Verification Board', href: '/verification' }
         ]
     },
-    {
-        label: 'Audit Factory',
-        items: [
-            { href: '/organizations', label: 'Managed Orgs', icon: '🏢', permission: 'view_audits' },
-            { href: '/audits', label: 'Audit Pipeline', icon: '🔍', permission: 'view_audits' },
-            { href: '/verification', label: 'Queue', icon: '✅', permission: 'verify_evidence' },
+    { 
+        id: 'growth', 
+        label: 'Growth', 
+        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>,
+        routes: [
+            { label: 'Enterprise CRM', href: '/crm' },
+            { label: 'Pipeline Velocity', href: '/growth/revenue' },
+            { label: 'Insurance Partners', href: '/growth/insurance' }
         ]
     },
-    {
-        label: 'Institutional',
-        items: [
-            { href: '/training', label: 'Academy', icon: '🎓', permission: 'view_academy' },
-            { href: '/governance', label: 'Governance', icon: '⚖️', superOnly: true },
-            { href: '/settings', label: 'Settings', icon: '⚙️', permission: 'view_dashboard' },
+    { 
+        id: 'intelligence', 
+        label: 'Intelligence', 
+        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
+        routes: [
+            { label: 'Audit Engine Ops', href: '/intelligence/engine' },
+            { label: 'XAI Research', href: '/intelligence/xai' },
+            { label: 'Data Lake', href: '/intelligence/data' }
+        ]
+    },
+    { 
+        id: 'people', 
+        label: 'People', 
+        icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+        routes: [
+            { label: 'Auditor Training', href: '/training' },
+            { label: 'Performance', href: '/people/performance' },
+            { label: 'HR Registry', href: '/people/hr' }
         ]
     }
-  ]
-
-  const canSee = (item: any) => {
-      if (isSuperAdmin) return true;
-      if (item.superOnly) return false;
-      if (!item.permission) return true;
-      return permissions[item.permission] === true;
-  }
+  ];
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] text-white flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-black border-r border-white/5 flex flex-col fixed h-full z-20">
-        <div className="p-8 pb-4">
-          <Link href="/" className="font-serif text-2xl font-bold tracking-tighter">
-            AIC<span className="text-aic-gold">HQ</span>
-          </Link>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-aic-gold animate-pulse"></span>
-            <span className="text-[8px] font-mono text-gray-500 uppercase tracking-[0.3em]">Unified Command</span>
-          </div>
+    <div className="min-h-screen bg-[#050505] text-white flex font-mono uppercase tracking-[0.15em] text-[9px]">
+      {/* Universal HQ Navigation */}
+      <aside className="w-20 bg-[#000] border-r border-white/5 flex flex-col items-center py-8 gap-8 fixed h-full z-30">
+        <div className="h-10 w-10 rounded-xl bg-aic-gold/10 border border-aic-gold/30 flex items-center justify-center text-aic-gold font-serif font-bold text-xl mb-8">A</div>
+        {departments.map((dept) => (
+            <Link 
+                key={dept.id} 
+                href={dept.routes[0].href}
+                className={`p-4 rounded-2xl transition-all duration-500 hover:bg-white/5 group relative ${pathname.startsWith('/' + dept.id) ? 'bg-aic-gold/10 text-aic-gold border border-aic-gold/20 shadow-[0_0_30px_rgba(212,175,55,0.1)]' : 'text-gray-600'}`}
+            >
+                {dept.icon}
+                <span className="absolute left-full ml-4 px-3 py-1 bg-aic-gold text-black rounded font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                    {dept.label}
+                </span>
+            </Link>
+        ))}
+      </aside>
+
+      {/* Department Sidebar */}
+      <aside className="w-64 ml-20 bg-[#080808] border-r border-white/5 p-8 flex flex-col fixed h-full z-20 shadow-2xl">
+        <div className="mb-12">
+            <p className="text-[7px] text-gray-600 uppercase tracking-[0.4em] mb-2">AIC_CORPORATE_OS</p>
+            <h2 className="text-xs font-bold text-white tracking-[0.3em]">
+                {departments.find(d => pathname.includes(d.id))?.label.toUpperCase() || 'COMMAND'}
+            </h2>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-4 py-8 space-y-8">
-          {navGroups.map((group) => {
-              const visibleItems = group.items.filter(canSee);
-              if (visibleItems.length === 0) return null;
-
-              return (
-                  <div key={group.label} className="space-y-2">
-                      <h3 className="px-4 text-[8px] font-mono font-bold text-gray-600 uppercase tracking-[0.4em] mb-4">{group.label}</h3>
-                      {visibleItems.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`flex items-center gap-4 px-4 py-3 transition-all rounded-lg group ${
-                            pathname === item.href
-                              ? 'bg-aic-gold text-black'
-                              : 'text-gray-500 hover:text-white hover:bg-white/5'
-                          }`}
-                        >
-                          <span className="text-lg">{item.icon}</span>
-                          <span className="text-[10px] font-mono font-bold uppercase tracking-widest">{item.label}</span>
-                        </Link>
-                      ))}
-                  </div>
-              )
-          })}
+        <nav className="space-y-2 flex-1">
+            {departments.find(d => pathname.includes(d.id))?.routes.map((route) => (
+                <Link
+                    key={route.href}
+                    href={route.href}
+                    className={`block py-3 px-4 rounded-lg transition-all border ${
+                        pathname === route.href
+                        ? 'bg-white/5 border-white/10 text-white shadow-xl'
+                        : 'border-transparent text-gray-500 hover:text-gray-300 hover:bg-white/[0.02]'
+                    }`}
+                >
+                    {route.label}
+                </Link>
+            ))}
         </nav>
 
-        <div className="p-8 border-t border-white/5 bg-black flex items-center gap-4">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-aic-gold to-yellow-700 flex items-center justify-center font-bold text-black text-xs uppercase">
-                {session?.user?.name?.substring(0, 1)}
-            </div>
-            <div className="overflow-hidden">
-                <p className="text-[10px] font-mono font-bold uppercase tracking-widest truncate">{session?.user?.name || 'Loading...'}</p>
-                <p className="text-[8px] font-mono text-gray-500 uppercase">{isSuperAdmin ? 'Super Admin' : session?.user?.role}</p>
-            </div>
+        <div className="mt-auto pt-8 border-t border-white/5 opacity-30">
+            <p className="text-[6px] tracking-[0.5em] text-gray-500">ENCRYPTED_SESSION_v4.0</p>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 ml-64 min-h-screen flex flex-col">
-        <header className="h-20 border-b border-white/5 flex items-center justify-between px-12 sticky top-0 bg-black/50 backdrop-blur-xl z-10">
-            <h2 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">
-                System Operational
-            </h2>
-            <div className="flex gap-8 items-center">
-                <div className="flex flex-col items-end">
-                    <span className="text-[8px] font-mono text-gray-500 uppercase">Latency</span>
-                    <span className="text-[10px] font-mono text-green-400">14ms</span>
+      {/* Content Engine */}
+      <main className="flex-1 ml-[20rem] min-h-screen bg-[#050505]">
+        <header className="sticky top-0 z-10 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5 px-12 py-8 flex justify-between items-center">
+            <div className="flex items-center gap-4">
+                <div className="h-1.5 w-1.5 rounded-full bg-aic-gold animate-pulse shadow-[0_0_10px_rgba(212,175,55,0.8)]"></div>
+                <h3 className="text-[10px] font-bold tracking-[0.4em] text-white">INTER_COMPANY_SYNC_ACTIVE</h3>
+            </div>
+            <div className="flex items-center gap-8">
+                <div className="text-right">
+                    <p className="text-[8px] text-gray-500">USER_TOKEN</p>
+                    <p className="text-[9px] text-white font-bold">Z. WILKEN_ADMIN</p>
                 </div>
-                <button className="bg-white text-black px-4 py-2 font-mono text-[9px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-colors">
-                    Search Registry
-                </button>
+                <div className="h-10 w-10 rounded-full bg-zinc-900 border border-white/10"></div>
             </div>
         </header>
-
-        <div className="p-12 flex-1 overflow-auto bg-[radial-gradient(circle_at_top_right,_rgba(212,175,55,0.02),_transparent)]">
-          {children}
+        <div className="p-12 max-w-7xl mx-auto">
+            {children}
         </div>
       </main>
     </div>
-  )
+  );
 }

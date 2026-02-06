@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Crimson_Pro, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import HQShell from "./components/HQShell";
 
 const crimsonPro = Crimson_Pro({
   variable: "--font-crimson-pro",
@@ -18,8 +19,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AIC | HQ Internal",
-  description: "AI Integrity Certification - Growth & Content Command Center.",
+  title: "AIC HQ | Corporate Operating System",
+  description: "Internal command and control for AI Integrity Certification.",
 };
 
 export default function RootLayout({
@@ -30,10 +31,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} antialiased bg-black text-white font-sans`}
+        className={`${crimsonPro.variable} ${ibmPlexMono.variable} antialiased bg-black text-white font-sans selection:bg-aic-gold selection:text-black`}
       >
         <Providers>
-            {children}
+            <HQShell>
+                {children}
+            </HQShell>
         </Providers>
       </body>
     </html>

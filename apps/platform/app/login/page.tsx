@@ -2,18 +2,40 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call delay for realism
-    setTimeout(() => {
-        router.push('/'); // Redirect to dashboard
-    }, 1500);
+    setError('');
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+        const result = await signIn('credentials', {
+            email,
+            password,
+            redirect: false,
+        });
+
+        if (result?.error) {
+            setError('Invalid credentials or insufficient permissions.');
+            setIsLoading(false);
+        } else {
+            router.push('/');
+        }
+    } catch (err) {
+        setError('A system error occurred. Please try again later.');
+        setIsLoading(false);
+    }
   };
 
   return (
@@ -23,70 +45,72 @@ export default function LoginPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-aic-gold/5 rounded-full blur-3xl animate-pulse"></div>
 
         <div className="relative z-10 w-full max-w-md p-8">
-            <div className="glass-panel p-8 rounded-2xl shadow-2xl border border-white/10 bg-black/40 backdrop-blur-xl">
-                <div className="text-center mb-8">
-                    <h1 className="font-serif text-3xl font-bold text-white mb-2">AIC PULSE<span className="text-aic-gold">.</span></h1>
-                    <p className="text-gray-400 font-mono text-xs uppercase tracking-widest">Secure Client Access</p>
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass-panel p-12 rounded-[2.5rem] shadow-2xl border border-white/10 bg-black/40 backdrop-blur-xl"
+            >
+                <div className="text-center mb-12">
+                    <h1 className="font-serif text-3xl font-bold text-white mb-2 tracking-tight">AIC PULSE<span className="text-aic-gold">.</span></h1>
+                    <p className="text-gray-500 font-mono text-[10px] uppercase tracking-[0.3em]">Secure Client Access</p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-300 font-mono">Email Address</label>
-                        <div className="mt-2">
-                            <input 
-                                id="email" 
-                                name="email" 
-                                type="email" 
-                                autoComplete="email" 
-                                required 
-                                className="block w-full rounded-md border-0 bg-white/5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-aic-gold sm:text-sm sm:leading-6 pl-3"
-                                placeholder="admin@enterprise.co.za"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-300 font-mono">Password</label>
-                        <div className="mt-2">
-                            <input 
-                                id="password" 
-                                name="password" 
-                                type="password" 
-                                autoComplete="current-password" 
-                                required 
-                                className="block w-full rounded-md border-0 bg-white/5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-aic-gold sm:text-sm sm:leading-6 pl-3"
-                                placeholder="••••••••••••"
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <button 
-                            type="submit" 
-                            disabled={isLoading}
-                            className="flex w-full justify-center rounded-md bg-aic-gold px-3 py-2 text-sm font-semibold leading-6 text-aic-black shadow-sm hover:bg-yellow-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-aic-gold transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed font-mono uppercase tracking-wide"
+                <AnimatePresence>
+                    {error && (
+                        <motion.div 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-mono text-center"
                         >
-                            {isLoading ? (
-                                <span className="flex items-center gap-2">
-                                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-aic-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Authenticating...
-                                </span>
-                            ) : 'Sign In'}
-                        </button>
+                            {error}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <form onSubmit={handleLogin} className="space-y-8">
+                    <div>
+                        <label htmlFor="email" className="block text-[10px] font-bold text-gray-400 font-mono uppercase tracking-widest mb-3">Institutional Email</label>
+                        <input 
+                            id="email" 
+                            name="email" 
+                            type="email" 
+                            required 
+                            className="w-full bg-white/5 border-b border-white/10 py-3 text-white focus:border-aic-gold outline-none font-serif text-sm transition-all"
+                            placeholder="compliance@bank.co.za"
+                        />
                     </div>
+
+                    <div>
+                        <label htmlFor="password" className="block text-[10px] font-bold text-gray-400 font-mono uppercase tracking-widest mb-3">Access Key</label>
+                        <input 
+                            id="password" 
+                            name="password" 
+                            type="password" 
+                            required 
+                            className="w-full bg-white/5 border-b border-white/10 py-3 text-white focus:border-aic-gold outline-none font-serif text-sm transition-all"
+                            placeholder="••••••••"
+                        />
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="w-full bg-aic-gold text-aic-black py-4 font-mono font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-white transition-all duration-300 disabled:opacity-50 shadow-xl"
+                    >
+                        {isLoading ? 'AUTHORIZING...' : 'INITIALIZE SESSION'}
+                    </button>
                 </form>
 
-                <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-500">
+                <div className="mt-12 text-center">
+                    <p className="text-[10px] font-mono text-gray-600 uppercase tracking-widest leading-relaxed">
                         Protected by AIC Secure Auth v2.1 <br/>
-                        <a href="#" className="text-aic-gold hover:text-white transition-colors">Forgot password?</a>
+                        Continuous integrity monitoring.
                     </p>
                 </div>
-            </div>
+            </motion.div>
         </div>
     </div>
   );
 }
+

@@ -4,9 +4,10 @@ import { getSession } from '../../../../lib/auth';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session: any = await getSession();
     const userId = session?.user?.id;
     const { status, resolution_details } = await request.json();
@@ -15,7 +16,7 @@ export async function PATCH(
       `UPDATE incidents 
        SET status = $1, resolution_details = $2, human_reviewer_id = $3, updated_at = NOW() 
        WHERE id = $4 RETURNING *`,
-      [status, resolution_details, userId, params.id]
+      [status, resolution_details, userId, id]
     );
 
     if (result.rows.length === 0) {
@@ -30,7 +31,7 @@ export async function PATCH(
             result.rows[0].org_id, 
             'Human Accountability Board', 
             'INCIDENT_RESOLUTION', 
-            JSON.stringify({ incident_id: params.id, status, reviewer: userId }),
+            JSON.stringify({ incident_id: id, status, reviewer: userId }),
             'SHA256-RESOLUTION-TRAIL'
         ]
     );

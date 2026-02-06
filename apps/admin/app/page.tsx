@@ -165,9 +165,11 @@ export default function AdminDashboard() {
                 <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">CRM Integration Feed</h3>
                 <div className="space-y-4">
                     {(data?.recentLeads || []).map((lead: any) => (
-                        <div key={lead.id} className="flex items-center justify-between p-6 bg-black/40 border border-white/5 rounded-2xl">
+                        <div key={lead.id} className="flex items-center justify-between p-6 bg-black/40 border border-white/5 rounded-2xl group hover:border-blue-500/30 transition-all">
                             <div className="flex items-center gap-4">
-                                <span className="text-lg">🎯</span>
+                                <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
                                 <div>
                                     <p className="text-sm text-white font-serif">{lead.email}</p>
                                     <p className="text-[10px] font-mono text-gray-500 uppercase">{lead.source} • Score: {lead.score}%</p>

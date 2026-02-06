@@ -4,7 +4,7 @@ import { getSession } from '../../../lib/auth';
 
 export async function GET() {
   try {
-    const session = await getSession();
+    const session: any = await getSession();
     
     // For demo/development, fallback to the demo organization ID if no session
     const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';

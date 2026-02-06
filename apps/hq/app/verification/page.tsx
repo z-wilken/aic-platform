@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import HQShell from '../components/HQShell'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function VerificationQueue() {
@@ -17,7 +16,6 @@ export default function VerificationQueue() {
   };
 
   return (
-    <HQShell>
       <div className="max-w-5xl space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-white">AI-Assisted Verification Queue</h1>
@@ -82,6 +80,5 @@ export default function VerificationQueue() {
           </p>
         </div>
       </div>
-    </HQShell>
   );
 }

@@ -4,14 +4,39 @@ from app.api.v1.schemas.analysis import (
     EmpathyRequest, CorrectionValidationRequest, CorrectionRequest, DisclosureRequest,
     ComprehensiveAuditRequest, AssessmentRequest, TierAssessmentRequest
 )
+from app.schemas.integrity import IntegrityScoreRequest, IntegrityScoreResponse
 from app.services.bias_analysis import (
     analyze_disparate_impact, analyze_equalized_odds, analyze_intersectional,
     analyze_statistical_significance, explain_decision, analyze_empathy,
     validate_correction_process, submit_correction_request, analyze_ai_disclosure,
     comprehensive_audit, assess_organization, assess_tier, list_frameworks
 )
+from app.services.scoring import calculate_integrity_score
+from app.services.privacy_audit import audit_privacy
+from app.services.labor_audit import audit_labor
+from pydantic import BaseModel
 
 router = APIRouter()
+
+class PrivacyRequest(BaseModel):
+    columns: List[str]
+
+class LaborRequest(BaseModel):
+    total_decisions: int
+    human_interventions: int
+    human_overrides: int
+
+@router.post("/audit/privacy")
+def get_privacy_audit(request: PrivacyRequest):
+    return audit_privacy(request.columns)
+
+@router.post("/audit/labor")
+def get_labor_audit(request: LaborRequest):
+    return audit_labor(request.total_decisions, request.human_interventions, request.human_overrides)
+
+@router.post("/integrity/calculate", response_model=IntegrityScoreResponse)
+def get_integrity_score(request: IntegrityScoreRequest):
+    return calculate_integrity_score(request)
 
 @router.post("/analyze")
 def disparate_impact(request: BiasAuditRequest):

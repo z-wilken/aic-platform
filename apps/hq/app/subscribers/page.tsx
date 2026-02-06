@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import HQShell from '../components/HQShell'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function SubscribersPage() {
@@ -22,7 +21,6 @@ export default function SubscribersPage() {
   }, [])
 
   return (
-    <HQShell>
       <div className="max-w-5xl space-y-12">
         <div className="flex justify-between items-end">
             <div>
@@ -83,6 +81,5 @@ export default function SubscribersPage() {
             </table>
         </div>
       </div>
-    </HQShell>
   )
 }

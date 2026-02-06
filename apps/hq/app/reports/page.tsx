@@ -1,7 +1,5 @@
 'use client'
 
-import HQShell from '../components/HQShell'
-
 export default function ReportsPage() {
   const reportCategories = [
     { name: 'Regulatory Submissions', count: 12, lastGenerated: '2026-02-01' },
@@ -10,7 +8,6 @@ export default function ReportsPage() {
   ];
 
   return (
-    <HQShell>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-white">Institutional Reporting</h1>
         <p className="text-gray-500 font-serif italic mb-8">System-wide performance and compliance documentation.</p>
@@ -30,6 +27,5 @@ export default function ReportsPage() {
             ))}
         </div>
       </div>
-    </HQShell>
   )
 }

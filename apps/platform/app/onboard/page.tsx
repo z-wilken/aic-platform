@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
-export default function OnboardPage() {
+function OnboardContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -124,3 +124,12 @@ export default function OnboardPage() {
         </div>
     );
 }
+
+export default function OnboardPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-aic-paper flex items-center justify-center text-gray-400 font-serif italic">Loading secure invitation...</div>}>
+            <OnboardContent />
+        </Suspense>
+    );
+}
+

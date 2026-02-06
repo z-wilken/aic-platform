@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, use } from 'react';
-import HQShell from '../../components/HQShell';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AuditsDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
@@ -51,7 +50,6 @@ export default function AuditsDetailPage({ params: paramsPromise }: { params: Pr
     };
 
     return (
-        <HQShell>
             <div className="max-w-5xl mx-auto space-y-12">
                 <div className="flex justify-between items-end">
                     <div>
@@ -126,6 +124,5 @@ export default function AuditsDetailPage({ params: paramsPromise }: { params: Pr
                     ))}
                 </div>
             </div>
-        </HQShell>
     );
 }
