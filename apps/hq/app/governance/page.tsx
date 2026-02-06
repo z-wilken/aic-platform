@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import HQShell from '../components/HQShell'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function GovernancePage() {
@@ -83,7 +82,6 @@ export default function GovernancePage() {
   ];
 
   return (
-    <HQShell>
       <div className="max-w-6xl space-y-12">
         <div className="flex justify-between items-end border-b border-white/5 pb-8">
             <div>
@@ -160,6 +158,5 @@ export default function GovernancePage() {
             </table>
         </div>
       </div>
-    </HQShell>
   )
 }

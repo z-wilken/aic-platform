@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import DashboardShell from '../components/DashboardShell';
+import DashboardShell from '../../components/DashboardShell';
 import { motion } from 'framer-motion';
 
 export default function TrustRegistryPage() {

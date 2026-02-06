@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import HQShell from '../components/HQShell'
 import Link from 'next/link'
 
 export default function OrganizationsPage() {
@@ -71,7 +70,6 @@ export default function OrganizationsPage() {
   };
 
   return (
-    <HQShell>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Managed Organizations</h1>
@@ -155,7 +153,5 @@ export default function OrganizationsPage() {
           </table>
         </div>
       </div>
-        </HQShell>
-      )
-    }
-    
+  )
+}    

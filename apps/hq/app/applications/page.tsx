@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import HQShell from '../components/HQShell'
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<any[]>([])
@@ -21,7 +20,6 @@ export default function ApplicationsPage() {
   }, [])
 
   return (
-    <HQShell>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-white">Alpha Program Applications</h1>
         <p className="text-gray-500 font-serif italic mb-8">Review incoming requests for the AIC Alpha Cohort 1.</p>
@@ -61,6 +59,5 @@ export default function ApplicationsPage() {
           </table>
         </div>
       </div>
-    </HQShell>
   )
 }

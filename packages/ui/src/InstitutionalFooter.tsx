@@ -1,0 +1,48 @@
+'use client';
+
+import React from 'react';
+
+export const InstitutionalFooter = () => {
+    return (
+        <footer className="bg-[#050505] text-white py-24 border-t border-white/5 font-mono uppercase tracking-[0.2em] text-[9px] relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none select-none">
+                <div className="text-[15vw] font-bold leading-none">AIC</div>
+            </div>
+            
+            <div className="max-w-7xl mx-auto px-12 grid grid-cols-1 md:grid-cols-4 gap-16 relative z-10">
+                <div className="space-y-8">
+                    <div className="text-xl font-serif font-bold tracking-tighter text-white">AIC<span className="text-aic-gold">.</span></div>
+                    <p className="text-gray-500 leading-relaxed max-w-xs">
+                        The definitive accountability layer for South African automated systems. POPIA Section 71 Compliance Framework.
+                    </p>
+                </div>
+
+                <div className="space-y-6">
+                    <h4 className="text-aic-gold font-bold">Institutional</h4>
+                    <nav className="flex flex-col gap-4 text-gray-400">
+                        <a href="/about" className="hover:text-white transition-colors">Founder's Vision</a>
+                        <a href="/governance" className="hover:text-white transition-colors">Regulatory Stack</a>
+                        <a href="/registry" className="hover:text-white transition-colors">Certified Registry</a>
+                    </nav>
+                </div>
+
+                <div className="space-y-6">
+                    <h4 className="text-aic-gold font-bold">Technical</h4>
+                    <nav className="flex flex-col gap-4 text-gray-400">
+                        <a href="/engine" className="hover:text-white transition-colors">Audit Engine</a>
+                        <a href="/documentation" className="hover:text-white transition-colors">API References</a>
+                        <a href="/security" className="hover:text-white transition-colors">Data Sovereignty</a>
+                    </nav>
+                </div>
+
+                <div className="space-y-6 text-right">
+                    <h4 className="text-aic-gold font-bold text-right">Jurisdiction</h4>
+                    <p className="text-gray-500">Johannesburg<br />South Africa</p>
+                    <div className="pt-8">
+                        <p className="text-white font-bold tracking-widest">© 2026 AI INTEGRITY</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+};

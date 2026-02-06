@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import HQShell from '../components/HQShell'
 import Link from 'next/link'
 
 export default function AuditsPage() {
@@ -22,7 +21,6 @@ export default function AuditsPage() {
   }, [])
 
   return (
-    <HQShell>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold">Audit Factory Pipeline</h1>
         <p className="text-gray-500 font-serif italic mb-8">Technical verification and oversight monitoring for all certified organizations.</p>
@@ -71,6 +69,5 @@ export default function AuditsPage() {
           </table>
         </div>
       </div>
-    </HQShell>
   )
 }

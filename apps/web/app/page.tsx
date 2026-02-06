@@ -7,6 +7,7 @@ import SectorsSection from './components/Sectors';
 import PulseHighlight from './components/PulseHighlight';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { InstitutionalFooter } from '@aic/ui';
 
 export const metadata: Metadata = {
   title: "AIC | Home - AI Integrity Certification",
@@ -79,40 +80,7 @@ export default function Home() {
 
       <AlphaPreview />
       
-      <footer className="bg-aic-black py-24 text-center text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="text-[20vw] font-bold text-white select-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">ACCOUNTABLE</div>
-        </div>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-            <h2 className="font-serif text-4xl mb-8">The Declaration of Algorithmic Rights</h2>
-            <p className="font-serif italic text-gray-400 max-w-xl mx-auto mb-12 text-lg">
-            "We hold these truths to be self-evident: that no final decision affecting a person’s legal status shall be made solely by a machine."
-            </p>
-            <div className="flex flex-wrap justify-center gap-12 font-mono text-[10px] text-aic-gold uppercase tracking-[0.3em]">
-                <div className="flex flex-col gap-2">
-                    <span className="text-gray-600">Established</span>
-                    <span>2026</span>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <span className="text-gray-600">Headquarters</span>
-                    <span>Johannesburg</span>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <span className="text-gray-600">Scale</span>
-                    <span>Global Standard</span>
-                </div>
-            </div>
-            
-            <div className="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-gray-500 font-mono text-[9px] uppercase tracking-widest">
-                <p>© 2026 AI Integrity Certification. All rights reserved.</p>
-                <div className="flex gap-8">
-                    <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                    <a href="#" className="hover:text-white transition-colors">Documentation</a>
-                </div>
-            </div>
-        </div>
-      </footer>
+      <InstitutionalFooter />
     </main>
   );
 }

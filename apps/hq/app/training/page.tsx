@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import HQShell from '../components/HQShell'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function TrainingPortalPage() {
@@ -15,7 +14,6 @@ export default function TrainingPortalPage() {
   ]
 
   return (
-    <HQShell>
       <div className="max-w-6xl mx-auto space-y-12">
         <div className="flex justify-between items-end border-b border-white/5 pb-8">
             <div>
@@ -92,6 +90,5 @@ export default function TrainingPortalPage() {
             </div>
         </div>
       </div>
-    </HQShell>
-  )
+  );
 }

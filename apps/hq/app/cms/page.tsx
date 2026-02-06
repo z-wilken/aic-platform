@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import HQShell from '../components/HQShell'
 import { motion, AnimatePresence } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
 
@@ -67,7 +66,6 @@ export default function CMSPage() {
   }
 
   return (
-    <HQShell>
       <div className="max-w-6xl mx-auto space-y-12">
         <AnimatePresence mode="wait">
             {!isComposing ? (
@@ -227,6 +225,5 @@ export default function CMSPage() {
             </p>
         </div>
       </div>
-    </HQShell>
-  )
+  );
 }
