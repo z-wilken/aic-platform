@@ -121,11 +121,19 @@ export default function RoadmapPage() {
                                         <p className="text-sm text-gray-500 font-serif leading-relaxed mb-6">
                                             {req.description}
                                         </p>
+
+                                        {req.findings && (
+                                            <div className="mb-6 p-4 bg-aic-paper border-l-2 border-aic-gold rounded-r-lg">
+                                                <p className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest mb-1">Auditor Findings</p>
+                                                <p className="text-xs font-serif italic text-gray-600 leading-relaxed">{req.findings}</p>
+                                            </div>
+                                        )}
+
                                         <button 
                                             onClick={() => req.status === 'PENDING' || req.status === 'REJECTED' ? openUploadModal(req) : null}
                                             className="w-full py-2 border border-aic-black/10 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-black hover:text-white transition-colors disabled:opacity-50"
                                         >
-                                            {req.status === 'PENDING' || req.status === 'REJECTED' ? 'Submit Evidence' : 'Under Review'}
+                                            {req.status === 'PENDING' || req.status === 'REJECTED' ? (req.status === 'REJECTED' ? 'Resubmit Evidence' : 'Submit Evidence') : 'Under Review'}
                                         </button>
                                     </motion.div>
                                 ))}

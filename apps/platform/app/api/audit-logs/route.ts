@@ -66,24 +66,41 @@ export async function PATCH(request: NextRequest) {
       const body = await request.json();
       const { systemName, data, type = 'EQUALIZED_ODDS' } = body;
   
-      if (type !== 'EQUALIZED_ODDS') {
-          return NextResponse.json({ error: 'Unsupported audit type' }, { status: 400 });
-      }
-  
-      // Forward to Python Engine for Equalized Odds (Advanced)
-      const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze/equalized-odds`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+      let engineEndpoint = '';
+      let payload = {};
+      let eventType = '';
+
+      if (type === 'EQUALIZED_ODDS') {
+          engineEndpoint = `${ENGINE_URL}/api/v1/analyze/equalized-odds`;
+          payload = {
               protected_attribute: data.protected_attribute || 'group',
               actual_outcome: data.actual_outcome || 'actual',
               predicted_outcome: data.predicted_outcome || 'predicted',
               data: data.rows || []
-          })
+          };
+          eventType = 'ADVANCED_BIAS_AUDIT';
+      } else if (type === 'INTERSECTIONAL') {
+          engineEndpoint = `${ENGINE_URL}/api/v1/analyze/intersectional`;
+          payload = {
+              protected_attributes: data.protected_attributes || ['race', 'gender'],
+              outcome_variable: data.outcome_variable || 'hired',
+              min_group_size: data.min_group_size || 1,
+              data: data.rows || []
+          };
+          eventType = 'INTERSECTIONAL_BIAS_AUDIT';
+      } else {
+          return NextResponse.json({ error: 'Unsupported audit type' }, { status: 400 });
+      }
+  
+      const engineResponse = await fetch(engineEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
       });
   
       if (!engineResponse.ok) {
-          throw new Error('Engine advanced analysis failed');
+          const errorMsg = await engineResponse.text();
+          throw new Error(`Engine advanced analysis failed: ${errorMsg}`);
       }
   
       const analysisResult = await engineResponse.json();
@@ -91,7 +108,7 @@ export async function PATCH(request: NextRequest) {
       await query(
           `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash) 
            VALUES ($1, $2, $3, $4, $5)`,
-          [orgId, systemName, 'ADVANCED_BIAS_AUDIT', JSON.stringify(analysisResult), 'SHA256-ADV-ODDS']
+          [orgId, systemName, eventType, JSON.stringify(analysisResult), analysisResult.audit_hash || 'SHA256-ADV']
       );
   
       return NextResponse.json({ success: true, analysis: analysisResult });

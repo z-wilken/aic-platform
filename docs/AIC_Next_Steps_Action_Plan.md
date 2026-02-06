@@ -38,32 +38,44 @@
 - Q15 Email Gate for lead capture.
 - Professional PDF Report generation using jsPDF.
 
+### 4. Platform Deepening (Alpha Core)
+✅ **DONE:** 
+- **Client Portal Remediation:** Auditor findings/feedback loop integrated into Roadmap.
+- **Audit Engine Refinement:** Intersectional Bias analysis integrated into Technical Audit logs.
+- **Insurance Risk Dashboard:** Live mapping of Integrity Score to Actuarial Risk Ratings (AAA-C).
+- **Auditor Verification:** Dedicated Admin UI for reviewing evidence and approving/rejecting requirements.
+
+### 5. Governance & Accountability (POPIA Compliance)
+✅ **DONE:** 
+- **Citizen Appeal Portal:** Public-facing interface for individuals to challenge automated decisions (/appeal).
+- **Incident Management:** Dashboard for human review and resolution of citizen appeals.
+- **Trust Registry:** Immutable ledger visualization showing the cryptographic hash trail of all audits.
+- **Integrity Reports:** Automated monthly compliance snapshot generation and archival.
+
 ---
 
 ## 📅 Week-by-Week Plan (Revised)
 
-### Week 1-2: Foundation & Marketing (COMPLETED)
-- [x] Homepage development
-- [x] Tier Framework page
-- [x] About + Contact pages
-- [x] Alpha Program page
-- [x] Quiz engine (20 questions)
-- [x] PDF report generation
+### Week 1-4: Foundation & Platform (COMPLETED)
+- [x] Marketing Site & Quiz Engine
+- [x] Client Portal (Roadmap & Evidence Submission)
+- [x] Audit Engine (Bias & Empathy Analysis)
+- [x] Insurance Dashboard (Actuarial Mapping)
 
-### Week 3: Alpha Outreach Begins (ACTIVE)
+### Week 5: Governance & Accountability (COMPLETED)
+- [x] Citizen Appeal Portal (Public Interface)
+- [x] Incident Management UI (Human Accountability Queue)
+- [x] Trust Registry Visualization (Immutable Ledger)
+- [x] Automated Integrity Reports (Monthly Snapshots)
+
+### Week 6: Certification Readiness & Pilot Launch (ACTIVE)
 | Day | Task | Deliverable |
 |-----|------|-------------|
-| Mon | Finalize prospect list | 20 organizations (Banking, Health, Recruit) |
-| Tue | Personalized outreach | Initial 5 emails sent |
-| Wed-Fri | Discovery calls | Track leads in Admin Dashboard |
-
-### Week 4: Platform Deepening
-| Day | Task | Deliverable |
-|-----|------|-------------|
-| Mon-Tue | Client Portal Remediation | Action items for Alpha participants |
-| Wed | Audit Engine refinement | New bias metrics (Equalized Odds) |
-| Thu | Insurance API mockup | First partner integration path |
-| Fri | Series A Data Room | Collect case studies from first pilots |
+| Mon | Multi-Org Management | ✅ **DONE:** Refactored Admin UI for pilot tracking |
+| Tue | Secure Invite System | ✅ **DONE:** Invite API & Onboarding flow (/onboard) |
+| Wed | Email Automation | ✅ **DONE:** Audit status & Action item notifications |
+| Thu | Final QA & Performance | Stress test Bias Engine with large datasets |
+| Fri | **PILOT GO-LIVE** | First 3 organizations onboarded to Alpha Program |
 
 ---
 
