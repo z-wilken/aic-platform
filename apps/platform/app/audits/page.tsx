@@ -96,7 +96,7 @@ export default function AuditsPage() {
                                     const res = await fetch('/api/audit-logs', {
                                         method: 'PATCH',
                                         headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ systemName: 'Advanced Risk Model', data: sampleOddsData })
+                                        body: JSON.stringify({ systemName: 'Advanced Risk Model', data: sampleOddsData, type: 'EQUALIZED_ODDS' })
                                     });
                                     if (res.ok) { alert("Advanced Equalized Odds audit recorded."); fetchLogs(); }
                                 } finally { setIsRunning(false); }
@@ -105,6 +105,34 @@ export default function AuditsPage() {
                             className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:text-white transition-all disabled:opacity-50"
                         >
                             RUN ADVANCED ODDS AUDIT
+                        </button>
+                        <button 
+                            onClick={async () => {
+                                setIsRunning(true);
+                                try {
+                                    const sampleIntersectionalData = {
+                                        "protected_attributes": ["race", "gender"],
+                                        "outcome_variable": "hired",
+                                        "min_group_size": 1,
+                                        "rows": [
+                                            {"race": "A", "gender": "M", "hired": 1},
+                                            {"race": "A", "gender": "F", "hired": 0},
+                                            {"race": "B", "gender": "M", "hired": 1},
+                                            {"race": "B", "gender": "F", "hired": 1}
+                                        ]
+                                    };
+                                    const res = await fetch('/api/audit-logs', {
+                                        method: 'PATCH',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ systemName: 'Global Hiring Engine', data: sampleIntersectionalData, type: 'INTERSECTIONAL' })
+                                    });
+                                    if (res.ok) { alert("Intersectional Bias Audit complete."); fetchLogs(); }
+                                } finally { setIsRunning(false); }
+                            }}
+                            disabled={isRunning}
+                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                        >
+                            RUN INTERSECTIONAL AUDIT
                         </button>
                     </div>
                 </div>

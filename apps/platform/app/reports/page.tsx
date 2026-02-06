@@ -16,8 +16,10 @@ interface ComplianceReport {
 export default function ReportsPage() {
     const [reports, setReports] = useState<ComplianceReport[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isGenerating, setIsGenerating] = useState(false);
 
-    useEffect(() => {
+    const fetchReports = () => {
+        setLoading(true);
         fetch('/api/reports')
             .then(res => res.json())
             .then(data => {
@@ -28,7 +30,24 @@ export default function ReportsPage() {
                 console.error(err);
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        fetchReports();
     }, []);
+
+    const handleGenerateReport = async () => {
+        setIsGenerating(true);
+        try {
+            const res = await fetch('/api/reports', { method: 'POST' });
+            if (res.ok) {
+                alert("New compliance snapshot generated successfully.");
+                fetchReports();
+            }
+        } finally {
+            setIsGenerating(false);
+        }
+    };
 
     return (
         <DashboardShell>
@@ -38,9 +57,18 @@ export default function ReportsPage() {
                         <h1 className="text-3xl font-serif font-bold text-aic-black underline decoration-aic-gold underline-offset-8">Compliance Archive</h1>
                         <p className="text-gray-500 font-serif mt-4">Official monthly snapshots of your organization's accountability health.</p>
                     </div>
-                    <button className="bg-aic-black text-white px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors">
-                        Download Latest Full Report
-                    </button>
+                    <div className="flex gap-4">
+                        <button 
+                            onClick={handleGenerateReport}
+                            disabled={isGenerating}
+                            className="border border-aic-black text-aic-black px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-black hover:text-white transition-all disabled:opacity-50"
+                        >
+                            {isGenerating ? 'GENERATING...' : 'Generate Snapshot'}
+                        </button>
+                        <button className="bg-aic-black text-white px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors">
+                            Download PDF
+                        </button>
+                    </div>
                 </div>
 
                 <div className="bg-white border border-aic-black/5 rounded-3xl overflow-hidden shadow-sm">

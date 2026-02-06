@@ -1,87 +1,168 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import AdminShell from '../components/AdminShell'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react';
+import AdminShell from '../components/AdminShell';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function VerificationQueue() {
-  const [tasks, setTasks] = useState([
-    { id: 'DOC-992', org: 'Capitec Bank', type: 'Tech Spec', status: 'PENDING_AI', confidence: 0.89 },
-    { id: 'DOC-993', org: 'Santam', type: 'Policy PDF', status: 'FLAGGED', confidence: 0.45 },
-    { id: 'DOC-994', org: 'Investec', type: 'Audit Log', status: 'PENDING_AI', confidence: 0.92 },
-  ]);
+interface Requirement {
+    id: string;
+    org_id: string;
+    title: string;
+    description: string;
+    category: string;
+    status: 'PENDING' | 'SUBMITTED' | 'VERIFIED' | 'REJECTED';
+    evidence_url?: string;
+    findings?: string;
+}
 
-  const handleAction = (id: string, action: string) => {
-    alert(`Document ${id} ${action === 'approve' ? 'Approved' : 'Rejected'}. Integrity score updated.`);
-    setTasks(prev => prev.filter(t => t.id !== id));
-  };
+export default function VerificationPage() {
+    const [organizations, setOrganizations] = useState<any[]>([]);
+    const [selectedOrgId, setSelectedOrgId] = useState<string>('');
+    const [requirements, setRequirements] = useState<Requirement[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [processingId, setProcessingId] = useState<string | null>(null);
 
-  return (
-    <AdminShell>
-      <div className="max-w-5xl space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">AI-Assisted Verification Queue</h1>
-          <div className="flex gap-2">
-            <span className="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs border border-blue-500/20 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-              AI Reviewer Active
-            </span>
-          </div>
-        </div>
-        
-        <div className="grid gap-4">
-            <AnimatePresence>
-                {tasks.map((task) => (
-                    <motion.div 
-                        key={task.id} 
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-[#1c1c1c] border border-gray-800 p-6 flex justify-between items-center rounded-xl hover:border-gray-700 transition-colors"
+    useEffect(() => {
+        // Fetch alpha organizations
+        fetch('/api/organizations?is_alpha=true')
+            .then(res => res.json())
+            .then(data => {
+                setOrganizations(data.organizations || []);
+                if (data.organizations?.length > 0) {
+                    setSelectedOrgId(data.organizations[0].id);
+                }
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!selectedOrgId) return;
+        setLoading(true);
+        fetch(`/api/requirements?org_id=${selectedOrgId}`)
+            .then(res => res.json())
+            .then(data => {
+                setRequirements(data.requirements || []);
+                setLoading(false);
+            });
+    }, [selectedOrgId]);
+
+    const handleVerify = async (id: string, status: 'VERIFIED' | 'REJECTED', findings: string = '') => {
+        setProcessingId(id);
+        try {
+            const res = await fetch('/api/requirements', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status, findings, org_id: selectedOrgId })
+            });
+            if (res.ok) {
+                // Refresh requirements
+                const data = await fetch(`/api/requirements?org_id=${selectedOrgId}`).then(r => r.json());
+                setRequirements(data.requirements || []);
+            }
+        } finally {
+            setProcessingId(null);
+        }
+    };
+
+    return (
+        <AdminShell>
+            <div className="max-w-6xl mx-auto pb-24">
+                <div className="flex justify-between items-end mb-12">
+                    <div>
+                        <h1 className="text-3xl font-serif font-bold text-white">Lead Auditor Verification</h1>
+                        <p className="text-gray-400 font-serif mt-2 italic">Reviewing evidence for POPIA Section 71 Certification.</p>
+                    </div>
+                    
+                    <select 
+                        value={selectedOrgId}
+                        onChange={(e) => setSelectedOrgId(e.target.value)}
+                        className="bg-zinc-900 border border-white/10 text-white font-mono text-xs p-3 rounded-lg focus:border-aic-gold outline-none"
                     >
-                        <div>
-                            <p className="font-bold text-lg">{task.org}</p>
-                            <p className="text-sm text-gray-500 font-mono">{task.type} • {task.id}</p>
-                        </div>
-                        <div className="flex items-center gap-6">
-                            <div className="text-right">
-                                <p className="text-[10px] uppercase text-gray-500 font-mono tracking-widest">AI Confidence</p>
-                                <p className={`font-mono font-bold text-xl ${task.confidence > 0.8 ? 'text-green-500' : 'text-red-500'}`}>
-                                    {(task.confidence * 100).toFixed(0)}%
-                                </p>
-                            </div>
-                            <div className="flex gap-2">
-                                <button 
-                                    onClick={() => handleAction(task.id, 'approve')}
-                                    className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-mono text-xs font-bold transition-colors"
-                                >
-                                    APPROVE
-                                </button>
-                                <button 
-                                    onClick={() => handleAction(task.id, 'reject')}
-                                    className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-mono text-xs font-bold transition-colors"
-                                >
-                                    REJECT
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
-            </AnimatePresence>
-            {tasks.length === 0 && (
-                <div className="p-12 text-center text-gray-500 bg-[#1c1c1c] border border-dashed border-gray-800 rounded-xl font-serif">
-                    All high-priority verification tasks complete.
+                        {organizations.map(org => (
+                            <option key={org.id} value={org.id}>{org.name}</option>
+                        ))}
+                    </select>
                 </div>
-            )}
-        </div>
 
-        <div className="p-8 border border-dashed border-gray-800 rounded-xl text-center">
-          <p className="text-gray-500 text-sm italic font-serif">
-            The AI Reviewer analyzes uploaded evidence against POPIA Section 71 benchmarks.<br/>
-            Final certification decisions always require human verification.
-          </p>
-        </div>
-      </div>
-    </AdminShell>
-  );
+                {loading ? (
+                    <div className="text-center py-24 text-gray-500 font-serif italic">Loading requirement queue...</div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-6">
+                        {requirements.filter(r => r.status === 'SUBMITTED' || r.status === 'VERIFIED' || r.status === 'REJECTED').map((req) => (
+                            <motion.div 
+                                key={req.id}
+                                layout
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="bg-zinc-900 border border-white/5 p-8 rounded-3xl"
+                            >
+                                <div className="flex justify-between items-start mb-8">
+                                    <div className="max-w-2xl">
+                                        <div className="flex items-center gap-4 mb-4">
+                                            <span className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.3em] px-2 py-1 bg-aic-gold/10 rounded">
+                                                {req.category}
+                                            </span>
+                                            <span className={`text-[10px] font-mono font-bold uppercase tracking-widest ${
+                                                req.status === 'VERIFIED' ? 'text-green-500' : 
+                                                req.status === 'REJECTED' ? 'text-red-500' : 'text-blue-500'
+                                            }`}>
+                                                {req.status}
+                                            </span>
+                                        </div>
+                                        <h3 className="text-xl font-serif text-white font-bold mb-2">{req.title}</h3>
+                                        <p className="text-sm text-gray-400 font-serif leading-relaxed mb-6">{req.description}</p>
+                                        
+                                        {req.evidence_url && (
+                                            <div className="mb-6">
+                                                <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-2">Submitted Evidence</p>
+                                                <a 
+                                                    href={req.evidence_url} 
+                                                    target="_blank" 
+                                                    className="inline-flex items-center gap-2 text-aic-gold hover:underline font-mono text-xs"
+                                                >
+                                                    View Document ↗
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex flex-col gap-3 w-48">
+                                        <button 
+                                            onClick={() => handleVerify(req.id, 'VERIFIED')}
+                                            disabled={!!processingId || req.status === 'VERIFIED'}
+                                            className="w-full py-3 bg-green-600/10 border border-green-500/20 text-green-500 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all disabled:opacity-30"
+                                        >
+                                            APPROVE
+                                        </button>
+                                        <button 
+                                            onClick={() => {
+                                                const findings = prompt('Enter rejection reason:');
+                                                if (findings) handleVerify(req.id, 'REJECTED', findings);
+                                            }}
+                                            disabled={!!processingId || req.status === 'REJECTED'}
+                                            className="w-full py-3 bg-red-600/10 border border-red-500/20 text-red-500 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all disabled:opacity-30"
+                                        >
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {req.findings && (
+                                    <div className="mt-8 p-4 bg-white/5 border border-white/5 rounded-xl">
+                                        <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-1">Last Finding</p>
+                                        <p className="text-xs font-serif italic text-gray-400">{req.findings}</p>
+                                    </div>
+                                )}
+                            </motion.div>
+                        ))}
+
+                        {requirements.length === 0 && (
+                            <div className="text-center py-24 border border-dashed border-white/10 rounded-3xl">
+                                <p className="text-gray-500 font-serif italic">No requirements submitted for this organization.</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </AdminShell>
+    );
 }

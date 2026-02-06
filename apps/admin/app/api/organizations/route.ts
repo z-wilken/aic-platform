@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { query } from '../../../lib/db';
 import { getSession } from '../../../lib/auth';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session: any = await getSession();
 
   if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
@@ -10,14 +10,26 @@ export async function GET() {
   }
 
   try {
-    const result = await query(`
+    const searchParams = request.nextUrl.searchParams;
+    const isAlpha = searchParams.get('is_alpha');
+
+    let queryText = `
       SELECT 
         o.*, 
         u.name as auditor_name 
       FROM organizations o
       LEFT JOIN users u ON o.auditor_id = u.id
-      ORDER BY o.created_at DESC
-    `);
+    `;
+    const params: any[] = [];
+
+    if (isAlpha !== null) {
+        queryText += ' WHERE o.is_alpha = $1';
+        params.push(isAlpha === 'true');
+    }
+
+    queryText += ' ORDER BY o.created_at DESC';
+
+    const result = await query(queryText, params);
     return NextResponse.json({ organizations: result.rows });
   } catch (error) {
     console.error('Admin Organizations API Error:', error);

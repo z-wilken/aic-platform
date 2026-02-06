@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function IncidentsPage() {
     const [incidents, setIncidents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [resolution, setResolution] = useState<Record<string, string>>({});
+    const [selectedIncident, setSelectedIncident] = useState<any>(null);
+    const [resolution, setResolution] = useState('');
 
     const fetchIncidents = () => {
         fetch('/api/incidents')
@@ -22,93 +23,116 @@ export default function IncidentsPage() {
         fetchIncidents();
     }, []);
 
-    const handleResolve = async (id: string) => {
-        if (!resolution[id]) return alert("Please provide resolution details.");
-        
-        try {
-            const response = await fetch('/api/incidents', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, resolution: resolution[id], status: 'RESOLVED' })
-            });
-
-            if (response.ok) {
-                alert("Incident resolved. Human oversight logged.");
-                fetchIncidents();
-            }
-        } catch (err) {
-            console.error(err);
+    const handleResolve = async (id: string, status: 'RESOLVED' | 'DISMISSED') => {
+        const res = await fetch(`/api/incidents/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status, resolution_details: resolution })
+        });
+        if (res.ok) {
+            setSelectedIncident(null);
+            setResolution('');
+            fetchIncidents();
         }
     };
 
     return (
         <DashboardShell>
-            <div className="max-w-5xl mx-auto pb-24">
+            <div className="max-w-6xl mx-auto pb-24">
                 <div className="mb-12">
-                    <h1 className="text-3xl font-serif font-bold text-aic-black underline decoration-aic-red underline-offset-8">Accountability Incidents</h1>
-                    <p className="text-gray-500 font-serif mt-4 italic max-w-2xl">
-                        Citizen appeals and algorithmic errors requiring meaningful human intervention (POPIA Sec. 71).
-                    </p>
+                    <h1 className="text-3xl font-serif font-bold text-aic-black underline decoration-aic-gold underline-offset-8">Human Accountability Queue</h1>
+                    <p className="text-gray-500 font-serif mt-4 italic">Resolve citizen appeals and maintain POPIA Section 71 compliance.</p>
                 </div>
 
-                <div className="space-y-8">
-                    {loading ? (
-                        <div className="p-12 text-center text-gray-400 italic">Syncing with justice layer...</div>
-                    ) : incidents.length === 0 ? (
-                        <div className="p-16 border border-dashed border-aic-black/10 rounded-3xl text-center bg-white">
-                            <span className="text-4xl block mb-4">✅</span>
-                            <p className="font-serif text-gray-500">Zero active citizen appeals found. Your algorithmic systems are stable.</p>
-                        </div>
-                    ) : incidents.map((incident, i) => (
-                        <motion.div 
-                            key={incident.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            className={`bg-white border p-8 rounded-[2rem] shadow-sm ${incident.status === 'OPEN' ? 'border-aic-red/20' : 'border-aic-black/5'}`}
-                        >
-                            <div className="flex justify-between items-start mb-8">
-                                <div>
-                                    <span className={`text-[9px] font-mono font-bold px-2 py-1 rounded-full border ${
-                                        incident.status === 'OPEN' ? 'bg-red-50 text-aic-red border-aic-red/20' : 'bg-green-50 text-green-600 border-green-200'
-                                    }`}>
-                                        {incident.status}
-                                    </span>
-                                    <h3 className="text-xl font-serif font-medium text-aic-black mt-4">Appeal from {incident.citizen_email}</h3>
-                                    <p className="text-[10px] font-mono text-gray-400 uppercase mt-1">System: {incident.system_name}</p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    {/* List View */}
+                    <div className="lg:col-span-2 space-y-6">
+                        {loading ? (
+                            <div className="p-12 text-center text-gray-500 italic">Syncing with appeal registry...</div>
+                        ) : incidents.length === 0 ? (
+                            <div className="p-12 border border-dashed border-aic-black/10 rounded-[2rem] text-center">
+                                <p className="text-gray-400 font-serif italic">No open appeals found. Your systems are maintaining human dignity.</p>
+                            </div>
+                        ) : incidents.map((inc) => (
+                            <motion.div 
+                                key={inc.id}
+                                layoutId={inc.id}
+                                onClick={() => setSelectedIncident(inc)}
+                                className={`p-8 bg-white border rounded-[2rem] cursor-pointer transition-all hover:shadow-xl ${
+                                    selectedIncident?.id === inc.id ? 'border-aic-gold shadow-lg' : 'border-aic-black/5'
+                                }`}
+                            >
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <span className={`w-2 h-2 rounded-full ${inc.status === 'OPEN' ? 'bg-aic-red animate-pulse' : 'bg-green-500'}`} />
+                                        <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">{inc.status}</span>
+                                    </div>
+                                    <span className="text-[10px] font-mono text-gray-400">{new Date(inc.created_at).toLocaleDateString()}</span>
                                 </div>
-                                <span className="text-[10px] font-mono text-gray-400">{new Date(incident.created_at).toLocaleString()}</span>
-                            </div>
+                                <h3 className="text-xl font-serif font-bold text-aic-black mb-2">{inc.citizen_email}</h3>
+                                <p className="text-sm font-serif text-gray-500 italic truncate mb-4">"{inc.description}"</p>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest">{inc.system_name}</span>
+                                    <span className="text-[10px] font-mono text-gray-400">View Details →</span>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
 
-                            <div className="bg-aic-paper/50 p-6 rounded-2xl mb-8 border border-aic-black/5 italic font-serif text-gray-600">
-                                "{incident.description}"
-                            </div>
+                    {/* Detail/Resolution View */}
+                    <div className="sticky top-8">
+                        <AnimatePresence mode="wait">
+                            {selectedIncident ? (
+                                <motion.div 
+                                    key="detail"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    className="bg-aic-black text-white p-12 rounded-[2.5rem] shadow-2xl h-fit border border-white/5"
+                                >
+                                    <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-8">Incident Detail</h3>
+                                    <div className="space-y-6 mb-12">
+                                        <div>
+                                            <p className="text-[9px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-1">Citizen</p>
+                                            <p className="font-serif text-lg">{selectedIncident.citizen_email}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[9px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-1">Description</p>
+                                            <p className="font-serif text-sm text-gray-400 leading-relaxed italic">"{selectedIncident.description}"</p>
+                                        </div>
+                                    </div>
 
-                            {incident.status === 'OPEN' ? (
-                                <div className="space-y-4">
-                                    <p className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Human Oversight Resolution</p>
+                                    <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">Human Review Findings</h3>
                                     <textarea 
-                                        className="w-full bg-transparent border-b border-aic-black/10 py-3 focus:border-aic-gold outline-none font-serif text-sm transition-colors"
-                                        rows={3}
-                                        placeholder="Explain the result of the human review and any corrections made..."
-                                        value={resolution[incident.id] || ''}
-                                        onChange={(e) => setResolution({ ...resolution, [incident.id]: e.target.value })}
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 font-serif text-sm text-white focus:border-aic-gold outline-none transition-all mb-6"
+                                        rows={4}
+                                        placeholder="Document your investigation and resolution..."
+                                        value={resolution}
+                                        onChange={(e) => setResolution(e.target.value)}
                                     />
-                                    <button 
-                                        onClick={() => handleResolve(incident.id)}
-                                        className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all"
-                                    >
-                                        Submit Resolution
-                                    </button>
-                                </div>
+
+                                    <div className="flex flex-col gap-4">
+                                        <button 
+                                            onClick={() => handleResolve(selectedIncident.id, 'RESOLVED')}
+                                            className="w-full bg-aic-gold text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all"
+                                        >
+                                            MARK AS RESOLVED
+                                        </button>
+                                        <button 
+                                            onClick={() => handleResolve(selectedIncident.id, 'DISMISSED')}
+                                            className="w-full border border-white/20 text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:border-aic-red transition-all"
+                                        >
+                                            DISMISS APPEAL
+                                        </button>
+                                    </div>
+                                </motion.div>
                             ) : (
-                                <div className="pt-6 border-t border-aic-black/5">
-                                    <p className="text-[10px] font-mono font-bold text-green-600 uppercase tracking-widest mb-2">Resolution Logged</p>
-                                    <p className="font-serif text-sm text-gray-500 leading-relaxed italic">"{incident.resolution_details}"</p>
+                                <div className="p-12 border border-dashed border-aic-black/10 rounded-[2.5rem] text-center bg-aic-paper/30">
+                                    <p className="text-gray-400 font-serif italic text-sm">Select an incident from the queue to perform human review.</p>
                                 </div>
                             )}
-                        </motion.div>
-                    ))}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
         </DashboardShell>

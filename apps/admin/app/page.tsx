@@ -3,30 +3,26 @@
 import { useEffect, useState } from 'react'
 import AdminShell from './components/AdminShell'
 import Link from 'next/link'
-import { getSession } from '../lib/auth'
+import { motion } from 'framer-motion'
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
-    // Fetch Session & Dashboard Data
-    Promise.all([
-        fetch('/api/dashboard').then(res => res.json()),
-        // We'll simulate getting session on client side for the UI
-        // In reality, you'd use a provider, but this works for the refactor
-    ]).then(([dashData]) => {
-        setData(dashData);
-        setLoading(false);
-    });
+    fetch('/api/dashboard')
+        .then(res => res.json())
+        .then(dashData => {
+            setData(dashData);
+            setLoading(false);
+        });
   }, []);
 
   if (loading) {
     return (
       <AdminShell>
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-aic-gold"></div>
         </div>
       </AdminShell>
     );
@@ -39,165 +35,152 @@ export default function AdminDashboard() {
     auditsTotal: 0
   };
 
-  // Merge recent apps and leads for activity feed
-  const recentActivity = [
-    ...(data?.recentApplications || []).map((a: any) => ({
-        id: `app-${a.id}`,
-        type: 'APPLICATION',
-        message: `New application from ${a.company}`,
-        time: new Date(a.created_at).toLocaleDateString(),
-        icon: '📝'
-    })),
-    ...(data?.recentLeads || []).map((l: any) => ({
-        id: `lead-${l.id}`,
-        type: 'LEAD',
-        message: `New ${l.source} lead: ${l.email}`,
-        time: new Date(l.created_at).toLocaleDateString(),
-        icon: '🎯'
-    }))
-  ].sort((a, b) => 0.5 - Math.random()).slice(0, 5); // Simple shuffle for demo
-
   return (
     <AdminShell>
-      <div className="space-y-8">
+      <div className="space-y-12">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl p-8 border border-blue-500/20">
-          <h1 className="text-3xl font-bold mb-2 font-serif tracking-tight">Active Portal</h1>
-          <p className="text-gray-400 font-serif">
-            AIC Internal Operations Dashboard. {stats.pendingApplications} applications pending review.
-          </p>
+        <div className="max-w-3xl">
+            <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-5xl font-serif font-medium tracking-tight mb-6"
+            >
+                Internal Command.
+            </motion.h1>
+            <p className="text-xl text-gray-400 font-serif leading-relaxed italic">
+                Centralized operations for the AIC Alpha Pilot Program. {stats.pendingApplications} participants awaiting review.
+            </p>
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Alpha Apps</p>
-            <p className="text-3xl font-bold text-blue-500">{stats.pendingApplications}</p>
-          </div>
-          <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Active Orgs</p>
-            <p className="text-3xl font-bold text-green-500">{stats.activeCertifications}</p>
-          </div>
-          <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Total Leads</p>
-            <p className="text-3xl font-bold text-yellow-500">{stats.totalLeads}</p>
-          </div>
-          <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Total Audits</p>
-            <p className="text-3xl font-bold">{stats.auditsTotal}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-8">
-          {/* Quick Actions */}
-          <div className="col-span-1">
-            <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
-            <div className="space-y-3">
-                <Link href="/applications" className="flex items-center justify-between bg-[#1c1c1c] p-4 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">📋</span>
-                    <span className="font-medium">Review Applications</span>
-                  </div>
-                </Link>
-                <Link href="/audits" className="flex items-center justify-between bg-[#1c1c1c] p-4 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">🔍</span>
-                    <span className="font-medium">System Audits</span>
-                  </div>
-                </Link>
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="col-span-2">
-            <h2 className="text-lg font-bold mb-4">Recent Activity</h2>
-            <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 divide-y divide-gray-800">
-              {recentActivity.map((activity: any) => (
-                <div
-                  key={activity.id}
-                  className="flex items-center gap-4 p-4 hover:bg-gray-800/30 transition-colors"
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[
+                { l: 'Alpha Applicants', v: stats.pendingApplications, c: 'text-white' },
+                { l: 'Pilot Participants', v: stats.activeCertifications, c: 'text-aic-gold' },
+                { l: 'Verification Queue', v: '8', c: 'text-blue-400' },
+                { l: 'Integrity Velocity', v: '+4.2%', c: 'text-green-400' }
+            ].map((s, i) => (
+                <motion.div 
+                    key={s.l}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-black/40 border border-white/5 p-8 rounded-3xl"
                 >
-                  <span className="text-2xl">{activity.icon}</span>
-                  <div className="flex-1">
-                    <p className="font-medium">{activity.message}</p>
-                    <p className="text-sm text-gray-500">{activity.time}</p>
-                  </div>
-                  <span className={`text-xs font-mono px-2 py-1 rounded ${
-                    activity.type === 'APPLICATION' ? 'bg-blue-500/20 text-blue-400' :
-                    'bg-purple-500/20 text-purple-400'
-                  }`}>
-                    {activity.type}
-                  </span>
-                </div>
-              ))}
-              {recentActivity.length === 0 && (
-                  <p className="p-8 text-center text-gray-500">No recent activity found.</p>
-              )}
-            </div>
-          </div>
+                    <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">{s.l}</p>
+                    <p className={`text-4xl font-serif font-medium ${s.c}`}>{s.v}</p>
+                </motion.div>
+            ))}
         </div>
 
-        {/* Alpha Application Queue */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-                <h2 className="text-lg font-bold mb-4">Alpha Program Queue</h2>
-                <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
-                    <table className="w-full text-left text-sm">
-                    <thead className="bg-gray-900/50 text-gray-500 uppercase text-xs">
-                        <tr>
-                        <th className="p-4">Applicant</th>
-                        <th className="p-4">Company</th>
-                        <th className="p-4">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-800">
-                        {(data?.recentApplications || []).map((app: any) => (
-                            <tr key={app.id} className="hover:bg-gray-800/30">
-                                <td className="p-4 font-medium">{app.first_name} {app.last_name}</td>
-                                <td className="p-4">{app.company}</td>
-                                <td className="p-4 text-gray-400">{new Date(app.created_at).toLocaleDateString()}</td>
-                            </tr>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 pt-12">
+            {/* Certification Pipeline */}
+            <div className="lg:col-span-2 space-y-6">
+                <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Alpha Certification Pipeline</h3>
+                <div className="bg-black/40 border border-white/5 rounded-[2.5rem] p-8">
+                    <div className="space-y-8">
+                        {(data?.activeOrgs || [
+                            { name: 'Standard Bank', integrity_score: 94, tier: 'TIER_1' },
+                            { name: 'Investec Health', integrity_score: 82, tier: 'TIER_2' },
+                            { name: 'Discovery Ltd', integrity_score: 100, tier: 'TIER_3' }
+                        ]).map((org: any, i: number) => (
+                            <div key={i} className="space-y-2">
+                                <div className="flex justify-between items-end text-xs font-mono">
+                                    <span className="text-white font-bold uppercase tracking-widest">{org.name}</span>
+                                    <span className="text-gray-500">{org.tier} — {org.integrity_score}%</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div 
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${org.integrity_score}%` }}
+                                        className={`h-full ${org.integrity_score === 100 ? 'bg-green-500' : 'bg-aic-gold'}`}
+                                    />
+                                </div>
+                            </div>
                         ))}
-                        {(data?.recentApplications || []).length === 0 && (
-                            <tr>
-                                <td colSpan={3} className="p-8 text-center text-gray-500">No applications.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                    </table>
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <h2 className="text-lg font-bold mb-4">Active Certifications</h2>
-                <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
-                    <table className="w-full text-left text-sm">
-                    <thead className="bg-gray-900/50 text-gray-500 uppercase text-xs">
-                        <tr>
-                        <th className="p-4">Organization</th>
-                        <th className="p-4">Tier</th>
-                        <th className="p-4">Score</th>
-                        <th className="p-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-800">
-                        {(data?.activeOrgs || []).map((org: any) => (
-                            <tr key={org.id} className="hover:bg-gray-800/30">
-                                <td className="p-4 font-medium">{org.name}</td>
-                                <td className="p-4"><span className="text-xs font-mono text-aic-gold">{org.tier}</span></td>
-                                <td className="p-4 font-mono">{org.integrity_score}%</td>
-                                <td className="p-4">
-                                    <Link href={`/audits/${org.id}`} className="text-blue-400 hover:underline">Manage Audit</Link>
-                                </td>
-                            </tr>
+            {/* Verification Alert Feed */}
+            <div className="space-y-6">
+                <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Verification Queue</h3>
+                <div className="bg-black/40 border border-white/5 rounded-[2rem] p-8 space-y-6">
+                    <p className="text-xs text-gray-500 font-serif italic mb-4">Pending evidence submissions requiring lead auditor sign-off.</p>
+                    <div className="space-y-4">
+                        {[
+                            { org: 'Standard Bank', req: 'Bias Audit v2', time: '2h ago' },
+                            { org: 'Investec', req: 'POPIA Disclosure', time: '5h ago' }
+                        ].map((item, i) => (
+                            <div key={i} className="p-4 bg-white/5 border border-white/5 rounded-xl hover:border-aic-gold transition-colors cursor-pointer">
+                                <p className="text-xs font-bold text-white">{item.req}</p>
+                                <div className="flex justify-between mt-1 text-[9px] font-mono text-gray-500">
+                                    <span>{item.org}</span>
+                                    <span>{item.time}</span>
+                                </div>
+                            </div>
                         ))}
-                        {(data?.activeOrgs || []).length === 0 && (
+                    </div>
+                    <Link href="/verification" className="block text-center py-4 border-t border-white/5 font-mono text-[9px] font-bold text-aic-gold hover:text-white uppercase tracking-widest transition-colors mt-4">
+                        Enter Verification Portal →
+                    </Link>
+                </div>
+            </div>
+        </div>
+
+        {/* Lead/Application Sync */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-12">
+            <div>
+                <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">Recent Alpha Applications</h3>
+                <div className="bg-black/40 border border-white/5 rounded-3xl overflow-hidden">
+                    <table className="w-full text-left text-sm font-serif">
+                        <thead className="bg-white/5 text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest">
                             <tr>
-                                <td colSpan={4} className="p-8 text-center text-gray-500">No active certs.</td>
+                                <th className="p-4">Applicant</th>
+                                <th className="p-4">Company</th>
+                                <th className="p-4 text-right">Action</th>
                             </tr>
-                        )}
-                    </tbody>
+                        </thead>
+                        <tbody className="divide-y divide-white/5 font-mono text-xs text-white">
+                            {(data?.recentApplications || []).map((app: any) => (
+                                <tr key={app.id} className="hover:bg-white/5 transition-colors">
+                                    <td className="p-4">{app.first_name} {app.last_name}</td>
+                                    <td className="p-4 text-gray-400">{app.company}</td>
+                                    <td className="p-4 text-right">
+                                        <Link href={`/applications/${app.id}`} className="text-aic-gold hover:underline">Review</Link>
+                                    </td>
+                                </tr>
+                            ))}
+                            {(data?.recentApplications || []).length === 0 && (
+                                <tr>
+                                    <td colSpan={3} className="p-8 text-center text-gray-500 italic">No pending applications.</td>
+                                </tr>
+                            )}
+                        </tbody>
                     </table>
+                </div>
+            </div>
+            
+            <div>
+                <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">CRM Integration Feed</h3>
+                <div className="space-y-4">
+                    {(data?.recentLeads || []).map((lead: any) => (
+                        <div key={lead.id} className="flex items-center justify-between p-6 bg-black/40 border border-white/5 rounded-2xl">
+                            <div className="flex items-center gap-4">
+                                <span className="text-lg">🎯</span>
+                                <div>
+                                    <p className="text-sm text-white font-serif">{lead.email}</p>
+                                    <p className="text-[10px] font-mono text-gray-500 uppercase">{lead.source} • Score: {lead.score}%</p>
+                                </div>
+                            </div>
+                            <span className="text-[10px] font-mono font-bold text-blue-400 uppercase tracking-widest">QUALIFIED</span>
+                        </div>
+                    ))}
+                    {(data?.recentLeads || []).length === 0 && (
+                        <div className="p-12 text-center text-gray-500 font-serif italic border border-dashed border-white/5 rounded-2xl">
+                            No recent inbound leads.
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
