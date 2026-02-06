@@ -12,6 +12,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        console.log('Login attempt for:', credentials?.email);
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email and password required")
         }
@@ -32,40 +33,52 @@ export const authOptions: NextAuthOptions = {
             WHERE u.email = $1
           `, [credentials.email.toString().toLowerCase()])
 
-          if (result.rows.length > 0) {
-            const user = result.rows[0]
+          console.log('Database lookup result count:', result.rows.length);
 
-            if (!user.is_active) {
-              throw new Error("Account is deactivated")
-            }
+          if (result.rows.length === 0) {
+            console.warn("Auth failed: User not found", credentials.email);
+            throw new Error("Invalid credentials")
+          }
 
-            const isValid = await bcrypt.compare(credentials.password.toString(), user.password_hash)
+          const user = result.rows[0];
+          console.log('User found:', user.email, 'Active:', user.is_active, 'Role:', user.role);
 
-            if (!isValid) {
-              throw new Error("Invalid credentials")
-            }
+          if (!user.is_active) {
+            console.warn("Auth failed: Account deactivated", user.email);
+            throw new Error("Account is deactivated")
+          }
 
-            // Update last login
+          const isValid = await bcrypt.compare(credentials.password.toString(), user.password_hash)
+          console.log('Password valid:', isValid);
+
+          if (!isValid) {
+            console.warn("Auth failed: Invalid password", user.email);
+            throw new Error("Invalid credentials")
+          }
+
+          // Update last login
+          try {
             await query(
               'UPDATE users SET last_login = NOW() WHERE id = $1',
               [user.id]
             )
-
-            return {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              role: user.role,
-              orgId: user.org_id || 'INTERNAL',
-              isSuperAdmin: user.is_super_admin,
-              permissions: user.permissions
-            }
+          } catch (updateError) {
+            console.warn("Failed to update last login:", updateError);
           }
-        } catch (dbError) {
-          console.warn("Database auth failed:", dbError)
-        }
 
-        throw new Error("Invalid credentials")
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            orgId: user.org_id || 'INTERNAL',
+            isSuperAdmin: user.is_super_admin,
+            permissions: user.permissions
+          }
+        } catch (dbError: any) {
+          console.error("Auth process error:", dbError.message || dbError);
+          throw dbError;
+        }
       }
     })
   ],

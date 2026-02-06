@@ -11,9 +11,17 @@ const pool = new Pool({
 
 async function createSuperAdmin() {
   const email = 'zanderwilken2005@gmail.com';
-  const password = 'Sherlocked221B!';
+  const password = 'AICAdmin2026!';
   const name = 'Zander Wilken (Super Admin)';
   const role = 'ADMIN';
+
+  console.log('Attempting to create/update super admin:', email);
+  console.log('Database config:', {
+    user: process.env.POSTGRES_USER || 'aic_admin',
+    host: process.env.POSTGRES_HOST || 'localhost',
+    port: process.env.POSTGRES_PORT || '5432',
+    database: process.env.POSTGRES_DB || 'aic_platform',
+  });
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -24,14 +32,13 @@ async function createSuperAdmin() {
        VALUES ($1, $2, $3, $4, TRUE, TRUE, $5)
        ON CONFLICT (email) DO UPDATE 
        SET password_hash = $2, role = $4, name = $3, is_super_admin = TRUE, permissions = $5
-       RETURNING id`,
+       RETURNING id, role`,
       [email, hash, name, role, JSON.stringify({ can_publish: true, can_verify: true })]
     );
 
-    console.log('Super Admin user created/updated successfully. ID:', res.rows[0].id);
+    console.log('Super Admin user created/updated successfully. ID:', res.rows[0].id, 'Role:', res.rows[0].role);
   } catch (err) {
     console.error('Error creating Super Admin:', err);
-    process.exit(1);
   } finally {
     await pool.end();
   }
