@@ -1,4 +1,4 @@
-import { NextAuthConfig } from "next-auth"
+import NextAuth, { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { query } from "./db"
 import bcrypt from "bcryptjs"
@@ -110,3 +110,5 @@ export const authOptions: NextAuthConfig = {
   },
   debug: process.env.NODE_ENV === 'development',
 }
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authOptions)
