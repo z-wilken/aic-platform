@@ -15,6 +15,7 @@ from app.services.scoring import calculate_integrity_score
 from app.services.privacy_audit import audit_privacy
 from app.services.labor_audit import audit_labor
 from app.services.evidence_scanner import scan_evidence
+from app.services.red_team import red_team_audit
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -30,6 +31,11 @@ class LaborRequest(BaseModel):
 class EvidenceRequest(BaseModel):
     text: str
 
+class RedTeamRequest(BaseModel):
+    data: List[Dict[str, Any]]
+    protected_attribute: str
+    other_columns: List[str]
+
 @router.post("/audit/privacy")
 def get_privacy_audit(request: PrivacyRequest):
     return audit_privacy(request.columns)
@@ -41,6 +47,10 @@ def get_labor_audit(request: LaborRequest):
 @router.post("/audit/verify-document")
 def get_evidence_verification(request: EvidenceRequest):
     return scan_evidence(request.text)
+
+@router.post("/audit/red-team")
+def get_red_team_audit(request: RedTeamRequest):
+    return red_team_audit(request.data, request.protected_attribute, request.other_columns)
 
 @router.post("/integrity/calculate", response_model=IntegrityScoreResponse)
 def get_integrity_score(request: IntegrityScoreRequest):
