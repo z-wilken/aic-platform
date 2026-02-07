@@ -16,14 +16,14 @@ export default function AuditorAcademy() {
             title: "Technical Domain: Bias Audit",
             description: "Mastering the Four-Fifths rule, Chi-Square testing, and the AIC Audit Engine.",
             modules: 6,
-            status: "LOCKED",
+            status: "IN_PROGRESS",
             id: "tech-bias"
         },
         {
             title: "Oversight Domain: Human-in-Loop",
             description: "Evaluating the efficacy of intervention UIs and human agency ratios.",
             modules: 3,
-            status: "LOCKED",
+            status: "IN_PROGRESS",
             id: "oversight-hil"
         }
     ];
