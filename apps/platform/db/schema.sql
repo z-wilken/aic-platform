@@ -1,8 +1,17 @@
 -- Spiral 1: The Foundation
 -- Schema for AIC Pulse (POPIA Section 71 Compliance)
+--
+-- IMPORTANT: Tables are ordered to satisfy foreign key dependencies.
+-- Users and organizations must be created before tables that reference them.
 
+-- Enum types
 CREATE TYPE tier_enum AS ENUM ('TIER_1', 'TIER_2', 'TIER_3');
 CREATE TYPE audit_status AS ENUM ('PENDING', 'VERIFIED', 'FLAGGED');
+CREATE TYPE user_role AS ENUM ('ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER');
+
+-- =============================================================
+-- Core tables (no foreign key dependencies)
+-- =============================================================
 
 CREATE TABLE organizations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -11,9 +20,28 @@ CREATE TABLE organizations (
     integrity_score INTEGER DEFAULT 0 CHECK (integrity_score BETWEEN 0 AND 100),
     is_alpha BOOLEAN DEFAULT FALSE,
     api_key VARCHAR(255), -- Hashed in production
-    auditor_id UUID, -- Reference to a user with role 'AUDITOR'
+    auditor_id UUID, -- Reference to a user with role 'AUDITOR' (added after users table)
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role user_role DEFAULT 'VIEWER',
+    org_id UUID REFERENCES organizations(id),
+    is_active BOOLEAN DEFAULT TRUE,
+    is_super_admin BOOLEAN DEFAULT FALSE,
+    permissions JSONB DEFAULT '{}', -- e.g., {"can_publish": true, "can_verify_audit": false}
+    last_login TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =============================================================
+-- Tables that depend on organizations and/or users
+-- =============================================================
 
 CREATE TABLE audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -24,6 +52,8 @@ CREATE TABLE audit_logs (
     status audit_status DEFAULT 'PENDING',
     metadata JSONB DEFAULT '{}',
     immutable_hash VARCHAR(64),
+    previous_hash VARCHAR(64), -- Chain link to previous audit record
+    sequence_number INTEGER,   -- Position in the hash chain
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -136,35 +166,22 @@ CREATE TABLE incidents (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- API Keys for programmatic access (single table — merged from duplicate definitions)
 CREATE TABLE api_keys (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
-    key_prefix VARCHAR(10) NOT NULL, -- e.g., 'aic_live_'
-    key_hash VARCHAR(255) NOT NULL, -- Hashed for security
-    label VARCHAR(255), -- e.g., 'CI/CD Production'
-    last_used_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE
-);
-
--- Users & Authentication
-CREATE TYPE user_role AS ENUM ('ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER');
-
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    role user_role DEFAULT 'VIEWER',
-    org_id UUID REFERENCES organizations(id),
+    key_hash VARCHAR(255) NOT NULL,
+    key_prefix VARCHAR(12) NOT NULL, -- For display: aic_live_xxxx
+    label VARCHAR(255), -- e.g., 'CI/CD Production'
+    scopes TEXT[] DEFAULT ARRAY['read'],
+    last_used_at TIMESTAMP WITH TIME ZONE,
+    expires_at TIMESTAMP WITH TIME ZONE,
     is_active BOOLEAN DEFAULT TRUE,
-    is_super_admin BOOLEAN DEFAULT FALSE,
-    permissions JSONB DEFAULT '{}', -- e.g., {"can_publish": true, "can_verify_audit": false}
-    last_login TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Session & Auth Tables
 CREATE TABLE sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -182,37 +199,31 @@ CREATE TABLE password_reset_tokens (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- API Keys for programmatic access
-CREATE TABLE api_keys (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    key_hash VARCHAR(255) NOT NULL,
-    key_prefix VARCHAR(12) NOT NULL, -- For display: aic_live_xxxx
-    scopes TEXT[] DEFAULT ARRAY['read'],
-    last_used TIMESTAMP WITH TIME ZONE,
-    expires_at TIMESTAMP WITH TIME ZONE,
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
+-- =============================================================
 -- Indexes for performance
+-- =============================================================
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_org ON users(org_id);
 CREATE INDEX idx_audit_logs_org ON audit_logs(org_id);
 CREATE INDEX idx_audit_logs_status ON audit_logs(status);
 CREATE INDEX idx_audit_logs_created ON audit_logs(created_at DESC);
+CREATE INDEX idx_audit_logs_sequence ON audit_logs(org_id, sequence_number);
 
--- Seed Data
+-- =============================================================
+-- Seed Data (for development/demo only)
+-- =============================================================
+
 INSERT INTO organizations (id, name, tier, integrity_score, is_alpha, api_key)
 VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'FirstRand Bank (Demo)', 'TIER_1', 94, TRUE, 'aic_live_demo_key_123');
 
 -- Seed Demo User (password: demo123)
+-- NOTE: Generate a real bcrypt hash before using in any environment.
+-- Use: npx bcryptjs 'demo123' to generate a valid hash.
 INSERT INTO users (id, email, password_hash, name, role, org_id)
 VALUES (
     'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
     'admin@enterprise.co.za',
-    '$2a$10$XQxBtqXKPYJ.5Q5Q5Q5Q5O5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5', -- bcrypt hash of 'demo123'
+    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', -- bcrypt hash of 'demo123'
     'Dr. Sarah Khumalo',
     'ADMIN',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'
@@ -220,7 +231,7 @@ VALUES (
 
 -- Seed Audit Requirements for Demo Org
 INSERT INTO audit_requirements (org_id, title, description, category, status)
-VALUES 
+VALUES
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'POPIA Section 71 Policy', 'Formal document outlining human intervention procedures for automated decisions.', 'DOCUMENTATION', 'VERIFIED'),
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Model Bias Stress Test', 'Technical report proving four-fifths rule compliance across gender and race.', 'TECHNICAL', 'SUBMITTED'),
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Human-in-the-Loop Interface', 'UI walk-through showing the manual override button for loan officers.', 'OVERSIGHT', 'PENDING'),
@@ -228,6 +239,6 @@ VALUES
 
 -- Seed Compliance Reports for Demo Org
 INSERT INTO compliance_reports (org_id, month_year, integrity_score, audit_status, findings_count)
-VALUES 
+VALUES
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Dec 2025', 92, 'COMPLIANT', 0),
 ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Jan 2026', 94, 'COMPLIANT', 1);
