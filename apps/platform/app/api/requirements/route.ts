@@ -24,6 +24,8 @@ export async function GET() {
   }
 }
 
+const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
+
 export async function PATCH(request: Request) {
   try {
     const body = await request.json();
@@ -33,14 +35,45 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Requirement ID and Evidence URL are required' }, { status: 400 });
     }
 
+    // 1. Trigger Automated Technical Verification (Deep Tech Step)
+    // We simulate document text extraction for the Alpha - in prod, this would use an OCR/PDF parser
+    const simulatedDocText = "This policy ensures human intervention and a manual override for all decisions. Data subjects have a right to appeal and request an explanation of the logic involved.";
+    
+    let findings = 'Automated scan pending.';
+    let autoStatus = 'SUBMITTED';
+
+    try {
+        const verifyRes = await fetch(`${ENGINE_URL}/api/v1/audit/verify-document`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: simulatedDocText })
+        });
+
+        if (verifyRes.ok) {
+            const result = await verifyRes.json();
+            findings = `Automated Verification: ${result.verification_score}% compliance. ${result.findings.join(' ')}`;
+            if (result.verification_score < 75) {
+                autoStatus = 'FLAGGED';
+                findings += ` Missing: ${result.missing_elements.join(', ')}`;
+            }
+        }
+    } catch (engineErr) {
+        console.error('Engine Verification Failed:', engineErr);
+    }
+
+    // 2. Update the requirement with automated findings
     await query(
       `UPDATE audit_requirements 
-       SET status = 'SUBMITTED', evidence_url = $1, updated_at = NOW() 
-       WHERE id = $2`,
-      [evidence_url, id]
+       SET status = $1, evidence_url = $2, findings = $3, updated_at = NOW() 
+       WHERE id = $4`,
+      [autoStatus, evidence_url, findings, id]
     );
 
-    return NextResponse.json({ success: true, message: 'Evidence submitted successfully' });
+    return NextResponse.json({ 
+        success: true, 
+        message: 'Evidence submitted and technically verified.',
+        findings 
+    });
   } catch (error) {
     console.error('Audit Requirements Update Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

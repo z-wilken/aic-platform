@@ -14,6 +14,7 @@ from app.services.bias_analysis import (
 from app.services.scoring import calculate_integrity_score
 from app.services.privacy_audit import audit_privacy
 from app.services.labor_audit import audit_labor
+from app.services.evidence_scanner import scan_evidence
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -26,6 +27,9 @@ class LaborRequest(BaseModel):
     human_interventions: int
     human_overrides: int
 
+class EvidenceRequest(BaseModel):
+    text: str
+
 @router.post("/audit/privacy")
 def get_privacy_audit(request: PrivacyRequest):
     return audit_privacy(request.columns)
@@ -33,6 +37,10 @@ def get_privacy_audit(request: PrivacyRequest):
 @router.post("/audit/labor")
 def get_labor_audit(request: LaborRequest):
     return audit_labor(request.total_decisions, request.human_interventions, request.human_overrides)
+
+@router.post("/audit/verify-document")
+def get_evidence_verification(request: EvidenceRequest):
+    return scan_evidence(request.text)
 
 @router.post("/integrity/calculate", response_model=IntegrityScoreResponse)
 def get_integrity_score(request: IntegrityScoreRequest):
