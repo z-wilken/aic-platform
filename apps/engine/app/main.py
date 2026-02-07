@@ -14,6 +14,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger("aic.engine")
 
+# Install PII redaction on all log output
+from app.core.pii_filter import install_pii_filter  # noqa: E402
+install_pii_filter()
+
 # Rate limiter
 limiter = Limiter(key_func=get_remote_address)
 

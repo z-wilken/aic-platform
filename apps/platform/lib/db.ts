@@ -14,10 +14,12 @@ export const query = async (text: string, params?: any[]) => {
   try {
     const res = await pool.query(text, params);
     const duration = Date.now() - start;
-    console.log('executed query', { text, duration, rows: res.rowCount });
+    // Never log query text or params — they may contain PII (emails, hashes, etc.)
+    console.log('executed query', { duration, rows: res.rowCount });
     return res;
   } catch (error) {
-    console.error('Database Error:', error);
+    // Log error type only, not the full query or params
+    console.error('Database query failed:', (error as Error).message);
     throw error;
   }
 };
