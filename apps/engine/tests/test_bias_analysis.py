@@ -13,9 +13,12 @@ from app.services.bias_analysis import (
     analyze_empathy,
     validate_correction_process,
     analyze_ai_disclosure,
+    comprehensive_audit,
+    assess_organization,
     generate_audit_hash,
     calculate_confusion_metrics,
 )
+from app.api.v1.schemas.analysis import FrameworkType
 
 
 # ============================================================
@@ -317,6 +320,128 @@ class TestDecisionExplanation:
             decision="REJECTED",
         )
         assert result["explainability_score"] == 60  # No weights = lower score
+
+
+# ============================================================
+# Utility Tests
+# ============================================================
+
+# ============================================================
+# Comprehensive Audit Tests
+# ============================================================
+
+class TestComprehensiveAudit:
+
+    def test_with_full_system_data(self):
+        """Systems with full metadata should produce real scores."""
+        systems = [{
+            "name": "Loan Approver",
+            "data": make_fair_data(),
+            "protected_attribute": "gender",
+            "outcome_variable": "hired",
+            "model_type": "credit_scoring",
+            "feature_weights": {"income": 0.6},
+            "sample_communication": "We appreciate your application and would like to help you explore options.",
+            "communication_context": "rejection",
+            "has_appeal": True,
+            "appeal_response_hours": 24,
+            "human_reviewer": True,
+            "clear_appeal_instructions": True,
+            "accessible_appeal": True,
+            "interface_text": "This is an AI assistant.",
+            "interaction_type": "chatbot",
+        }]
+        result = comprehensive_audit("TestCorp", systems, FrameworkType.POPIA)
+        assert result["systems_audited"] == 1
+        assert result["overall_score"] > 0
+        assert result["rights_assessment"]["human_agency"]["systems_tested"] == 1
+        assert result["rights_assessment"]["explanation"]["systems_tested"] == 1
+        assert result["rights_assessment"]["truth"]["systems_tested"] == 1
+        assert "audit_hash" in result
+
+    def test_with_minimal_system_data(self):
+        """Systems with no metadata should still return a result with defaults."""
+        systems = [{"name": "Mystery Box"}]
+        result = comprehensive_audit("TestCorp", systems, FrameworkType.POPIA)
+        assert result["systems_audited"] == 1
+        # No bias data provided, so agency should be untested
+        assert result["rights_assessment"]["human_agency"]["systems_tested"] == 0
+        # Should recommend providing data
+        assert any("No data provided" in r for r in result["recommendations"])
+
+    def test_biased_system_lowers_score(self):
+        systems = [{
+            "name": "Biased Screener",
+            "data": make_biased_data(),
+            "protected_attribute": "gender",
+            "outcome_variable": "hired",
+        }]
+        result = comprehensive_audit("TestCorp", systems, FrameworkType.POPIA)
+        assert result["rights_assessment"]["human_agency"]["score"] <= 50
+
+    def test_framework_note_present(self):
+        result = comprehensive_audit("X", [{"name": "A"}], FrameworkType.EU_AI_ACT)
+        assert "EU" in result["framework_note"] or "conformity" in result["framework_note"]
+
+
+# ============================================================
+# Organization Assessment (Weighted Scoring) Tests
+# ============================================================
+
+class TestAssessOrganization:
+
+    def test_weighted_scoring(self):
+        """OVERSIGHT questions should weigh 35% of the final score."""
+        answers = {
+            "OVERSIGHT_q1": 4,
+            "OVERSIGHT_q2": 4,
+            "TRANSPARENCY_q1": 4,
+            "USAGE_q1": 4,
+            "INFRASTRUCTURE_q1": 4,
+        }
+        result = assess_organization(answers)
+        assert result["scoring_method"] == "weighted"
+        assert result["integrity_score"] == 100.0
+        assert result["recommended_tier"] == "TIER_3"
+
+    def test_weak_oversight_penalized_more(self):
+        """Low oversight score should hurt more than low usage score."""
+        weak_oversight = {
+            "OVERSIGHT_q1": 1, "OVERSIGHT_q2": 1,
+            "TRANSPARENCY_q1": 4,
+            "USAGE_q1": 4,
+            "INFRASTRUCTURE_q1": 4,
+        }
+        weak_usage = {
+            "OVERSIGHT_q1": 4, "OVERSIGHT_q2": 4,
+            "TRANSPARENCY_q1": 4,
+            "USAGE_q1": 1,
+            "INFRASTRUCTURE_q1": 4,
+        }
+        r1 = assess_organization(weak_oversight)
+        r2 = assess_organization(weak_usage)
+        # Weak oversight should produce a lower score than weak usage
+        assert r1["integrity_score"] < r2["integrity_score"]
+
+    def test_fallback_unweighted(self):
+        """Answers without category prefixes should use unweighted fallback."""
+        answers = {"q1": 3, "q2": 4, "q3": 2}
+        result = assess_organization(answers)
+        assert result["scoring_method"] == "unweighted"
+        # (3+4+2) / (3*4) * 100 = 75.0
+        assert result["integrity_score"] == 75.0
+
+    def test_tier_1_for_low_scores(self):
+        answers = {"OVERSIGHT_q1": 1, "TRANSPARENCY_q1": 1}
+        result = assess_organization(answers)
+        assert result["recommended_tier"] == "TIER_1"
+
+    def test_breakdown_includes_weights(self):
+        answers = {"OVERSIGHT_q1": 3, "USAGE_q1": 2}
+        result = assess_organization(answers)
+        assert "OVERSIGHT" in result["breakdown"]
+        assert result["breakdown"]["OVERSIGHT"]["weight"] == 0.35
+        assert result["breakdown"]["USAGE"]["weight"] == 0.20
 
 
 # ============================================================
