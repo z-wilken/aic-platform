@@ -24,6 +24,8 @@ from app.services.red_team import red_team_audit
 from app.services.fairness_metrics import statistical_parity_difference, epsilon_differential_fairness
 from app.services.drift_monitoring import analyze_drift
 from app.services.hash_chain import HashChain
+from app.services.explainability import explain_from_data
+from app.core.signing import verify_signature, get_public_key_pem, is_signing_available
 
 limiter = Limiter(key_func=get_remote_address)
 router = APIRouter()
@@ -72,6 +74,21 @@ class HashChainCreateRequest(BaseModel):
     entry_data: Dict[str, Any]
     previous_hash: Optional[str] = None
     sequence_number: int = 0
+
+class ExplainabilityRequest(BaseModel):
+    data: List[Dict[str, Any]]
+    target_column: str
+    instance: Dict[str, Any]
+    method: str = Field(default="shap", pattern="^(shap|lime)$")
+    num_features: int = Field(default=10, ge=1, le=50)
+
+class SignatureVerifyRequest(BaseModel):
+    data: str
+    signature: str
+
+class BatchAnalysisRequest(BaseModel):
+    analyses: List[Dict[str, Any]] = Field(..., max_length=20)
+    """Each item: {"type": "disparate_impact"|"equalized_odds"|..., "params": {...}}"""
 
 
 # --- Existing endpoints (fixed) ---
@@ -224,3 +241,125 @@ def create_audit_record(request: HashChainCreateRequest, req: Request):
 def verify_audit_chain(request: HashChainVerifyRequest, req: Request):
     """Verify integrity of a hash chain of audit records."""
     return HashChain.verify_chain(request.records)
+
+
+# --- Explainability endpoints (SHAP / LIME) ---
+
+@router.post("/explain/shap")
+@limiter.limit("10/minute")
+def shap_explanation(request: ExplainabilityRequest, req: Request):
+    """SHAP-based model explanation. Trains a surrogate model on provided data."""
+    result = explain_from_data(
+        request.data, request.target_column, request.instance,
+        method="shap", num_features=request.num_features,
+    )
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+@router.post("/explain/lime")
+@limiter.limit("10/minute")
+def lime_explanation(request: ExplainabilityRequest, req: Request):
+    """LIME-based local model explanation."""
+    result = explain_from_data(
+        request.data, request.target_column, request.instance,
+        method="lime", num_features=request.num_features,
+    )
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+
+# --- Cryptographic signature endpoints ---
+
+@router.post("/audit-trail/verify-signature")
+@limiter.limit("30/minute")
+def verify_audit_signature(request: SignatureVerifyRequest, req: Request):
+    """Verify the cryptographic signature of an audit record."""
+    return verify_signature(request.data, request.signature)
+
+@router.get("/audit-trail/public-key")
+@limiter.limit("60/minute")
+def get_signing_public_key(req: Request):
+    """Retrieve the public key for external signature verification."""
+    pem = get_public_key_pem()
+    if pem is None:
+        raise HTTPException(status_code=503, detail="Signing not available")
+    return {"public_key_pem": pem, "algorithm": "RSA-3072 with PSS padding (SHA-256)"}
+
+@router.get("/audit-trail/signing-status")
+@limiter.limit("60/minute")
+def signing_status(req: Request):
+    """Check whether cryptographic signing is available."""
+    return {"signing_available": is_signing_available()}
+
+
+# --- Batch processing endpoint ---
+
+@router.post("/analyze/batch")
+@limiter.limit("5/minute")
+def batch_analysis(request: BatchAnalysisRequest, req: Request):
+    """
+    Run multiple analyses in a single request.
+    Each item specifies a type and params dict.
+    Max 20 analyses per batch.
+    """
+    ANALYSIS_MAP = {
+        "disparate_impact": lambda p: analyze_disparate_impact(
+            p["data"], p["protected_attribute"], p["outcome_variable"]
+        ),
+        "equalized_odds": lambda p: analyze_equalized_odds(
+            p["data"], p["protected_attribute"],
+            p["actual_outcome"], p["predicted_outcome"],
+            p.get("threshold", 0.1),
+        ),
+        "statistical": lambda p: analyze_statistical_significance(
+            p["data"], p["protected_attribute"], p["outcome_variable"]
+        ),
+        "statistical_parity": lambda p: statistical_parity_difference(
+            p["data"], p["protected_attribute"], p["outcome_variable"]
+        ),
+        "empathy": lambda p: analyze_empathy(p["text"], p["context"]),
+        "disclosure": lambda p: analyze_ai_disclosure(
+            p["interface_text"], p["interaction_type"]
+        ),
+        "drift": lambda p: analyze_drift(
+            p["baseline_data"], p["current_data"],
+            p["feature_name"], p.get("n_bins", 10),
+        ),
+    }
+
+    results = []
+    for i, item in enumerate(request.analyses):
+        analysis_type = item.get("type", "")
+        params = item.get("params", {})
+
+        if analysis_type not in ANALYSIS_MAP:
+            results.append({
+                "index": i,
+                "type": analysis_type,
+                "error": f"Unknown analysis type '{analysis_type}'. "
+                         f"Available: {', '.join(ANALYSIS_MAP.keys())}",
+            })
+            continue
+
+        try:
+            result = ANALYSIS_MAP[analysis_type](params)
+            results.append({"index": i, "type": analysis_type, "result": result})
+        except KeyError as e:
+            results.append({
+                "index": i, "type": analysis_type,
+                "error": f"Missing required parameter: {e}",
+            })
+        except Exception as e:
+            results.append({
+                "index": i, "type": analysis_type,
+                "error": f"Analysis failed: {str(e)}",
+            })
+
+    return {
+        "total": len(request.analyses),
+        "completed": sum(1 for r in results if "result" in r),
+        "failed": sum(1 for r in results if "error" in r),
+        "results": results,
+    }
