@@ -6,8 +6,11 @@ Provides tamper-evident audit trail for POPIA Section 71 compliance.
 
 import hashlib
 import json
+import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
+
+logger = logging.getLogger("aic.engine.hash_chain")
 
 
 class HashChain:
@@ -50,7 +53,7 @@ class HashChain:
 
         chain_hash = HashChain.compute_chain_hash(prev, entry_data)
 
-        return {
+        record = {
             "sequence_number": sequence_number,
             "timestamp": datetime.utcnow().isoformat(),
             "previous_hash": prev,
@@ -58,6 +61,18 @@ class HashChain:
             "chain_hash": chain_hash,
             "data": entry_data,
         }
+
+        # Cryptographic signature (if signing is available)
+        try:
+            from app.core.signing import sign_data, is_signing_available
+            if is_signing_available():
+                signature = sign_data(chain_hash)
+                if signature:
+                    record["signature"] = signature
+        except ImportError:
+            pass
+
+        return record
 
     @staticmethod
     def verify_chain(records: List[Dict[str, Any]]) -> Dict[str, Any]:

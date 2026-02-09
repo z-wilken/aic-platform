@@ -1,8 +1,8 @@
 # AIC Python Audit Engine - Requirements Document
 
-**Version:** 2.0
-**Date:** February 7, 2026
-**Status:** Updated after Engine Build Sprint
+**Version:** 4.0
+**Date:** February 9, 2026
+**Status:** Updated after Sprint 3 — XAI + Crypto Signing + Batch Processing
 
 ---
 
@@ -10,7 +10,7 @@
 
 This document defines the requirements for the AIC Python Audit Engine to ensure **safety, POPIA Section 71 compliance**, and alignment with the Mathematical Architectures and Engineering Standards for Algorithmic Accountability framework.
 
-**Current overall readiness has been upgraded from ~35% to ~60% after the build sprint.** The sections below reflect the updated status and detail what remains to be done.
+**Current overall readiness has been upgraded from ~35% to ~85% after Sprint 3.** SHAP, LIME, cryptographic signing, and batch processing are now implemented. The sections below reflect the updated status and detail what remains to be done.
 
 ---
 
@@ -56,8 +56,8 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 | Requirement | Description | Current Status | Priority |
 |------------|-------------|----------------|----------|
 | **FR-3.1** Feature Importance | Top factors influencing decisions | ⚠️ Partial (manual input) | P0 |
-| **FR-3.2** SHAP Integration | SHapley Additive exPlanations | ❌ Missing | P1 |
-| **FR-3.3** LIME Integration | Local Interpretable Model Explanations | ❌ Missing | P1 |
+| **FR-3.2** SHAP Integration | SHapley Additive exPlanations | ✅ **NEW** — Implemented + Tested (Sprint 3) | P1 |
+| **FR-3.3** LIME Integration | Local Interpretable Model Explanations | ✅ **NEW** — Implemented + Tested (Sprint 3) | P1 |
 | **FR-3.4** Counterfactual Explanations | Minimal changes for different outcome | ❌ Missing | P2 |
 
 #### Detailed Steps to Implement FR-3.2 (SHAP)
@@ -119,7 +119,7 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 | **SR-1.1** Pydantic Schema Enforcement | Strong typing for all inputs | ✅ Implemented | P0 |
 | **SR-1.2** Injection Prevention | Query/code injection protection | ✅ Pydantic + no raw SQL | P0 |
 | **SR-1.3** Rate Limiting | API rate limiting | ✅ **NEW** — slowapi integration | P1 |
-| **SR-1.4** Request Size Limits | Prevent DoS via large payloads | ⚠️ Partial (Pydantic validation) | P1 |
+| **SR-1.4** Request Size Limits | Prevent DoS via large payloads | ✅ Implemented (Sprint 2) — 10MB middleware | P1 |
 
 #### Remaining Step for SR-1.4
 1. Add Starlette request size middleware to `main.py`:
@@ -136,7 +136,7 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 
 | Requirement | Description | Current Status | Priority |
 |------------|-------------|----------------|----------|
-| **SR-2.1** PII Redaction in Logs | Automatic PII masking | ❌ Missing | P0 |
+| **SR-2.1** PII Redaction in Logs | Automatic PII masking | ✅ Implemented (Sprint 2) | P0 |
 | **SR-2.2** TLS 1.3 | Encryption in transit | ⚠️ Infrastructure | P0 |
 | **SR-2.3** Secret Management | No hardcoded credentials | ⚠️ Environment vars | P0 |
 | **SR-2.4** Data Minimization | Process only necessary fields | ⚠️ Not enforced | P1 |
@@ -180,7 +180,7 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 |------------|-------------|----------------|----------|
 | **AT-1.1** SHA-256 Hashing | Hash of every audit record | ✅ Implemented | P0 |
 | **AT-1.2** Hash Chain | Link to previous hash (h_i = Hash(h_{i-1} \|\| Entry_i)) | ✅ **NEW** — Implemented + Tested | P0 |
-| **AT-1.3** Cryptographic Signing | RSA-3072+ signatures | ❌ Missing | P1 |
+| **AT-1.3** Cryptographic Signing | RSA-3072+ signatures | ✅ **NEW** — Implemented + Tested (Sprint 3) | P1 |
 | **AT-1.4** Timestamp Integrity | Trusted timestamping | ❌ Missing | P1 |
 
 #### Detailed Steps for AT-1.3 (Cryptographic Signing)
@@ -241,10 +241,10 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 | pydantic | ✅ ==2.10.4 | ✅ Pinned | **FIXED** (was implicit) |
 | slowapi | ✅ ==0.1.9 | ✅ Pinned | **NEW** |
 
-**Still Missing Dependencies (for future features):**
-- `shap` — SHAP explanations (when FR-3.2 is implemented)
-- `lime` — LIME explanations (when FR-3.3 is implemented)
-- `cryptography` — Audit trail signing (when AT-1.3 is implemented)
+| shap | ✅ ==0.46.0 | ✅ Pinned | **NEW** (Sprint 3) |
+| lime | ✅ ==0.2.0.1 | ✅ Pinned | **NEW** (Sprint 3) |
+| scikit-learn | ✅ ==1.6.1 | ✅ Pinned | **NEW** (Sprint 3) |
+| cryptography | ✅ ==44.0.0 | ✅ Pinned | **NEW** (Sprint 3) |
 
 ---
 
@@ -253,9 +253,9 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 | Requirement | Description | Current Status | Priority |
 |------------|-------------|----------------|----------|
 | **TR-1.1** Unit Tests | Function-level testing | ✅ **NEW** — 4 test files, 40+ test cases | P0 |
-| **TR-1.2** Integration Tests | API endpoint testing | ❌ Missing | P0 |
+| **TR-1.2** Integration Tests | API endpoint testing | ✅ Implemented (Sprint 2) | P0 |
 | **TR-1.3** Bias Metric Validation | Known-answer tests | ✅ **NEW** — Implemented | P0 |
-| **TR-1.4** Security Scanning | Bandit, pip-audit | ❌ Missing | P1 |
+| **TR-1.4** Security Scanning | Bandit, pip-audit | ✅ Implemented (Sprint 2) — CI pipeline | P1 |
 | **TR-1.5** Load Testing | Concurrent request handling | ❌ Missing | P2 |
 
 #### Detailed Steps for TR-1.2 (Integration Tests)
@@ -318,31 +318,36 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 - `POST /api/v1/audit-trail/create` - Chain-linked audit record creation
 - `POST /api/v1/audit-trail/verify` - Hash chain verification
 
-### 6.3 Still Required (Future)
+### 6.3 Sprint 3 Endpoints (Added) ✅
+- `POST /api/v1/explain/shap` - SHAP-based model explanations
+- `POST /api/v1/explain/lime` - LIME-based local explanations
+- `POST /api/v1/audit-trail/verify-signature` - Cryptographic signature verification
+- `GET /api/v1/audit-trail/public-key` - Public key export for external verification
+- `GET /api/v1/audit-trail/signing-status` - Signing availability check
+- `POST /api/v1/analyze/batch` - Batch analysis (up to 20 analyses per request)
+
+### 6.4 Still Required (Future)
 
 | Endpoint | Purpose | Priority |
 |----------|---------|----------|
-| `POST /api/v1/explain/shap` | SHAP-based explanations | P1 |
-| `POST /api/v1/explain/lime` | LIME-based explanations | P1 |
 | `POST /api/v1/analyze/atkinson` | Atkinson inequality index | P2 |
 | `POST /api/v1/analyze/entropy` | Generalized entropy index | P2 |
 | `POST /api/v1/audit/adversarial` | Adversarial robustness testing | P2 |
-| `POST /api/v1/analyze/batch` | Large dataset batch processing | P2 |
 
 ---
 
 ## 7. Summary Scorecard
 
-| Category | Original | Sprint 1 | Sprint 2 (Current) | Notes |
-|----------|----------|----------|---------------------|-------|
-| **Fairness Analysis** | 60% | 85% | **85%** | SPD + ε-Differential Fairness |
-| **Security** | 40% | 60% | **80%** | PII redaction, request size limits, env validation |
-| **Audit Trail** | 50% | 80% | **80%** | Hash chain + verification, needs crypto signing |
-| **XAI** | 30% | 30% | **30%** | SHAP/LIME still needed (P1) |
-| **Testing** | 0% | 65% | **85%** | Unit + integration tests, comprehensive_audit coverage |
-| **Drift Monitoring** | 0% | 100% | **100%** | PSI + JSD + KS test |
-| **Infrastructure** | 40% | 85% | **95%** | CI/CD, health checks, migration script, env validation |
-| **Overall Readiness** | **~35%** | **~60%** | **~75%** | Primary gap: XAI (SHAP/LIME) and crypto signing |
+| Category | Original | Sprint 1 | Sprint 2 | Sprint 3 (Current) | Notes |
+|----------|----------|----------|----------|---------------------|-------|
+| **Fairness Analysis** | 60% | 85% | 85% | **85%** | SPD + ε-Differential Fairness |
+| **Security** | 40% | 60% | 80% | **85%** | + Crypto signing, batch limits |
+| **Audit Trail** | 50% | 80% | 80% | **95%** | + RSA-3072 signing, signature verification |
+| **XAI** | 30% | 30% | 30% | **85%** | + SHAP + LIME integration |
+| **Testing** | 0% | 65% | 85% | **90%** | + Explainability + signing tests |
+| **Drift Monitoring** | 0% | 100% | 100% | **100%** | PSI + JSD + KS test |
+| **Infrastructure** | 40% | 85% | 95% | **95%** | CI/CD, health checks, migration script |
+| **Overall Readiness** | **~35%** | **~60%** | **~75%** | **~85%** | Remaining: Economic indices, adversarial, counterfactual |
 
 ---
 
@@ -358,9 +363,9 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 7. ~~Fix `assess_organization` weighted scoring~~ ✅ Done (Sprint 2) — Proper weighted categories
 
 ### P1 — Compliance (Do During Alpha)
-8. **Add SHAP integration** (FR-3.2) — See detailed steps in Section 1.3
-9. **Add LIME integration** (FR-3.3) — See detailed steps in Section 1.3
-10. **Add cryptographic signing** (AT-1.3) — See detailed steps in Section 3.1
+8. ~~Add SHAP integration~~ ✅ Done (Sprint 3) — KernelExplainer with auto-surrogate model
+9. ~~Add LIME integration~~ ✅ Done (Sprint 3) — LimeTabularExplainer with classification/regression support
+10. ~~Add cryptographic signing~~ ✅ Done (Sprint 3) — RSA-3072 PSS with auto-gen dev keys
 11. ~~Add security scanning to CI~~ ✅ Done (Sprint 2) — Bandit + pip-audit in GitHub Actions
 12. ~~Add request size limits~~ ✅ Done (Sprint 2) — 10MB max via middleware
 13. ~~Set up CI/CD pipeline~~ ✅ Done (Sprint 2) — engine-ci.yml + platform-ci.yml
@@ -369,9 +374,10 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 14. **Economic inequality metrics** (FR-2.1, FR-2.2) — See detailed steps in Section 1.2
 15. **Adversarial robustness testing** (SR-3.1, SR-3.2) — See detailed steps in Section 2.3
 16. **Trusted timestamping** (AT-1.4) — See detailed steps in Section 3.1
-17. **Batch processing endpoint** — For large dataset analysis
+17. ~~Batch processing endpoint~~ ✅ Done (Sprint 3) — Up to 20 analyses per request
 18. **Load testing** (TR-1.5) — Use locust or k6
 19. **Retention policy configuration** (AT-2.2)
+20. **Counterfactual explanations** (FR-3.4) — Minimal change analysis
 
 ---
 
@@ -410,6 +416,21 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 | **db.ts** | Logged full SQL queries | Logs duration + row count only (PII safe) |
 | **CORS Origins** | Hardcoded | Configurable via CORS_ORIGINS env var |
 
+### Sprint 3 Changes
+
+| Item | Before | After |
+|------|--------|-------|
+| **SHAP Integration** | Not implemented | `explainability.py` with KernelExplainer, auto-surrogate model, per-instance + global explanations |
+| **LIME Integration** | Not implemented | `explainability.py` with LimeTabularExplainer, classification + regression modes |
+| **Cryptographic Signing** | Not implemented | `signing.py` with RSA-3072 PSS/SHA-256, auto-gen dev keys, env-based production keys |
+| **Hash Chain** | Unsigned records | Records now include `signature` field when signing is available |
+| **Batch Processing** | Not implemented | `/analyze/batch` endpoint supporting 7 analysis types, max 20 per request |
+| **Dependencies** | 8 packages | 12 packages (+shap, lime, scikit-learn, cryptography) |
+| **Endpoints** | 24 endpoints | 30 endpoints (+SHAP, LIME, signature verify, public key, signing status, batch) |
+| **Tests** | 60+ test cases | 80+ test cases (+explainability input validation, sign/verify roundtrip, tamper detection) |
+| **XAI Readiness** | 30% | 85% (SHAP + LIME operational, counterfactual explanations remaining) |
+| **Audit Trail** | 80% | 95% (cryptographic signing + signature verification added) |
+
 ---
 
-*Document Version: 3.0 | February 9, 2026 | Updated after Sprint 2 cleanup*
+*Document Version: 4.0 | February 9, 2026 | Updated after Sprint 3 — XAI + Crypto Signing + Batch Processing*
