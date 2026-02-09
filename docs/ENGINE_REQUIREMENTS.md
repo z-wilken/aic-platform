@@ -333,16 +333,16 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 
 ## 7. Summary Scorecard
 
-| Category | Previous Score | Current Score | Notes |
-|----------|---------------|---------------|-------|
-| **Fairness Analysis** | 60% | **85%** | Added SPD + ε-Differential Fairness |
-| **Security** | 40% | **60%** | Rate limiting added, CORS tightened, still needs PII redaction |
-| **Audit Trail** | 50% | **80%** | Hash chain implemented + verified, needs cryptographic signing |
-| **XAI** | 30% | **30%** | No change — SHAP/LIME still needed |
-| **Testing** | 0% | **65%** | 40+ unit tests, still needs integration tests |
-| **Drift Monitoring** | 0% | **100%** | PSI + JSD + KS test fully implemented |
-| **Infrastructure** | 40% | **85%** | Python 3.12, non-root, pinned deps, health checks |
-| **Overall Readiness** | **~35%** | **~60%** | Major progress, remaining gaps are P1/P2 |
+| Category | Original | Sprint 1 | Sprint 2 (Current) | Notes |
+|----------|----------|----------|---------------------|-------|
+| **Fairness Analysis** | 60% | 85% | **85%** | SPD + ε-Differential Fairness |
+| **Security** | 40% | 60% | **80%** | PII redaction, request size limits, env validation |
+| **Audit Trail** | 50% | 80% | **80%** | Hash chain + verification, needs crypto signing |
+| **XAI** | 30% | 30% | **30%** | SHAP/LIME still needed (P1) |
+| **Testing** | 0% | 65% | **85%** | Unit + integration tests, comprehensive_audit coverage |
+| **Drift Monitoring** | 0% | 100% | **100%** | PSI + JSD + KS test |
+| **Infrastructure** | 40% | 85% | **95%** | CI/CD, health checks, migration script, env validation |
+| **Overall Readiness** | **~35%** | **~60%** | **~75%** | Primary gap: XAI (SHAP/LIME) and crypto signing |
 
 ---
 
@@ -352,18 +352,18 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 1. ~~Implement hash chain~~ ✅ Done
 2. ~~Pin dependencies~~ ✅ Done
 3. ~~Add unit tests~~ ✅ Done
-4. **Implement PII redaction in logs** (SR-2.1) — See detailed steps in Section 2.2
-5. **Add integration tests** (TR-1.2) — See detailed steps in Section 5
-6. **Fix `comprehensive_audit` function** — Currently returns hardcoded placeholder scores. Must connect to actual audit functions or clearly mark as demo-only.
-7. **Fix `assess_organization` weighted scoring** — The function defines category weights but ignores them. Implement proper weighted calculation.
+4. ~~Implement PII redaction in logs~~ ✅ Done (Sprint 2)
+5. ~~Add integration tests~~ ✅ Done (Sprint 2)
+6. ~~Fix `comprehensive_audit` function~~ ✅ Done (Sprint 2) — Now runs real analysis across all 5 rights
+7. ~~Fix `assess_organization` weighted scoring~~ ✅ Done (Sprint 2) — Proper weighted categories
 
 ### P1 — Compliance (Do During Alpha)
 8. **Add SHAP integration** (FR-3.2) — See detailed steps in Section 1.3
 9. **Add LIME integration** (FR-3.3) — See detailed steps in Section 1.3
 10. **Add cryptographic signing** (AT-1.3) — See detailed steps in Section 3.1
-11. **Add security scanning to CI** (TR-1.4) — See detailed steps in Section 5
-12. **Add request size limits** (SR-1.4) — See note in Section 2.1
-13. **Set up CI/CD pipeline** — GitHub Actions with: lint, test, security scan, build
+11. ~~Add security scanning to CI~~ ✅ Done (Sprint 2) — Bandit + pip-audit in GitHub Actions
+12. ~~Add request size limits~~ ✅ Done (Sprint 2) — 10MB max via middleware
+13. ~~Set up CI/CD pipeline~~ ✅ Done (Sprint 2) — engine-ci.yml + platform-ci.yml
 
 ### P2 — Enhancements (Post-Alpha)
 14. **Economic inequality metrics** (FR-2.1, FR-2.2) — See detailed steps in Section 1.2
@@ -391,6 +391,25 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 | **Tests** | Empty tests/ folder | 4 test files, 40+ test cases |
 | **Schema** | Broken (duplicate table, wrong ordering) | Fixed ordering, merged duplicates, added hash chain columns |
 
+### Sprint 2 Changes
+
+| Item | Before | After |
+|------|--------|-------|
+| **comprehensive_audit** | Hardcoded placeholder scores | Real analysis across all 5 Algorithmic Rights |
+| **assess_organization** | Defined weights but ignored them | Proper weighted scoring with category bucketing |
+| **PII Redaction** | Not implemented | Logging filter for emails, SA IDs, phone numbers, bcrypt hashes |
+| **Request Size Limits** | None | 10MB max body via middleware |
+| **Health Check** | Static success response | `/health` endpoint with dependency verification and uptime |
+| **CI/CD** | None | GitHub Actions: engine tests + security scan + Docker build; platform build matrix |
+| **Integration Tests** | None | 20+ API endpoint tests via FastAPI TestClient |
+| **Migration Script** | None | `migrate.sh` with --check dry-run and --seed-only modes |
+| **Env Validation** | None | `lib/env.ts` with fail-fast in production, warnings in dev |
+| **Structured Logging** | `console.log` everywhere | JSON logger for platform, PII-filtered logger for engine |
+| **Security Headers** | Platform only | All 4 Next.js apps (platform, admin, hq, web) |
+| **Middleware** | Role check exact-path only | Sub-path matching for `/settings/*`, `/audit-logs/*`, etc. |
+| **db.ts** | Logged full SQL queries | Logs duration + row count only (PII safe) |
+| **CORS Origins** | Hardcoded | Configurable via CORS_ORIGINS env var |
+
 ---
 
-*Document Version: 2.0 | February 7, 2026 | Updated after engine build sprint*
+*Document Version: 3.0 | February 9, 2026 | Updated after Sprint 2 cleanup*
