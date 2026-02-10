@@ -31,6 +31,7 @@ from app.services.evidence_scanner import scan_evidence
 from app.services.red_team import red_team_audit
 from app.services.chain_verification import verify_hash_chain
 from app.services.drift_monitoring import get_psi_drift, get_js_drift
+from app.core.security import signing_service
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -95,6 +96,7 @@ def disparate_impact(request: BiasAuditRequest):
     result = analyze_disparate_impact(request.data, request.protected_attribute, request.outcome_variable, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
+    result["signature"] = signing_service.sign_hash(result["audit_hash"])
     return result
 
 @router.post("/analyze/equalized-odds")
@@ -102,6 +104,7 @@ def equalized_odds(request: EqualizedOddsRequest):
     result = analyze_equalized_odds(request.data, request.protected_attribute, request.actual_outcome, request.predicted_outcome, request.threshold, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
+    result["signature"] = signing_service.sign_hash(result["audit_hash"])
     return result
 
 @router.post("/analyze/intersectional")
@@ -109,6 +112,7 @@ def intersectional_analysis(request: IntersectionalRequest):
     result = analyze_intersectional(request.data, request.protected_attributes, request.outcome_variable, request.min_group_size, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
+    result["signature"] = signing_service.sign_hash(result["audit_hash"])
     return result
 
 @router.post("/analyze/statistical")
