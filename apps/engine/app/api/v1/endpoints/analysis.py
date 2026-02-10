@@ -10,8 +10,12 @@ from app.services.bias_analysis import (
     analyze_statistical_significance, explain_decision, analyze_empathy,
     validate_correction_process, submit_correction_request, analyze_ai_disclosure,
     comprehensive_audit, assess_organization, assess_tier, list_frameworks,
-    get_differential_fairness
+    get_differential_fairness, get_atkinson_index
 )
+# ...
+@router.post("/analyze/atkinson-index")
+def atkinson_index(request: BiasAuditRequest):
+    return get_atkinson_index(request.data, request.protected_attribute, request.outcome_variable)
 # ...
 @router.post("/analyze/differential-fairness")
 def differential_fairness(request: IntersectionalRequest):

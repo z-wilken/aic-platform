@@ -756,3 +756,43 @@ def analyze_differential_fairness(data: List[Dict], protected_attributes: List[s
 
 def get_differential_fairness(data: List[Dict], protected_attributes: List[str], outcome_variable: str):
     return analyze_differential_fairness(data, protected_attributes, outcome_variable)
+
+def analyze_atkinson_index(data: List[Dict], protected_attribute: str, outcome_variable: str, epsilon: float = 0.5):
+    """
+    Calculates the Atkinson Index for outcome inequality.
+    A = 1 - [1/n * sum( (y_i / mean_y)^(1-epsilon) )]^(1/(1-epsilon))
+    """
+    df = pd.DataFrame(data)
+    group_rates = df.groupby(protected_attribute)[outcome_variable].mean()
+    y = group_rates.values
+    
+    # Avoid zero mean
+    mean_y = np.mean(y)
+    if mean_y == 0: return {"error": "Mean outcome is zero"}
+    
+    n = len(y)
+    
+    if epsilon == 1:
+        # Special case for epsilon = 1 (logarithmic)
+        geometric_mean = np.exp(np.mean(np.log(y + 0.0001)))
+        atkinson = 1 - (geometric_mean / mean_y)
+    else:
+        # Standard power mean
+        term = np.mean((y / mean_y)**(1 - epsilon))
+        atkinson = 1 - (term**(1 / (1 - epsilon)))
+        
+    status = "FAIR"
+    if atkinson >= 0.2: status = "INEQUITABLE"
+    elif atkinson >= 0.1: status = "MARGINAL"
+    
+    return {
+        "metric": "Atkinson Index",
+        "value": round(float(atkinson), 4),
+        "epsilon": epsilon,
+        "status": status,
+        "right_enforced": "Right to Human Agency (Economic Fairness)",
+        "recommendation": "Outcome distribution is equitable." if atkinson < 0.1 else "Significant inequality detected in group outcomes. Review allocation logic."
+    }
+
+def get_atkinson_index(data: List[Dict], protected_attribute: str, outcome_variable: str):
+    return analyze_atkinson_index(data, protected_attribute, outcome_variable)
