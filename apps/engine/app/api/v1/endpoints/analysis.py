@@ -17,7 +17,7 @@ from app.services.labor_audit import audit_labor
 from app.services.evidence_scanner import scan_evidence
 from app.services.red_team import red_team_audit
 from app.services.chain_verification import verify_hash_chain
-from app.services.drift_monitoring import get_psi_drift
+from app.services.drift_monitoring import get_psi_drift, get_js_drift
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -48,6 +48,10 @@ class DriftRequest(BaseModel):
 @router.post("/analyze/drift/psi")
 def get_psi_analysis(request: DriftRequest):
     return get_psi_drift(request.expected_data, request.actual_data)
+
+@router.post("/analyze/drift/js")
+def get_js_analysis(request: DriftRequest):
+    return get_js_drift(request.expected_data, request.actual_data)
 
 @router.post("/audit/privacy")
 def get_privacy_audit(request: PrivacyRequest):
