@@ -210,12 +210,14 @@ def analyze_statistical_significance(data: List[Dict], protected_attribute: str,
     df = pd.DataFrame(data)
 
     contingency = pd.crosstab(df[protected_attribute], df[outcome_variable])
-    chi2, p_value, dof, expected = stats.chi2_contingency(contingency)
+    chi2_raw, p_raw, dof, expected = stats.chi2_contingency(contingency)
+    chi2 = float(chi2_raw)
+    p_value = float(p_raw)
 
-    is_significant = p_value < 0.05
+    is_significant = bool(p_value < 0.05)
     n = len(df)
     min_dim = min(contingency.shape) - 1
-    cramers_v = np.sqrt(chi2 / (n * min_dim)) if min_dim > 0 else 0
+    cramers_v = float(np.sqrt(chi2 / (n * min_dim))) if min_dim > 0 else 0.0
 
     effect = "negligible" if cramers_v < 0.1 else \
              "small" if cramers_v < 0.3 else \

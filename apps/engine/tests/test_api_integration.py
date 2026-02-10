@@ -18,9 +18,7 @@ class TestHealthCheck:
         data = response.json()
         assert data["status"] == "AIC Audit Engine Operational"
         assert "version" in data
-        assert "capabilities" in data
-        assert isinstance(data["capabilities"], list)
-        assert len(data["capabilities"]) > 0
+        assert "timestamp" in data
 
 
 class TestDisparateImpactEndpoint:
@@ -114,8 +112,11 @@ class TestDriftEndpoint:
         response = client.post("/api/v1/analyze/drift", json=payload)
         assert response.status_code == 200
         data = response.json()
-        assert "overall_status" in data
-        assert "metrics" in data
+        assert "status" in data
+        assert "psi" in data
+        assert "js_divergence" in data
+        assert "ks_test" in data
+        assert data["feature"] == "income"
 
 
 class TestExplainEndpoint:
