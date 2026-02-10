@@ -796,3 +796,35 @@ def analyze_atkinson_index(data: List[Dict], protected_attribute: str, outcome_v
 
 def get_atkinson_index(data: List[Dict], protected_attribute: str, outcome_variable: str):
     return analyze_atkinson_index(data, protected_attribute, outcome_variable)
+
+def analyze_theil_index(data: List[Dict], protected_attribute: str, outcome_variable: str):
+    """
+    Calculates the Theil Index (Generalized Entropy GE(1)).
+    T = 1/n * sum( (y_i / mean_y) * ln(y_i / mean_y) )
+    """
+    df = pd.DataFrame(data)
+    group_rates = df.groupby(protected_attribute)[outcome_variable].mean()
+    y = group_rates.values
+    
+    mean_y = np.mean(y)
+    if mean_y == 0: return {"error": "Mean outcome is zero"}
+    
+    # Avoid zero rates for log
+    y_adj = np.where(y == 0, 0.0001, y)
+    
+    theil = np.mean((y_adj / mean_y) * np.log(y_adj / mean_y))
+    
+    status = "FAIR"
+    if theil >= 0.1: status = "BIASED"
+    elif theil >= 0.05: status = "WARNING"
+    
+    return {
+        "metric": "Theil Index (GE(1))",
+        "value": round(float(theil), 4),
+        "status": status,
+        "right_enforced": "Right to Human Agency (Systemic Fairness)",
+        "recommendation": "Theil index indicates low entropy in outcome distribution." if theil < 0.05 else "Systemic inequality detected. High entropy in group outcomes."
+    }
+
+def get_theil_index(data: List[Dict], protected_attribute: str, outcome_variable: str):
+    return analyze_theil_index(data, protected_attribute, outcome_variable)
