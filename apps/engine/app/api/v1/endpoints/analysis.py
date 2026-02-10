@@ -9,8 +9,13 @@ from app.services.bias_analysis import (
     analyze_disparate_impact, analyze_equalized_odds, analyze_intersectional,
     analyze_statistical_significance, explain_decision, analyze_empathy,
     validate_correction_process, submit_correction_request, analyze_ai_disclosure,
-    comprehensive_audit, assess_organization, assess_tier, list_frameworks
+    comprehensive_audit, assess_organization, assess_tier, list_frameworks,
+    get_differential_fairness
 )
+# ...
+@router.post("/analyze/differential-fairness")
+def differential_fairness(request: IntersectionalRequest):
+    return get_differential_fairness(request.data, request.protected_attributes, request.outcome_variable)
 from app.services.scoring import calculate_integrity_score
 from app.services.privacy_audit import audit_privacy
 from app.services.labor_audit import audit_labor

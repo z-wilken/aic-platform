@@ -714,3 +714,45 @@ def list_frameworks():
             }
         ]
     }
+
+def analyze_differential_fairness(data: List[Dict], protected_attributes: List[str], outcome_variable: str, epsilon: float = 0.1):
+    """
+    Calculates epsilon-differential fairness.
+    The system is fair if for any two intersectional groups s_i, s_j:
+    exp(-epsilon) <= P(y=1 | s_i) / P(y=1 | s_j) <= exp(epsilon)
+    """
+    df = pd.DataFrame(data)
+    
+    # Create intersectional groups
+    df['group'] = df[protected_attributes].astype(str).agg(' + '.join, axis=1)
+    
+    group_stats = df.groupby('group')[outcome_variable].mean()
+    rates = group_stats.values
+    
+    if len(rates) < 2:
+        return {"error": "Insufficient groups for differential analysis"}
+        
+    max_rate = np.max(rates)
+    min_rate = np.min(rates)
+    
+    # Add small epsilon to avoid division by zero
+    if min_rate == 0: min_rate = 0.0001
+    
+    ratio = max_rate / min_rate
+    log_ratio = np.log(ratio)
+    
+    is_fair = log_ratio <= epsilon
+    
+    return {
+        "metric": "Epsilon-Differential Fairness",
+        "epsilon_target": epsilon,
+        "observed_log_ratio": round(float(log_ratio), 4),
+        "is_fair": bool(is_fair),
+        "max_group": group_stats.idxmax(),
+        "min_group": group_stats.idxmin(),
+        "right_enforced": "Right to Human Agency (Advanced)",
+        "recommendation": "Probability bounds are within fair range." if is_fair else f"Intersectional disparity exceeds epsilon bound ({epsilon}). Investigate {group_stats.idxmin()} outcomes."
+    }
+
+def get_differential_fairness(data: List[Dict], protected_attributes: List[str], outcome_variable: str):
+    return analyze_differential_fairness(data, protected_attributes, outcome_variable)
