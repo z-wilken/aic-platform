@@ -17,35 +17,17 @@ from app.services.bias_analysis import (
     comprehensive_audit, assess_organization, assess_tier, list_frameworks,
     get_differential_fairness, get_atkinson_index, get_theil_index
 )
-# ...
-@router.post("/analyze/theil-index")
-def theil_index(request: BiasAuditRequest):
-    return get_theil_index(request.data, request.protected_attribute, request.outcome_variable)
-# ...
-@router.post("/analyze/atkinson-index")
-def atkinson_index(request: BiasAuditRequest):
-    return get_atkinson_index(request.data, request.protected_attribute, request.outcome_variable)
-# ...
-@router.post("/analyze/differential-fairness")
-def differential_fairness(request: IntersectionalRequest):
-    return get_differential_fairness(request.data, request.protected_attributes, request.outcome_variable)
 from app.services.scoring import calculate_integrity_score
 from app.services.privacy_audit import audit_privacy
 from app.services.labor_audit import audit_labor
 from app.services.evidence_scanner import scan_evidence
 from app.services.red_team import red_team_audit
-<<<<<<< HEAD
-from app.services.chain_verification import verify_hash_chain
-from app.services.drift_monitoring import get_psi_drift, get_js_drift
-from app.core.security import signing_service
-from pydantic import BaseModel
-=======
 from app.services.fairness_metrics import statistical_parity_difference, epsilon_differential_fairness
 from app.services.drift_monitoring import analyze_drift
 from app.services.hash_chain import HashChain
 from app.services.explainability import explain_from_data
+from app.core.security import signing_service
 from app.core.signing import verify_signature, get_public_key_pem, is_signing_available
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
 
 limiter = Limiter(key_func=get_remote_address)
 router = APIRouter()
@@ -69,22 +51,6 @@ class RedTeamRequest(BaseModel):
     protected_attribute: str
     other_columns: List[str]
 
-<<<<<<< HEAD
-class VerifyChainRequest(BaseModel):
-    entries: List[Dict[str, Any]]
-
-class DriftRequest(BaseModel):
-    expected_data: List[float]
-    actual_data: List[float]
-
-@router.post("/analyze/drift/psi")
-def get_psi_analysis(request: DriftRequest):
-    return get_psi_drift(request.expected_data, request.actual_data)
-
-@router.post("/analyze/drift/js")
-def get_js_analysis(request: DriftRequest):
-    return get_js_drift(request.expected_data, request.actual_data)
-=======
 class DriftRequest(BaseModel):
     baseline_data: List[float]
     current_data: List[float]
@@ -127,8 +93,7 @@ class BatchAnalysisRequest(BaseModel):
     """Each item: {"type": "disparate_impact"|"equalized_odds"|..., "params": {...}}"""
 
 
-# --- Existing endpoints (fixed) ---
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
+# --- Core audit endpoints ---
 
 @router.post("/audit/privacy")
 @limiter.limit("30/minute")
@@ -151,51 +116,41 @@ def get_red_team_audit(request: RedTeamRequest, req: Request):
     return red_team_audit(request.data, request.protected_attribute, request.other_columns)
 
 @router.post("/audit-trail/verify")
-def get_chain_verification(request: VerifyChainRequest):
-    return verify_hash_chain(request.entries)
+@limiter.limit("10/minute")
+def verify_audit_chain(request: HashChainVerifyRequest, req: Request):
+    """Verify integrity of a hash chain of audit records."""
+    return HashChain.verify_chain(request.records)
 
 @router.post("/integrity/calculate", response_model=IntegrityScoreResponse)
 @limiter.limit("30/minute")
 def get_integrity_score(request: IntegrityScoreRequest, req: Request):
     return calculate_integrity_score(request)
 
+
+# --- Bias analysis endpoints ---
+
 @router.post("/analyze")
-<<<<<<< HEAD
-def disparate_impact(request: BiasAuditRequest):
-    result = analyze_disparate_impact(request.data, request.protected_attribute, request.outcome_variable, request.previous_hash)
-=======
 @limiter.limit("30/minute")
 def disparate_impact(request: BiasAuditRequest, req: Request):
-    result = analyze_disparate_impact(request.data, request.protected_attribute, request.outcome_variable)
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
+    result = analyze_disparate_impact(request.data, request.protected_attribute, request.outcome_variable, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     result["signature"] = signing_service.sign_hash(result["audit_hash"])
     return result
 
 @router.post("/analyze/equalized-odds")
-<<<<<<< HEAD
-def equalized_odds(request: EqualizedOddsRequest):
-    result = analyze_equalized_odds(request.data, request.protected_attribute, request.actual_outcome, request.predicted_outcome, request.threshold, request.previous_hash)
-=======
 @limiter.limit("30/minute")
 def equalized_odds(request: EqualizedOddsRequest, req: Request):
-    result = analyze_equalized_odds(request.data, request.protected_attribute, request.actual_outcome, request.predicted_outcome, request.threshold)
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
+    result = analyze_equalized_odds(request.data, request.protected_attribute, request.actual_outcome, request.predicted_outcome, request.threshold, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     result["signature"] = signing_service.sign_hash(result["audit_hash"])
     return result
 
 @router.post("/analyze/intersectional")
-<<<<<<< HEAD
-def intersectional_analysis(request: IntersectionalRequest):
-    result = analyze_intersectional(request.data, request.protected_attributes, request.outcome_variable, request.min_group_size, request.previous_hash)
-=======
 @limiter.limit("20/minute")
 def intersectional_analysis(request: IntersectionalRequest, req: Request):
-    result = analyze_intersectional(request.data, request.protected_attributes, request.outcome_variable, request.min_group_size)
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
+    result = analyze_intersectional(request.data, request.protected_attributes, request.outcome_variable, request.min_group_size, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     result["signature"] = signing_service.sign_hash(result["audit_hash"])
@@ -208,6 +163,24 @@ def statistical_significance(request: BiasAuditRequest, req: Request):
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
+
+@router.post("/analyze/theil-index")
+@limiter.limit("30/minute")
+def theil_index(request: BiasAuditRequest, req: Request):
+    return get_theil_index(request.data, request.protected_attribute, request.outcome_variable)
+
+@router.post("/analyze/atkinson-index")
+@limiter.limit("30/minute")
+def atkinson_index(request: BiasAuditRequest, req: Request):
+    return get_atkinson_index(request.data, request.protected_attribute, request.outcome_variable)
+
+@router.post("/analyze/differential-fairness")
+@limiter.limit("20/minute")
+def differential_fairness(request: IntersectionalRequest, req: Request):
+    return get_differential_fairness(request.data, request.protected_attributes, request.outcome_variable)
+
+
+# --- Rights enforcement endpoints ---
 
 @router.post("/explain")
 @limiter.limit("30/minute")
@@ -239,6 +212,9 @@ def ai_disclosure_analysis(request: DisclosureRequest, req: Request):
 def comprehensive_auditing(request: ComprehensiveAuditRequest, req: Request):
     return comprehensive_audit(request.organization_name, request.ai_systems, request.framework)
 
+
+# --- Assessment endpoints ---
+
 @router.post("/assess")
 @limiter.limit("30/minute")
 def organization_assessment(request: AssessmentRequest, req: Request):
@@ -255,7 +231,7 @@ def frameworks_listing(req: Request):
     return list_frameworks()
 
 
-# --- New endpoints ---
+# --- Fairness metrics endpoints ---
 
 @router.post("/analyze/statistical-parity")
 @limiter.limit("30/minute")
@@ -269,7 +245,7 @@ def spd_analysis(request: SPDRequest, req: Request):
 @router.post("/analyze/epsilon-fairness")
 @limiter.limit("20/minute")
 def epsilon_fairness_analysis(request: EpsilonFairnessRequest, req: Request):
-    """ε-Differential Fairness for intersectional subgroups."""
+    """epsilon-Differential Fairness for intersectional subgroups."""
     result = epsilon_differential_fairness(
         request.data, request.protected_attributes, request.outcome_variable,
         request.epsilon, request.min_group_size
@@ -277,6 +253,9 @@ def epsilon_fairness_analysis(request: EpsilonFairnessRequest, req: Request):
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
+
+
+# --- Drift monitoring endpoint ---
 
 @router.post("/analyze/drift")
 @limiter.limit("20/minute")
@@ -287,6 +266,9 @@ def drift_analysis(request: DriftRequest, req: Request):
         raise HTTPException(status_code=400, detail=result["error"])
     return result
 
+
+# --- Hash chain / audit trail endpoints ---
+
 @router.post("/audit-trail/create")
 @limiter.limit("60/minute")
 def create_audit_record(request: HashChainCreateRequest, req: Request):
@@ -294,12 +276,6 @@ def create_audit_record(request: HashChainCreateRequest, req: Request):
     return HashChain.create_audit_record(
         request.entry_data, request.previous_hash, request.sequence_number
     )
-
-@router.post("/audit-trail/verify")
-@limiter.limit("10/minute")
-def verify_audit_chain(request: HashChainVerifyRequest, req: Request):
-    """Verify integrity of a hash chain of audit records."""
-    return HashChain.verify_chain(request.records)
 
 
 # --- Explainability endpoints (SHAP / LIME) ---
