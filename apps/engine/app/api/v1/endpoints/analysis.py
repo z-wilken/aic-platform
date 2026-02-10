@@ -16,6 +16,7 @@ from app.services.privacy_audit import audit_privacy
 from app.services.labor_audit import audit_labor
 from app.services.evidence_scanner import scan_evidence
 from app.services.red_team import red_team_audit
+from app.services.chain_verification import verify_hash_chain
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -36,6 +37,9 @@ class RedTeamRequest(BaseModel):
     protected_attribute: str
     other_columns: List[str]
 
+class VerifyChainRequest(BaseModel):
+    entries: List[Dict[str, Any]]
+
 @router.post("/audit/privacy")
 def get_privacy_audit(request: PrivacyRequest):
     return audit_privacy(request.columns)
@@ -52,27 +56,31 @@ def get_evidence_verification(request: EvidenceRequest):
 def get_red_team_audit(request: RedTeamRequest):
     return red_team_audit(request.data, request.protected_attribute, request.other_columns)
 
+@router.post("/audit-trail/verify")
+def get_chain_verification(request: VerifyChainRequest):
+    return verify_hash_chain(request.entries)
+
 @router.post("/integrity/calculate", response_model=IntegrityScoreResponse)
 def get_integrity_score(request: IntegrityScoreRequest):
     return calculate_integrity_score(request)
 
 @router.post("/analyze")
 def disparate_impact(request: BiasAuditRequest):
-    result = analyze_disparate_impact(request.data, request.protected_attribute, request.outcome_variable)
+    result = analyze_disparate_impact(request.data, request.protected_attribute, request.outcome_variable, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
 
 @router.post("/analyze/equalized-odds")
 def equalized_odds(request: EqualizedOddsRequest):
-    result = analyze_equalized_odds(request.data, request.protected_attribute, request.actual_outcome, request.predicted_outcome, request.threshold)
+    result = analyze_equalized_odds(request.data, request.protected_attribute, request.actual_outcome, request.predicted_outcome, request.threshold, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
 
 @router.post("/analyze/intersectional")
 def intersectional_analysis(request: IntersectionalRequest):
-    result = analyze_intersectional(request.data, request.protected_attributes, request.outcome_variable, request.min_group_size)
+    result = analyze_intersectional(request.data, request.protected_attributes, request.outcome_variable, request.min_group_size, request.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result

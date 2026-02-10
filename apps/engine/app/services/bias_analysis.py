@@ -10,9 +10,13 @@ import uuid
 from datetime import datetime
 from app.api.v1.schemas.analysis import BiasStatus, EmpathyLevel, TierLevel, FrameworkType
 
-def generate_audit_hash(data: Dict) -> str:
-    """Generate SHA-256 hash for audit trail integrity"""
-    json_str = json.dumps(data, sort_keys=True, default=str)
+def generate_audit_hash(data: Dict, previous_hash: str = None) -> str:
+    """Generate SHA-256 hash for audit trail integrity, linked to previous entry"""
+    payload = {"data": data}
+    if previous_hash:
+        payload["previous_hash"] = previous_hash
+    
+    json_str = json.dumps(payload, sort_keys=True, default=str)
     return hashlib.sha256(json_str.encode()).hexdigest()
 
 def calculate_confusion_metrics(df: pd.DataFrame, actual: str, predicted: str, group_col: str) -> Dict:
@@ -38,7 +42,7 @@ def calculate_confusion_metrics(df: pd.DataFrame, actual: str, predicted: str, g
         }
     return results
 
-def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome_variable: str):
+def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome_variable: str, previous_hash: str = None):
     df = pd.DataFrame(data)
 
     if protected_attribute not in df.columns:
@@ -93,12 +97,13 @@ def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome
         "detailed_analysis": report,
         "recommendations": recommendations or ["No immediate action required. Continue monitoring."],
         "popia_compliance": overall == "FAIR",
-        "audit_hash": generate_audit_hash({"report": report, "flags": flags})
+        "previous_hash": previous_hash,
+        "audit_hash": generate_audit_hash({"report": report, "flags": flags}, previous_hash)
     }
 
     return result
 
-def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_outcome: str, predicted_outcome: str, threshold: float):
+def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_outcome: str, predicted_outcome: str, threshold: float, previous_hash: str = None):
     df = pd.DataFrame(data)
 
     for col in [protected_attribute, actual_outcome, predicted_outcome]:
@@ -135,10 +140,11 @@ def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_ou
         "threshold": threshold,
         "flags": flags,
         "detailed_analysis": metrics,
-        "audit_hash": generate_audit_hash(metrics)
+        "previous_hash": previous_hash,
+        "audit_hash": generate_audit_hash(metrics, previous_hash)
     }
 
-def analyze_intersectional(data: List[Dict], protected_attributes: List[str], outcome_variable: str, min_group_size: int):
+def analyze_intersectional(data: List[Dict], protected_attributes: List[str], outcome_variable: str, min_group_size: int, previous_hash: str = None):
     df = pd.DataFrame(data)
 
     for attr in protected_attributes:
@@ -187,7 +193,8 @@ def analyze_intersectional(data: List[Dict], protected_attributes: List[str], ou
         "reference_group": best_group,
         "flags": flags,
         "detailed_analysis": results,
-        "audit_hash": generate_audit_hash(results)
+        "previous_hash": previous_hash,
+        "audit_hash": generate_audit_hash(results, previous_hash)
     }
 
 def analyze_statistical_significance(data: List[Dict], protected_attribute: str, outcome_variable: str):

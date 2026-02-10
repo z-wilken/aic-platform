@@ -18,12 +18,14 @@ CREATE TABLE organizations (
 CREATE TABLE audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     org_id UUID REFERENCES organizations(id),
-    action VARCHAR(255) NOT NULL,
-    input_type VARCHAR(255) NOT NULL,
-    outcome VARCHAR(255) NOT NULL,
+    system_name VARCHAR(255),
+    event_type VARCHAR(255),
+    details JSONB NOT NULL,
     status audit_status DEFAULT 'PENDING',
     metadata JSONB DEFAULT '{}',
-    immutable_hash VARCHAR(64),
+    integrity_hash VARCHAR(64),
+    previous_hash VARCHAR(64), -- For hash-chaining
+    signature TEXT, -- For cryptographic signing
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

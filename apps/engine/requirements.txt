@@ -3,3 +3,7 @@ uvicorn
 pandas
 scipy
 textblob
+numpy
+scikit-learn
+shap
+lime
