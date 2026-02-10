@@ -1,0 +1,62 @@
+# Ignore version control
+.git
+.gitignore
+
+# Documentation (not needed in container images)
+docs/
+*.md
+!README.md
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (reinstalled in container)
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs (rebuilt in container)
+.next/
+out/
+build/
+dist/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Test files
+**/__tests__/
+**/tests/
+vitest.config.ts
+vitest.setup.ts
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (prevent recursive context)
+docker-compose.yml
+Dockerfile.next
+
+# CI/CD
+.github/
+
+# Temporary and cache
+*.log
+*.tmp
+.cache/
+.turbo
+coverage/
