@@ -1,39 +1,105 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import DashboardShell from '../components/DashboardShell';
+import { motion } from 'framer-motion';
 
-export default function SettingsPage() {
-  return (
-    <DashboardShell>
-      <div className="max-w-2xl">
-        <h2 className="text-2xl font-serif font-bold mb-8">Organization Settings</h2>
+export default function OrganizationalSettings() {
+    const [settings, setSettings] = useState({
+        name: 'FirstRand Bank (Demo)',
+        tier: 'TIER_1',
+        contactEmail: 'compliance@firstrand.co.za',
+        mfaEnabled: true,
+        dataResidency: 'South Africa'
+    });
 
-        <div className="glass-panel p-8 rounded-2xl mb-8">
-            <h3 className="font-mono text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">General Information</h3>
-            <div className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Organization Name</label>
-                    <input type="text" value="FirstRand Bank (Demo)" disabled className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm sm:text-sm p-2 border" />
+    return (
+        <DashboardShell>
+            <div className="max-w-4xl mx-auto space-y-12">
+                <div className="flex justify-between items-end border-b border-aic-black/5 pb-8">
+                    <div>
+                        <h1 className="text-4xl font-serif font-bold text-aic-black tracking-tight tracking-tighter">Organizational Standards</h1>
+                        <p className="text-gray-500 font-serif mt-4 italic text-lg leading-relaxed">
+                            Configure your institutional profile and security protocols.
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700">Primary Contact</label>
-                    <input type="email" value="sarah.khumalo@firstrand.co.za" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm p-2 border" />
+
+                <div className="grid grid-cols-1 gap-12">
+                    {/* Institutional Profile */}
+                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                        <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Institutional Profile</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Entity Name</label>
+                                <input 
+                                    className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all"
+                                    value={settings.name}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Compliance Tier</label>
+                                <div className="px-4 py-3 bg-aic-black text-white font-mono text-[10px] font-bold rounded-xl inline-block">
+                                    {settings.tier}
+                                </div>
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Primary Compliance Email</label>
+                                <input 
+                                    className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all"
+                                    value={settings.contactEmail}
+                                />
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Security Protocol */}
+                    <section className="bg-[#080808] text-white p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-10 opacity-5 font-serif italic text-6xl select-none uppercase">Security</div>
+                        <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10 relative z-10">Security Protocol</h3>
+                        
+                        <div className="space-y-8 relative z-10">
+                            <div className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl">
+                                <div>
+                                    <p className="text-sm font-serif font-bold text-white mb-1">Multi-Factor Authentication (MFA)</p>
+                                    <p className="text-[10px] font-mono text-gray-500 uppercase">Mandatory for {settings.tier} Organizations</p>
+                                </div>
+                                <div className="h-6 w-12 bg-aic-gold rounded-full p-1 flex justify-end items-center">
+                                    <div className="h-4 w-4 bg-white rounded-full shadow-lg" />
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl">
+                                <div>
+                                    <p className="text-sm font-serif font-bold text-white mb-1">Audit Trail Cryptographic Signing</p>
+                                    <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter italic">SHA-256 Chain Verification active</p>
+                                </div>
+                                <span className="text-[8px] font-mono font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded">SECURE</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Data Residency */}
+                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                        <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Jurisdiction & Residency</h3>
+                        <div className="flex items-center gap-6 p-6 bg-aic-paper/50 rounded-2xl border border-aic-black/5">
+                            <div className="w-12 h-12 rounded-xl bg-white border border-aic-black/5 flex items-center justify-center text-2xl font-serif font-bold">ZA</div>
+                            <div>
+                                <p className="text-sm font-serif font-bold text-aic-black mb-1">Sovereign Data Storage</p>
+                                <p className="text-[10px] font-mono text-gray-500 uppercase leading-relaxed italic">
+                                    Your institutional data is pinned to South African regional nodes to satisfy POPIA cross-border transfer requirements.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div className="flex justify-end pt-12">
+                    <button className="bg-aic-black text-white px-12 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all shadow-xl active:scale-95">
+                        SAVE_PROTOCOL_CHANGES
+                    </button>
                 </div>
             </div>
-            <div className="mt-6 text-right">
-                <button className="bg-aic-black text-white px-4 py-2 rounded-lg text-sm font-mono uppercase">Save Changes</button>
-            </div>
-        </div>
-
-        <div className="glass-panel p-8 rounded-2xl border-red-200 bg-red-50/10">
-            <h3 className="font-mono text-sm font-bold text-aic-red uppercase tracking-widest mb-6">Danger Zone</h3>
-            <div className="flex justify-between items-center">
-                <div>
-                    <h4 className="font-bold text-gray-900">Request Data Deletion</h4>
-                    <p className="text-sm text-gray-500">Permanently remove all audit logs in compliance with POPIA.</p>
-                </div>
-                <button className="border border-aic-red text-aic-red px-4 py-2 rounded-lg text-sm font-mono uppercase hover:bg-aic-red hover:text-white transition-colors">Request Deletion</button>
-            </div>
-        </div>
-      </div>
-    </DashboardShell>
-  );
+        </DashboardShell>
+    );
 }
