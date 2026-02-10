@@ -196,6 +196,19 @@ CREATE TABLE api_keys (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE performance_metrics (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    audits_completed INTEGER DEFAULT 0,
+    qc_pass_rate DECIMAL(5,2) DEFAULT 0.00,
+    average_response_time DECIMAL(10,2), -- in hours
+    institutional_score INTEGER DEFAULT 0, -- internal ranking
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id)
+);
+
+CREATE INDEX idx_performance_user ON performance_metrics(user_id);
+
 CREATE TABLE operations_qc (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     entity_id UUID NOT NULL, -- ID of the requirement or report being QC'd
