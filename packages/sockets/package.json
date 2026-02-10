@@ -1,0 +1,11 @@
+{
+  "name": "@aic/sockets",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "socket.io": "^4.7.4",
+    "socket.io-client": "^4.7.4"
+  }
+}
