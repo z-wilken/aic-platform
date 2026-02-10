@@ -50,11 +50,15 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // Check role requirements
-    const requiredRoles = roleRequirements[pathname]
-    if (requiredRoles && !requiredRoles.includes(token.role as string)) {
-      // Insufficient permissions
-      return NextResponse.redirect(new URL('/unauthorized', request.url))
+    // Check role requirements — match on prefix so /settings/api-keys is also protected
+    const matchedRole = Object.entries(roleRequirements).find(
+      ([route]) => pathname === route || pathname.startsWith(route + '/')
+    )
+    if (matchedRole) {
+      const [, requiredRoles] = matchedRole
+      if (!requiredRoles.includes(token.role as string)) {
+        return NextResponse.redirect(new URL('/unauthorized', request.url))
+      }
     }
   }
 
