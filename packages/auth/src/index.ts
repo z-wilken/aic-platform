@@ -45,7 +45,8 @@ export const getAuthOptions = (dbQuery: any): NextAuthOptions => ({
               orgName: user.org_name || 'Internal',
               tier: user.tier || 'TIER_3',
               isSuperAdmin: user.is_super_admin,
-              permissions: user.permissions
+              permissions: user.permissions,
+              mfaRequired: user.tier === 'TIER_1'
             };
           }
         } catch (err) {
@@ -63,6 +64,8 @@ export const getAuthOptions = (dbQuery: any): NextAuthOptions => ({
         token.orgId = user.orgId;
         token.isSuperAdmin = user.isSuperAdmin;
         token.permissions = user.permissions;
+        token.mfaRequired = user.mfaRequired;
+        token.mfaVerified = false; // Initial state
       }
       return token;
     },
@@ -73,6 +76,8 @@ export const getAuthOptions = (dbQuery: any): NextAuthOptions => ({
         session.user.orgId = token.orgId;
         session.user.isSuperAdmin = token.isSuperAdmin;
         session.user.permissions = token.permissions;
+        session.user.mfaRequired = token.mfaRequired;
+        session.user.mfaVerified = token.mfaVerified;
       }
       return session;
     }
