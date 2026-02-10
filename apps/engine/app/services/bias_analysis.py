@@ -87,6 +87,13 @@ def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome
     overall = "BIASED" if any(r["status"] == "FAIL" for r in report.values()) else \
               "WARNING" if any(r["status"] == "WARNING" for r in report.values()) else "FAIR"
 
+    # Enhanced Remediation Recommendations
+    if impact_ratio < 0.8:
+        recommendations.append(f"REMEDIATION: Investigate criteria affecting {group} outcomes. Current impact ratio ({impact_ratio:.2f}) is below 0.8 threshold.")
+        recommendations.append("ACTION: Conduct qualitative review of training data feature distributions for proxy variables.")
+    if best_rate > 0.9:
+        recommendations.append("ADVISORY: Reference group selection rate is unusually high (>90%). Review for potential data leakage or overfitting.")
+
     result = {
         "right_enforced": "Right to Human Agency",
         "overall_status": overall,
