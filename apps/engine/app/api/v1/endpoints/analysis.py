@@ -17,6 +17,7 @@ from app.services.labor_audit import audit_labor
 from app.services.evidence_scanner import scan_evidence
 from app.services.red_team import red_team_audit
 from app.services.chain_verification import verify_hash_chain
+from app.services.drift_monitoring import get_psi_drift
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -39,6 +40,14 @@ class RedTeamRequest(BaseModel):
 
 class VerifyChainRequest(BaseModel):
     entries: List[Dict[str, Any]]
+
+class DriftRequest(BaseModel):
+    expected_data: List[float]
+    actual_data: List[float]
+
+@router.post("/analyze/drift/psi")
+def get_psi_analysis(request: DriftRequest):
+    return get_psi_drift(request.expected_data, request.actual_data)
 
 @router.post("/audit/privacy")
 def get_privacy_audit(request: PrivacyRequest):
