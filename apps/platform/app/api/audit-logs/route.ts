@@ -38,7 +38,20 @@ export async function POST(request: NextRequest) {
 
     const analysisResult = await engineResponse.json();
 
-    // 3. Save Audit Log to Database with linking
+    // 3. Automated Alerting for Critical Drift or Bias
+    if (analysisResult.status === 'CRITICAL_DRIFT' || analysisResult.overall_status === 'BIASED') {
+        await query(
+            'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4)',
+            [
+                orgId, 
+                'CRITICAL ACCOUNTABILITY ALERT', 
+                `Automated analysis detected ${analysisResult.status || analysisResult.overall_status} in system: ${systemName}. Immediate remediation roadmap updated.`,
+                'ALERT'
+            ]
+        );
+    }
+
+    // 4. Save Audit Log to Database with linking
     const logResult = await query(
         `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash, previous_hash) 
          VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
