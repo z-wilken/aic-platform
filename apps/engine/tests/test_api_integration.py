@@ -5,9 +5,10 @@ Tests request validation, response shapes, and error handling.
 
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
+from app.main import app, ENGINE_API_KEY
 
 client = TestClient(app)
+client.headers["X-API-Key"] = ENGINE_API_KEY or ""
 
 
 class TestHealthCheck:

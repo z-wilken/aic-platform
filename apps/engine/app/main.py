@@ -1,6 +1,7 @@
 import logging
 import time
 import os
+import secrets
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -31,6 +32,15 @@ limiter = Limiter(key_func=get_remote_address)
 # Max request body size: 10 MB
 MAX_BODY_SIZE = 10 * 1024 * 1024
 
+# Engine API key — loaded from env, or auto-generated in development
+ENGINE_API_KEY = os.environ.get("ENGINE_API_KEY")
+if not ENGINE_API_KEY and os.environ.get("NODE_ENV") != "production":
+    ENGINE_API_KEY = f"dev_{secrets.token_hex(16)}"
+    logger.info(f"Auto-generated ENGINE_API_KEY for development: {ENGINE_API_KEY[:12]}...")
+
+# Paths that don't require authentication
+PUBLIC_PATHS = {"/", "/health", "/docs", "/redoc", "/openapi.json"}
+
 
 class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
     """Reject requests with bodies larger than MAX_BODY_SIZE to prevent DoS."""
@@ -42,6 +52,38 @@ class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
                 status_code=413,
                 content={"error": "Request body too large", "max_bytes": MAX_BODY_SIZE},
             )
+        return await call_next(request)
+
+
+class APIKeyAuthMiddleware(BaseHTTPMiddleware):
+    """
+    Validates X-API-Key header on protected endpoints.
+    Health checks, docs, and OPTIONS requests are exempt.
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        # Skip auth for public paths, OPTIONS, and when no key is configured
+        if (
+            request.url.path in PUBLIC_PATHS
+            or request.method == "OPTIONS"
+            or ENGINE_API_KEY is None
+        ):
+            return await call_next(request)
+
+        api_key = request.headers.get("X-API-Key") or request.headers.get("x-api-key")
+        if not api_key:
+            return JSONResponse(
+                status_code=401,
+                content={"error": "Missing X-API-Key header"},
+            )
+
+        if not secrets.compare_digest(api_key, ENGINE_API_KEY):
+            logger.warning(f"Invalid API key attempt from {request.client.host}")
+            return JSONResponse(
+                status_code=403,
+                content={"error": "Invalid API key"},
+            )
+
         return await call_next(request)
 
 
@@ -58,6 +100,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Request size limit — must be added before CORS
 app.add_middleware(RequestSizeLimitMiddleware)
+
+# API key authentication — must be added after CORS to not block preflight
+app.add_middleware(APIKeyAuthMiddleware)
 
 # CORS middleware — restricted to known origins and methods
 allowed_origins = os.environ.get("CORS_ORIGINS", "http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3004").split(",")

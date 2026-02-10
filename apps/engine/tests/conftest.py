@@ -3,12 +3,20 @@ Shared fixtures for AIC Engine tests
 """
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
+from app.main import app, ENGINE_API_KEY
 
 
 @pytest.fixture
 def client():
-    """Create a test client for the FastAPI app"""
+    """Create a test client for the FastAPI app with auth headers."""
+    c = TestClient(app)
+    c.headers["X-API-Key"] = ENGINE_API_KEY or ""
+    return c
+
+
+@pytest.fixture
+def unauthenticated_client():
+    """Client without API key for testing auth rejection."""
     return TestClient(app)
 
 
