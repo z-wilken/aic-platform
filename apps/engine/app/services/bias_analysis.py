@@ -526,27 +526,120 @@ def analyze_ai_disclosure(interface_text: str, interaction_type: str):
     }
 
 def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]], framework: FrameworkType):
+    """
+    Run a comprehensive audit across all 5 Algorithmic Rights.
+    Aggregates real analysis results from each AI system provided.
+
+    Each system dict may include:
+        - data, protected_attribute, outcome_variable (for bias testing)
+        - model_type, feature_weights (for explainability scoring)
+        - sample_communication, communication_context (for empathy)
+        - has_appeal, appeal_response_hours, human_reviewer, etc. (for correction)
+        - interface_text, interaction_type (for truth/disclosure)
+    """
     results = {
         "organization": organization_name,
         "framework": framework.value,
         "timestamp": datetime.utcnow().isoformat(),
         "systems_audited": len(ai_systems),
         "rights_assessment": {},
+        "system_results": [],
         "overall_score": 0,
         "recommendations": []
     }
 
-    # Placeholder scores (in production, would run full audits)
-    rights_scores = {
-        "human_agency": {"score": 75, "status": "PARTIAL"},
-        "explanation": {"score": 60, "status": "NEEDS_IMPROVEMENT"},
-        "empathy": {"score": 80, "status": "GOOD"},
-        "correction": {"score": 70, "status": "PARTIAL"},
-        "truth": {"score": 90, "status": "EXCELLENT"}
+    agency_scores = []
+    explanation_scores = []
+    empathy_scores = []
+    correction_scores = []
+    truth_scores = []
+
+    for system in ai_systems:
+        system_name = system.get("name", "Unknown System")
+        system_result = {"name": system_name, "findings": []}
+
+        # --- Right to Human Agency ---
+        if "data" in system and "protected_attribute" in system and "outcome_variable" in system:
+            bias = analyze_disparate_impact(system["data"], system["protected_attribute"], system["outcome_variable"])
+            if "error" not in bias:
+                score = 100 if bias["overall_status"] == "FAIR" else 50 if bias["overall_status"] == "WARNING" else 20
+                agency_scores.append(score)
+                system_result["bias_status"] = bias["overall_status"]
+                system_result["findings"].extend(bias.get("flags", []))
+            else:
+                system_result["bias_status"] = "SKIPPED"
+        else:
+            system_result["bias_status"] = "NO_DATA"
+
+        # --- Right to Explanation ---
+        has_weights = "feature_weights" in system and system["feature_weights"]
+        has_model_type = "model_type" in system
+        if has_weights and has_model_type:
+            explanation_scores.append(100)
+        elif has_model_type:
+            explanation_scores.append(60)
+            results["recommendations"].append(f"{system_name}: Provide feature weights for full explainability")
+        else:
+            explanation_scores.append(30)
+            results["recommendations"].append(f"{system_name}: Document model type and feature importance")
+
+        # --- Right to Empathy ---
+        if "sample_communication" in system:
+            emp = analyze_empathy(system["sample_communication"], system.get("communication_context", "notification"))
+            empathy_scores.append(emp["empathy_score"])
+            if emp["status"] == "FAIL":
+                system_result["findings"].append(f"Empathy: {emp['recommendation']}")
+
+        # --- Right to Correction ---
+        if "has_appeal" in system:
+            corr = validate_correction_process(
+                has_appeal_mechanism=system.get("has_appeal", False),
+                response_time_hours=system.get("appeal_response_hours", 168),
+                human_reviewer_assigned=system.get("human_reviewer", False),
+                clear_instructions=system.get("clear_appeal_instructions", False),
+                accessible_format=system.get("accessible_appeal", False),
+            )
+            correction_scores.append(corr["compliance_score"])
+            if corr["status"] != "COMPLIANT":
+                system_result["findings"].extend(corr["issues"])
+
+        # --- Right to Truth ---
+        if "interface_text" in system:
+            disc = analyze_ai_disclosure(system["interface_text"], system.get("interaction_type", "web"))
+            truth_scores.append(disc["disclosure_score"])
+            if disc["status"] != "FULLY_DISCLOSED":
+                system_result["findings"].append(f"Disclosure: {disc['recommendation']}")
+
+        results["system_results"].append(system_result)
+
+    # Aggregate per-right averages
+    def _avg(scores, default=50):
+        return round(sum(scores) / len(scores), 1) if scores else default
+
+    def _status(score):
+        if score >= 80: return "EXCELLENT"
+        if score >= 60: return "GOOD"
+        if score >= 40: return "PARTIAL"
+        return "NEEDS_IMPROVEMENT"
+
+    rights = {
+        "human_agency": {"score": _avg(agency_scores), "status": _status(_avg(agency_scores)), "systems_tested": len(agency_scores)},
+        "explanation": {"score": _avg(explanation_scores), "status": _status(_avg(explanation_scores)), "systems_tested": len(explanation_scores)},
+        "empathy": {"score": _avg(empathy_scores), "status": _status(_avg(empathy_scores)), "systems_tested": len(empathy_scores)},
+        "correction": {"score": _avg(correction_scores), "status": _status(_avg(correction_scores)), "systems_tested": len(correction_scores)},
+        "truth": {"score": _avg(truth_scores), "status": _status(_avg(truth_scores)), "systems_tested": len(truth_scores)},
     }
 
-    results["rights_assessment"] = rights_scores
-    results["overall_score"] = sum(r["score"] for r in rights_scores.values()) / len(rights_scores)
+    results["rights_assessment"] = rights
+    results["overall_score"] = round(sum(r["score"] for r in rights.values()) / len(rights), 1)
+
+    # Flag untested rights
+    untested = [name for name, r in rights.items() if r["systems_tested"] == 0]
+    if untested:
+        results["recommendations"].append(
+            f"No data provided for: {', '.join(untested)}. Scores are estimated. "
+            "Provide system metadata to get accurate results."
+        )
 
     # Tier recommendation
     if results["overall_score"] >= 85:
@@ -562,52 +655,115 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
 
     # Framework-specific notes
     framework_notes = {
-        FrameworkType.POPIA: "POPIA Section 71 requires human oversight for automated decisions",
-        FrameworkType.EU_AI_ACT: "High-risk systems require conformity assessment",
-        FrameworkType.EEOC: "Employment decisions subject to Four-Fifths Rule"
+        FrameworkType.POPIA: "POPIA Section 71 requires human oversight for automated decisions affecting data subjects",
+        FrameworkType.EU_AI_ACT: "High-risk AI systems require conformity assessment and CE marking",
+        FrameworkType.EEOC: "Employment decisions subject to Four-Fifths Rule and adverse impact analysis",
+        FrameworkType.ISO_42001: "AI management system must demonstrate continuous improvement cycle",
+        FrameworkType.NIST_RMF: "Follow Govern-Map-Measure-Manage lifecycle for AI risk",
+        FrameworkType.IEEE: "Ethical system design requires value-based engineering approach",
     }
-    results["framework_note"] = framework_notes.get(framework, "")
+    results["framework_note"] = framework_notes.get(framework, "Apply general AI governance best practices")
 
     results["audit_hash"] = generate_audit_hash(results)
-
     return results
 
 def assess_organization(answers: Dict[str, int]):
-    # Category weights from PRD
+    """
+    Calculate a weighted integrity score from assessment answers.
+
+    Answers should be keyed by question ID with a prefix indicating category:
+        e.g., "USAGE_q1": 3, "OVERSIGHT_q1": 2, "TRANSPARENCY_q1": 4, etc.
+
+    Category weights (from PRD):
+        OVERSIGHT:      35% — most critical, human oversight is the core value prop
+        TRANSPARENCY:   25% — explainability and disclosure
+        USAGE:          20% — how the AI system is being used
+        INFRASTRUCTURE: 20% — technical safeguards and monitoring
+    """
     weights = {
         "USAGE": 0.20,
         "OVERSIGHT": 0.35,
         "TRANSPARENCY": 0.25,
-        "INFRASTRUCTURE": 0.20
+        "INFRASTRUCTURE": 0.20,
     }
 
-    # Calculate weighted score (simplified)
-    total_score = sum(answers.values())
-    max_possible = len(answers) * 4  # Assuming max 4 per question
+    # Bucket answers into categories based on question key prefix
+    category_scores: Dict[str, List[int]] = {cat: [] for cat in weights}
+    uncategorized = []
 
-    integrity_score = (total_score / max_possible) * 100 if max_possible > 0 else 0
+    for key, value in answers.items():
+        matched = False
+        for cat in weights:
+            if key.upper().startswith(cat):
+                category_scores[cat].append(value)
+                matched = True
+                break
+        if not matched:
+            uncategorized.append(value)
+
+    # If no answers matched category prefixes, fall back to equal-weight average
+    has_categories = any(len(v) > 0 for v in category_scores.values())
+
+    if has_categories:
+        weighted_total = 0.0
+        weight_used = 0.0
+        breakdown = {}
+
+        for cat, weight in weights.items():
+            scores = category_scores[cat]
+            if scores:
+                cat_avg = sum(scores) / len(scores)
+                cat_pct = (cat_avg / 4.0) * 100  # Normalize 0-4 → 0-100
+                weighted_total += cat_pct * weight
+                weight_used += weight
+                breakdown[cat] = {
+                    "raw_average": round(cat_avg, 2),
+                    "percentage": round(cat_pct, 1),
+                    "weight": weight,
+                    "weighted_contribution": round(cat_pct * weight, 1),
+                    "questions": len(scores),
+                }
+            else:
+                breakdown[cat] = {
+                    "raw_average": None,
+                    "percentage": None,
+                    "weight": weight,
+                    "weighted_contribution": 0,
+                    "questions": 0,
+                }
+
+        # Re-normalize if some categories had no answers
+        integrity_score = (weighted_total / weight_used) if weight_used > 0 else 0
+    else:
+        # Fallback: simple unweighted average for backward compatibility
+        total_score = sum(answers.values())
+        max_possible = len(answers) * 4
+        integrity_score = (total_score / max_possible) * 100 if max_possible > 0 else 0
+        breakdown = {"note": "No category prefixes detected — used unweighted average"}
 
     # Tier determination
     if integrity_score >= 80:
         tier = TierLevel.TIER_3
-        tier_desc = "Automated (Low-stakes)"
+        tier_desc = "Automated-Permissible (Standard Risk)"
     elif integrity_score >= 50:
         tier = TierLevel.TIER_2
-        tier_desc = "Human-Supervised"
+        tier_desc = "Human-Supervised (Elevated Risk)"
     else:
         tier = TierLevel.TIER_1
-        tier_desc = "Human-Approved (Critical)"
+        tier_desc = "Human-Approved (Critical Risk)"
 
     return {
         "integrity_score": round(integrity_score, 1),
         "recommended_tier": tier.value,
         "tier_description": tier_desc,
+        "scoring_method": "weighted" if has_categories else "unweighted",
+        "breakdown": breakdown,
         "questions_answered": len(answers),
         "next_steps": [
             "Schedule consultation with AIC advisor",
             "Prepare documentation for audit",
-            "Review tier-specific requirements"
-        ]
+            "Review tier-specific requirements",
+        ],
     }
 
 def assess_tier(ai_affects_rights: int, special_personal_info: int, human_oversight: int):

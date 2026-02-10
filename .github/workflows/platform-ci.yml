@@ -1,0 +1,50 @@
+name: AIC Platform CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'apps/web/**'
+      - 'apps/platform/**'
+      - 'apps/admin/**'
+      - 'apps/hq/**'
+      - 'packages/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'apps/web/**'
+      - 'apps/platform/**'
+      - 'apps/admin/**'
+      - 'apps/hq/**'
+      - 'packages/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        app: [web, platform, admin, hq]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build ${{ matrix.app }}
+        run: npm run build --workspace=apps/${{ matrix.app }}
+        env:
+          NEXTAUTH_SECRET: ci-test-secret-not-real
+          NEXTAUTH_URL: http://localhost:3000
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
