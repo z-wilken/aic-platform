@@ -52,6 +52,6 @@ def analyze_drift(baseline: List[float], current: List[float], feature_name: str
         "feature": feature_name,
         "psi": psi,
         "js_divergence": js,
-        "ks_test": {"statistic": round(ks_stat, 4), "p_value": round(p_val, 4), "significant": p_val < 0.05},
+        "ks_test": {"statistic": round(float(ks_stat), 4), "p_value": round(float(p_val), 4), "significant": bool(p_val < 0.05)},
         "status": "STABLE" if (psi["status"] == "STABLE" and p_val > 0.05) else "DRIFT_DETECTED"
     }

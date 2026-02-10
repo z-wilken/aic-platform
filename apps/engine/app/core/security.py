@@ -1,33 +1,32 @@
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding, rsa
-from cryptography.hazmat.primitives import serialization
-import base64
+"""
+Signing service used by analysis endpoints to sign audit hashes.
+
+Delegates to app.core.signing for key management and crypto operations.
+This ensures a single key pair is used across the entire engine, loaded
+from AUDIT_SIGNING_KEY / AUDIT_VERIFY_KEY env vars in production or
+auto-generated in development.
+
+This module provides the `signing_service` singleton consumed by analysis.py.
+"""
+
+from app.core.signing import sign_data, get_public_key_pem, is_signing_available
+
 
 class SigningService:
-    def __init__(self):
-        # In production, these would be loaded from a secure vault or HSM
-        # For the Alpha, we generate a persistent key pair
-        self.private_key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=3072
-        )
-        self.public_key = self.private_key.public_key()
+    """Thin wrapper around the signing module for backward compatibility."""
 
     def sign_hash(self, hash_str: str) -> str:
-        signature = self.private_key.sign(
-            hash_str.encode(),
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()),
-                salt_length=padding.PSS.MAX_LENGTH
-            ),
-            hashes.SHA256()
-        )
-        return base64.b64encode(signature).decode()
+        """Sign an audit hash and return base64-encoded signature."""
+        result = sign_data(hash_str)
+        return result or ""
 
     def get_public_key_pem(self) -> str:
-        return self.public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo
-        ).decode()
+        pem = get_public_key_pem()
+        return pem or ""
+
+    @property
+    def available(self) -> bool:
+        return is_signing_available()
+
 
 signing_service = SigningService()
