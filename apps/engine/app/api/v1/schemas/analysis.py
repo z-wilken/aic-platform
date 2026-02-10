@@ -31,6 +31,7 @@ class BiasAuditRequest(BaseModel):
     data: List[Dict]
     protected_attribute: str
     outcome_variable: str
+    previous_hash: Optional[str] = None
 
 class EqualizedOddsRequest(BaseModel):
     data: List[Dict]
@@ -38,12 +39,14 @@ class EqualizedOddsRequest(BaseModel):
     actual_outcome: str
     predicted_outcome: str
     threshold: float = Field(default=0.1)
+    previous_hash: Optional[str] = None
 
 class IntersectionalRequest(BaseModel):
     data: List[Dict]
     protected_attributes: List[str]
     outcome_variable: str
     min_group_size: int = Field(default=30)
+    previous_hash: Optional[str] = None
 
 class ExplainRequest(BaseModel):
     model_type: str
