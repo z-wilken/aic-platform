@@ -12,14 +12,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { systemName, data } = body;
 
-    // 1. Forward to Python Engine for Rigorous Bias Audit
+    // 1. Fetch the last hash for this organization to maintain the chain
+    const lastLog = await query(
+        'SELECT integrity_hash FROM audit_logs WHERE org_id = $1 ORDER BY created_at DESC LIMIT 1',
+        [orgId]
+    );
+    const previousHash = lastLog.rows[0]?.integrity_hash || null;
+
+    // 2. Forward to Python Engine for Rigorous Bias Audit
     const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             protected_attribute: data.protected_attribute || 'group',
             outcome_variable: data.outcome_variable || 'hired',
-            data: data.rows || [] // The engine expects a list of dicts
+            data: data.rows || [],
+            previous_hash: previousHash
         })
     });
 
@@ -30,16 +38,17 @@ export async function POST(request: NextRequest) {
 
     const analysisResult = await engineResponse.json();
 
-    // 2. Save Audit Log to Database
+    // 3. Save Audit Log to Database with linking
     const logResult = await query(
-        `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash) 
-         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash, previous_hash) 
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
         [
             orgId, 
             systemName, 
             'BIAS_AUDIT', 
             JSON.stringify(analysisResult),
-            analysisResult.metadata?.hash || 'SHA256-PENDING'
+            analysisResult.audit_hash,
+            previousHash
         ]
     );
 
@@ -65,14 +74,22 @@ export async function PATCH(request: NextRequest) {
       
       const body = await request.json();
       const { systemName, data, type = 'EQUALIZED_ODDS' } = body;
+
+      // 1. Fetch the last hash for this organization to maintain the chain
+      const lastLog = await query(
+          'SELECT integrity_hash FROM audit_logs WHERE org_id = $1 ORDER BY created_at DESC LIMIT 1',
+          [orgId]
+      );
+      const previousHash = lastLog.rows[0]?.integrity_hash || null;
   
       let engineEndpoint = '';
-      let payload = {};
+      let payload: any = { previous_hash: previousHash };
       let eventType = '';
 
       if (type === 'EQUALIZED_ODDS') {
           engineEndpoint = `${ENGINE_URL}/api/v1/analyze/equalized-odds`;
           payload = {
+              ...payload,
               protected_attribute: data.protected_attribute || 'group',
               actual_outcome: data.actual_outcome || 'actual',
               predicted_outcome: data.predicted_outcome || 'predicted',
@@ -82,6 +99,7 @@ export async function PATCH(request: NextRequest) {
       } else if (type === 'INTERSECTIONAL') {
           engineEndpoint = `${ENGINE_URL}/api/v1/analyze/intersectional`;
           payload = {
+              ...payload,
               protected_attributes: data.protected_attributes || ['race', 'gender'],
               outcome_variable: data.outcome_variable || 'hired',
               min_group_size: data.min_group_size || 1,
@@ -106,9 +124,9 @@ export async function PATCH(request: NextRequest) {
       const analysisResult = await engineResponse.json();
   
       await query(
-          `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash) 
-           VALUES ($1, $2, $3, $4, $5)`,
-          [orgId, systemName, eventType, JSON.stringify(analysisResult), analysisResult.audit_hash || 'SHA256-ADV']
+          `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash, previous_hash) 
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [orgId, systemName, eventType, JSON.stringify(analysisResult), analysisResult.audit_hash, previousHash]
       );
   
       return NextResponse.json({ success: true, analysis: analysisResult });
