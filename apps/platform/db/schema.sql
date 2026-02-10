@@ -196,7 +196,31 @@ CREATE TABLE api_keys (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE training_progress (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    module_id VARCHAR(100) NOT NULL, -- e.g., 'legal-71', 'tech-bias'
+    status VARCHAR(50) DEFAULT 'IN_PROGRESS', -- 'IN_PROGRESS', 'COMPLETED'
+    score INTEGER,
+    completed_at TIMESTAMP WITH TIME ZONE,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, module_id)
+);
+
+CREATE TABLE lead_auditor_credentials (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    certificate_id VARCHAR(100) UNIQUE NOT NULL,
+    issue_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    expiry_date TIMESTAMP WITH TIME ZONE,
+    verification_hash VARCHAR(64) NOT NULL, -- SHA-256 of the certificate metadata
+    status VARCHAR(50) DEFAULT 'ACTIVE', -- 'ACTIVE', 'REVOKED', 'EXPIRED'
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes for performance
+CREATE INDEX idx_training_user ON training_progress(user_id);
+CREATE INDEX idx_creds_user ON lead_auditor_credentials(user_id);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_org ON users(org_id);
 CREATE INDEX idx_audit_logs_org ON audit_logs(org_id);
