@@ -196,6 +196,20 @@ CREATE TABLE api_keys (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE operations_qc (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    entity_id UUID NOT NULL, -- ID of the requirement or report being QC'd
+    entity_type VARCHAR(50) NOT NULL, -- 'REQUIREMENT', 'REPORT'
+    original_auditor_id UUID REFERENCES users(id),
+    qc_reviewer_id UUID REFERENCES users(id),
+    status VARCHAR(50) DEFAULT 'PENDING', -- 'PENDING', 'PASSED', 'REJECTED'
+    findings TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_qc_status ON operations_qc(status);
+
 CREATE TABLE training_progress (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
