@@ -5,10 +5,66 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function HQShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  
-  const departments = [
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
+
+  // Handle Cmd+K for search
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setSearchOpen((open) => !open);
+      }
+    };
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#050505] text-white flex font-mono uppercase tracking-[0.15em] text-[9px]">
+      <AnimatePresence>
+        {searchOpen && (
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6"
+            >
+                <motion.div 
+                    initial={{ scale: 0.95, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    className="w-full max-w-2xl bg-[#080808] border border-white/10 rounded-[2.5rem] p-12 shadow-[0_0_50px_rgba(212,175,55,0.15)]"
+                >
+                    <div className="flex items-center gap-6 mb-12">
+                        <svg className="w-6 h-6 text-aic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <input 
+                            autoFocus
+                            placeholder="QUERY REGISTRY..."
+                            className="bg-transparent border-none text-2xl font-serif text-white outline-none w-full tracking-tighter"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                        <button onClick={() => setSearchOpen(false)} className="text-gray-600 hover:text-white">ESC</button>
+                    </div>
+
+                    <div className="space-y-8">
+                        <div>
+                            <p className="text-[8px] text-gray-600 mb-4 tracking-[0.4em]">Suggested Commands</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                {['/verify-id', '/audit-queue', '/revenue-report', '/training-log'].map(cmd => (
+                                    <div key={cmd} className="p-4 bg-white/5 border border-white/5 rounded-xl text-gray-400 font-mono text-[9px] hover:border-aic-gold/30 hover:text-white transition-all cursor-pointer">
+                                        {cmd}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Universal HQ Navigation */}
     { 
         id: 'governance', 
         label: 'Governance', 
