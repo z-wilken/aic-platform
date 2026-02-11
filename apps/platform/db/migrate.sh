@@ -3,9 +3,13 @@
 # AIC Platform — Database Migration Runner
 #
 # Usage:
-#   ./migrate.sh                  # Apply schema.sql to local database
-#   ./migrate.sh --check          # Dry-run: print SQL without executing
-#   ./migrate.sh --seed-only      # Run only the seed data inserts
+#   ./migrate.sh                  # Apply all pending migrations
+#   ./migrate.sh --status         # Show migration status
+#   ./migrate.sh --seed           # Run seed data (development only)
+#   ./migrate.sh --reset          # Drop all tables and re-apply (DESTRUCTIVE)
+#
+# Migrations are stored in db/migrations/ as numbered SQL files.
+# Each migration is applied once and tracked in the _migrations table.
 #
 # Requires: psql, .env file in project root (or env vars set directly)
 #
@@ -13,7 +17,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
-SCHEMA_FILE="$SCRIPT_DIR/schema.sql"
+MIGRATIONS_DIR="$SCRIPT_DIR/migrations"
+SEED_FILE="$SCRIPT_DIR/seed.sql"
 
 # Load .env from project root if it exists
 if [ -f "$ROOT_DIR/.env" ]; then
@@ -30,33 +35,92 @@ DB_NAME="${POSTGRES_DB:-aic_platform}"
 
 export PGPASSWORD="$DB_PASS"
 
-echo "=== AIC Database Migration ==="
-echo "Host: $DB_HOST:$DB_PORT"
-echo "Database: $DB_NAME"
-echo "Schema: $SCHEMA_FILE"
+PSQL="psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -v ON_ERROR_STOP=1"
+
+echo "=== AIC Database Migrations ==="
+echo "Host: $DB_HOST:$DB_PORT  Database: $DB_NAME"
 echo ""
 
-if [ "${1:-}" = "--check" ]; then
-  echo "[DRY RUN] Would execute:"
-  echo "---"
-  cat "$SCHEMA_FILE"
-  echo "---"
-  echo "No changes made."
+# Ensure migrations tracking table exists
+$PSQL -q -c "
+CREATE TABLE IF NOT EXISTS _migrations (
+    id SERIAL PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL UNIQUE,
+    applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);" 2>/dev/null
+
+# --status: show what's applied
+if [ "${1:-}" = "--status" ]; then
+  echo "Applied migrations:"
+  $PSQL -c "SELECT filename, applied_at FROM _migrations ORDER BY filename;"
+  echo ""
+  echo "Pending migrations:"
+  for f in "$MIGRATIONS_DIR"/*.sql; do
+    fname="$(basename "$f")"
+    applied=$($PSQL -t -c "SELECT COUNT(*) FROM _migrations WHERE filename = '$fname';" | tr -d ' ')
+    if [ "$applied" = "0" ]; then
+      echo "  - $fname"
+    fi
+  done
   exit 0
 fi
 
-if [ "${1:-}" = "--seed-only" ]; then
-  echo "Running seed data only..."
-  # Extract INSERT statements from schema
-  grep -E "^INSERT" "$SCHEMA_FILE" | psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -v ON_ERROR_STOP=1
+# --seed: run seed data
+if [ "${1:-}" = "--seed" ]; then
+  if [ ! -f "$SEED_FILE" ]; then
+    echo "ERROR: Seed file not found: $SEED_FILE"
+    exit 1
+  fi
+  echo "Applying seed data from $SEED_FILE..."
+  $PSQL -f "$SEED_FILE"
   echo "Seed data applied."
   exit 0
 fi
 
-echo "Applying full schema..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -v ON_ERROR_STOP=1 -f "$SCHEMA_FILE"
+# --reset: drop everything (DESTRUCTIVE)
+if [ "${1:-}" = "--reset" ]; then
+  echo "WARNING: This will DROP ALL TABLES in $DB_NAME."
+  read -p "Type 'yes' to confirm: " confirm
+  if [ "$confirm" != "yes" ]; then
+    echo "Aborted."
+    exit 1
+  fi
+  echo "Dropping all tables..."
+  $PSQL -c "
+    DROP SCHEMA public CASCADE;
+    CREATE SCHEMA public;
+    GRANT ALL ON SCHEMA public TO $DB_USER;
+  "
+  # Re-create migrations table
+  $PSQL -q -c "
+  CREATE TABLE IF NOT EXISTS _migrations (
+      id SERIAL PRIMARY KEY,
+      filename VARCHAR(255) NOT NULL UNIQUE,
+      applied_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  );"
+  echo "All tables dropped. Re-running migrations..."
+fi
 
-echo ""
-echo "Migration complete."
-echo "Tables created:"
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "\dt" 2>/dev/null || echo "(Could not list tables)"
+# Apply pending migrations in order
+applied=0
+for f in $(ls "$MIGRATIONS_DIR"/*.sql 2>/dev/null | sort); do
+  fname="$(basename "$f")"
+
+  # Check if already applied
+  count=$($PSQL -t -c "SELECT COUNT(*) FROM _migrations WHERE filename = '$fname';" | tr -d ' ')
+  if [ "$count" != "0" ]; then
+    continue
+  fi
+
+  echo "Applying: $fname"
+  $PSQL -f "$f"
+  $PSQL -c "INSERT INTO _migrations (filename) VALUES ('$fname');"
+  applied=$((applied + 1))
+done
+
+if [ "$applied" -eq 0 ]; then
+  echo "No pending migrations."
+else
+  echo ""
+  echo "$applied migration(s) applied successfully."
+fi
