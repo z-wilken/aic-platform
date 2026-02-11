@@ -99,6 +99,281 @@ export class EngineClient {
   }
 
   /**
+   * Run intersectional bias analysis across multiple protected attributes
+   */
+  async analyzeIntersectional(data: any[], protectedAttributes: string[], outcomeVariable: string, minGroupSize: number = 30, previousHash?: string): Promise<EngineAnalysisResult> {
+    return this.request<EngineAnalysisResult>('/api/v1/analyze/intersectional', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        protected_attributes: protectedAttributes,
+        outcome_variable: outcomeVariable,
+        min_group_size: minGroupSize,
+        previous_hash: previousHash
+      }),
+    });
+  }
+
+  /**
+   * Calculate Theil index (inequality metric)
+   */
+  async analyzeTheilIndex(data: any[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<EngineAnalysisResult> {
+    return this.request<EngineAnalysisResult>('/api/v1/analyze/theil-index', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        protected_attribute: protectedAttribute,
+        outcome_variable: outcomeVariable,
+        previous_hash: previousHash
+      }),
+    });
+  }
+
+  /**
+   * Calculate Atkinson index (inequality metric)
+   */
+  async analyzeAtkinsonIndex(data: any[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<EngineAnalysisResult> {
+    return this.request<EngineAnalysisResult>('/api/v1/analyze/atkinson-index', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        protected_attribute: protectedAttribute,
+        outcome_variable: outcomeVariable,
+        previous_hash: previousHash
+      }),
+    });
+  }
+
+  /**
+   * Statistical parity difference analysis
+   */
+  async analyzeStatisticalParity(data: any[], protectedAttribute: string, outcomeVariable: string): Promise<EngineAnalysisResult> {
+    return this.request<EngineAnalysisResult>('/api/v1/analyze/statistical-parity', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        protected_attribute: protectedAttribute,
+        outcome_variable: outcomeVariable
+      }),
+    });
+  }
+
+  /**
+   * Epsilon-differential fairness analysis
+   */
+  async analyzeEpsilonFairness(data: any[], protectedAttributes: string[], outcomeVariable: string, epsilon: number = 0.8, minGroupSize: number = 10): Promise<EngineAnalysisResult> {
+    return this.request<EngineAnalysisResult>('/api/v1/analyze/epsilon-fairness', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        protected_attributes: protectedAttributes,
+        outcome_variable: outcomeVariable,
+        epsilon,
+        min_group_size: minGroupSize
+      }),
+    });
+  }
+
+  /**
+   * Monitor data drift between baseline and current distributions
+   */
+  async analyzeDrift(baselineData: number[], currentData: number[], featureName: string, nBins: number = 10): Promise<any> {
+    return this.request<any>('/api/v1/analyze/drift', {
+      method: 'POST',
+      body: JSON.stringify({
+        baseline_data: baselineData,
+        current_data: currentData,
+        feature_name: featureName,
+        n_bins: nBins
+      }),
+    });
+  }
+
+  /**
+   * Analyze empathy/tone of communications (Right to Empathy)
+   */
+  async analyzeEmpathy(text: string, context: string = 'rejection'): Promise<any> {
+    return this.request<any>('/api/v1/analyze/empathy', {
+      method: 'POST',
+      body: JSON.stringify({ text, context }),
+    });
+  }
+
+  /**
+   * Generate SHAP-based feature importance explanations
+   */
+  async explainShap(data: any[], targetColumn: string, instance: Record<string, any>, numFeatures: number = 10): Promise<any> {
+    return this.request<any>('/api/v1/explain/shap', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        target_column: targetColumn,
+        instance,
+        method: 'shap',
+        num_features: numFeatures
+      }),
+    });
+  }
+
+  /**
+   * Generate LIME-based explanations
+   */
+  async explainLime(data: any[], targetColumn: string, instance: Record<string, any>, numFeatures: number = 10): Promise<any> {
+    return this.request<any>('/api/v1/explain/lime', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        target_column: targetColumn,
+        instance,
+        method: 'lime',
+        num_features: numFeatures
+      }),
+    });
+  }
+
+  /**
+   * Generate a plain-language decision explanation (Right to Explanation)
+   */
+  async explainDecision(modelType: string, inputFeatures: Record<string, any>, decision: string, featureWeights?: Record<string, number>, confidence?: number): Promise<any> {
+    return this.request<any>('/api/v1/explain', {
+      method: 'POST',
+      body: JSON.stringify({
+        model_type: modelType,
+        input_features: inputFeatures,
+        decision,
+        feature_weights: featureWeights,
+        confidence
+      }),
+    });
+  }
+
+  /**
+   * Validate correction/appeal process compliance (Right to Correction)
+   */
+  async validateCorrectionProcess(params: { hasAppealMechanism: boolean; responseTimeHours: number; humanReviewerAssigned: boolean; clearInstructions: boolean; accessibleFormat: boolean }): Promise<any> {
+    return this.request<any>('/api/v1/validate/correction-process', {
+      method: 'POST',
+      body: JSON.stringify({
+        has_appeal_mechanism: params.hasAppealMechanism,
+        response_time_hours: params.responseTimeHours,
+        human_reviewer_assigned: params.humanReviewerAssigned,
+        clear_instructions: params.clearInstructions,
+        accessible_format: params.accessibleFormat
+      }),
+    });
+  }
+
+  /**
+   * Submit a correction request
+   */
+  async submitCorrection(decisionId: string, originalDecision: string, requestedOutcome: string, reason: string, supportingEvidence?: Record<string, any>): Promise<any> {
+    return this.request<any>('/api/v1/correction/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        decision_id: decisionId,
+        original_decision: originalDecision,
+        requested_outcome: requestedOutcome,
+        reason,
+        supporting_evidence: supportingEvidence
+      }),
+    });
+  }
+
+  /**
+   * Run privacy schema audit (POPIA compliance)
+   */
+  async auditPrivacy(columns: string[]): Promise<any> {
+    return this.request<any>('/api/v1/audit/privacy', {
+      method: 'POST',
+      body: JSON.stringify({ columns }),
+    });
+  }
+
+  /**
+   * Run labor/human agency audit
+   */
+  async auditLabor(totalDecisions: number, humanInterventions: number, humanOverrides: number): Promise<any> {
+    return this.request<any>('/api/v1/audit/labor', {
+      method: 'POST',
+      body: JSON.stringify({
+        total_decisions: totalDecisions,
+        human_interventions: humanInterventions,
+        human_overrides: humanOverrides
+      }),
+    });
+  }
+
+  /**
+   * Run adversarial red team audit
+   */
+  async auditRedTeam(data: any[], protectedAttribute: string, otherColumns: string[]): Promise<any> {
+    return this.request<any>('/api/v1/audit/red-team', {
+      method: 'POST',
+      body: JSON.stringify({
+        data,
+        protected_attribute: protectedAttribute,
+        other_columns: otherColumns
+      }),
+    });
+  }
+
+  /**
+   * Scan and verify evidence documents
+   */
+  async verifyDocument(text: string): Promise<any> {
+    return this.request<any>('/api/v1/audit/verify-document', {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+  }
+
+  /**
+   * Run comprehensive audit across all five algorithmic rights
+   */
+  async auditComprehensive(organizationName: string, aiSystems: any[], framework: string = 'popia'): Promise<any> {
+    return this.request<any>('/api/v1/audit/comprehensive', {
+      method: 'POST',
+      body: JSON.stringify({
+        organization_name: organizationName,
+        ai_systems: aiSystems,
+        framework
+      }),
+    });
+  }
+
+  /**
+   * Analyze AI disclosure compliance (Right to Truth)
+   */
+  async analyzeDisclosure(interfaceText: string, interactionType: string = 'chatbot'): Promise<any> {
+    return this.request<any>('/api/v1/analyze/disclosure', {
+      method: 'POST',
+      body: JSON.stringify({
+        interface_text: interfaceText,
+        interaction_type: interactionType
+      }),
+    });
+  }
+
+  /**
+   * Verify hash chain integrity for audit trail
+   */
+  async verifyAuditTrail(records: any[]): Promise<any> {
+    return this.request<any>('/api/v1/audit-trail/verify', {
+      method: 'POST',
+      body: JSON.stringify({ records }),
+    });
+  }
+
+  /**
+   * Get the engine's public signing key
+   */
+  async getPublicKey(): Promise<any> {
+    return this.request<any>('/api/v1/audit-trail/public-key', {
+      method: 'GET',
+    });
+  }
+
+  /**
    * Check engine health
    */
   async checkHealth(): Promise<boolean> {

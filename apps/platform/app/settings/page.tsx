@@ -6,12 +6,51 @@ import { motion } from 'framer-motion';
 
 export default function OrganizationalSettings() {
     const [settings, setSettings] = useState({
-        name: 'FirstRand Bank (Demo)',
-        tier: 'TIER_1',
-        contactEmail: 'compliance@firstrand.co.za',
-        mfaEnabled: true,
-        dataResidency: 'South Africa'
+        name: '',
+        tier: '',
+        contactEmail: '',
+        integrityScore: 0,
+        isAlpha: false,
     });
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [saved, setSaved] = useState(false);
+
+    useEffect(() => {
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => {
+                setSettings({
+                    name: data.name || '',
+                    tier: data.tier || 'TIER_3',
+                    contactEmail: data.contactEmail || '',
+                    integrityScore: data.integrityScore || 0,
+                    isAlpha: data.isAlpha || false,
+                });
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    const handleSave = async () => {
+        setSaving(true);
+        setSaved(false);
+        try {
+            const res = await fetch('/api/settings', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: settings.name })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setSettings(prev => ({ ...prev, name: data.name }));
+                setSaved(true);
+                setTimeout(() => setSaved(false), 3000);
+            }
+        } finally {
+            setSaving(false);
+        }
+    };
 
     return (
         <DashboardShell>
@@ -25,6 +64,9 @@ export default function OrganizationalSettings() {
                     </div>
                 </div>
 
+                {loading ? (
+                    <div className="text-center py-20 text-gray-400 italic font-serif">Loading organizational settings...</div>
+                ) : (
                 <div className="grid grid-cols-1 gap-12">
                     {/* Institutional Profile */}
                     <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
@@ -32,9 +74,10 @@ export default function OrganizationalSettings() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
                                 <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Entity Name</label>
-                                <input 
+                                <input
                                     className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all"
                                     value={settings.name}
+                                    onChange={e => setSettings(prev => ({ ...prev, name: e.target.value }))}
                                 />
                             </div>
                             <div>
@@ -45,9 +88,10 @@ export default function OrganizationalSettings() {
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Primary Compliance Email</label>
-                                <input 
+                                <input
                                     className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all"
                                     value={settings.contactEmail}
+                                    readOnly
                                 />
                             </div>
                         </div>
@@ -57,7 +101,7 @@ export default function OrganizationalSettings() {
                     <section className="bg-[#080808] text-white p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-10 opacity-5 font-serif italic text-6xl select-none uppercase">Security</div>
                         <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10 relative z-10">Security Protocol</h3>
-                        
+
                         <div className="space-y-8 relative z-10">
                             <div className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl">
                                 <div>
@@ -93,10 +137,24 @@ export default function OrganizationalSettings() {
                         </div>
                     </section>
                 </div>
+                )}
 
-                <div className="flex justify-end pt-12">
-                    <button className="bg-aic-black text-white px-12 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all shadow-xl active:scale-95">
-                        SAVE_PROTOCOL_CHANGES
+                <div className="flex justify-end pt-12 gap-4 items-center">
+                    {saved && (
+                        <motion.span
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="text-[10px] font-mono font-bold text-green-600 uppercase tracking-widest"
+                        >
+                            Settings saved
+                        </motion.span>
+                    )}
+                    <button
+                        onClick={handleSave}
+                        disabled={saving || loading}
+                        className="bg-aic-black text-white px-12 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all shadow-xl active:scale-95 disabled:opacity-50"
+                    >
+                        {saving ? 'SAVING...' : 'SAVE_PROTOCOL_CHANGES'}
                     </button>
                 </div>
             </div>
