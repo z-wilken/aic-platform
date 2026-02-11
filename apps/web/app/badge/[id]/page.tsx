@@ -24,7 +24,7 @@ export default function TrustBadgePage({ params: paramsPromise }: { params: Prom
     return (
         <main className="h-screen w-full flex items-center justify-center bg-transparent overflow-hidden">
             <a 
-                href={`http://localhost:3000/verify/${org.id}`} 
+                href={`/verify/${org.id}`}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group block relative"
