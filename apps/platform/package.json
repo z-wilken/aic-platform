@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@aic/types": "*",
     "@aic/ui": "*",
     "@types/pg": "^8.16.0",
     "bcryptjs": "^3.0.3",
