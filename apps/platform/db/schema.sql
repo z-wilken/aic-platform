@@ -262,35 +262,7 @@ CREATE INDEX idx_audit_logs_created ON audit_logs(created_at DESC);
 CREATE INDEX idx_audit_logs_sequence ON audit_logs(org_id, sequence_number);
 
 -- =============================================================
--- Seed Data (for development/demo only)
+-- Seed data has been moved to db/seed.sql.
+-- Run schema.sql first, then seed.sql for development data.
+-- NEVER run seed.sql in production.
 -- =============================================================
-
-INSERT INTO organizations (id, name, tier, integrity_score, is_alpha, api_key)
-VALUES ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'FirstRand Bank (Demo)', 'TIER_1', 94, TRUE, 'aic_live_demo_key_123');
-
--- Seed Demo User (password: demo123)
--- NOTE: Generate a real bcrypt hash before using in any environment.
--- Use: npx bcryptjs 'demo123' to generate a valid hash.
-INSERT INTO users (id, email, password_hash, name, role, org_id)
-VALUES (
-    'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
-    'admin@enterprise.co.za',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', -- bcrypt hash of 'demo123'
-    'Dr. Sarah Khumalo',
-    'ADMIN',
-    'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'
-);
-
--- Seed Audit Requirements for Demo Org
-INSERT INTO audit_requirements (org_id, title, description, category, status)
-VALUES
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'POPIA Section 71 Policy', 'Formal document outlining human intervention procedures for automated decisions.', 'DOCUMENTATION', 'VERIFIED'),
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Model Bias Stress Test', 'Technical report proving four-fifths rule compliance across gender and race.', 'TECHNICAL', 'SUBMITTED'),
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Human-in-the-Loop Interface', 'UI walk-through showing the manual override button for loan officers.', 'OVERSIGHT', 'PENDING'),
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Data Sovereignty Proof', 'Verification that AI production data remains within South African borders.', 'TECHNICAL', 'PENDING');
-
--- Seed Compliance Reports for Demo Org
-INSERT INTO compliance_reports (org_id, month_year, integrity_score, audit_status, findings_count)
-VALUES
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Dec 2025', 92, 'COMPLIANT', 0),
-('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Jan 2026', 94, 'COMPLIANT', 1);
