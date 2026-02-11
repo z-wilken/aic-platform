@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { isValidEmail, isValidScore, isValidTier, safeParseJSON } from '@/lib/validation';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIP(request);
+    const { allowed } = checkRateLimit(`assessment:${ip}`, 10, 60_000);
+    if (!allowed) {
+      return NextResponse.json({ success: false, message: 'Too many requests. Please try again later.' }, { status: 429 });
+    }
+
     const body = await safeParseJSON(request);
     if (!body) {
       return NextResponse.json({ success: false, message: 'Invalid request body.' }, { status: 400 });
