@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
             `Incident response for ${incident.citizen_email} has been escalated to Audit Oversight. Integrity Score impact pending.`
         ]);
 
-        results.append(incident.id);
+        results.push(incident.id);
     }
 
     return NextResponse.json({ 

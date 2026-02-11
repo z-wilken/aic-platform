@@ -3,6 +3,13 @@ import { query } from '../../../lib/db';
 import { getSession } from '../../../lib/auth';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
+const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
+
+function engineHeaders(): Record<string, string> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
+    return headers;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +29,7 @@ export async function POST(request: NextRequest) {
     // 2. Forward to Python Engine for Rigorous Bias Audit
     const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: engineHeaders(),
         body: JSON.stringify({
             protected_attribute: data.protected_attribute || 'group',
             outcome_variable: data.outcome_variable || 'hired',
@@ -125,7 +132,7 @@ export async function PATCH(request: NextRequest) {
   
       const engineResponse = await fetch(engineEndpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: engineHeaders(),
           body: JSON.stringify(payload)
       });
   
