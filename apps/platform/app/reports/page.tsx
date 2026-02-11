@@ -21,6 +21,16 @@ export default function ReportsPage() {
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
 
+    const fetchReports = () => {
+        fetch('/api/reports')
+            .then(res => res.json())
+            .then(data => {
+                setReports(data.reports || []);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    };
+
     useEffect(() => {
         fetchReports();
         fetch('/api/stats').then(res => res.json()).then(data => setStats(data));
@@ -60,7 +70,7 @@ export default function ReportsPage() {
                         >
                             {isGenerating ? 'GENERATING...' : 'Generate Snapshot'}
                         </button>
-                        <button className="bg-aic-black text-white px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors">
+                        <button onClick={handleDownloadCurrent} className="bg-aic-black text-white px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors">
                             Download PDF
                         </button>
                     </div>
@@ -114,14 +124,14 @@ export default function ReportsPage() {
                     </table>
                 </div>
 
-                {/* Trend Placeholder */}
+                {/* Trend from Real Data */}
                 <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="glass-panel p-8 rounded-3xl">
                         <h4 className="font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Integrity Velocity</h4>
                         <div className="h-32 flex items-end gap-2">
-                            {[60, 75, 82, 80, 88, 92, 94].map((h, i) => (
+                            {(reports.length > 0 ? reports.slice(-7).map(r => r.integrity_score) : [0]).map((h, i) => (
                                 <div key={i} className="flex-1 bg-aic-black/5 rounded-t group relative">
-                                    <motion.div 
+                                    <motion.div
                                         initial={{ height: 0 }}
                                         animate={{ height: `${h}%` }}
                                         className="absolute bottom-0 left-0 w-full bg-aic-gold/20 group-hover:bg-aic-gold/40 transition-colors rounded-t"
@@ -130,24 +140,35 @@ export default function ReportsPage() {
                             ))}
                         </div>
                         <div className="flex justify-between mt-4 font-mono text-[8px] text-gray-400 uppercase tracking-tighter">
-                            <span>Jul 25</span>
-                            <span>Aug</span>
-                            <span>Sep</span>
-                            <span>Oct</span>
-                            <span>Nov</span>
-                            <span>Dec</span>
-                            <span>Jan 26</span>
+                            {reports.length > 0
+                                ? reports.slice(-7).map((r, i) => <span key={i}>{r.month_year}</span>)
+                                : <span>No data yet</span>
+                            }
                         </div>
                     </div>
-                    
+
                     <div className="bg-[#121212] p-8 rounded-3xl text-white">
                         <h4 className="font-mono text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 text-aic-gold">Executive Summary</h4>
-                        <p className="font-serif text-sm leading-relaxed text-gray-400">
-                            Your Integrity Score has increased by <span className="text-white font-bold">2.4%</span> over the last 6 months. This trend correlates with the implementation of the POPIA Section 71 override interface in December.
-                        </p>
+                        {reports.length >= 2 ? (() => {
+                            const recent = reports[0]?.integrity_score || 0;
+                            const older = reports[reports.length - 1]?.integrity_score || 0;
+                            const change = recent - older;
+                            return (
+                                <p className="font-serif text-sm leading-relaxed text-gray-400">
+                                    Your Integrity Score has {change >= 0 ? 'increased' : 'decreased'} by <span className="text-white font-bold">{Math.abs(change)}%</span> over the last {reports.length} reporting periods.
+                                    Current score: <span className="text-white font-bold">{stats?.score || 0}%</span>.
+                                </p>
+                            );
+                        })() : (
+                            <p className="font-serif text-sm leading-relaxed text-gray-400">
+                                Generate compliance snapshots to build your integrity trend history. Current score: <span className="text-white font-bold">{stats?.score || 0}%</span>.
+                            </p>
+                        )}
                         <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">
-                            <span className="text-[10px] font-mono font-bold uppercase text-gray-500">Benchmark Rating</span>
-                            <span className="text-xs font-mono font-bold text-green-400">ABOVE AVERAGE</span>
+                            <span className="text-[10px] font-mono font-bold uppercase text-gray-500">Current Score</span>
+                            <span className={`text-xs font-mono font-bold ${(stats?.score || 0) >= 80 ? 'text-green-400' : 'text-yellow-400'}`}>
+                                {(stats?.score || 0) >= 90 ? 'EXCELLENT' : (stats?.score || 0) >= 80 ? 'COMPLIANT' : 'NEEDS IMPROVEMENT'}
+                            </span>
                         </div>
                     </div>
                 </div>

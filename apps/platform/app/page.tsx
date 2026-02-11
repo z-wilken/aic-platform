@@ -9,6 +9,22 @@ import {
     AreaChart, Area
 } from 'recharts';
 
+function formatTimeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const hours = Math.floor(diff / 3600000);
+    if (hours < 1) return 'Just now';
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}d ago`;
+    return `${Math.floor(days / 30)}mo ago`;
+}
+
+function formatRenewalDate(lastAuditDate: string): string {
+    const d = new Date(lastAuditDate);
+    d.setFullYear(d.getFullYear() + 1);
+    return d.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' });
+}
+
 export default function PlatformDashboard() {
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -22,23 +38,20 @@ export default function PlatformDashboard() {
             });
     }, []);
 
-    // Institutional Data Mockups for Visualization
-    const velocityData = [
-        { month: 'Sep', score: 45 },
-        { month: 'Oct', score: 52 },
-        { month: 'Nov', score: 68 },
-        { month: 'Dec', score: 84 },
-        { month: 'Jan', score: 92 },
-        { month: 'Feb', score: stats?.score || 92 },
-    ];
+    // Real monthly scores from compliance_reports, with current score appended
+    const velocityData = stats?.monthlyScores?.length > 0
+        ? stats.monthlyScores
+        : [{ month: 'Current', score: stats?.score || 0 }];
 
-    const radarData = [
-        { subject: 'Oversight', A: 85, fullMark: 100 },
-        { subject: 'Documentation', A: 98, fullMark: 100 },
-        { subject: 'Transparency', A: 70, fullMark: 100 },
-        { subject: 'Technical', A: 90, fullMark: 100 },
-        { subject: 'Empathy', A: 65, fullMark: 100 },
-    ];
+    // Real category scores from audit requirements breakdown
+    const radarData = stats?.radarData?.length > 0
+        ? stats.radarData.map((d: any) => ({ subject: d.subject, A: d.score, fullMark: 100 }))
+        : [
+            { subject: 'Documentation', A: 0, fullMark: 100 },
+            { subject: 'Oversight', A: 0, fullMark: 100 },
+            { subject: 'Reports', A: 0, fullMark: 100 },
+            { subject: 'Technical', A: 0, fullMark: 100 },
+        ];
 
     if (loading) return <DashboardShell><div className="p-12 text-center text-gray-500 italic">Initializing intelligence core...</div></DashboardShell>;
 
@@ -99,8 +112,8 @@ export default function PlatformDashboard() {
                     {[
                         { l: 'Verification Ratio', v: `${stats.verifiedRequirements}/${stats.totalRequirements}`, c: 'text-aic-black' },
                         { l: 'Open Incidents', v: stats.openIncidents, c: stats.openIncidents > 0 ? 'text-aic-red font-bold' : 'text-green-600' },
-                        { l: 'Last Audit', v: '48h ago', c: 'text-gray-500' },
-                        { l: 'Next Renewal', v: 'Feb 2027', c: 'text-gray-500' }
+                        { l: 'Last Audit', v: stats.lastAuditAt ? formatTimeAgo(stats.lastAuditAt) : 'No audits', c: 'text-gray-500' },
+                        { l: 'Next Renewal', v: stats.lastAuditAt ? formatRenewalDate(stats.lastAuditAt) : 'Pending', c: 'text-gray-500' }
                     ].map((s, i) => (
                         <div key={i} className="bg-white p-8 border border-aic-black/5 rounded-3xl shadow-sm group hover:border-aic-gold transition-colors">
                             <p className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-4">{s.l}</p>

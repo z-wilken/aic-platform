@@ -24,15 +24,27 @@ export default function CertificatePage() {
       });
   }, []);
 
+  const getCertDates = () => {
+    const issued = stats?.lastAuditAt ? new Date(stats.lastAuditAt) : new Date();
+    const expiry = new Date(issued);
+    expiry.setFullYear(expiry.getFullYear() + 1);
+    return {
+        issuedDate: issued.toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' }),
+        expiryDate: expiry.toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' }),
+        expiryShort: expiry.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }).toUpperCase()
+    };
+  };
+
   const handleDownloadCert = async () => {
     if (!stats) return;
     setIsGenerating(true);
+    const dates = getCertDates();
     await generateCertificatePDF({
         orgName: stats.orgName || 'Your Organization',
         tier: stats.tier || 'TIER_1',
         orgId: stats.orgId || '0000',
-        issuedDate: new Date().toLocaleDateString(),
-        expiryDate: '01 FEB 2027'
+        issuedDate: dates.issuedDate,
+        expiryDate: dates.expiryDate
     });
     setIsGenerating(false);
   };
@@ -96,7 +108,7 @@ export default function CertificatePage() {
 
                                 <div className="mt-auto flex justify-between items-end border-t border-gray-100 pt-12">
                                     <div className="text-left font-mono text-[9px] text-gray-400 space-y-1">
-                                        <p>VALID UNTIL: FEB 2027</p>
+                                        <p>VALID UNTIL: {getCertDates().expiryShort}</p>
                                         <p>LOCATION: JOHANNESBURG, SA</p>
                                     </div>
                                     <div className="w-24 h-24 grayscale opacity-80">
