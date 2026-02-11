@@ -21,12 +21,15 @@ export class EngineClient {
 
   private async request<T>(path: string, options: RequestInit): Promise<T> {
     const url = `${this.baseUrl}${path}`;
-    
-    // Add default headers
-    const headers = {
+
+    // Add default headers including API key authentication
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
+    if (process.env.ENGINE_API_KEY) {
+      headers['X-API-Key'] = process.env.ENGINE_API_KEY;
+    }
 
     let lastError: Error | null = null;
     const maxRetries = 3;

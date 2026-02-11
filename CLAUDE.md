@@ -8,7 +8,7 @@ AIC is a POPIA Section 71 compliant accountability framework for South African A
 
 ## Architecture
 
-This is a **monorepo** using npm workspaces with 4 Next.js applications, 1 Python microservice, and 1 shared UI package.
+This is a **monorepo** using npm workspaces with 4 Next.js applications, 1 Python microservice, and 5 shared packages.
 
 ```
 aic-platform/
@@ -19,7 +19,11 @@ aic-platform/
 │   ├── hq/            # Institutional governance & CMS (port 3004)
 │   └── engine/        # Python audit engine microservice (port 8000)
 ├── packages/
-│   └── ui/            # Shared React components (@aic/ui)
+│   ├── ui/            # Shared React components (@aic/ui)
+│   ├── auth/          # Shared auth utilities
+│   ├── events/        # Event system
+│   ├── legal/         # Legal/compliance utilities
+│   └── sockets/       # WebSocket utilities
 ├── docs/              # Strategic & business documentation
 └── docker-compose.yml # PostgreSQL + PgAdmin
 ```
@@ -37,14 +41,16 @@ aic-platform/
 ### Backend
 - **API Routes:** Next.js Route Handlers
 - **Database:** PostgreSQL 15 (via `pg` driver)
-- **Auth:** NextAuth.js v4/v5-beta
+- **Auth:** NextAuth.js (v5-beta on platform, v4 on admin/hq)
 - **Password Hashing:** bcryptjs
 
 ### Audit Engine (apps/engine)
-- **Framework:** FastAPI (async Python)
+- **Framework:** FastAPI with slowapi rate limiting
 - **Server:** Uvicorn
 - **Data Processing:** Pandas, SciPy, NumPy
 - **NLP:** TextBlob (sentiment analysis)
+- **XAI:** SHAP (+ optional LIME)
+- **Crypto:** RSA-3072 signing via `cryptography` library
 
 ## Development Commands
 
@@ -63,6 +69,10 @@ docker-compose up -d
 
 # Build all apps
 npm run build
+
+# Run all tests
+npm test               # TypeScript tests (Vitest)
+cd apps/engine && python -m pytest  # Python tests
 ```
 
 ### Engine (Python)
@@ -71,6 +81,21 @@ cd apps/engine
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
+
+## Testing
+
+### TypeScript (Vitest)
+- Config: `vitest.config.ts` at repo root
+- Tests: `apps/*/\_\_tests\_\_/**/*.test.ts`
+- Run: `npm test`
+- 90 tests across web (scoring, report generation) and platform (auth, roles, permissions)
+
+### Python (pytest)
+- Config: `apps/engine/pytest.ini`
+- Tests: `apps/engine/tests/`
+- Run: `cd apps/engine && python -m pytest`
+- 141 tests + 6 skipped covering all engine services
+- Fixtures in `conftest.py` include authenticated and unauthenticated test clients
 
 ## Key Conventions
 
@@ -98,18 +123,6 @@ export async function GET(request: NextRequest) {
 }
 ```
 
-### Client Components
-```typescript
-'use client'
-
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-
-export default function Component() {
-  // Use 'use client' directive for interactive components
-}
-```
-
 ### Database Access
 ```typescript
 import { query } from '@/lib/db';
@@ -128,15 +141,57 @@ import { query } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 ```
 
+### Engine Endpoint Pattern
+All engine endpoints follow this pattern with slowapi rate limiting:
+```python
+@router.post("/endpoint")
+@limiter.limit("30/minute")
+def endpoint_name(body: PydanticModel, request: Request):
+    # IMPORTANT: slowapi requires the Starlette Request param to be named `request`
+    # Pydantic body params must use a different name (e.g., `body`)
+    result = service_function(body.field1, body.field2)
+    result["signature"] = signing_service.sign_hash(result["audit_hash"])
+    return result
+```
+
+## Engine Services
+
+| Service | File | Purpose |
+|---------|------|---------|
+| Bias Analysis | `bias_analysis.py` | Four-fifths rule, disparate impact, chi-square tests |
+| Fairness Metrics | `fairness_metrics.py` | Theil index, Atkinson index, epsilon-differential fairness, statistical parity |
+| Explainability | `explainability.py` | SHAP-based feature importance (global + local) |
+| XAI Service | `xai_service.py` | LIME explanations (optional dependency) |
+| Drift Monitoring | `drift_monitoring.py` | PSI + Jensen-Shannon + KS test via `DriftMonitor` class |
+| Hash Chain | `hash_chain.py` | SHA-256 hash chain for audit immutability |
+| Chain Verification | `chain_verification.py` | Legacy chain verification (kept for compatibility) |
+| Scoring | `scoring.py` | Integrity score calculation |
+| Privacy Audit | `privacy_audit.py` | Data privacy compliance checks |
+| Labor Audit | `labor_audit.py` | Labor practice auditing |
+| Red Team | `red_team.py` | Adversarial robustness testing |
+| Evidence Scanner | `evidence_scanner.py` | Document/evidence validation |
+
+## Engine Security
+
+- **API Key Auth:** All non-public endpoints require `X-API-Key` header
+- **Public Paths:** `/`, `/health`, `/docs`, `/redoc`, `/openapi.json`
+- **Key Management:** `ENGINE_API_KEY` env var; auto-generated in dev mode
+- **Signing:** RSA-3072 via `app/core/signing.py` (loads from `AUDIT_SIGNING_KEY` env var)
+- **Rate Limiting:** slowapi with per-endpoint limits (typically 30/minute)
+- **Request Size:** 10MB max body size via middleware
+
 ## Database Schema
 
-Core tables in `apps/platform/db/schema.sql`:
+Source of truth: `apps/platform/db/schema.sql`
+Demo seed data: `apps/platform/db/seed.sql` (DO NOT run in production)
+
+Core tables (30+):
 
 | Table | Purpose |
 |-------|---------|
 | `organizations` | Certified companies with tier, integrity_score |
-| `users` | Platform users with roles (ADMIN, COMPLIANCE_OFFICER, AUDITOR, VIEWER) |
-| `audit_logs` | Immutable audit trail with SHA-256 hash |
+| `users` | Platform users with roles |
+| `audit_logs` | Immutable trail with SHA-256 hash chain + RSA signatures |
 | `assessments` | Self-assessment quiz results |
 | `leads` | Lead tracking from marketing site |
 | `alpha_applications` | Alpha program applications |
@@ -144,12 +199,17 @@ Core tables in `apps/platform/db/schema.sql`:
 | `compliance_reports` | Monthly compliance archives |
 | `notifications` | Alert system |
 | `posts` | CMS content for HQ |
+| `incidents` | Incident tracking and management |
+| `api_keys` | API key management for organizations |
+| `decision_records` | Algorithmic decision audit records |
+| `correction_requests` | Appeal/correction tracking |
+| `hash_chain_anchors` | Blockchain anchor points for audit chains |
 
 **Conventions:**
 - UUID primary keys via `gen_random_uuid()`
 - `TIMESTAMP WITH TIME ZONE` for all timestamps
 - JSONB for flexible metadata
-- Enum types for tiers and statuses
+- Enum types for tiers (`certification_tier`) and statuses
 
 ## Authentication & Authorization
 
@@ -189,44 +249,23 @@ if (hasPermission(user.role, 'write:audit-logs')) { /* ... */ }
 ## The 5 Algorithmic Rights
 
 The audit engine (`apps/engine`) enforces these rights:
-1. **Right to Human Agency** - Bias detection via Four-Fifths Rule
-2. **Right to Explanation** - XAI validation (local/global feature importance)
-3. **Right to Empathy** - Sentiment analysis of rejection communications
+1. **Right to Human Agency** - Bias detection via Four-Fifths Rule, intersectional analysis
+2. **Right to Explanation** - SHAP/LIME feature importance validation
+3. **Right to Empathy** - TextBlob sentiment analysis of rejection communications
 4. **Right to Correction** - Appeal mechanism validation
 5. **Right to Truth** - AI disclosure compliance checking
 
-## API Patterns
-
-### REST Conventions
-- `GET` for reading data
-- `POST` for creating resources
-- `PUT` for updates
-- Status codes: 200 (success), 400 (bad request), 404 (not found), 500 (server error)
-
-### Response Format
-```typescript
-// Success
-return NextResponse.json({ data: result, timestamp: new Date().toISOString() });
-
-// Error
-return NextResponse.json({ error: 'Message' }, { status: 400 });
-```
-
-### Engine API (FastAPI)
-Base URL: `http://localhost:8000/api/v1`
-- `POST /analysis` - Run bias detection, explainability, empathy scoring
-
 ## Environment Variables
 
-Each app requires a `.env` file with:
+See `.env.example` for all variables. Key ones:
 ```
-POSTGRES_USER=aic_admin
-POSTGRES_PASSWORD=aic_password_secure
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_DB=aic_platform
-NEXTAUTH_SECRET=your-secret-key
-NEXTAUTH_URL=http://localhost:3001
+POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB
+NEXTAUTH_SECRET          # Generate: openssl rand -base64 32
+NEXTAUTH_URL             # Per-app URL (3000/3001/3002/3004)
+ENGINE_URL               # Default: http://localhost:8000
+ENGINE_API_KEY           # Generate: python -c "import secrets; print(secrets.token_hex(32))"
+AUDIT_SIGNING_KEY        # PEM-encoded RSA private key (optional in dev)
+AUDIT_VERIFY_KEY         # PEM-encoded RSA public key (optional in dev)
 ```
 
 ## Service Ports
@@ -241,28 +280,23 @@ NEXTAUTH_URL=http://localhost:3001
 | PostgreSQL | 5432 | Database |
 | PgAdmin | 5050 | Database admin UI |
 
-## Shared UI Package
+## Shared Packages
 
-Located at `packages/ui/`, exports:
-- `TrustBadge` - Certification status widget
-- `AlphaSeal` - Alpha program badge
+| Package | Path | Purpose |
+|---------|------|---------|
+| `@aic/ui` | `packages/ui/` | TrustBadge, AlphaSeal components |
+| `@aic/auth` | `packages/auth/` | Shared auth utilities |
+| `@aic/events` | `packages/events/` | Event system |
+| `@aic/legal` | `packages/legal/` | Legal/compliance utilities |
+| `@aic/sockets` | `packages/sockets/` | WebSocket utilities |
 
 Import via: `import { TrustBadge } from '@aic/ui'`
 
-## Documentation
+## CI/CD
 
-Key docs in `/docs`:
-- `vision/FOUNDERS_VISION.md` - 30-year roadmap
-- `product/PRD.md` - Product requirements
-- `strategy/STRATEGIC_ROADMAP.md` - Execution plan
-- `business/PILOT_PROGRAM.md` - Alpha program details
-- `framework/METHODOLOGY.md` - Audit methodology
-
-## Testing
-
-No test infrastructure is currently configured. When adding tests:
-- Use Jest + React Testing Library for Next.js apps
-- Use pytest for the Python engine
+GitHub Actions workflow (`.github/workflows/platform-ci.yml`):
+1. **Test job:** Runs `npm test` (Vitest) on push/PR to main/develop
+2. **Build job:** Matrix build of all 4 Next.js apps (depends on test passing)
 
 ## Security Considerations
 
@@ -271,15 +305,26 @@ No test infrastructure is currently configured. When adding tests:
 3. **Authorization:** Role-based middleware checks
 4. **Security Headers:** X-Frame-Options, X-Content-Type-Options, etc. set in middleware
 5. **Password Storage:** bcryptjs hashing
-6. **Audit Integrity:** SHA-256 hashes for immutable logs
+6. **Audit Integrity:** SHA-256 hash chain with RSA-3072 signatures
+7. **Engine Auth:** API key middleware with constant-time comparison
+8. **Rate Limiting:** slowapi on all engine endpoints
+9. **Request Size Limits:** 10MB max on engine
+10. **CORS:** Restricted to known origins
 
 ## Common Tasks
 
-### Adding a new API route
+### Adding a new API route (Next.js)
 1. Create `app/api/[feature]/route.ts`
 2. Import `query` from `@/lib/db`
 3. Export async `GET`, `POST`, `PUT`, or `DELETE` functions
 4. Use parameterized queries and proper error handling
+
+### Adding a new engine endpoint
+1. Add Pydantic request model in `analysis.py`
+2. Add service function in appropriate `services/*.py` file
+3. Add route with `@router.post()` and `@limiter.limit()` decorators
+4. Name Starlette Request param `request` (required by slowapi)
+5. Sign result hash with `signing_service.sign_hash()`
 
 ### Adding a new page
 1. Create `app/[route]/page.tsx`
@@ -291,11 +336,6 @@ No test infrastructure is currently configured. When adding tests:
 2. Run the SQL against your PostgreSQL instance
 3. Create corresponding TypeScript types
 
-### Working with the shared UI package
-1. Add components to `packages/ui/src/`
-2. Export from `packages/ui/src/index.ts`
-3. Import in apps via `@aic/ui`
-
 ## Code Style Guidelines
 
 - Use TypeScript strict mode
@@ -305,3 +345,4 @@ No test infrastructure is currently configured. When adding tests:
 - Co-locate related code (components with their routes)
 - Use Tailwind CSS utility classes for styling
 - Prefer server components unless interactivity is needed
+- Cast numpy types to native Python before returning from engine endpoints

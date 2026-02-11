@@ -3,6 +3,7 @@ import { getSession } from '../../../lib/auth';
 import { query } from '../../../lib/db';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
+const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,12 +13,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { text, context = 'rejection' } = body;
 
-    if (!text) return NextResponse.json({ error: 'Text is required' }, { status: 400 });
+    if (typeof text !== 'string' || text.trim().length === 0 || text.length > 10000) {
+      return NextResponse.json({ error: 'Text is required (max 10000 characters)' }, { status: 400 });
+    }
 
     // 1. Call Python Engine for NLP Empathy Analysis
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
+
     const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze/empathy`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ text, context })
     });
 
