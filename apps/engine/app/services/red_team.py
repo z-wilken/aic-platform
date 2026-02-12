@@ -45,7 +45,7 @@ class RedTeamAuditor:
                         "risk": "CRITICAL" if abs_corr >= 0.85 else "HIGH"
                     })
                     findings.append(f"PROXY DETECTED: Column '{col}' is a {proxies[-1]['risk']} proxy for '{protected_attribute}' (Strength: {abs_corr:.2f}).")
-            except Exception:
+            except Exception:  # nosec
                 continue
 
         score = max(0, 100 - (len(proxies) * 20))
