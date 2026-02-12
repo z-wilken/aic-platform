@@ -1,10 +1,21 @@
 import NextAuth, { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import GoogleProvider from "next-auth/providers/google"
+import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
 import { query } from "./db"
 import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthConfig = {
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+    MicrosoftEntraIDProvider({
+      clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID || "",
+      clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET || "",
+      issuer: process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID ? `https://login.microsoftonline.com/${process.env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID}/v2.0` : undefined,
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -83,7 +94,53 @@ export const authOptions: NextAuthConfig = {
     maxAge: 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async signIn({ user, account }: any) {
+      if (account?.provider === 'google' || account?.provider === 'microsoft-entra-id') {
+        try {
+          // Check if user already exists in our database
+          const result = await query(`
+            SELECT u.id, u.org_id, u.role
+            FROM users u
+            WHERE u.email = $1
+          `, [user.email?.toLowerCase()])
+
+          if (result.rows.length > 0) {
+            // User exists, link SSO session to this user
+            user.orgId = result.rows[0].org_id
+            user.role = result.rows[0].role
+            user.id = result.rows[0].id
+            return true
+          }
+
+          // User doesn't exist, try domain-based discovery for institutional auto-link
+          const domain = user.email?.split('@')[1]
+          if (domain) {
+            const orgResult = await query(`
+              SELECT id FROM organizations WHERE contact_email LIKE $1
+            `, [`%@${domain}`])
+
+            if (orgResult.rows.length > 0) {
+              // Found a matching organization by domain, auto-create unactivated user
+              const newOrgId = orgResult.rows[0].id
+              const createResult = await query(`
+                INSERT INTO users (email, name, org_id, role, password_hash, is_active, email_verified)
+                VALUES ($1, $2, $3, 'VIEWER', 'SSO_ONLY', TRUE, TRUE)
+                RETURNING id, role
+              `, [user.email.toLowerCase(), user.name, newOrgId])
+              
+              user.id = createResult.rows[0].id
+              user.orgId = newOrgId
+              user.role = createResult.rows[0].role
+              return true
+            }
+          }
+        } catch (error) {
+          console.error("SSO SignIn Error:", error)
+        }
+      }
+      return true
+    },
+    async jwt({ token, user, trigger, session }: any) {
       if (user) {
         token.id = user.id
         token.role = user.role
@@ -93,6 +150,18 @@ export const authOptions: NextAuthConfig = {
         token.isSuperAdmin = user.isSuperAdmin
         token.permissions = user.permissions
       }
+
+      // If it's an SSO user who just signed in, we might need to fetch their org details
+      if (token.orgId && !token.orgName) {
+        try {
+          const orgResult = await query('SELECT name, tier FROM organizations WHERE id = $1', [token.orgId])
+          if (orgResult.rows.length > 0) {
+            token.orgName = orgResult.rows[0].name
+            token.tier = orgResult.rows[0].tier
+          }
+        } catch (e) {}
+      }
+
       return token
     },
     async session({ session, token }: any) {

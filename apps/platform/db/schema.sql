@@ -19,6 +19,7 @@ CREATE TABLE organizations (
     tier tier_enum DEFAULT 'TIER_3',
     integrity_score INTEGER DEFAULT 0 CHECK (integrity_score BETWEEN 0 AND 100),
     is_alpha BOOLEAN DEFAULT FALSE,
+    contact_email VARCHAR(255), -- Used for domain discovery
     api_key VARCHAR(255), -- Hashed in production
     auditor_id UUID, -- Reference to a user with role 'AUDITOR' (added after users table)
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../../lib/db';
-import { getSession } from '../../../../lib/auth';
+import { query } from '@/lib/db';
+import { getSession } from '@/lib/auth';
 
 // GET /api/organizations/:id - Get organization details
 export async function GET(

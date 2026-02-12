@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
+import { query } from '@/lib/db';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
 const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';

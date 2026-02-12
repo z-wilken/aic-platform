@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
-import { getSession } from '../../../lib/auth';
+import { query } from '@/lib/db';
+import { getSession } from '@/lib/auth';
 
 export async function GET() {
   // Public-facing part of the API (called from apps/web) could be here too,

@@ -1,5 +1,5 @@
 import NextAuth from "next-auth"
-import { authOptions } from "../../../../lib/auth-options"
+import { authOptions } from "@/lib/auth-options"
 
 // Extend the built-in session types
 declare module "next-auth" {

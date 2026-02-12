@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../../lib/db';
-import { getSession } from '../../../../lib/auth';
+import { query } from '@/lib/db';
+import { getSession } from '@/lib/auth';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
 const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';

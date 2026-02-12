@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
-import { getSession } from '../../../lib/auth';
+import { query } from '@/lib/db';
+import { getSession } from '@/lib/auth';
 import crypto from 'crypto';
 
 export async function GET(request: NextRequest) {

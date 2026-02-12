@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
-import { getSession } from '../../../lib/auth';
+import { query } from '@/lib/db';
+import { getSession } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {

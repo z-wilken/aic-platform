@@ -13,6 +13,8 @@ function AuditsContent() {
     const [logs, setLogs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isRunning, setIsRunning] = useState(false);
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [verificationResults, setVerificationResults] = useState<Record<string, string>>({});
     const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
 
     const fetchLogs = (page = 1) => {
@@ -36,6 +38,30 @@ function AuditsContent() {
     useEffect(() => {
         fetchLogs(1);
     }, [q]);
+
+    const handleVerifyChain = async () => {
+        setIsVerifying(true);
+        try {
+            const res = await fetch('/api/audit-logs/verify', { method: 'POST' });
+            const data = await res.json();
+            
+            const resultsMap: Record<string, string> = {};
+            data.results.forEach((r: any) => {
+                resultsMap[r.id] = r.status;
+            });
+            setVerificationResults(resultsMap);
+            
+            if (data.is_valid) {
+                toast.success('Institutional immutability confirmed. All audit links are valid.');
+            } else {
+                toast.error('Integrity alert: Potential tampering detected in audit chain.');
+            }
+        } catch (err) {
+            toast.error('Failed to connect to verification engine.');
+        } finally {
+            setIsVerifying(false);
+        }
+    };
 
     const handleRunAudit = async () => {
         setIsRunning(true);
@@ -85,12 +111,25 @@ function AuditsContent() {
                     </div>
                     <div className="flex gap-4">
                         <button 
+                            onClick={handleVerifyChain}
+                            disabled={isVerifying}
+                            className="bg-white text-aic-black border border-aic-black/10 px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:border-aic-black transition-all shadow-xl disabled:opacity-50 flex items-center gap-2"
+                        >
+                            {isVerifying ? (
+                                <>
+                                    <div className="h-3 w-3 border-2 border-aic-gold border-t-transparent rounded-full animate-spin" />
+                                    VERIFYING...
+                                </>
+                            ) : 'INTEGRITY CHECK'}
+                        </button>
+                        <button 
                             onClick={handleRunAudit}
                             disabled={isRunning}
                             className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all shadow-xl disabled:opacity-50"
                         >
                             {isRunning ? 'ANALYZING...' : 'RUN BIAS AUDIT'}
                         </button>
+                    </div>
                         <button 
                             onClick={async () => {
                                 setIsRunning(true);
@@ -175,6 +214,7 @@ function AuditsContent() {
                                 <th className="p-6 font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">Timestamp</th>
                                 <th className="p-6 font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">System / Version</th>
                                 <th className="p-6 font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">Audit Event</th>
+                                <th className="p-6 font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">Verification</th>
                                 <th className="p-6 text-right font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">Integrity Hash</th>
                             </tr>
                         </thead>
@@ -192,6 +232,21 @@ function AuditsContent() {
                                     <td className="p-6 text-gray-400 font-mono text-[10px]">{new Date(log.created_at).toLocaleString()}</td>
                                     <td className="p-6 font-bold text-aic-black">{log.system_name}</td>
                                     <td className="p-6 font-mono text-xs">{log.event_type}</td>
+                                    <td className="p-6">
+                                        {verificationResults[log.id] ? (
+                                            <span className={`inline-flex items-center gap-1.5 text-[9px] font-bold font-mono px-2 py-0.5 rounded uppercase ${
+                                                verificationResults[log.id] === 'VERIFIED' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
+                                            }`}>
+                                                {verificationResults[log.id] === 'VERIFIED' ? (
+                                                    <><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg> SECURE</>
+                                                ) : (
+                                                    <><svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg> TAMPERED</>
+                                                )}
+                                            </span>
+                                        ) : (
+                                            <span className="text-[9px] font-mono text-gray-300 italic">Unverified</span>
+                                        )}
+                                    </td>
                                     <td className="p-6 text-right">
                                         <span className="font-mono text-[9px] bg-gray-100 px-2 py-1 rounded text-gray-500 select-all group-hover:text-aic-gold transition-colors">
                                             {log.integrity_hash ? log.integrity_hash.substring(0, 16) : 'PENDING'}...

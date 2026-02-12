@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
+import { query } from '@/lib/db';
 
 // GET /api/leads - List leads (admin use)
 export async function GET(request: NextRequest) {
