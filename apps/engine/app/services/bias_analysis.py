@@ -584,6 +584,8 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
                 agency_scores.append(score)
                 system_result["bias_status"] = bias["overall_status"]
                 system_result["findings"].extend(bias.get("flags", []))
+                if bias.get("recommendations"):
+                    results["recommendations"].extend(bias["recommendations"])
             else:
                 system_result["bias_status"] = "SKIPPED"
         else:
@@ -607,6 +609,8 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
             empathy_scores.append(emp["empathy_score"])
             if emp["status"] == "FAIL":
                 system_result["findings"].append(f"Empathy: {emp['recommendation']}")
+            if emp.get("specific_feedback"):
+                results["recommendations"].extend(emp["specific_feedback"])
 
         # --- Right to Correction ---
         if "has_appeal" in system:
@@ -620,6 +624,8 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
             correction_scores.append(corr["compliance_score"])
             if corr["status"] != "COMPLIANT":
                 system_result["findings"].extend(corr["issues"])
+            if corr.get("recommendations"):
+                results["recommendations"].extend(corr["recommendations"])
 
         # --- Right to Truth ---
         if "interface_text" in system:
@@ -627,6 +633,8 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
             truth_scores.append(disc["disclosure_score"])
             if disc["status"] != "FULLY_DISCLOSED":
                 system_result["findings"].append(f"Disclosure: {disc['recommendation']}")
+            if disc.get("status") in ["NOT_DISCLOSED", "DECEPTIVE"]:
+                results["recommendations"].append(disc.get("recommendation", "Add clear AI disclosure"))
 
         results["system_results"].append(system_result)
 
@@ -650,6 +658,9 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
 
     results["rights_assessment"] = rights
     results["overall_score"] = round(sum(r["score"] for r in rights.values()) / len(rights), 1)
+
+    # Deduplicate recommendations
+    results["recommendations"] = list(dict.fromkeys(results["recommendations"]))
 
     # Flag untested rights
     untested = [name for name, r in rights.items() if r["systems_tested"] == 0]
