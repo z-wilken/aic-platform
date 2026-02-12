@@ -1,59 +1,26 @@
-# AIC Pulse: Project Explainer
+# AIC Pulse - Project Explainer
 
-## 🏛️ Overall Architecture
-AIC Pulse is built as a **Turborepo monorepo**, ensuring total synchronization between marketing, customer operations, and internal governance. It leverages **Next.js 16.1.6** across all applications to provide a high-performance, type-safe ecosystem.
+## The Architecture of Accountability
 
-### Monorepo Structure
-```mermaid
-graph TD
-    A[apps/web] -->|Public Front| E[PostgreSQL]
-    B[apps/platform] -->|Client SaaS| E
-    C[apps/admin] -->|Auditor Factory| E
-    D[apps/hq] -->|Corporate OS| E
-    F[apps/engine] -->|Python Logic| B
-    B -->|Calls| F
-```
+AIC Pulse is built on a **Type-Safe Monorepo Architecture**, designed to scale from a single institution to a national certification standard.
 
-## 🚀 Applications Overview
+### Core Components
 
-### 1. `apps/web` (The Front Door)
-- **Tech Stack:** Next.js (SSG), Framer Motion, Tailwind.
-- **Purpose:** Public education, citizen rights hub, and lead qualification via the interactive assessment quiz.
-- **Key Features:** Dynamic Trust Badges, Public Registry, and Citizens' Rights education.
+1.  **SaaS Dashboard (`apps/platform`):** The primary interface for organizations to monitor their AI integrity, manage audit logs, and track compliance. Built with Next.js 16 and Drizzle ORM.
+2.  **Audit Engine (`apps/engine`):** A high-performance Python microservice that performs rigorous statistical bias analysis, drift monitoring, and decision explanation.
+3.  **Institutional Registry (`PostgreSQL`):** A secure, multi-tenant database where institutional telemetry is hardened via SHA-256 hash chains.
+4.  **Internal Ops (`apps/admin` & `apps/hq`):** Tools for AIC Lead Auditors to verify evidence and manage the institutional certification pipeline.
 
-### 2. `apps/platform` (The Portal)
-- **Tech Stack:** Next.js (App Router), Recharts, next-auth.
-- **Purpose:** Client-facing SaaS where organizations manage their certification roadmap.
-- **Key Features:** XAI Factor Attribution visualizers, technical bias audits, and incident resolution queue.
+### Foundational Principles
 
-### 3. `apps/admin` (The Factory)
-- **Tech Stack:** Next.js, next-auth.
-- **Purpose:** Internal operations for lead auditors to verify evidence and manage the audit pipeline.
-- **Key Features:** Verification boards, auditor assignments, and cryptographic score sign-offs.
+*   **Institutional Isolation:** Every data point is strictly scoped to an organization ID, enforced globally at the middleware level.
+*   **Compile-time Safety:** We use Drizzle ORM and a shared `@aic/types` package to ensure that data flows predictably from the database to the user's screen.
+*   **Immutability by Design:** Audit logs are linked in a cryptographic chain, ensuring that once a decision is recorded, it cannot be altered without detection.
+*   **Automated Quality:** Our "Green-to-Merge" CI/CD pipeline ensures that every commit is build-tested and verified against our institutional standards.
 
-### 4. `apps/hq` (Corporate OS)
-- **Tech Stack:** Next.js, Framer Motion.
-- **Purpose:** Central command center organizing AIC into five departments: Governance, Operations, Growth, Intelligence, and People.
-- **Key Features:** Enterprise CRM, Pipeline Velocity dashboards, and the Lead Auditor Academy.
+### Technology Stack
 
-### 5. `apps/engine` (The Scientist)
-- **Tech Stack:** Python (FastAPI), Pandas, SHAP, LIME, Cryptography.
-- **Purpose:** The core intelligence layer enforcing algorithmic rights through statistical analysis.
-- **Key Features:** Disparate Impact (4/5ths), drift monitoring (PSI), and RSA-3072 cryptographic signing.
-
-## 🔗 Shared Packages
-- **`@aic/auth`**: Unified session management and MFA logic.
-- **`@aic/ui`**: Executive-grade design system and institutional components.
-- **`@aic/legal`**: Continental SADC regulatory mapping registry.
-- **`@aic/events`**: Event-driven orchestration definitions.
-
-## ⚖️ Regulatory Stack (Legal Foundation)
-AIC is purpose-built for the **South African POPIA Section 71** mandate. Every technical feature—from the hash-chain audit trail to the XAI visualizers—is designed to provide institutional proof of **Meaningful Human Intervention**.
-
-## 🔮 Future Roadmap
-- **SADC Expansion:** Moving into Mauritius, Botswana, and Namibia via Mutual Recognition Agreements.
-- **Insurance Integration:** Direct actuarial risk-syncing via the insurance ROI API.
-- **Lead Auditor Academy Scale:** Training the first 500 certified accountability officers by 2028.
-
----
-**© 2026 AI Integrity Certification (AIC). Confidential Internal Documentation.**
+*   **Frontend:** Next.js (App Router), React 19, Tailwind CSS 4, Framer Motion.
+*   **Database:** PostgreSQL with Drizzle ORM.
+*   **Monitoring:** Sentry for error tracking and performance.
+*   **Security:** NextAuth.js with JWT and RSA-3072 signing.
