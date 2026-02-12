@@ -123,6 +123,18 @@ export async function GET(request: NextRequest) {
 }
 ```
 
+### Client Components
+```typescript
+'use client'
+
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+
+export default function Component() {
+  // Use 'use client' directive for interactive components
+}
+```
+
 ### Database Access
 ```typescript
 import { query } from '@/lib/db';
