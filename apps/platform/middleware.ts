@@ -43,11 +43,13 @@ export async function middleware(request: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET
     })
 
-    // Not authenticated - redirect to login
-    if (!token) {
-      const loginUrl = new URL('/login', request.url)
-      loginUrl.searchParams.set('callbackUrl', pathname)
-      return NextResponse.redirect(loginUrl)
+    // Institutional Boundary Enforcement: Ensure session has an orgId
+    if (!token.orgId && !token.isSuperAdmin) {
+      // In a real multi-tenant app, we might redirect to an onboarding flow
+      // For AIC Pulse Alpha, we ensure all users belong to an org at the DB level
+      // but this acts as a global fail-safe.
+      console.warn(`[SECURITY] Access denied to ${pathname}: Missing orgId for user ${token.email}`)
+      return NextResponse.redirect(new URL('/unauthorized?reason=MISSING_INSTITUTION', request.url))
     }
 
     // Check role requirements — match on prefix so /settings/api-keys is also protected
@@ -79,11 +81,11 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except:
-     * - api routes that handle their own auth
+     * - api/auth (NextAuth)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
   ],
 }
