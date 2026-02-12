@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
+import { query } from '@/lib/db';
+import { ErrorFactory } from '@/lib/errors';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
     try {
-        const { email } = await request.json();
-
-        if (!email) {
-            return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+        const body = await request.json().catch(() => null);
+        
+        if (!body || !body.email) {
+            return ErrorFactory.badRequest('Email is required');
         }
 
+        const email = body.email;
         const userResult = await query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
 
         if (userResult.rows.length === 0) {
@@ -41,6 +43,6 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('Forgot Password Error:', error);
-        return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
+        return ErrorFactory.internal('Failed to process recovery request');
     }
 }
