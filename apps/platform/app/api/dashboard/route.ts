@@ -83,19 +83,19 @@ export async function GET(request: NextRequest) {
 
     // 6. Action items
     const actionItems = [];
-    if (parseInt(auditStats.pending) > 0) {
+    if (Number(stats.pending) > 0) {
       actionItems.push({
         type: 'PENDING_REVIEW',
         priority: 'high',
-        title: `${auditStats.pending} decisions pending human review`,
+        title: `${stats.pending} decisions pending human review`,
         action: 'Review pending audit logs'
       });
     }
-    if (parseInt(auditStats.flagged) > 0) {
+    if (Number(stats.flagged) > 0) {
       actionItems.push({
         type: 'FLAGGED_DECISION',
         priority: 'critical',
-        title: `${auditStats.flagged} decisions flagged for bias`,
+        title: `${stats.flagged} decisions flagged for bias`,
         action: 'Investigate flagged decisions'
       });
     }

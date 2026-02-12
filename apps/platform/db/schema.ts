@@ -95,11 +95,71 @@ export const models = pgTable('models', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
-// Correction Requests
+// Audit Requirements
+export const auditRequirements = pgTable('audit_requirements', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  category: varchar('category', { length: 50 }),
+  status: varchar('status', { length: 50 }).default('PENDING'),
+  evidenceUrl: text('evidence_url'),
+  findings: text('findings'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// Notifications
+export const notifications = pgTable('notifications', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }),
+  message: text('message'),
+  type: varchar('type', { length: 50 }),
+  status: varchar('status', { length: 50 }).default('UNREAD'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Compliance Reports
+export const complianceReports = pgTable('compliance_reports', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  monthYear: varchar('month_year', { length: 20 }).notNull(),
+  integrityScore: integer('integrity_score').notNull(),
+  auditStatus: varchar('audit_status', { length: 50 }).default('COMPLIANT'),
+  findingsCount: integer('findings_count').default(0),
+  reportUrl: text('report_url'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Leads
+export const leads = pgTable('leads', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar('email', { length: 255 }).unique().notNull(),
+  company: varchar('company', { length: 255 }),
+  source: varchar('source', { length: 50 }).default('WEB'),
+  score: integer('score'),
+  status: varchar('status', { length: 50 }).default('NEW'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Decision Records
+export const decisionRecords = pgTable('decision_records', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  systemName: varchar('system_name', { length: 255 }).notNull(),
+  inputParams: jsonb('input_params').notNull(),
+  outcome: jsonb('outcome').notNull(),
+  explanation: text('explanation'),
+  integrityHash: varchar('integrity_hash', { length: 64 }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Correction Requests (Update to include decision reference)
 export const correctionRequests = pgTable('correction_requests', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
-  decisionId: uuid('decision_id'), // Add reference to decision_records if needed
+  decisionId: uuid('decision_id').references(() => decisionRecords.id),
   citizenEmail: varchar('citizen_email', { length: 255 }).notNull(),
   reason: text('reason').notNull(),
   supportingEvidenceUrl: text('supporting_evidence_url'),

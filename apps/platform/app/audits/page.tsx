@@ -129,7 +129,6 @@ function AuditsContent() {
                         >
                             {isRunning ? 'ANALYZING...' : 'RUN BIAS AUDIT'}
                         </button>
-                    </div>
                         <button 
                             onClick={async () => {
                                 setIsRunning(true);

@@ -45,7 +45,7 @@ export async function GET(
     const pdfBuffer = await generatePDF(html);
 
     // 3. Return as PDF download
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as any, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="AIC-Report-${report.month_year.replace(' ', '-')}.pdf"`,

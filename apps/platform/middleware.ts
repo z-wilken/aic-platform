@@ -43,11 +43,15 @@ export async function middleware(request: NextRequest) {
       secret: process.env.NEXTAUTH_SECRET
     })
 
+    // Not authenticated - redirect to login
+    if (!token) {
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
     // Institutional Boundary Enforcement: Ensure session has an orgId
     if (!token.orgId && !token.isSuperAdmin) {
-      // In a real multi-tenant app, we might redirect to an onboarding flow
-      // For AIC Pulse Alpha, we ensure all users belong to an org at the DB level
-      // but this acts as a global fail-safe.
       console.warn(`[SECURITY] Access denied to ${pathname}: Missing orgId for user ${token.email}`)
       return NextResponse.redirect(new URL('/unauthorized?reason=MISSING_INSTITUTION', request.url))
     }

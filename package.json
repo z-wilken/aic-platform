@@ -21,6 +21,8 @@
     "test:web": "vitest run --project web",
     "test:platform": "vitest run --project platform",
     "test:e2e": "npx playwright test",
+    "lint": "npx concurrently \"npm run lint --workspaces --if-present\"",
+    "type-check": "npx concurrently \"npm run type-check --workspaces --if-present\"",
     "prepare": "husky"
   },
   "devDependencies": {

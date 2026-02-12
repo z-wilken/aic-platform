@@ -13,6 +13,8 @@ interface Audit {
   scheduled_at: string
   status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'
   notes?: string
+  findings?: number
+  updated_at?: string
   created_at: string
 }
 

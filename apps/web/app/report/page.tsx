@@ -46,8 +46,8 @@ export default function ReportAbusePage() {
                     <button type="submit" className="w-full bg-aic-red text-white py-4 font-mono font-bold uppercase tracking-widest hover:bg-red-700 transition-all">
                         Encrypt & Submit
                     </button>
-                    <p className="text-center text-[10px] text-gray-600 mt-4 font-mono">
-                        SUBMISSION ID: {Math.floor(Math.random() * 100000000)} // ENCRYPTED
+                    <p className="text-center text-[10px] text-gray-600 mt-4 font-mono uppercase">
+                        SUBMISSION_CHANNEL: P2P_ENCRYPTED
                     </p>
                 </div>
             </form>

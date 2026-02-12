@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import AssessmentQuiz from '../components/AssessmentQuiz';
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: "AIC | Risk Assessment - Calculate Your Integrity Score",
@@ -14,6 +15,7 @@ export default function AssessmentPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -43,7 +45,7 @@ export default function AssessmentPage() {
             className={`font-serif text-4xl lg:text-6xl font-bold text-aic-black leading-tight mb-6 animate-slide-left ${mounted ? '' : 'opacity-0'}`}
             style={{ animationDelay: '100ms' }}
           >
-            What's Your{' '}
+            What&apos;s Your{' '}
             <span className="relative inline-block">
               <span className="relative z-10 text-aic-red italic">Risk Tier</span>
               <span className="absolute bottom-1 left-0 w-full h-3 bg-aic-red/10 -z-0" />
@@ -97,9 +99,9 @@ export default function AssessmentPage() {
       <footer className="py-12 border-t border-gray-200">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
-            <a href="/" className="font-serif text-xl font-bold text-aic-black">
+            <Link href="/" className="font-serif text-xl font-bold text-aic-black">
               AIC<span className="text-aic-gold">.</span>
-            </a>
+            </Link>
             <p className="font-mono text-xs text-gray-400">
               © 2026 AI Integrity Certification. All rights reserved.
             </p>

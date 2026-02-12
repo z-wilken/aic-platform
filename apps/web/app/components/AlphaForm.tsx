@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import * as analytics from '@/lib/analytics';
 
+import Link from 'next/link';
+
 export default function AlphaForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,12 +59,12 @@ export default function AlphaForm() {
               </div>
 
               <div className="mt-10">
-                <a
+                <Link
                   href="/"
                   className="text-sm font-semibold leading-6 text-aic-black font-mono hover:text-aic-gold transition-colors"
                 >
                   Return to Homepage <span aria-hidden="true">&rarr;</span>
-                </a>
+                </Link>
               </div>
           </div>
       );
