@@ -5,7 +5,10 @@ import { getSession } from '../../../lib/auth';
 export async function GET() {
   try {
     const session: any = await getSession();
-    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
 
     const result = await query(
       'SELECT * FROM incidents WHERE org_id = $1 ORDER BY created_at DESC',

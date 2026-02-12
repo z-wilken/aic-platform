@@ -1,7 +1,6 @@
-'use client';
-
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface EvidenceModalProps {
     isOpen: boolean;
@@ -12,20 +11,50 @@ interface EvidenceModalProps {
 
 export default function EvidenceModal({ isOpen, onClose, requirement, onSubmit }: EvidenceModalProps) {
     const [url, setUrl] = useState('');
+    const [file, setFile] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsUploading(true);
-        // Simulate a delay for the "upload"
-        setTimeout(() => {
-            onSubmit(url);
+
+        try {
+            let finalUrl = url;
+
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    finalUrl = uploadData.url;
+                } else {
+                    throw new Error('File upload failed');
+                }
+            }
+
+            if (!finalUrl) {
+                toast.error('Please provide a URL or upload a file.');
+                setIsUploading(false);
+                return;
+            }
+
+            onSubmit(finalUrl);
             setUrl('');
-            setIsUploading(false);
+            setFile(null);
             onClose();
-        }, 1500);
+        } catch (err) {
+            toast.error('Evidence transmission failed.');
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     return (
@@ -57,15 +86,28 @@ export default function EvidenceModal({ isOpen, onClose, requirement, onSubmit }
                         </div>
 
                         <p className="text-sm text-gray-500 font-serif leading-relaxed mb-8">
-                            Please provide a secure URL to the requested evidence. This can be a link to a secure document repository, technical report, or cloud storage.
+                            Upload a technical report or provide a secure URL to the requested evidence.
                         </p>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
+                                <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-2">Upload Document</label>
+                                <input 
+                                    type="file" 
+                                    className="w-full bg-aic-paper/50 border border-dashed border-aic-black/10 rounded-xl p-4 font-mono text-[10px] focus:border-aic-gold outline-none transition-all"
+                                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                />
+                            </div>
+
+                            <div className="relative py-2">
+                                <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-aic-black/5" /></div>
+                                <div className="relative flex justify-center text-[8px] font-mono font-bold uppercase"><span className="bg-white px-2 text-gray-300">OR</span></div>
+                            </div>
+
+                            <div>
                                 <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-2">Evidence URL</label>
                                 <input 
                                     type="url" 
-                                    required 
                                     placeholder="https://drive.google.com/..." 
                                     className="w-full border-b border-aic-black/10 py-3 focus:border-aic-gold outline-none font-mono text-xs transition-colors"
                                     value={url}
@@ -73,17 +115,10 @@ export default function EvidenceModal({ isOpen, onClose, requirement, onSubmit }
                                 />
                             </div>
 
-                            <div className="bg-aic-paper/50 p-4 rounded-xl border border-aic-black/5">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-aic-gold animate-pulse" />
-                                    <p className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Secure Transfer Active</p>
-                                </div>
-                            </div>
-
                             <button 
                                 type="submit" 
                                 disabled={isUploading}
-                                className="w-full bg-aic-black text-white py-4 font-mono font-bold text-xs uppercase tracking-[0.2em] hover:bg-aic-gold transition-colors disabled:opacity-50"
+                                className="w-full bg-aic-black text-white py-4 rounded-xl font-mono font-bold text-xs uppercase tracking-[0.2em] hover:bg-aic-gold transition-colors disabled:opacity-50"
                             >
                                 {isUploading ? 'TRANSMITTING EVIDENCE...' : 'CONFIRM SUBMISSION'}
                             </button>

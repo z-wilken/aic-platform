@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function OrganizationalSettings() {
     const [settings, setSettings] = useState({
@@ -15,6 +16,14 @@ export default function OrganizationalSettings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [keys, setKeys] = useState<any[]>([]);
+    const [loadingKeys, setLoadingKeys] = useState(true);
+    const [newKeyLabel, setNewKeyLabel] = useState('');
+    const [generatedKey, setGeneratedKey] = useState<string | null>(null);
+    const [inviteEmail, setInviteEmail] = useState('');
+    const [inviteName, setInviteName] = useState('');
+    const [inviteRole, setInviteRole] = useState('VIEWER');
+    const [generatedInvite, setGeneratedInvite] = useState<string | null>(null);
 
     useEffect(() => {
         fetch('/api/settings')
@@ -30,11 +39,44 @@ export default function OrganizationalSettings() {
                 setLoading(false);
             })
             .catch(() => setLoading(false));
+
+        fetchKeys();
     }, []);
+
+    const fetchKeys = async () => {
+        setLoadingKeys(true);
+        try {
+            const res = await fetch('/api/keys');
+            const data = await res.json();
+            setKeys(data.keys || []);
+        } finally {
+            setLoadingKeys(false);
+        }
+    };
+
+    const handleGenerateKey = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            const res = await fetch('/api/keys', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ label: newKeyLabel || 'Default Key' })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setGeneratedKey(data.apiKey);
+                setNewKeyLabel('');
+                toast.success('Access credentials generated successfully.');
+                fetchKeys();
+            }
+        } finally {
+            setSaving(false);
+        }
+    };
 
     const handleSave = async () => {
         setSaving(true);
-        setSaved(false);
         try {
             const res = await fetch('/api/settings', {
                 method: 'PATCH',
@@ -44,8 +86,10 @@ export default function OrganizationalSettings() {
             if (res.ok) {
                 const data = await res.json();
                 setSettings(prev => ({ ...prev, name: data.name }));
-                setSaved(true);
-                setTimeout(() => setSaved(false), 3000);
+                toast.success('Organizational profile updated.');
+            } else {
+                const error = await res.json();
+                toast.error(error.error || 'Failed to update settings');
             }
         } finally {
             setSaving(false);
@@ -97,6 +141,98 @@ export default function OrganizationalSettings() {
                         </div>
                     </section>
 
+                    {/* Team Management */}
+                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                        <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Team Management</h3>
+                        
+                        {generatedInvite && (
+                            <div className="mb-10 p-6 bg-aic-black text-white rounded-2xl border border-white/10">
+                                <p className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest mb-3">INVITATION LINK READY</p>
+                                <div className="flex items-center gap-4">
+                                    <code className="flex-1 bg-white/5 border border-white/10 p-4 rounded-xl font-mono text-xs break-all">
+                                        {generatedInvite}
+                                    </code>
+                                    <button 
+                                        onClick={() => setGeneratedInvite(null)}
+                                        className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest hover:text-white"
+                                    >
+                                        Dismiss
+                                    </button>
+                                </div>
+                                <p className="text-[10px] font-mono text-gray-500 mt-3 uppercase italic">Share this link with your team member to grant access.</p>
+                            </div>
+                        )}
+
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+                            setSaving(true);
+                            try {
+                                const res = await fetch('/api/users/invite', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ email: inviteEmail, name: inviteName, role: inviteRole })
+                                });
+                                const data = await res.json();
+                                if (res.ok) {
+                                    setGeneratedInvite(data.inviteLink);
+                                    setInviteEmail('');
+                                    setInviteName('');
+                                    toast.success('Institutional invitation link generated.');
+                                } else {
+                                    toast.error(data.error || 'Failed to generate invitation');
+                                }
+                            } finally {
+                                setSaving(false);
+                            }
+                        }} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Full Name</label>
+                                    <input
+                                        className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all"
+                                        placeholder="Dr. Thabo Mbeki"
+                                        value={inviteName}
+                                        onChange={e => setInviteName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Institutional Email</label>
+                                    <input
+                                        className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all"
+                                        placeholder="thabo@bank.co.za"
+                                        type="email"
+                                        value={inviteEmail}
+                                        onChange={e => setInviteEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Institutional Role</label>
+                                    <select
+                                        className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all appearance-none"
+                                        value={inviteRole}
+                                        onChange={e => setInviteRole(e.target.value)}
+                                    >
+                                        <option value="VIEWER">VIEWER (READ-ONLY)</option>
+                                        <option value="AUDITOR">AUDITOR (VERIFICATION)</option>
+                                        <option value="COMPLIANCE_OFFICER">COMPLIANCE OFFICER (WRITE)</option>
+                                        <option value="ADMIN">ADMINISTRATOR (FULL)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="flex justify-end pt-4">
+                                <button
+                                    type="submit"
+                                    disabled={saving}
+                                    className="bg-aic-black text-white px-8 py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all disabled:opacity-50"
+                                >
+                                    INVITE_TEAM_MEMBER
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
                     {/* Security Protocol */}
                     <section className="bg-[#080808] text-white p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-10 opacity-5 font-serif italic text-6xl select-none uppercase">Security</div>
@@ -136,19 +272,81 @@ export default function OrganizationalSettings() {
                             </div>
                         </div>
                     </section>
+
+                    {/* Developer API Access */}
+                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                        <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Developer API Access</h3>
+                        
+                        {generatedKey && (
+                            <div className="mb-10 p-6 bg-green-50 border border-green-100 rounded-2xl">
+                                <p className="text-[10px] font-mono font-bold text-green-600 uppercase tracking-widest mb-3">NEW API KEY GENERATED</p>
+                                <div className="flex items-center gap-4">
+                                    <code className="flex-1 bg-white border border-green-200 p-4 rounded-xl font-mono text-sm break-all">
+                                        {generatedKey}
+                                    </code>
+                                    <button 
+                                        onClick={() => setGeneratedKey(null)}
+                                        className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest hover:text-aic-black"
+                                    >
+                                        Dismiss
+                                    </button>
+                                </div>
+                                <p className="text-[10px] font-mono text-green-600 mt-3 uppercase">Store this safely. It will never be shown again.</p>
+                            </div>
+                        )}
+
+                        <div className="space-y-6">
+                            {loadingKeys ? (
+                                <div className="text-center py-6 text-gray-400 italic font-serif text-sm">Retrieving access keys...</div>
+                            ) : keys.length === 0 ? (
+                                <div className="text-center py-10 bg-aic-paper/30 border border-dashed border-aic-black/10 rounded-2xl text-gray-400 italic font-serif text-sm">
+                                    No active API keys found.
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {keys.map((key) => (
+                                        <div key={key.id} className="flex items-center justify-between p-5 bg-aic-paper/50 rounded-2xl border border-aic-black/5">
+                                            <div>
+                                                <p className="text-sm font-serif font-bold text-aic-black">{key.label}</p>
+                                                <p className="text-[10px] font-mono text-gray-500 uppercase mt-1">
+                                                    Prefix: {key.key_prefix} • Created {new Date(key.created_at).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[10px] font-mono text-gray-400 uppercase">Last Used</p>
+                                                <p className="text-[10px] font-mono font-bold text-aic-black mt-1">
+                                                    {key.last_used_at ? new Date(key.last_used_at).toLocaleDateString() : 'NEVER'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleGenerateKey} className="pt-6 border-t border-aic-black/5">
+                                <div className="flex gap-4">
+                                    <input 
+                                        className="flex-1 bg-aic-paper/50 border border-aic-black/10 rounded-xl p-4 font-serif text-sm focus:border-aic-gold outline-none transition-all"
+                                        placeholder="Key Label (e.g. Production CI/CD)"
+                                        value={newKeyLabel}
+                                        onChange={e => setNewKeyLabel(e.target.value)}
+                                        required
+                                    />
+                                    <button 
+                                        type="submit"
+                                        disabled={saving}
+                                        className="bg-aic-black text-white px-8 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                                    >
+                                        Generate New Key
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
                 </div>
                 )}
 
                 <div className="flex justify-end pt-12 gap-4 items-center">
-                    {saved && (
-                        <motion.span
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="text-[10px] font-mono font-bold text-green-600 uppercase tracking-widest"
-                        >
-                            Settings saved
-                        </motion.span>
-                    )}
                     <button
                         onClick={handleSave}
                         disabled={saving || loading}

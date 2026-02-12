@@ -3,6 +3,7 @@ import { Crimson_Pro, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import HQShell from "./components/HQShell";
+import { Toaster } from "sonner";
 
 const crimsonPro = Crimson_Pro({
   variable: "--font-crimson-pro",
@@ -37,6 +38,7 @@ export default function RootLayout({
             <HQShell>
                 {children}
             </HQShell>
+            <Toaster position="bottom-right" richColors />
         </Providers>
       </body>
     </html>

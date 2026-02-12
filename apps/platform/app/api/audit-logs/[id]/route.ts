@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '../../../../lib/db';
+import { getSession } from '../../../../lib/auth';
 import crypto from 'crypto';
 
 // GET /api/audit-logs/:id - Get single audit log
@@ -9,6 +10,11 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const session: any = await getSession();
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
 
     const result = await query(`
       SELECT
@@ -17,8 +23,8 @@ export async function GET(
         o.tier as organization_tier
       FROM audit_logs al
       LEFT JOIN organizations o ON al.org_id = o.id
-      WHERE al.id = $1
-    `, [id]);
+      WHERE al.id = $1 AND al.org_id = $2
+    `, [id, orgId]);
 
     if (result.rows.length === 0) {
       return NextResponse.json(
@@ -64,6 +70,18 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    const session: any = await getSession();
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
+    const userRole = session.user.role;
+
+    // RBAC: only certain roles can verify logs
+    if (userRole !== 'ADMIN' && userRole !== 'COMPLIANCE_OFFICER' && userRole !== 'AUDITOR') {
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
+
     const body = await request.json();
     const { status, reviewer_notes } = body;
 
@@ -82,7 +100,7 @@ export async function PUT(
       SET
         status = $1,
         metadata = metadata || $2
-      WHERE id = $3
+      WHERE id = $3 AND org_id = $4
       RETURNING *
     `, [
       status,
@@ -90,7 +108,8 @@ export async function PUT(
         reviewed_at: new Date().toISOString(),
         reviewer_notes: reviewer_notes || null
       }),
-      id
+      id,
+      orgId
     ]);
 
     if (result.rows.length === 0) {

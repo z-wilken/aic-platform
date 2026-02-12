@@ -5,7 +5,10 @@ import { getSession } from '../../../lib/auth';
 export async function GET() {
   try {
     const session: any = await getSession();
-    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
 
     // 1. Fetch organization details
     const orgResult = await query(

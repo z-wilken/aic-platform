@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface ComplianceReport {
     id: string;
@@ -21,6 +22,17 @@ export default function ReportsPage() {
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
 
+    const fetchReports = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/reports');
+            const data = await res.json();
+            setReports(data.reports || []);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchReports();
         fetch('/api/stats').then(res => res.json()).then(data => setStats(data));
@@ -36,8 +48,11 @@ export default function ReportsPage() {
         try {
             const res = await fetch('/api/reports', { method: 'POST' });
             if (res.ok) {
-                alert("New compliance snapshot generated successfully.");
+                toast.success("New compliance snapshot generated successfully.");
                 fetchReports();
+            } else {
+                const error = await res.json();
+                toast.error(error.error || "Failed to generate report");
             }
         } finally {
             setIsGenerating(false);

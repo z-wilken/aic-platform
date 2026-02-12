@@ -1,19 +1,30 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 
-export default function AuditsPage() {
+function AuditsContent() {
+    const searchParams = useSearchParams();
+    const q = searchParams.get('q');
+    
     const [logs, setLogs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isRunning, setIsRunning] = useState(false);
+    const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
 
-    const fetchLogs = () => {
-        fetch('/api/audit-logs')
+    const fetchLogs = (page = 1) => {
+        setLoading(true);
+        let url = `/api/audit-logs?page=${page}&limit=25`;
+        if (q) url += `&q=${encodeURIComponent(q)}`;
+        
+        fetch(url)
             .then(res => res.json())
             .then(data => {
                 setLogs(data.logs || []);
+                setPagination(data.pagination || { page: 1, pages: 1, total: 0 });
                 setLoading(false);
             })
             .catch(err => {
@@ -23,8 +34,8 @@ export default function AuditsPage() {
     };
 
     useEffect(() => {
-        fetchLogs();
-    }, []);
+        fetchLogs(1);
+    }, [q]);
 
     const handleRunAudit = async () => {
         setIsRunning(true);
@@ -51,14 +62,14 @@ export default function AuditsPage() {
             });
 
             if (response.ok) {
-                alert("Audit analysis complete. Hash recorded to database.");
+                toast.success("Audit analysis complete. Cryptographic hash recorded.");
                 fetchLogs();
             } else {
                 const err = await response.json();
-                alert(`Audit Failed: ${err.detail}`);
+                toast.error(`Audit Failed: ${err.detail}`);
             }
         } catch (err) {
-            alert("Connection to Audit Engine failed.");
+            toast.error("Connection to Audit Engine failed.");
         } finally {
             setIsRunning(false);
         }
@@ -98,7 +109,7 @@ export default function AuditsPage() {
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({ systemName: 'Advanced Risk Model', data: sampleOddsData, type: 'EQUALIZED_ODDS' })
                                     });
-                                    if (res.ok) { alert("Advanced Equalized Odds audit recorded."); fetchLogs(); }
+                                    if (res.ok) { toast.success("Advanced Equalized Odds audit recorded."); fetchLogs(); }
                                 } finally { setIsRunning(false); }
                             }}
                             disabled={isRunning}
@@ -118,7 +129,7 @@ export default function AuditsPage() {
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({ systemName: 'Customer Data Lake', data: samplePrivacyData })
                                     });
-                                    if (res.ok) { alert("Privacy Schema Audit complete. SPI risks identified."); fetchLogs(); }
+                                    if (res.ok) { toast.success("Privacy Schema Audit complete. SPI risks identified."); fetchLogs(); }
                                 } finally { setIsRunning(false); }
                             }}
                             disabled={isRunning}
@@ -140,7 +151,7 @@ export default function AuditsPage() {
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({ systemName: 'Automated Hiring Bot', data: sampleLaborData })
                                     });
-                                    if (res.ok) { alert("Labor Agency audit complete. Automation density recorded."); fetchLogs(); }
+                                    if (res.ok) { toast.success("Labor Agency audit complete. Automation density recorded."); fetchLogs(); }
                                 } finally { setIsRunning(false); }
                             }}
                             disabled={isRunning}
@@ -152,6 +163,12 @@ export default function AuditsPage() {
                 </div>
 
                 <div className="bg-white border border-aic-black/5 rounded-3xl overflow-hidden shadow-sm">
+                    {q && (
+                        <div className="bg-aic-paper p-4 border-b border-aic-black/5 flex justify-between items-center">
+                            <span className="text-[10px] font-mono text-gray-500 uppercase">Search Results for: <strong className="text-aic-black">{q}</strong></span>
+                            <button onClick={() => window.location.href = '/audits'} className="text-[10px] font-mono font-bold text-aic-red uppercase underline">Clear Search</button>
+                        </div>
+                    )}
                     <table className="w-full text-left text-sm font-serif">
                         <thead className="bg-aic-paper/50 border-b border-aic-black/5">
                             <tr>
@@ -183,10 +200,32 @@ export default function AuditsPage() {
                                 </motion.tr>
                             ))}
                             {!loading && logs.length === 0 && (
-                                <tr><td colSpan={4} className="p-12 text-center text-gray-400 italic font-serif">No technical audit logs found. Run a "Live Audit" to generate evidence.</td></tr>
+                                <tr><td colSpan={4} className="p-12 text-center text-gray-400 italic font-serif">No technical audit logs found matching your query.</td></tr>
                             )}
                         </tbody>
                     </table>
+                    
+                    {pagination.pages > 1 && (
+                        <div className="p-6 border-t border-aic-black/5 bg-aic-paper/20 flex justify-between items-center">
+                            <p className="text-[10px] font-mono font-bold text-gray-400 uppercase">Page {pagination.page} of {pagination.pages} • {pagination.total} Records</p>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={() => fetchLogs(pagination.page - 1)}
+                                    disabled={pagination.page <= 1}
+                                    className="px-4 py-2 border border-aic-black/10 rounded-lg font-mono text-[10px] font-bold uppercase hover:bg-aic-black hover:text-white transition-all disabled:opacity-30"
+                                >
+                                    Previous
+                                </button>
+                                <button 
+                                    onClick={() => fetchLogs(pagination.page + 1)}
+                                    disabled={pagination.page >= pagination.pages}
+                                    className="px-4 py-2 border border-aic-black/10 rounded-lg font-mono text-[10px] font-bold uppercase hover:bg-aic-black hover:text-white transition-all disabled:opacity-30"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-12 p-8 bg-aic-black rounded-3xl text-white flex items-center justify-between border border-white/5 shadow-2xl">
@@ -200,5 +239,13 @@ export default function AuditsPage() {
                 </div>
             </div>
         </DashboardShell>
+    );
+}
+
+export default function AuditsPage() {
+    return (
+        <Suspense fallback={<DashboardShell><div className="py-20 text-center italic font-serif text-gray-400">Loading audit infrastructure...</div></DashboardShell>}>
+            <AuditsContent />
+        </Suspense>
     );
 }

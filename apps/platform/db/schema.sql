@@ -32,6 +32,7 @@ CREATE TABLE users (
     role user_role DEFAULT 'VIEWER',
     org_id UUID REFERENCES organizations(id),
     is_active BOOLEAN DEFAULT TRUE,
+    email_verified BOOLEAN DEFAULT FALSE,
     is_super_admin BOOLEAN DEFAULT FALSE,
     permissions JSONB DEFAULT '{}', -- e.g., {"can_publish": true, "can_verify_audit": false}
     last_login TIMESTAMP WITH TIME ZONE,
@@ -120,6 +121,59 @@ CREATE TABLE compliance_reports (
     findings_count INTEGER DEFAULT 0,
     report_url TEXT, -- Path to generated PDF
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE audit_scheduled_status AS ENUM ('SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED');
+
+CREATE TABLE scheduled_audits (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+    auditor_id UUID REFERENCES users(id),
+    scheduled_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    status audit_scheduled_status DEFAULT 'SCHEDULED',
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE decision_records (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+    system_name VARCHAR(255) NOT NULL,
+    input_params JSONB NOT NULL,
+    outcome JSONB NOT NULL,
+    explanation TEXT,
+    integrity_hash VARCHAR(64) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE models (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    version VARCHAR(50) DEFAULT '1.0.0',
+    type VARCHAR(100), -- 'Classification', 'Regression', 'LLM', etc.
+    description TEXT,
+    metadata JSONB DEFAULT '{}',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE correction_status AS ENUM ('SUBMITTED', 'UNDER_REVIEW', 'RESOLVED', 'REJECTED');
+
+CREATE TABLE correction_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
+    decision_id UUID REFERENCES decision_records(id),
+    citizen_email VARCHAR(255) NOT NULL,
+    reason TEXT NOT NULL,
+    supporting_evidence_url TEXT,
+    status correction_status DEFAULT 'SUBMITTED',
+    resolution_details TEXT,
+    human_reviewer_id UUID REFERENCES users(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CMS Tables for HQ

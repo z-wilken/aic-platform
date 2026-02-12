@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '../../../lib/db';
+import { getSession } from '../../../lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    const session: any = await getSession();
+    if (!session || session.user?.role !== 'ADMIN') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     // 1. Identify incidents older than 72 hours that are still 'OPEN'
     const staleIncidents = await query(`
       SELECT i.*, o.name as org_name 

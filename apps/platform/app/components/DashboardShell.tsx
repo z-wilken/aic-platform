@@ -2,13 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifs, setShowNotifications] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+        router.push(`/audits?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
   const fetchNotifs = () => {
     fetch('/api/notifications')
@@ -136,11 +145,17 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                 </h2>
             </div>
             <div className="flex items-center gap-8">
-                {/* Search Simulation */}
-                <div className="hidden lg:flex items-center gap-3 px-4 py-2 bg-aic-paper border border-aic-black/5 rounded-xl text-gray-400">
+                {/* Search Integration */}
+                <form onSubmit={handleSearch} className="hidden lg:flex items-center gap-3 px-4 py-2 bg-aic-paper border border-aic-black/5 rounded-xl text-gray-400 focus-within:border-aic-gold transition-colors">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                    <span className="text-[10px] font-mono uppercase tracking-widest font-bold">Query Registry...</span>
-                </div>
+                    <input 
+                        type="text"
+                        placeholder="Query Registry..."
+                        className="bg-transparent border-none outline-none font-mono text-[10px] uppercase tracking-widest font-bold placeholder:text-gray-300 text-aic-black w-40"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </form>
 
                 {/* Notifications Bell */}
                 <div className="relative">

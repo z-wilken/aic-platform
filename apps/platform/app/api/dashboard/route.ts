@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '../../../lib/db';
+import { getSession } from '../../../lib/auth';
 
 // GET /api/dashboard - Comprehensive dashboard data
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const orgId = searchParams.get('org_id') || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'; // Demo org
+    const session: any = await getSession();
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
 
     // 1. Get organization details
     const orgResult = await query(
-      'SELECT * FROM organizations WHERE id = $1',
+      'SELECT id, name, tier, is_alpha, integrity_score FROM organizations WHERE id = $1',
       [orgId]
     );
 
@@ -36,26 +40,18 @@ export async function GET(request: NextRequest) {
 
     // 3. Get recent audit logs
     const recentLogsResult = await query(`
-      SELECT id, action, input_type, outcome, status, created_at
+      SELECT id, event_type as action, system_name as input_type, status, created_at,
+             (details->>'outcome') as outcome
       FROM audit_logs
       WHERE org_id = $1
       ORDER BY created_at DESC
       LIMIT 10
     `, [orgId]);
 
-    // 4. Calculate integrity score trend (simplified)
-    // In production, this would query historical data
-    const total = parseInt(auditStats.total) || 1;
-    const verified = parseInt(auditStats.verified) || 0;
+    const integrityScore = org.integrity_score || 0;
+
+    // 5. Get 5 Rights compliance status (Logic would be refined based on real data)
     const flagged = parseInt(auditStats.flagged) || 0;
-
-    // Score calculation: base 70 + (verified ratio * 30) - (flagged penalty)
-    const verifiedRatio = total > 0 ? verified / total : 1;
-    const flaggedPenalty = total > 0 ? (flagged / total) * 20 : 0;
-    const calculatedScore = Math.round(70 + (verifiedRatio * 30) - flaggedPenalty);
-    const integrityScore = Math.max(0, Math.min(100, calculatedScore));
-
-    // 5. Get 5 Rights compliance status
     const rightsCompliance = {
       human_agency: {
         name: 'Right to Human Agency',
@@ -65,22 +61,22 @@ export async function GET(request: NextRequest) {
       explanation: {
         name: 'Right to Explanation',
         status: 'COMPLIANT',
-        score: 85 // Would check if explanations are generated
+        score: 85
       },
       empathy: {
         name: 'Right to Empathy',
         status: 'COMPLIANT',
-        score: 80 // Would check rejection letter tone scores
+        score: 80
       },
       correction: {
         name: 'Right to Correction',
         status: 'COMPLIANT',
-        score: 90 // Would check appeal process metrics
+        score: 90
       },
       truth: {
         name: 'Right to Truth',
         status: 'COMPLIANT',
-        score: 95 // Would check AI disclosure compliance
+        score: 95
       }
     };
 
@@ -118,7 +114,7 @@ export async function GET(request: NextRequest) {
       },
       integrity: {
         score: integrityScore,
-        trend: 2, // Would calculate from historical data
+        trend: 0,
         status: integrityScore >= 80 ? 'HEALTHY' : integrityScore >= 60 ? 'ATTENTION' : 'CRITICAL'
       },
       audit_summary: {
@@ -139,48 +135,8 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Dashboard error:', error);
-
-    // Fallback mock data
-    return NextResponse.json({
-      organization: {
-        id: 'demo',
-        name: 'Demo Organization',
-        tier: 'TIER_1',
-        is_alpha: true
-      },
-      integrity: {
-        score: 94,
-        trend: 2,
-        status: 'HEALTHY'
-      },
-      audit_summary: {
-        total: 1250,
-        verified: 1180,
-        flagged: 12,
-        pending: 58,
-        last_24h: 42,
-        last_7d: 285
-      },
-      rights_compliance: {
-        human_agency: { name: 'Right to Human Agency', status: 'COMPLIANT', score: 92 },
-        explanation: { name: 'Right to Explanation', status: 'COMPLIANT', score: 85 },
-        empathy: { name: 'Right to Empathy', status: 'COMPLIANT', score: 88 },
-        correction: { name: 'Right to Correction', status: 'COMPLIANT', score: 90 },
-        truth: { name: 'Right to Truth', status: 'COMPLIANT', score: 95 }
-      },
-      overall_rights_score: 90,
-      recent_logs: [
-        { id: 'REQ-8392', action: 'CREDIT_DECISION', input_type: 'Credit App', outcome: 'DENIED', status: 'PENDING', created_at: new Date().toISOString() },
-        { id: 'REQ-8391', action: 'CREDIT_DECISION', input_type: 'Credit App', outcome: 'APPROVED', status: 'VERIFIED', created_at: new Date().toISOString() }
-      ],
-      action_items: [
-        { type: 'PENDING_REVIEW', priority: 'high', title: '2 decisions pending review', action: 'Review pending audit logs' }
-      ],
-      tier_requirements: getTierRequirements('TIER_1'),
-      mode: 'MOCK',
-      timestamp: new Date().toISOString()
-    });
+    console.error('Dashboard API Error:', error);
+    return NextResponse.json({ error: 'Failed to retrieve institutional intelligence' }, { status: 500 });
   }
 }
 

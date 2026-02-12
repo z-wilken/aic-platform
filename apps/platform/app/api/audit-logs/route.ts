@@ -14,7 +14,10 @@ function engineHeaders(): Record<string, string> {
 export async function POST(request: NextRequest) {
   try {
     const session: any = await getSession();
-    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
     
     const body = await request.json();
     const { systemName, data } = body;
@@ -90,7 +93,10 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
     try {
       const session: any = await getSession();
-      const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+      if (!session || !session.user?.orgId) {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      const orgId = session.user.orgId;
       
       const body = await request.json();
       const { systemName, data, type = 'EQUALIZED_ODDS' } = body;
@@ -156,17 +162,50 @@ export async function PATCH(request: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         const session: any = await getSession();
-        const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+        if (!session || !session.user?.orgId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        const orgId = session.user.orgId;
 
-        const result = await query(
-            'SELECT * FROM audit_logs WHERE org_id = $1 ORDER BY created_at DESC',
-            [orgId]
-        );
+        const { searchParams } = new URL(request.url);
+        const q = searchParams.get('q');
+        const limit = parseInt(searchParams.get('limit') || '25');
+        const page = parseInt(searchParams.get('page') || '1');
+        const offset = (page - 1) * limit;
 
-        return NextResponse.json({ logs: result.rows });
+        let sql = 'SELECT * FROM audit_logs WHERE org_id = $1';
+        let countSql = 'SELECT COUNT(*) FROM audit_logs WHERE org_id = $1';
+        const params: any[] = [orgId];
+
+        if (q) {
+            const searchParam = `%${q}%`;
+            sql += ' AND (system_name ILIKE $2 OR event_type ILIKE $2)';
+            countSql += ' AND (system_name ILIKE $2 OR event_type ILIKE $2)';
+            params.push(searchParam);
+        }
+
+        sql += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        const finalParams = [...params, limit, offset];
+
+        const [result, countResult] = await Promise.all([
+            query(sql, finalParams),
+            query(countSql, params)
+        ]);
+
+        const total = parseInt(countResult.rows[0].count);
+
+        return NextResponse.json({ 
+            logs: result.rows,
+            pagination: {
+                total,
+                page,
+                limit,
+                pages: Math.ceil(total / limit)
+            }
+        });
     } catch (error) {
         console.error('Audit Logs Retrieval Error:', error);
         return NextResponse.json({ error: 'Failed to retrieve logs' }, { status: 500 });

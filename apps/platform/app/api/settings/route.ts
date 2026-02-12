@@ -5,7 +5,10 @@ import { getSession } from '../../../lib/auth';
 export async function GET() {
     try {
         const session: any = await getSession();
-        const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+        if (!session || !session.user?.orgId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        const orgId = session.user.orgId;
 
         const result = await query(
             `SELECT o.id, o.name, o.tier, o.integrity_score, o.is_alpha, o.created_at,
@@ -41,8 +44,11 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
     try {
         const session: any = await getSession();
-        const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
-        const userRole = session?.user?.role;
+        if (!session || !session.user?.orgId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        const orgId = session.user.orgId;
+        const userRole = session.user.role;
 
         if (userRole && userRole !== 'ADMIN' && userRole !== 'COMPLIANCE_OFFICER') {
             return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });

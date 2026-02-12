@@ -5,9 +5,10 @@ import { getSession } from '../../../lib/auth';
 export async function GET() {
   try {
     const session: any = await getSession();
-    
-    // For demo/development, fallback to the demo organization ID if no session
-    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
 
     const result = await query(
       'SELECT * FROM audit_requirements WHERE org_id = $1 ORDER BY created_at ASC',
@@ -29,11 +30,27 @@ const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
 
 export async function PATCH(request: Request) {
   try {
+    const session: any = await getSession();
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
+
     const body = await request.json();
     const { id, evidence_url } = body;
 
     if (!id || !evidence_url) {
       return NextResponse.json({ error: 'Requirement ID and Evidence URL are required' }, { status: 400 });
+    }
+
+    // Multi-tenant check: ensure requirement belongs to user's org
+    const checkResult = await query(
+        'SELECT id FROM audit_requirements WHERE id = $1 AND org_id = $2',
+        [id, orgId]
+    );
+
+    if (checkResult.rows.length === 0) {
+        return NextResponse.json({ error: 'Requirement not found or access denied' }, { status: 404 });
     }
 
     // 1. Trigger Automated Technical Verification (Deep Tech Step)

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '../../../../lib/db';
+import { getSession } from '../../../../lib/auth';
 
 // GET /api/organizations/:id - Get organization details
 export async function GET(
@@ -8,6 +9,16 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const session: any = await getSession();
+    
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Strict multi-tenant isolation
+    if (session.user.orgId !== id && !session.user.isSuperAdmin) {
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
 
     const result = await query(
       'SELECT * FROM organizations WHERE id = $1',
@@ -69,6 +80,16 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    const session: any = await getSession();
+
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if ((session.user.orgId !== id || session.user.role !== 'ADMIN') && !session.user.isSuperAdmin) {
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
+
     const body = await request.json();
     const { name, tier, integrity_score } = body;
 

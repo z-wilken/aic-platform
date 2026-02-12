@@ -9,14 +9,19 @@ export async function PATCH(
   try {
     const { id } = await params;
     const session: any = await getSession();
-    const userId = session?.user?.id;
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
+    const userId = session.user.id;
+    
     const { status, resolution_details } = await request.json();
 
     const result = await query(
       `UPDATE incidents 
        SET status = $1, resolution_details = $2, human_reviewer_id = $3, updated_at = NOW() 
-       WHERE id = $4 RETURNING *`,
-      [status, resolution_details, userId, id]
+       WHERE id = $4 AND org_id = $5 RETURNING *`,
+      [status, resolution_details, userId, id, orgId]
     );
 
     if (result.rows.length === 0) {
