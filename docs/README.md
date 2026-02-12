@@ -1,11 +1,29 @@
 # AIC Platform Documentation
 
+## Core Principle
+> "We do not regulate AI. We certify that humans remain accountable."
+
 ## Core Strategic Documents
 | Document | Description |
 |----------|-------------|
 | [Founder's Vision](./FOUNDERS_VISION.md) | North star: 30-year vision, constitutional values, accountability principles |
 | [Declaration of Rights](./DECLARATION_OF_RIGHTS.md) | The 5 Algorithmic Rights that AIC certifies and enforces |
 | [Methodology](./METHODOLOGY.md) | Integrity Score calculation formula, scoring matrix, tier thresholds |
+
+## Quick Start Guide
+
+### For Understanding the Vision
+Start with **[FOUNDERS_VISION.md](./FOUNDERS_VISION.md)** — the moral foundation and 30-year trajectory.
+
+### For Business Context
+1. **[BUSINESS_PLAN.md](./BUSINESS_PLAN.md)** — Evidence-based investor memorandum
+2. **[STRATEGIC_ROADMAP.md](./STRATEGIC_ROADMAP.md)** — Phased execution plan
+3. **[PILOT_PROGRAM.md](./PILOT_PROGRAM.md)** — Alpha validation framework
+
+### For Technical Details
+1. **[Technical Specification](./AIC_TECHNICAL_SPEC.md)** — Architecture, APIs, database schema
+2. **[Engine Requirements](./ENGINE_REQUIREMENTS.md)** — Detailed functional requirements for the Python audit engine
+3. **[Methodology](./METHODOLOGY.md)** — Integrity Score calculation
 
 ## Product & Technical
 | Document | Description |
