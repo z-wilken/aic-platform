@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@aic/types": "*",
     "framer-motion": "^12.31.0",
     "jspdf": "^4.1.0",
     "next": "16.1.6",

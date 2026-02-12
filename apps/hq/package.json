@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@aic/legal": "*",
+    "@aic/types": "*",
     "@aic/ui": "*",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.31.0",

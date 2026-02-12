@@ -3,6 +3,7 @@ import { getSession } from '../../../lib/auth';
 import { query } from '../../../lib/db';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
+const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,9 +14,12 @@ export async function POST(request: NextRequest) {
     const { modelType, inputFeatures, decision } = body;
 
     // 1. Call Python Engine for Local Explanation (XAI)
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
+
     const engineResponse = await fetch(`${ENGINE_URL}/api/v1/explain`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
             model_type: modelType,
             input_features: inputFeatures,

@@ -83,7 +83,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-8">
           <a 
-            href="http://localhost:3001/login" 
+            href={process.env.NEXT_PUBLIC_PLATFORM_URL ? `${process.env.NEXT_PUBLIC_PLATFORM_URL}/login` : '/login'}
             className="hidden sm:block font-mono text-[10px] font-bold text-gray-400 hover:text-aic-black transition-colors tracking-widest"
             onClick={() => analytics.trackCTAClick('nav_login')}
           >
