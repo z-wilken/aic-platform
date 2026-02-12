@@ -17,7 +17,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:engine": "cd apps/engine && pytest tests/ -v --tb=short"
+    "test:engine": "cd apps/engine && pytest tests/ -v --tb=short",
+    "test:web": "vitest run --project web",
+    "test:platform": "vitest run --project platform"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.0",
