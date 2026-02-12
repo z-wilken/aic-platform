@@ -16,7 +16,7 @@ class TierLevel(str, Enum):
     TIER_3 = "TIER_3"
 
 class BiasStatus(str, Enum):
-    PASS = "PASS"
+    PASS = "PASS"  # nosec
     FAIL = "FAIL"
     WARNING = "WARNING"
 

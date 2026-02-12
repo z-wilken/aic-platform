@@ -1,19 +1,3 @@
-<<<<<<< HEAD
-fastapi==0.109.2
-uvicorn==0.27.1
-pandas==2.2.0
-scipy==1.12.0
-textblob==0.17.1
-numpy==1.26.4
-scikit-learn==1.4.1.post1
-shap==0.44.1
-lime==0.2.0.1
-pydantic==2.6.1
-requests==2.31.0
-# Security Tools
-bandit==1.7.7
-pip-audit==2.7.2
-=======
 fastapi==0.115.6
 uvicorn==0.34.0
 pandas==2.2.3
@@ -26,4 +10,6 @@ shap==0.46.0
 lime==0.2.0.1
 scikit-learn==1.6.1
 cryptography==44.0.0
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
+requests==2.31.0
+bandit==1.7.7
+pip-audit==2.7.2

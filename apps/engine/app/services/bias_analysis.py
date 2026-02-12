@@ -368,7 +368,7 @@ def analyze_empathy(text: str, context: str):
         "recommendation": recommendation,
         "specific_feedback": feedback,
         "popia_compliant": status != "FAIL",
-        "audit_hash": generate_audit_hash({"score": empathy_score, "text_hash": hashlib.md5(text.encode()).hexdigest()})
+        "audit_hash": generate_audit_hash({"score": empathy_score, "text_hash": hashlib.sha256(text.encode()).hexdigest()})
     }
 
 def validate_correction_process(has_appeal_mechanism: bool, response_time_hours: int, human_reviewer_assigned: bool, clear_instructions: bool, accessible_format: bool):

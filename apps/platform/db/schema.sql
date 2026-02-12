@@ -51,15 +51,10 @@ CREATE TABLE audit_logs (
     details JSONB NOT NULL,
     status audit_status DEFAULT 'PENDING',
     metadata JSONB DEFAULT '{}',
-<<<<<<< HEAD
     integrity_hash VARCHAR(64),
     previous_hash VARCHAR(64), -- For hash-chaining
-    signature TEXT, -- For cryptographic signing
-=======
-    immutable_hash VARCHAR(64),
-    previous_hash VARCHAR(64), -- Chain link to previous audit record
     sequence_number INTEGER,   -- Position in the hash chain
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
+    signature TEXT, -- For cryptographic signing
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -172,7 +167,7 @@ CREATE TABLE incidents (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- API Keys for programmatic access (single table — merged from duplicate definitions)
+-- API Keys for programmatic access
 CREATE TABLE api_keys (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
@@ -202,21 +197,6 @@ CREATE TABLE password_reset_tokens (
     token VARCHAR(255) UNIQUE NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     used BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-<<<<<<< HEAD
--- API Keys for programmatic access
-CREATE TABLE api_keys (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    key_hash VARCHAR(255) NOT NULL,
-    key_prefix VARCHAR(12) NOT NULL, -- For display: aic_live_xxxx
-    scopes TEXT[] DEFAULT ARRAY['read'],
-    last_used TIMESTAMP WITH TIME ZONE,
-    expires_at TIMESTAMP WITH TIME ZONE,
-    is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -272,11 +252,6 @@ CREATE TABLE lead_auditor_credentials (
 -- Indexes for performance
 CREATE INDEX idx_training_user ON training_progress(user_id);
 CREATE INDEX idx_creds_user ON lead_auditor_credentials(user_id);
-=======
--- =============================================================
--- Indexes for performance
--- =============================================================
->>>>>>> 6613deacf45449267c65d2548cdf527fffefefb1
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_org ON users(org_id);
 CREATE INDEX idx_audit_logs_org ON audit_logs(org_id);
