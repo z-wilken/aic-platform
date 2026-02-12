@@ -25,6 +25,7 @@ export async function GET() {
 }
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
+const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
 
 export async function PATCH(request: Request) {
   try {
@@ -38,14 +39,17 @@ export async function PATCH(request: Request) {
     // 1. Trigger Automated Technical Verification (Deep Tech Step)
     // We simulate document text extraction for the Alpha - in prod, this would use an OCR/PDF parser
     const simulatedDocText = "This policy ensures human intervention and a manual override for all decisions. Data subjects have a right to appeal and request an explanation of the logic involved.";
-    
+
     let findings = 'Automated scan pending.';
     let autoStatus = 'SUBMITTED';
 
     try {
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
+
         const verifyRes = await fetch(`${ENGINE_URL}/api/v1/audit/verify-document`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({ text: simulatedDocText })
         });
 

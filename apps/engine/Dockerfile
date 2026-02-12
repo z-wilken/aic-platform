@@ -24,13 +24,15 @@ RUN apk add --no-cache libstdc++ openblas
 
 # Create non-root user
 RUN adduser -D aicuser
-USER aicuser
 
-# Copy installed packages from builder
+# Copy installed packages from builder and app code (as root, then chown)
 COPY --from=builder /root/.local /home/aicuser/.local
-COPY . .
+COPY --chown=aicuser:aicuser . .
 
 ENV PATH=/home/aicuser/.local/bin:$PATH
+
+# Switch to non-root user after all file operations
+USER aicuser
 
 # Run FastAPI with Uvicorn
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

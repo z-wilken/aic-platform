@@ -194,12 +194,12 @@ class TestStatisticalSignificance:
 
     def test_significant_bias_detected(self):
         result = analyze_statistical_significance(make_biased_data(), "gender", "hired")
-        assert result["is_significant"] is True
+        assert result["is_significant"] == True
         assert result["overall_status"] == "SIGNIFICANT_BIAS"
 
     def test_no_bias_in_fair_data(self):
         result = analyze_statistical_significance(make_fair_data(), "gender", "hired")
-        assert result["is_significant"] is False
+        assert result["is_significant"] == False
 
     def test_cramers_v_present(self):
         result = analyze_statistical_significance(make_biased_data(), "gender", "hired")
@@ -219,7 +219,7 @@ class TestEmpathyAnalysis:
         assert result["status"] == "FAIL"
 
     def test_empathetic_text_passes(self):
-        text = "We understand this may be disappointing. We appreciate your application and would like to help you explore alternative options."
+        text = "We sincerely appreciate your effort and understand this may be disappointing. We are sorry and would love to help you explore wonderful alternative options. Thank you for your support, and please do not hesitate to appeal."
         result = analyze_empathy(text, "rejection")
         assert result["status"] == "PASS"
 

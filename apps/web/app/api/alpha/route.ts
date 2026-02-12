@@ -1,42 +1,55 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { isValidEmail, isNonEmptyString, safeParseJSON } from '@/lib/validation';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { 
-      'first-name': firstName, 
-      'last-name': lastName, 
-      email, 
-      company, 
-      'use-case': useCase 
-    } = body;
+    const ip = getClientIP(request);
+    const { allowed } = checkRateLimit(`alpha:${ip}`, 5, 60_000);
+    if (!allowed) {
+      return NextResponse.json({ success: false, message: 'Too many requests. Please try again later.' }, { status: 429 });
+    }
 
-    if (!email || !firstName || !lastName || !company) {
-      return NextResponse.json({ success: false, message: 'Missing required fields.' }, { status: 400 });
+    const body = await safeParseJSON(request);
+    if (!body) {
+      return NextResponse.json({ success: false, message: 'Invalid request body.' }, { status: 400 });
+    }
+
+    const firstName = body['first-name'];
+    const lastName = body['last-name'];
+    const { email, company } = body;
+    const useCase = body['use-case'];
+
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ success: false, message: 'Valid email is required.' }, { status: 400 });
+    }
+    if (!isNonEmptyString(firstName) || !isNonEmptyString(lastName)) {
+      return NextResponse.json({ success: false, message: 'First and last name are required.' }, { status: 400 });
+    }
+    if (!isNonEmptyString(company)) {
+      return NextResponse.json({ success: false, message: 'Company name is required.' }, { status: 400 });
     }
 
     // 1. Insert into alpha_applications table
     await query(
-      `INSERT INTO alpha_applications (email, first_name, last_name, company, use_case) 
+      `INSERT INTO alpha_applications (email, first_name, last_name, company, use_case)
        VALUES ($1, $2, $3, $4, $5)`,
-      [email, firstName, lastName, company, useCase]
+      [email, firstName, lastName, company, typeof useCase === 'string' ? useCase.slice(0, 5000) : null]
     );
 
     // 2. Insert or Update leads table
     await query(
-      `INSERT INTO leads (email, company, source, status) 
-       VALUES ($1, $2, 'ALPHA_FORM', 'NEW') 
-       ON CONFLICT (email) DO UPDATE 
+      `INSERT INTO leads (email, company, source, status)
+       VALUES ($1, $2, 'ALPHA_FORM', 'NEW')
+       ON CONFLICT (email) DO UPDATE
        SET company = EXCLUDED.company, status = 'ALPHA_APPLIED'`,
       [email, company]
     );
 
-    console.log('🚀 [AIC-API] Alpha Application Received:', { email, company });
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Application received. Our team will contact you shortly.' 
+    return NextResponse.json({
+      success: true,
+      message: 'Application received. Our team will contact you shortly.'
     });
   } catch (error) {
     console.error('Error processing alpha application:', error);

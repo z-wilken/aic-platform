@@ -1,70 +1,57 @@
-# AIC Ecosystem Walkthrough: The Path to Accountability
+# AIC Ecosystem Walkthrough V2: Hardened & Integrated
 
-This document serves as a guide to the integrated processes and technical relationships within the AI Integrity Certification (AIC) platform.
-
----
-
-## 🏛️ 1. THE ARCHITECTURE (The 5 Pillars)
-
-| Application | Port | Identity | Purpose |
-| :--- | :--- | :--- | :--- |
-| **`apps/web`** | 3000 | **The Front Door** | Institutional marketing, Citizens' rights, and Lead qualification (Quiz). |
-| **`apps/platform`** | 3001 | **The Portal** | Client-facing SaaS for continuous monitoring and certification progress. |
-| **`apps/admin`** | 3002 | **The Factory** | Technical audit pipeline where auditors verify evidence and issue scores. |
-| **`apps/hq`** | 3004 | **Command Center** | Growth & Content hub for CRM, CMS, and Super-Admin governance. |
-| **`apps/engine`** | 8000 | **The Scientist** | Python-based bias audit logic and algorithmic rights enforcement. |
+This guide walks you through the operational flow of the AIC platform following the Phase 4 Security & Integration sprint.
 
 ---
 
-## 🔄 2. THE CERTIFICATION LIFECYCLE
+## 🔐 1. SECURITY & ACCESS CONTROL
 
-### **Phase 1: Input (Lead Capture)**
-*   **Source:** A company lands on `apps/web`.
-*   **Action:** They complete the 20-question **Self-Assessment**.
-*   **Internal Result:** Data is securely logged in the `leads` table.
-*   **External Result:** The client receives a branded **PDF Integrity Report**.
+Every app is now protected by mandatory environment variables and role-based middleware.
 
-### **Phase 2: Transition (Outreach & Enrollment)**
-*   **Location:** `apps/hq/crm`.
-*   **Action:** Zander views the lead, initiates a discovery call, and clicks **"Enroll in Alpha"**.
-*   **Result:** A new `organization` entry is created. The database triggers the creation of 4-6 **Audit Requirements** (The Roadmap) specifically for their Tier.
-
-### **Phase 3: Process (Remediation & Evidence)**
-*   **Location:** `apps/platform/roadmap`.
-*   **Action:** The client uploads **Evidence URLs** (e.g., SharePoint/Google Drive links to their AI policies).
-*   **Technical Check:** For technical items, the client uses the **Audit Engine** (`apps/platform/audits`) to run a real-time bias test on their datasets.
-*   **Intermediate Result:** Technical logs are generated with immutable hashes for proof of integrity.
-
-### **Phase 4: Output (Auditor Verification)**
-*   **Location:** `apps/admin/audits/[id]`.
-*   **Action:** A Lead Auditor reviews the evidence. They click **"Verify"**.
-*   **Result:** 
-    1. The requirement status flips to `VERIFIED`.
-    2. The organization's **Integrity Score** increases automatically.
-    3. A **Notification** is pushed to the client's dashboard.
-
-### **Phase 5: Outcome (Certification & Trust)**
-*   **Trigger:** The Integrity Score reaches **100%**.
-*   **Location:** `apps/platform/certificate`.
-*   **Action:** The **Alpha Certified Seal** and **Official Certificate** appear.
-*   **Result:** The client downloads their **Legal Documentation**—a professional PDF signed by the Lead Auditor, certifying their POPIA Section 71 compliance.
-*   **Public Proof:** The organization's name is automatically published to the **Public Registry** on `apps/web/registry`.
+*   **Login to HQ:** Go to `localhost:3004/login`. Only accounts with `is_super_admin = true` can access the `/governance` tab.
+*   **Login to Admin:** Go to `localhost:3002/login`. Only `ADMIN` or `AUDITOR` roles can enter.
+*   **Login to Platform:** Go to `localhost:3001/login`. Clients can only see their own organization's data.
 
 ---
 
-## 🔗 3. TECHNICAL RELATIONSHIPS
+## 🔄 2. THE TECHNICAL AUDIT LOOP (Real Integration)
 
-1.  **Shared Database:** All apps connect to the same PostgreSQL instance. A change in `apps/admin` (Score update) is instantly reflected in `apps/platform` (Client view) and `apps/web` (Public Registry).
-2.  **Auth Synchronization:** Users are managed centrally but have different access levels. A `is_super_admin` in `apps/hq` can see the whole system, while a `VIEWER` in `apps/platform` can only see their own company's data.
-3.  **UI Workspace:** All apps share the `@aic/ui` package, ensuring that components like the **Alpha Seal** look identical whether they are in the Admin panel or on the final certificate.
+### **Step 1: The Bias Audit**
+1.  Go to `localhost:3001/audits` (The Client Portal).
+2.  Click **"RUN LIVE BIAS AUDIT"**.
+3.  **Behind the Scenes:** 
+    *   Next.js sends sample data to the **Python FastAPI Engine** (`localhost:8000`).
+    *   The Engine calculates the **EEOC Four-Fifths** status.
+    *   The result is saved to the database with a **SHA-256 Hash**.
+4.  **Result:** A new log appears in the table with a "VERIFIED" status and an immutable integrity hash.
+
+### **Step 2: The Scoring Engine**
+1.  Go to `localhost:3001` (Dashboard Overview).
+2.  The **Integrity Score** is now calculated using the rigorous weighted formula:
+    *   `Oversight (35%)`
+    *   `Documentation (20%)`
+    *   `Reports (25%)`
+    *   `Technical (20%)`
+3.  **Verification:** If you verify a requirement in `localhost:3002`, the score here will update instantly based on these weights.
 
 ---
 
-## 🚀 4. OPERATIONAL READINESS
+## 🧪 3. AUTOMATED VERIFICATION (The Trust Suite)
 
-To see this in action:
-1.  **Start the servers:** `npm run dev` in the root.
-2.  **Generate a lead:** Go to `localhost:3000/assessment` and finish the quiz.
-3.  **Enroll them:** Go to `localhost:3004/crm` and enroll the lead.
-4.  **Submit Evidence:** Go to `localhost:3001/roadmap` (login as the organization).
-5.  **Verify & Certify:** Go to `localhost:3002/audits/[id]` to verify and see the score hit 100%.
+We have established a **Vitest** test suite to ensure the platform's core logic is never compromised.
+
+*   **To run tests:** Open a terminal in `apps/platform` and run `npm test`.
+*   **Scope:** Currently covers the weighted Integrity Scoring logic.
+
+---
+
+## 🏛️ 4. THE COMMAND CENTER (HQ)
+
+`apps/hq` is your strategic heart.
+*   **Growth:** Manage the 20 outreach targets in the **Growth Pipeline**.
+*   **Voice:** Manage the public blog posts and newsletter subscribers in the **Content CMS**.
+*   **Governance:** Manage the team's access and functional permissions.
+
+---
+
+*"We have moved from a promise of accountability to a platform of verification."*

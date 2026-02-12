@@ -3,103 +3,184 @@
 
 > "We do not regulate AI. We certify that humans remain accountable."
 
-AIC is the first POPIA Section 71 compliant accountability framework for South African AI deployments. This monorepo contains the complete digital ecosystem—from high-end marketing to deep-tech bias audit logic—designed to ensure that when a system makes a decision affecting human dignity, a human remains responsible.
+AIC is the first POPIA Section 71 compliant accountability framework for South African AI deployments. This monorepo contains the complete digital ecosystem — from marketing to deep-tech bias audit logic — designed to ensure that when a system makes a decision affecting human dignity, a human remains responsible.
 
 ---
 
-## 🏛️ Vision & Mission
+## Platform Architecture
 
-AIC exists to bridge the "Trust Gap" in AI adoption. While global standards focus on organizational governance, AIC is purpose-built for the South African legal landscape, specifically addressing the liability created by **Section 71 of the Protection of Personal Information Act (POPIA)**.
+```
+aic-platform/
+├── apps/
+│   ├── web/           # Public marketing site (port 3000)
+│   ├── platform/      # AIC Pulse SaaS dashboard (port 3001)
+│   ├── admin/         # Internal operations panel (port 3002)
+│   ├── hq/            # Governance & growth HQ (port 3004)
+│   └── engine/        # Python audit engine (port 8000)
+├── packages/
+│   ├── auth/          # Shared NextAuth configuration
+│   ├── ui/            # Shared React components (@aic/ui)
+│   ├── events/        # Event system (stub)
+│   ├── sockets/       # WebSocket utilities (stub)
+│   └── legal/         # Legal framework (stub)
+├── docs/              # Strategic & business documentation
+└── docker-compose.yml # Local development orchestration
+```
 
-Our mission is to provide rigorous, third-party certification that organizations maintain genuine human oversight, can explain algorithmic outcomes, and bear real accountability for the consequences.
-
----
-
-## 🏗️ Platform Architecture
-
-The AIC ecosystem is composed of four specialized applications designed to scale from lead generation to continuous monitoring:
-
-| Application | Type | Tech Stack | Purpose |
-| :--- | :--- | :--- | :--- |
-| **[`apps/web`](./apps/web)** | Frontend | Next.js (SSG), Framer Motion | High-end "Gallery" marketing site, lead generation, and interactive Self-Assessment Quiz. |
-| **[`apps/platform`](./apps/platform)** | SaaS | Next.js (App Router), Postgres | The **AIC Pulse** dashboard where clients monitor system health, view Integrity Scores, and manage certification. |
-| **[`apps/admin`](./apps/admin)** | Internal | Next.js, Tailwind | Internal operations panel for managing Alpha participants, auditing leads, and issuing certifications. |
-| **[`apps/engine`](./apps/engine)** | Microservice | Python (FastAPI), Pandas | The **Audit Engine** which executes statistical bias analysis (Four-Fifths Rule) and enforces algorithmic rights. |
-
----
-
-## 📊 The Three-Tier Framework
-
-AIC uses a risk-based, proportional approach to certification:
-
-1.  **Tier 1: Human-Approved (Critical Risk)**
-    *   *Examples:* Cancer diagnosis, parole decisions, major commercial loans.
-    *   *Logic:* AI advises, but a qualified human must review and approve 100% of decisions.
-2.  **Tier 2: Human-Supervised (Elevated Risk)**
-    *   *Examples:* Consumer credit, resume screening, insurance underwriting.
-    *   *Logic:* AI executes decisions under real-time human oversight with override capabilities.
-3.  **Tier 3: Automated-Permissible (Standard Risk)**
-    *   *Examples:* Product recommendations, spam filtering, inventory management.
-    *   *Logic:* AI operates autonomously with periodic monitoring and clear user disclosure.
+| Application | Stack | Purpose |
+|:---|:---|:---|
+| **`apps/web`** | Next.js 16, Framer Motion | Marketing site, lead generation, self-assessment quiz |
+| **`apps/platform`** | Next.js 16, NextAuth v5-beta, PostgreSQL | Client SaaS dashboard — integrity scores, audit logs, certification |
+| **`apps/admin`** | Next.js 16, NextAuth v4 | Internal ops — lead management, audit workflow, certifications |
+| **`apps/hq`** | Next.js 16, NextAuth v4 | Governance, HR, CRM, training curriculum, engine monitoring |
+| **`apps/engine`** | FastAPI, pandas, scipy, SHAP | Audit engine — 40+ bias/fairness/XAI endpoints |
 
 ---
 
-## 🧠 The Audit Engine & Algorithmic Rights
+## The Three-Tier Framework
 
-The core of AIC's technical value is the enforcement of the **5 Algorithmic Rights**:
-
-*   **Right to Human Agency:** Verified through technical intervention tests.
-*   **Right to Explanation:** Local and global feature importance (XAI) validation.
-*   **Right to Empathy:** Sentiment analysis of automated communications.
-*   **Right to Correction:** Validation of the human-led appeal workflow.
-*   **Right to Truth:** Disclosure analysis of AI-user interfaces.
+| Tier | Risk Level | Human Oversight | Examples |
+|------|-----------|-----------------|----------|
+| **Tier 1** | Critical | 100% human approval | Cancer diagnosis, parole decisions |
+| **Tier 2** | Elevated | Human supervision with override | Credit scoring, resume screening |
+| **Tier 3** | Standard | Periodic monitoring | Recommendations, spam filtering |
 
 ---
 
-## 🚀 Getting Started
+## The 5 Algorithmic Rights
+
+The audit engine enforces these rights through statistical analysis:
+
+1. **Right to Human Agency** — Bias detection: four-fifths rule, equalized odds, intersectional fairness, Theil/Atkinson index, differential fairness
+2. **Right to Explanation** — XAI via SHAP and LIME model explanations
+3. **Right to Empathy** — NLP sentiment analysis of AI-generated communications
+4. **Right to Correction** — Appeal mechanism validation and scoring
+5. **Right to Truth** — AI disclosure and deception pattern detection
+
+---
+
+## Getting Started
 
 ### Prerequisites
-*   **Node.js 18+** (We use Next.js 16 features)
-*   **Python 3.9+** (For the Audit Engine)
-*   **PostgreSQL** (Shared database)
-*   **Docker** (Optional, for database containerization)
+- **Node.js 20+**
+- **Python 3.12+**
+- **PostgreSQL 15** (or Docker)
 
-### Quick Start (Development)
+### Quick Start
 
-**1. Clone the repository and install dependencies:**
 ```bash
+# 1. Clone and install
+git clone https://github.com/z-wilken/aic-platform.git
+cd aic-platform
 npm install
-```
 
-**2. Configure Environment Variables:**
-Each app in `apps/` requires a `.env` file. You can find example configurations in each directory. Key variables include:
-*   `POSTGRES_URL`: Connection string for the shared database.
-*   `NEXTAUTH_SECRET`: Secret for platform authentication.
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your database credentials and a random NEXTAUTH_SECRET
 
-**3. Run the complete ecosystem:**
-```bash
+# 3. Start database
+docker-compose up db -d
+# Wait for healthcheck to pass, then:
+psql -U aic_admin -d aic_platform -f apps/platform/db/schema.sql
+psql -U aic_admin -d aic_platform -f apps/platform/db/seed.sql  # demo data only
+
+# 4. Start the engine
+cd apps/engine
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+
+# 5. Start all Next.js apps (in another terminal)
+cd /path/to/aic-platform
 npm run dev
 ```
-*   Marketing Web: `http://localhost:3000`
-*   Client Platform: `http://localhost:3001`
-*   Admin Dashboard: `http://localhost:3002`
-*   Audit Engine: `http://localhost:8000`
+
+### Access Points
+
+| Service | URL | Credentials (dev) |
+|---------|-----|-------------------|
+| Marketing site | http://localhost:3000 | — |
+| Platform dashboard | http://localhost:3001 | admin@enterprise.co.za / demo123 |
+| Admin panel | http://localhost:3002 | admin@enterprise.co.za / demo123 |
+| Growth HQ | http://localhost:3004 | admin@enterprise.co.za / demo123 |
+| Engine API docs | http://localhost:8000/docs | — |
+
+### Docker (Full Stack)
+
+```bash
+cp .env.example .env
+docker-compose up --build
+```
 
 ---
 
-## 📁 Documentation Structure
+## Running Tests
 
-Comprehensive strategic and technical documentation is located in the [`/docs`](./docs) folder:
-*   **[Founder's Vision](./docs/FOUNDERS_VISION.md):** The 30-year roadmap and moral foundation.
-*   **[Product Requirements (PRD)](./docs/PRD.md):** Detailed technical and design specifications.
-*   **[Strategic Roadmap](./docs/STRATEGIC_ROADMAP.md):** Unified execution plan.
-*   **[Pilot Program Framework](./docs/PILOT_PROGRAM.md):** Details on the Alpha recruitment phase.
+```bash
+# All TypeScript tests (90 tests: auth, scoring, report generation)
+npm test
+
+# Python engine tests (141 tests: bias, fairness, drift, signing, PII, API)
+cd apps/engine && python -m pytest tests/ -v
+
+# Security scan
+cd apps/engine && bandit -r app/ -ll && pip-audit
+```
+
+**Current test status:** 231 tests passing (141 Python + 90 TypeScript), 0 failures.
 
 ---
 
-## 🔒 Security & Data Sovereignty
-AIC is designed with **South Africa-First** data residency principles. The platform supports immutable audit logging and secure, de-identified technical bias testing to ensure compliance with POPIA's data minimization mandates.
+## Environment Variables
+
+Copy `.env.example` and configure:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `POSTGRES_USER` / `PASSWORD` / `HOST` / `PORT` / `DB` | Yes | Database connection |
+| `NEXTAUTH_SECRET` | Yes | JWT signing secret (shared across apps) |
+| `NEXTAUTH_URL` | Yes | Per-app URL (must match port) |
+| `ENGINE_URL` | Yes | Python engine URL (`http://localhost:8000`) |
+| `ENGINE_API_KEY` | Prod only | Engine auth token (auto-generated in dev) |
+| `AUDIT_SIGNING_KEY` | Prod only | RSA private key PEM (auto-generated in dev) |
+| `AUDIT_VERIFY_KEY` | Prod only | RSA public key PEM |
 
 ---
 
-**© 2026 AI Integrity Certification (AIC). Proprietary - Johannesburg, South Africa.**
+## Database
+
+Schema source of truth: `apps/platform/db/schema.sql` (30+ tables).
+Demo seed data: `apps/platform/db/seed.sql` (separate, never run in production).
+
+Key tables: `organizations`, `users`, `audit_logs` (hash-chained), `audit_requirements`, `compliance_reports`, `incidents`, `api_keys`, `leads`, `assessments`.
+
+---
+
+## Project Documentation
+
+| Document | Location |
+|----------|----------|
+| Technical Spec | `docs/AIC_TECHNICAL_SPEC.md` |
+| Product Requirements | `docs/PRD.md` |
+| Founder's Vision | `docs/FOUNDERS_VISION.md` |
+| Strategic Roadmap | `docs/STRATEGIC_ROADMAP.md` |
+| Pilot Program | `docs/PILOT_PROGRAM.md` |
+| Audit Methodology | `docs/METHODOLOGY.md` |
+| Engine Requirements | `docs/ENGINE_REQUIREMENTS.md` |
+| Onboarding Guide | `docs/AIC_ONBOARDING_GUIDE.md` |
+
+---
+
+## Security
+
+- **Authentication:** NextAuth.js with bcrypt password hashing, JWT sessions (24h)
+- **Authorization:** Role-based (ADMIN, COMPLIANCE_OFFICER, AUDITOR, VIEWER)
+- **Engine auth:** API key middleware with constant-time comparison
+- **SQL injection:** Parameterized queries only
+- **Audit trail:** SHA-256 hash-chained logs with RSA-3072 cryptographic signatures
+- **PII protection:** Automatic log redaction (email, phone, SSN patterns)
+- **Rate limiting:** slowapi (5-60 req/min by endpoint)
+- **Security headers:** X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+
+---
+
+**Copyright 2026 AI Integrity Certification (AIC). Proprietary - Johannesburg, South Africa.**

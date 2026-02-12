@@ -87,9 +87,11 @@ def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome
     overall = "BIASED" if any(r["status"] == "FAIL" for r in report.values()) else \
               "WARNING" if any(r["status"] == "WARNING" for r in report.values()) else "FAIR"
 
-    # Enhanced Remediation Recommendations
-    if impact_ratio < 0.8:
-        recommendations.append(f"REMEDIATION: Investigate criteria affecting {group} outcomes. Current impact ratio ({impact_ratio:.2f}) is below 0.8 threshold.")
+    # Enhanced Remediation Recommendations — find the worst-case group
+    worst_group = min(report, key=lambda g: report[g]["disparate_impact_ratio"])
+    worst_ratio = report[worst_group]["disparate_impact_ratio"]
+    if worst_ratio < 0.8:
+        recommendations.append(f"REMEDIATION: Investigate criteria affecting {worst_group} outcomes. Current impact ratio ({worst_ratio:.2f}) is below 0.8 threshold.")
         recommendations.append("ACTION: Conduct qualitative review of training data feature distributions for proxy variables.")
     if best_rate > 0.9:
         recommendations.append("ADVISORY: Reference group selection rate is unusually high (>90%). Review for potential data leakage or overfitting.")
@@ -208,12 +210,14 @@ def analyze_statistical_significance(data: List[Dict], protected_attribute: str,
     df = pd.DataFrame(data)
 
     contingency = pd.crosstab(df[protected_attribute], df[outcome_variable])
-    chi2, p_value, dof, expected = stats.chi2_contingency(contingency)
+    chi2_raw, p_raw, dof, expected = stats.chi2_contingency(contingency)
+    chi2 = float(chi2_raw)
+    p_value = float(p_raw)
 
-    is_significant = p_value < 0.05
+    is_significant = bool(p_value < 0.05)
     n = len(df)
     min_dim = min(contingency.shape) - 1
-    cramers_v = np.sqrt(chi2 / (n * min_dim)) if min_dim > 0 else 0
+    cramers_v = float(np.sqrt(chi2 / (n * min_dim))) if min_dim > 0 else 0.0
 
     effect = "negligible" if cramers_v < 0.1 else \
              "small" if cramers_v < 0.3 else \
