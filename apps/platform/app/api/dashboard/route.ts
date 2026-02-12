@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
-import { getSession } from '../../../lib/auth';
+import { db } from '@/db/drizzle';
+import { organizations, auditLogs } from '@/db/schema';
+import { eq, count, and, gte, sql as drizzleSql } from 'drizzle-orm';
+import { getSession } from '@/lib/auth';
 
 // GET /api/dashboard - Comprehensive dashboard data
 export async function GET(request: NextRequest) {
@@ -12,46 +14,39 @@ export async function GET(request: NextRequest) {
     const orgId = session.user.orgId;
 
     // 1. Get organization details
-    const orgResult = await query(
-      'SELECT id, name, tier, is_alpha, integrity_score FROM organizations WHERE id = $1',
-      [orgId]
-    );
+    const org = await db.query.organizations.findFirst({
+      where: eq(organizations.id, orgId)
+    });
 
-    if (orgResult.rows.length === 0) {
+    if (!org) {
       return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    const org = orgResult.rows[0];
-
     // 2. Get audit statistics
-    const auditStatsResult = await query(`
-      SELECT
-        COUNT(*) as total,
-        COUNT(*) FILTER (WHERE status = 'VERIFIED') as verified,
-        COUNT(*) FILTER (WHERE status = 'FLAGGED') as flagged,
-        COUNT(*) FILTER (WHERE status = 'PENDING') as pending,
-        COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '24 hours') as last_24h,
-        COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '7 days') as last_7d
-      FROM audit_logs
-      WHERE org_id = $1
-    `, [orgId]);
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    const auditStats = auditStatsResult.rows[0];
+    const [stats] = await db.select({
+      total: count(),
+      verified: count(drizzleSql`CASE WHEN ${auditLogs.status} = 'VERIFIED' THEN 1 END`),
+      flagged: count(drizzleSql`CASE WHEN ${auditLogs.status} = 'FLAGGED' THEN 1 END`),
+      pending: count(drizzleSql`CASE WHEN ${auditLogs.status} = 'PENDING' THEN 1 END`),
+      last_24h: count(drizzleSql`CASE WHEN ${auditLogs.createdAt} >= ${yesterday} THEN 1 END`),
+      last_7d: count(drizzleSql`CASE WHEN ${auditLogs.createdAt} >= ${lastWeek} THEN 1 END`),
+    })
+    .from(auditLogs)
+    .where(eq(auditLogs.orgId, orgId));
 
     // 3. Get recent audit logs
-    const recentLogsResult = await query(`
-      SELECT id, event_type as action, system_name as input_type, status, created_at,
-             (details->>'outcome') as outcome
-      FROM audit_logs
-      WHERE org_id = $1
-      ORDER BY created_at DESC
-      LIMIT 10
-    `, [orgId]);
+    const recentLogs = await db.query.auditLogs.findMany({
+      where: eq(auditLogs.orgId, orgId),
+      orderBy: (logs, { desc }) => [desc(logs.createdAt)],
+      limit: 10
+    });
 
-    const integrityScore = org.integrity_score || 0;
-
-    // 5. Get 5 Rights compliance status (Logic would be refined based on real data)
-    const flagged = parseInt(auditStats.flagged) || 0;
+    const integrityScore = org.integrityScore || 0;
+    const flagged = Number(stats.flagged) || 0;
     const rightsCompliance = {
       human_agency: {
         name: 'Right to Human Agency',
@@ -110,7 +105,7 @@ export async function GET(request: NextRequest) {
         id: org.id,
         name: org.name,
         tier: org.tier,
-        is_alpha: org.is_alpha
+        is_alpha: org.isAlpha
       },
       integrity: {
         score: integrityScore,
@@ -118,18 +113,25 @@ export async function GET(request: NextRequest) {
         status: integrityScore >= 80 ? 'HEALTHY' : integrityScore >= 60 ? 'ATTENTION' : 'CRITICAL'
       },
       audit_summary: {
-        total: parseInt(auditStats.total) || 0,
-        verified: parseInt(auditStats.verified) || 0,
-        flagged: parseInt(auditStats.flagged) || 0,
-        pending: parseInt(auditStats.pending) || 0,
-        last_24h: parseInt(auditStats.last_24h) || 0,
-        last_7d: parseInt(auditStats.last_7d) || 0
+        total: Number(stats.total) || 0,
+        verified: Number(stats.verified) || 0,
+        flagged: Number(stats.flagged) || 0,
+        pending: Number(stats.pending) || 0,
+        last_24h: Number(stats.last_24h) || 0,
+        last_7d: Number(stats.last_7d) || 0
       },
       rights_compliance: rightsCompliance,
       overall_rights_score: overallRightsScore,
-      recent_logs: recentLogsResult.rows,
+      recent_logs: recentLogs.map(log => ({
+        id: log.id,
+        action: log.eventType,
+        input_type: log.systemName,
+        status: log.status,
+        created_at: log.createdAt,
+        outcome: (log.details as any)?.outcome
+      })),
       action_items: actionItems,
-      tier_requirements: getTierRequirements(org.tier),
+      tier_requirements: getTierRequirements(org.tier || 'TIER_3'),
       mode: 'LIVE',
       timestamp: new Date().toISOString()
     });
