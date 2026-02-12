@@ -76,8 +76,8 @@ def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome
             recommendations.append(f"Investigate criteria affecting {group} outcomes")
 
         report[str(group)] = {
-            "selection_rate": round(rate, 4),
-            "disparate_impact_ratio": round(impact_ratio, 4),
+            "selection_rate": round(float(rate), 4),
+            "disparate_impact_ratio": round(float(impact_ratio), 4),
             "status": status,
             "sample_size": int(group_stats.loc[group, 'total']),
             "selected_count": int(group_stats.loc[group, 'selected']),
@@ -101,7 +101,7 @@ def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome
         "overall_status": overall,
         "methodology": "POPIA Section 71 / EEOC Four-Fifths Rule",
         "reference_group": str(best_group),
-        "reference_rate": round(best_rate, 4),
+        "reference_rate": round(float(best_rate), 4),
         "flags": flags,
         "detailed_analysis": report,
         "recommendations": recommendations or ["No immediate action required. Continue monitoring."],
@@ -143,9 +143,9 @@ def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_ou
         "overall_status": "PASS" if (tpr_parity and fpr_parity) else "FAIL",
         "methodology": "Equalized Odds (TPR & FPR Parity)",
         "tpr_parity": tpr_parity,
-        "tpr_difference": round(tpr_diff, 4),
+        "tpr_difference": round(float(tpr_diff), 4),
         "fpr_parity": fpr_parity,
-        "fpr_difference": round(fpr_diff, 4),
+        "fpr_difference": round(float(fpr_diff), 4),
         "threshold": threshold,
         "flags": flags,
         "detailed_analysis": metrics,
@@ -187,8 +187,8 @@ def analyze_intersectional(data: List[Dict], protected_attributes: List[str], ou
             flags.append(f"Intersectional bias against '{group}': {impact:.1%}")
 
         results[group] = {
-            "selection_rate": round(rate, 4),
-            "disparate_impact": round(impact, 4),
+            "selection_rate": round(float(rate), 4),
+            "disparate_impact": round(float(impact), 4),
             "status": status,
             "sample_size": int(group_stats.loc[group, 'total'])
         }
@@ -227,12 +227,12 @@ def analyze_statistical_significance(data: List[Dict], protected_attribute: str,
         "right_enforced": "Right to Human Agency",
         "overall_status": "SIGNIFICANT_BIAS" if is_significant else "NOT_SIGNIFICANT",
         "methodology": "Chi-Square Test for Independence",
-        "chi_square": round(chi2, 4),
-        "p_value": round(p_value, 6),
+        "chi_square": round(float(chi2), 4),
+        "p_value": round(float(p_value), 6),
         "is_significant": is_significant,
-        "effect_size": {"cramers_v": round(cramers_v, 4), "interpretation": effect},
+        "effect_size": {"cramers_v": round(float(cramers_v), 4), "interpretation": effect},
         "recommendation": "Differences are statistically significant - investigate root causes" if is_significant else "Differences may be random variation",
-        "audit_hash": generate_audit_hash({"chi2": chi2, "p": p_value})
+        "audit_hash": generate_audit_hash({"chi2": float(chi2), "p": float(p_value)})
     }
 
 def explain_decision(model_type: str, input_features: Dict[str, Any], decision: str, feature_weights: Dict[str, float] = None, confidence: float = None):
@@ -358,21 +358,21 @@ def analyze_empathy(text: str, context: str):
 
     return {
         "right_enforced": "Right to Empathy",
-        "empathy_score": round(empathy_score, 2),
+        "empathy_score": round(float(empathy_score), 2),
         "empathy_level": level,
         "status": status,
         "sentiment": {
-            "polarity": round(polarity, 3),
-            "subjectivity": round(subjectivity, 3)
+            "polarity": round(float(polarity), 3),
+            "subjectivity": round(float(subjectivity), 3)
         },
         "pattern_analysis": {
-            "hostile_indicators": hostile_count,
-            "empathetic_indicators": empathetic_count
+            "hostile_indicators": int(hostile_count),
+            "empathetic_indicators": int(empathetic_count)
         },
         "recommendation": recommendation,
         "specific_feedback": feedback,
         "popia_compliant": status != "FAIL",
-        "audit_hash": generate_audit_hash({"score": empathy_score, "text_hash": hashlib.sha256(text.encode()).hexdigest()})
+        "audit_hash": generate_audit_hash({"score": float(empathy_score), "text_hash": hashlib.sha256(text.encode()).hexdigest()})
     }
 
 def validate_correction_process(has_appeal_mechanism: bool, response_time_hours: int, human_reviewer_assigned: bool, clear_instructions: bool, accessible_format: bool):
@@ -426,8 +426,8 @@ def validate_correction_process(has_appeal_mechanism: bool, response_time_hours:
 
     return {
         "right_enforced": "Right to Correction",
-        "compliance_score": score,
-        "max_score": max_score,
+        "compliance_score": int(score),
+        "max_score": int(max_score),
         "status": status,
         "popia_compliant": score >= 70,
         "issues": issues,
@@ -437,7 +437,7 @@ def validate_correction_process(has_appeal_mechanism: bool, response_time_hours:
             "TIER_2": "Appeals reviewed within 72h",
             "TIER_3": "Appeal mechanism with response within 7 days"
         },
-        "audit_hash": generate_audit_hash({"score": score, "issues": issues})
+        "audit_hash": generate_audit_hash({"score": int(score), "issues": issues})
     }
 
 def submit_correction_request(decision_id: str, original_decision: str, requested_outcome: str, reason: str, supporting_evidence: Dict[str, Any] = None):
@@ -523,13 +523,13 @@ def analyze_ai_disclosure(interface_text: str, interaction_type: str):
 
     return {
         "right_enforced": "Right to Truth",
-        "disclosure_score": score,
+        "disclosure_score": int(score),
         "status": status,
         "compliance_level": level,
         "findings": {
-            "explicit_ai_mention": has_explicit,
-            "clear_disclosure": has_clear,
-            "potentially_deceptive": has_deceptive
+            "explicit_ai_mention": bool(has_explicit),
+            "clear_disclosure": bool(has_clear),
+            "potentially_deceptive": bool(has_deceptive)
         },
         "recommendation": recommendations.get(interaction_type, "Add clear AI disclosure"),
         "popia_compliant": score >= 70,
@@ -540,7 +540,7 @@ def analyze_ai_disclosure(interface_text: str, interaction_type: str):
             "Provide option to speak with human",
             "Never simulate human identity"
         ],
-        "audit_hash": generate_audit_hash({"score": score, "status": status})
+        "audit_hash": generate_audit_hash({"score": int(score), "status": status})
     }
 
 def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]], framework: FrameworkType):
@@ -640,7 +640,7 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
 
     # Aggregate per-right averages
     def _avg(scores, default=50):
-        return round(sum(scores) / len(scores), 1) if scores else default
+        return round(float(sum(scores) / len(scores)), 1) if scores else default
 
     def _status(score):
         if score >= 80: return "EXCELLENT"
@@ -657,7 +657,7 @@ def comprehensive_audit(organization_name: str, ai_systems: List[Dict[str, Any]]
     }
 
     results["rights_assessment"] = rights
-    results["overall_score"] = round(sum(r["score"] for r in rights.values()) / len(rights), 1)
+    results["overall_score"] = round(float(sum(r["score"] for r in rights.values()) / len(rights)), 1)
 
     # Deduplicate recommendations
     results["recommendations"] = list(dict.fromkeys(results["recommendations"]))
@@ -746,17 +746,17 @@ def assess_organization(answers: Dict[str, int]):
                 weighted_total += cat_pct * weight
                 weight_used += weight
                 breakdown[cat] = {
-                    "raw_average": round(cat_avg, 2),
-                    "percentage": round(cat_pct, 1),
-                    "weight": weight,
-                    "weighted_contribution": round(cat_pct * weight, 1),
+                    "raw_average": round(float(cat_avg), 2),
+                    "percentage": round(float(cat_pct), 1),
+                    "weight": float(weight),
+                    "weighted_contribution": round(float(cat_pct * weight), 1),
                     "questions": len(scores),
                 }
             else:
                 breakdown[cat] = {
                     "raw_average": None,
                     "percentage": None,
-                    "weight": weight,
+                    "weight": float(weight),
                     "weighted_contribution": 0,
                     "questions": 0,
                 }
@@ -782,7 +782,7 @@ def assess_organization(answers: Dict[str, int]):
         tier_desc = "Human-Approved (Critical Risk)"
 
     return {
-        "integrity_score": round(integrity_score, 1),
+        "integrity_score": round(float(integrity_score), 1),
         "recommended_tier": tier.value,
         "tier_description": tier_desc,
         "scoring_method": "weighted" if has_categories else "unweighted",
@@ -827,7 +827,7 @@ def assess_tier(ai_affects_rights: int, special_personal_info: int, human_oversi
         ]
 
     return {
-        "score": score,
+        "score": int(score),
         "tier": tier.value,
         "description": desc,
         "requirements": requirements,
@@ -912,15 +912,15 @@ def analyze_differential_fairness(data: List[Dict], protected_attributes: List[s
     ratio = max_rate / min_rate
     log_ratio = np.log(ratio)
     
-    is_fair = log_ratio <= epsilon
+    is_fair = bool(log_ratio <= epsilon)
     
     return {
         "metric": "Epsilon-Differential Fairness",
-        "epsilon_target": epsilon,
+        "epsilon_target": float(epsilon),
         "observed_log_ratio": round(float(log_ratio), 4),
-        "is_fair": bool(is_fair),
-        "max_group": group_stats.idxmax(),
-        "min_group": group_stats.idxmin(),
+        "is_fair": is_fair,
+        "max_group": str(group_stats.idxmax()),
+        "min_group": str(group_stats.idxmin()),
         "right_enforced": "Right to Human Agency (Advanced)",
         "recommendation": "Probability bounds are within fair range." if is_fair else f"Intersectional disparity exceeds epsilon bound ({epsilon}). Investigate {group_stats.idxmin()} outcomes."
     }
@@ -959,7 +959,7 @@ def analyze_atkinson_index(data: List[Dict], protected_attribute: str, outcome_v
     return {
         "metric": "Atkinson Index",
         "value": round(float(atkinson), 4),
-        "epsilon": epsilon,
+        "epsilon": float(epsilon),
         "status": status,
         "right_enforced": "Right to Human Agency (Economic Fairness)",
         "recommendation": "Outcome distribution is equitable." if atkinson < 0.1 else "Significant inequality detected in group outcomes. Review allocation logic."
