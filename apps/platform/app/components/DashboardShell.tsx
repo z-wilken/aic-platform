@@ -9,6 +9,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifs, setShowNotifications] = useState(false);
+  const [user, setUser] = useState<{ name: string; role: string } | null>(null);
 
   const fetchNotifs = () => {
     fetch('/api/notifications')
@@ -19,7 +20,16 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   useEffect(() => {
     fetchNotifs();
-    const interval = setInterval(fetchNotifs, 30000); // Polling every 30s
+    const interval = setInterval(fetchNotifs, 30000);
+
+    // Fetch session user info
+    fetch('/api/auth/session')
+        .then(res => res.json())
+        .then(data => {
+            if (data?.user) setUser({ name: data.user.name || data.user.email, role: data.user.role || 'VIEWER' });
+        })
+        .catch(() => {});
+
     return () => clearInterval(interval);
   }, []);
 
@@ -198,12 +208,12 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
                 <div className="flex items-center gap-5 border-l border-gray-100 pl-8">
                     <div className="text-right hidden sm:block">
-                        <p className="text-xs font-bold text-gray-900 font-serif leading-none tracking-tight">Dr. Sarah Khumalo</p>
-                        <p className="text-[9px] text-aic-gold font-mono uppercase tracking-[0.2em] mt-1.5 font-bold">Principal Officer</p>
+                        <p className="text-xs font-bold text-gray-900 font-serif leading-none tracking-tight">{user?.name || 'Loading...'}</p>
+                        <p className="text-[9px] text-aic-gold font-mono uppercase tracking-[0.2em] mt-1.5 font-bold">{user?.role?.replace('_', ' ') || ''}</p>
                     </div>
                     <div className="h-12 w-12 rounded-2xl bg-aic-black border-2 border-white shadow-xl shadow-black/10 overflow-hidden relative group cursor-pointer">
                         <div className="absolute inset-0 bg-gradient-to-tr from-aic-gold/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div className="h-full w-full flex items-center justify-center text-aic-gold font-serif font-bold">SK</div>
+                        <div className="h-full w-full flex items-center justify-center text-aic-gold font-serif font-bold">{user?.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : '...'}</div>
                     </div>
                 </div>
             </div>

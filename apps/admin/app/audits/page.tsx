@@ -1,92 +1,64 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AdminShell from '../components/AdminShell'
+import { motion } from 'framer-motion'
 
-interface Audit {
+interface AuditOrg {
   id: string
-  organization: string
-  tier: 'TIER_1' | 'TIER_2' | 'TIER_3'
-  type: 'INITIAL' | 'QUARTERLY' | 'ANNUAL' | 'INCIDENT'
-  status: 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'
-  auditor: string
-  scheduled_date: string
-  completed_date?: string
-  findings?: number
+  name: string
+  tier: string
+  integrity_score: number
+  total_audits: string
+  recent_audits: string
+  last_audit_at: string | null
+  open_findings: string
+}
+
+interface AuditLog {
+  id: string
+  event_type: string
+  system_name: string
+  status: string
+  created_at: string
+  integrity_hash: string | null
+  org_name: string
+  org_tier: string
 }
 
 export default function AuditsPage() {
-  const [view, setView] = useState<'list' | 'calendar'>('list')
+  const [view, setView] = useState<'overview' | 'logs'>('overview')
+  const [organizations, setOrganizations] = useState<AuditOrg[]>([])
+  const [recentLogs, setRecentLogs] = useState<AuditLog[]>([])
+  const [stats, setStats] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
-  const audits: Audit[] = [
-    {
-      id: 'AUD-2026-001',
-      organization: 'FirstRand Bank',
-      tier: 'TIER_1',
-      type: 'QUARTERLY',
-      status: 'SCHEDULED',
-      auditor: 'Dr. Amanda Sithole',
-      scheduled_date: '2026-02-15'
-    },
-    {
-      id: 'AUD-2026-002',
-      organization: 'Discovery Health',
-      tier: 'TIER_1',
-      type: 'INCIDENT',
-      status: 'IN_PROGRESS',
-      auditor: 'Peter Mokwena',
-      scheduled_date: '2026-02-01',
-      findings: 3
-    },
-    {
-      id: 'AUD-2026-003',
-      organization: 'Vodacom SA',
-      tier: 'TIER_2',
-      type: 'ANNUAL',
-      status: 'SCHEDULED',
-      auditor: 'Linda Nkosi',
-      scheduled_date: '2026-02-20'
-    },
-    {
-      id: 'AUD-2025-089',
-      organization: 'Standard Bank',
-      tier: 'TIER_1',
-      type: 'QUARTERLY',
-      status: 'COMPLETED',
-      auditor: 'Dr. Amanda Sithole',
-      scheduled_date: '2026-01-10',
-      completed_date: '2026-01-12',
-      findings: 0
-    },
-    {
-      id: 'AUD-2025-088',
-      organization: 'Old Mutual',
-      tier: 'TIER_1',
-      type: 'QUARTERLY',
-      status: 'COMPLETED',
-      auditor: 'Peter Mokwena',
-      scheduled_date: '2025-12-15',
-      completed_date: '2025-12-18',
-      findings: 2
-    },
-  ]
+  useEffect(() => {
+    fetch('/api/audits')
+      .then(res => res.json())
+      .then(data => {
+        setOrganizations(data.organizations || [])
+        setRecentLogs(data.recentLogs || [])
+        setStats(data.stats || {})
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
 
-  const upcoming = audits.filter(a => a.status === 'SCHEDULED')
-  const inProgress = audits.filter(a => a.status === 'IN_PROGRESS')
-  const completed = audits.filter(a => a.status === 'COMPLETED')
-
-  const typeColors = {
-    INITIAL: 'bg-blue-500/20 text-blue-400',
-    QUARTERLY: 'bg-purple-500/20 text-purple-400',
-    ANNUAL: 'bg-green-500/20 text-green-400',
-    INCIDENT: 'bg-red-500/20 text-red-400',
+  const tierColors: Record<string, string> = {
+    TIER_1: 'bg-red-500/20 text-red-400',
+    TIER_2: 'bg-orange-500/20 text-orange-400',
+    TIER_3: 'bg-green-500/20 text-green-400',
   }
 
-  const statusColors = {
-    SCHEDULED: 'bg-yellow-500/20 text-yellow-400',
-    IN_PROGRESS: 'bg-blue-500/20 text-blue-400',
-    COMPLETED: 'bg-green-500/20 text-green-400',
-    CANCELLED: 'bg-gray-500/20 text-gray-400',
+  if (loading) {
+    return (
+      <AdminShell>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-aic-gold"></div>
+        </div>
+      </AdminShell>
+    )
   }
 
   return (
@@ -95,186 +67,150 @@ export default function AuditsPage() {
         {/* Stats Row */}
         <div className="grid grid-cols-4 gap-6">
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Scheduled</p>
-            <p className="text-3xl font-bold text-yellow-500">{upcoming.length}</p>
+            <p className="text-gray-500 text-xs uppercase mb-2">This Week</p>
+            <p className="text-3xl font-bold text-blue-500">{stats?.audits_this_week || 0}</p>
           </div>
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">In Progress</p>
-            <p className="text-3xl font-bold text-blue-500">{inProgress.length}</p>
+            <p className="text-gray-500 text-xs uppercase mb-2">This Month</p>
+            <p className="text-3xl font-bold text-aic-gold">{stats?.audits_this_month || 0}</p>
           </div>
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Completed (YTD)</p>
-            <p className="text-3xl font-bold text-green-500">{completed.length}</p>
+            <p className="text-gray-500 text-xs uppercase mb-2">Orgs Audited</p>
+            <p className="text-3xl font-bold text-green-500">{stats?.orgs_audited || 0}</p>
           </div>
           <div className="bg-[#1c1c1c] p-6 rounded-xl border border-gray-800">
-            <p className="text-gray-500 text-xs uppercase mb-2">Findings (YTD)</p>
-            <p className="text-3xl font-bold">
-              {completed.reduce((sum, a) => sum + (a.findings || 0), 0)}
-            </p>
+            <p className="text-gray-500 text-xs uppercase mb-2">Total Audits</p>
+            <p className="text-3xl font-bold">{stats?.total_audits || 0}</p>
           </div>
         </div>
 
-        {/* Actions */}
+        {/* View Toggle */}
         <div className="flex justify-between items-center">
           <div className="flex gap-2">
             <button
-              onClick={() => setView('list')}
+              onClick={() => setView('overview')}
               className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                view === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'
+                view === 'overview' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'
               }`}
             >
-              List View
+              Organization Overview
             </button>
             <button
-              onClick={() => setView('calendar')}
+              onClick={() => setView('logs')}
               className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                view === 'calendar' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'
+                view === 'logs' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'
               }`}
             >
-              Calendar View
+              Audit Log Stream
             </button>
           </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500">
-            + Schedule New Audit
-          </button>
         </div>
 
-        {/* Audit Sections */}
-        <div className="space-y-6">
-          {/* In Progress */}
-          {inProgress.length > 0 && (
+        {view === 'overview' ? (
+          <div className="space-y-6">
+            {/* Active Organizations */}
             <div>
-              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                In Progress
-              </h3>
-              <div className="grid gap-4">
-                {inProgress.map((audit) => (
-                  <div
-                    key={audit.id}
-                    className="bg-[#1c1c1c] rounded-xl border border-blue-800/50 p-6"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-mono text-sm text-gray-500">{audit.id}</p>
-                        <h4 className="text-xl font-bold mt-1">{audit.organization}</h4>
-                        <p className="text-sm text-gray-400 mt-1">
-                          Auditor: {audit.auditor}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${typeColors[audit.type]}`}>
-                          {audit.type}
-                        </span>
-                        {audit.findings !== undefined && (
-                          <span className="text-sm">
-                            <span className="text-red-400 font-bold">{audit.findings}</span> findings
+              <h3 className="text-lg font-bold mb-4">Organization Audit Status</h3>
+              <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
+                <table className="w-full">
+                  <thead className="bg-gray-900/50 text-gray-500 text-xs uppercase">
+                    <tr>
+                      <th className="text-left p-4">Organization</th>
+                      <th className="text-left p-4">Tier</th>
+                      <th className="text-left p-4">Score</th>
+                      <th className="text-left p-4">Total Audits</th>
+                      <th className="text-left p-4">Last 30 Days</th>
+                      <th className="text-left p-4">Open Findings</th>
+                      <th className="text-left p-4">Last Audit</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-800">
+                    {organizations.map((org) => (
+                      <motion.tr
+                        key={org.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="hover:bg-gray-800/30"
+                      >
+                        <td className="p-4 font-medium">{org.name}</td>
+                        <td className="p-4">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${tierColors[org.tier] || 'bg-gray-500/20 text-gray-400'}`}>
+                            {org.tier}
                           </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-4 flex gap-3">
-                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-500">
-                        Complete Audit
-                      </button>
-                      <button className="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-600">
-                        Add Finding
-                      </button>
-                      <button className="text-gray-400 px-4 py-2 text-sm hover:text-gray-300">
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        </td>
+                        <td className="p-4">
+                          <span className={`font-mono font-bold ${org.integrity_score >= 80 ? 'text-green-500' : org.integrity_score >= 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                            {org.integrity_score}%
+                          </span>
+                        </td>
+                        <td className="p-4 font-mono text-sm">{org.total_audits}</td>
+                        <td className="p-4 font-mono text-sm text-blue-400">{org.recent_audits}</td>
+                        <td className="p-4">
+                          <span className={parseInt(org.open_findings) > 0 ? 'text-red-400 font-bold' : 'text-green-500'}>
+                            {org.open_findings}
+                          </span>
+                        </td>
+                        <td className="p-4 text-sm text-gray-400">
+                          {org.last_audit_at ? new Date(org.last_audit_at).toLocaleDateString() : 'Never'}
+                        </td>
+                      </motion.tr>
+                    ))}
+                    {organizations.length === 0 && (
+                      <tr>
+                        <td colSpan={7} className="p-8 text-center text-gray-500 italic">No organizations found.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
-          )}
-
-          {/* Upcoming */}
+          </div>
+        ) : (
+          /* Audit Log Stream */
           <div>
-            <h3 className="text-lg font-bold mb-4">Upcoming Audits</h3>
-            <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-900/50 text-gray-500 text-xs uppercase">
-                  <tr>
-                    <th className="text-left p-4">Audit ID</th>
-                    <th className="text-left p-4">Organization</th>
-                    <th className="text-left p-4">Type</th>
-                    <th className="text-left p-4">Tier</th>
-                    <th className="text-left p-4">Auditor</th>
-                    <th className="text-left p-4">Scheduled Date</th>
-                    <th className="text-left p-4">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800">
-                  {upcoming.map((audit) => (
-                    <tr key={audit.id} className="hover:bg-gray-800/30">
-                      <td className="p-4 font-mono text-sm">{audit.id}</td>
-                      <td className="p-4 font-medium">{audit.organization}</td>
-                      <td className="p-4">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${typeColors[audit.type]}`}>
-                          {audit.type}
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              Live Audit Stream
+            </h3>
+            <div className="space-y-3">
+              {recentLogs.map((log) => (
+                <motion.div
+                  key={log.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-[#1c1c1c] rounded-xl border border-gray-800 p-5 hover:border-gray-700 transition-colors"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-4">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-white">{log.event_type.replace(/_/g, ' ')}</span>
+                        <span className="text-xs text-gray-500 font-mono">{log.org_name} / {log.system_name}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${tierColors[log.org_tier] || 'bg-gray-500/20 text-gray-400'}`}>
+                        {log.org_tier}
+                      </span>
+                      {log.integrity_hash && (
+                        <span className="text-[9px] font-mono text-gray-600">
+                          SHA-{log.integrity_hash.substring(0, 8)}
                         </span>
-                      </td>
-                      <td className="p-4 font-mono text-sm">{audit.tier}</td>
-                      <td className="p-4 text-sm">{audit.auditor}</td>
-                      <td className="p-4 text-sm">{audit.scheduled_date}</td>
-                      <td className="p-4">
-                        <div className="flex gap-2">
-                          <button className="text-blue-400 hover:text-blue-300 text-sm">Start</button>
-                          <button className="text-gray-400 hover:text-gray-300 text-sm">Reschedule</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      )}
+                      <span className="text-xs text-gray-500">
+                        {new Date(log.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              {recentLogs.length === 0 && (
+                <div className="p-12 text-center text-gray-500 italic border border-dashed border-gray-800 rounded-xl">
+                  No audit logs recorded yet.
+                </div>
+              )}
             </div>
           </div>
-
-          {/* Completed */}
-          <div>
-            <h3 className="text-lg font-bold mb-4">Recently Completed</h3>
-            <div className="bg-[#1c1c1c] rounded-xl border border-gray-800 overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-900/50 text-gray-500 text-xs uppercase">
-                  <tr>
-                    <th className="text-left p-4">Audit ID</th>
-                    <th className="text-left p-4">Organization</th>
-                    <th className="text-left p-4">Type</th>
-                    <th className="text-left p-4">Completed</th>
-                    <th className="text-left p-4">Findings</th>
-                    <th className="text-left p-4">Report</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-800">
-                  {completed.map((audit) => (
-                    <tr key={audit.id} className="hover:bg-gray-800/30">
-                      <td className="p-4 font-mono text-sm">{audit.id}</td>
-                      <td className="p-4 font-medium">{audit.organization}</td>
-                      <td className="p-4">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${typeColors[audit.type]}`}>
-                          {audit.type}
-                        </span>
-                      </td>
-                      <td className="p-4 text-sm">{audit.completed_date}</td>
-                      <td className="p-4">
-                        <span className={audit.findings === 0 ? 'text-green-500' : 'text-yellow-500'}>
-                          {audit.findings} {audit.findings === 1 ? 'finding' : 'findings'}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <button className="text-blue-400 hover:text-blue-300 text-sm">
-                          Download PDF
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </AdminShell>
   )

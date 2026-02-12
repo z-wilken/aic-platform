@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function PulsePage() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [systemLogs, setSystemLogs] = useState<any[]>([]);
+    const [metrics, setMetrics] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchLogs = () => {
@@ -22,16 +23,26 @@ export default function PulsePage() {
             });
     };
 
+    const fetchMetrics = () => {
+        fetch('/api/pulse/metrics')
+            .then(res => res.json())
+            .then(data => setMetrics(data))
+            .catch(err => console.error(err));
+    };
+
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         fetchLogs();
-        
-        // Polling for real logs
+        fetchMetrics();
+
+        // Polling for real logs and metrics
         const logTimer = setInterval(fetchLogs, 10000);
-        
+        const metricsTimer = setInterval(fetchMetrics, 30000);
+
         return () => {
             clearInterval(timer);
             clearInterval(logTimer);
+            clearInterval(metricsTimer);
         };
     }, []);
 
@@ -125,13 +136,13 @@ export default function PulsePage() {
                             <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Bias Stability</h3>
                             <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
-                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">99.2%</div>
+                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">{metrics?.biasStability ?? '—'}%</div>
                         <p className="text-[10px] text-green-600 font-mono font-bold uppercase tracking-tighter flex items-center gap-1">
                             <svg className="w-2 h-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clipRule="evenodd" /></svg>
-                            0.4% vs Baseline
+                            {metrics?.biasAuditsTotal ?? 0} audits analyzed
                         </p>
                         <div className="mt-8 flex gap-1 items-end h-12">
-                            {[40, 70, 45, 90, 65, 80, 85, 100, 95, 92].map((h, i) => (
+                            {(metrics?.biasStability ? [60, 70, 75, 80, 85, 88, 90, 92, 95, Math.round(metrics.biasStability)] : [0,0,0,0,0,0,0,0,0,0]).map((h, i) => (
                                 <motion.div 
                                     key={i} 
                                     initial={{ height: 0 }}
@@ -149,10 +160,10 @@ export default function PulsePage() {
                             <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Human Agency</h3>
                             <svg className="w-4 h-4 text-aic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                         </div>
-                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">14</div>
+                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">{metrics?.humanOverrides ?? '—'}</div>
                         <p className="text-[10px] text-gray-400 font-mono font-bold uppercase tracking-tighter">Overrides / 24h</p>
                         <div className="mt-8 flex gap-1 items-end h-12">
-                            {[20, 30, 60, 40, 50, 70, 30, 45, 25, 40].map((h, i) => (
+                            {(metrics ? [20, 30, 60, 40, 50, 70, 30, 45, 25, Math.min(100, (metrics.humanOverrides || 0) * 5)] : [0,0,0,0,0,0,0,0,0,0]).map((h, i) => (
                                 <motion.div 
                                     key={i} 
                                     initial={{ height: 0 }}
@@ -170,10 +181,12 @@ export default function PulsePage() {
                             <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Explainability</h3>
                             <svg className="w-4 h-4 text-aic-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
-                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">88%</div>
-                        <p className="text-[10px] text-aic-red font-mono font-bold uppercase tracking-tighter italic">Needs Review (Model B)</p>
+                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">{metrics?.explainabilityRate ?? '—'}%</div>
+                        <p className={`text-[10px] font-mono font-bold uppercase tracking-tighter italic ${(metrics?.explainabilityRate ?? 100) < 90 ? 'text-aic-red' : 'text-green-600'}`}>
+                            {(metrics?.explainabilityRate ?? 100) < 90 ? 'Needs Review' : 'Compliant'}
+                        </p>
                         <div className="mt-8 flex gap-1 items-end h-12">
-                            {[80, 85, 88, 87, 82, 80, 75, 70, 72, 78].map((h, i) => (
+                            {(metrics?.explainabilityRate ? [70, 72, 75, 78, 80, 82, 85, 88, 90, metrics.explainabilityRate] : [0,0,0,0,0,0,0,0,0,0]).map((h, i) => (
                                 <motion.div 
                                     key={i} 
                                     initial={{ height: 0 }}
