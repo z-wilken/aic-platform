@@ -1,4 +1,5 @@
-import { NextAuthOptions } from "next-auth"
+import { NextAuthOptions, Session, User } from "next-auth"
+import { JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { query } from "./db"
 import bcrypt from "bcryptjs"
@@ -78,7 +79,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }: { token: JWT, user?: User | any }) {
       if (user) {
         token.id = user.id
         token.role = user.role
@@ -88,7 +89,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token
     },
-    async session({ session, token }: any) {
+    async session({ session, token }: { session: Session | any, token: JWT }) {
       if (token && session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as string

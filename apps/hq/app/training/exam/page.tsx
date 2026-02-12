@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { LeadAuditorCertificate } from '@aic/ui';
@@ -11,6 +11,8 @@ export default function BoardExamPage() {
     const [score, setScore] = useState(0);
     const [completed, setCompleted] = useState(false);
     const [showCert, setShowCert] = useState(false);
+
+    const certificateId = useMemo(() => `AIC-LA-2026-${Math.random().toString(36).substring(7).toUpperCase()}`, []);
 
     const questions = [
         {
@@ -106,7 +108,7 @@ export default function BoardExamPage() {
                                 <LeadAuditorCertificate 
                                     candidateName="Z. WILKEN" 
                                     completionDate={new Date().toLocaleDateString()} 
-                                    certificateId={`AIC-LA-2026-${Math.random().toString(36).substring(7).toUpperCase()}`} 
+                                    certificateId={certificateId} 
                                 />
                                 <button 
                                     onClick={() => setShowCert(false)}

@@ -88,7 +88,7 @@ export default function AboutPage() {
                     whileInView={{ opacity: 1 }}
                     className="mt-32 p-12 bg-aic-black text-white text-center"
                 >
-                    <p className="font-serif text-2xl italic mb-8">"We do not regulate AI. We certify that humans remain accountable."</p>
+                    <p className="font-serif text-2xl italic mb-8">&quot;We do not regulate AI. We certify that humans remain accountable.&quot;</p>
                     <a href="/contact" className="font-mono text-xs font-bold uppercase tracking-[0.3em] border-b border-white/20 pb-2 hover:border-white transition-colors">
                         Connect with the Founder
                     </a>

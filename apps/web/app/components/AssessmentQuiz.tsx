@@ -158,7 +158,7 @@ export default function AssessmentQuiz() {
                 initial="initial"
                 animate="enter"
                 exit="exit"
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as any }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
             >
                 <div className="mb-4">
                     <span className="text-[10px] font-bold text-aic-gold font-mono uppercase tracking-[0.2em]">
@@ -209,7 +209,7 @@ export default function AssessmentQuiz() {
                     {result.tier.name}: {result.tier.title}
                 </h2>
                 <p className="font-serif text-lg text-gray-500 leading-relaxed italic mb-8">
-                    "{result.tier.desc}"
+                    &quot;{result.tier.desc}&quot;
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-aic-black/5">
