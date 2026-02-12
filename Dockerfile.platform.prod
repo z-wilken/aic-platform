@@ -1,0 +1,38 @@
+# HARDENED PRODUCTION DOCKERFILE - AIC PULSE PLATFORM
+# --------------------------------------------------
+
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+FROM base AS builder
+WORKDIR /app
+COPY . .
+# Build the specific workspace
+RUN npm install
+RUN npm run build --workspace=platform
+
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Create non-root user for security
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 nextjs
+
+# Copy standalone build from builder
+# Next.js standalone mode copies only necessary files
+COPY --from=builder /app/apps/platform/public ./apps/platform/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/platform/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/platform/.next/static ./apps/platform/.next/static
+
+USER nextjs
+
+EXPOSE 3001
+ENV PORT=3001
+
+# The standalone output includes its own node_modules
+CMD ["node", "apps/platform/server.js"]
