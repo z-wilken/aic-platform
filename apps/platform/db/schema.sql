@@ -52,15 +52,9 @@ CREATE TABLE audit_logs (
     status audit_status DEFAULT 'PENDING',
     metadata JSONB DEFAULT '{}',
     integrity_hash VARCHAR(64),
-<<<<<<< HEAD
     previous_hash VARCHAR(64), -- For hash-chaining
     sequence_number INTEGER,   -- Position in the hash chain
     signature TEXT, -- For cryptographic signing
-=======
-    previous_hash VARCHAR(64), -- Chain link to previous audit record
-    signature TEXT, -- RSA-3072 cryptographic signature
-    sequence_number INTEGER,   -- Position in the hash chain
->>>>>>> origin/claude/review-and-verify-7bdCf
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -206,11 +200,7 @@ CREATE TABLE password_reset_tokens (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-<<<<<<< HEAD
-=======
 -- Internal Operations Tables
-
->>>>>>> origin/claude/review-and-verify-7bdCf
 CREATE TABLE performance_metrics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
