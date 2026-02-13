@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { organizations, auditRequirements, complianceReports, desc, withTenant, calculateOrganizationIntelligence } from '@aic/db';
+import { organizations, auditRequirements, complianceReports, desc, withTenant, calculateOrganizationIntelligence, AICTransaction } from '@aic/db';
 import { auth } from '@aic/auth';
 import { StatsResponseSchema } from '@aic/types';
 import { Session } from 'next-auth';
@@ -18,7 +18,7 @@ export async function GET() {
     const intel = await calculateOrganizationIntelligence(orgId);
 
     // 2. Fetch Additional Telemetry (Using withTenant to ensure RLS context)
-    const result = await withTenant(orgId, async (tx) => {
+    const result = await withTenant(orgId, async (tx: AICTransaction) => {
       const [org] = await tx.select().from(organizations).limit(1);
       
       const requirements = await tx.select().from(auditRequirements);
