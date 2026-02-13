@@ -18,6 +18,7 @@ export async function calculateOrganizationIntelligence(orgId: string): Promise<
   return await withTenant(orgId, async (tx) => {
     // 1. Fetch requirements (RLS will automatically filter by orgId)
     const requirements = await tx.select().from(auditRequirements);
+    type AuditRequirement = typeof auditRequirements.$inferSelect;
     
     const categories: Record<string, { weight: number; score: number; total: number }> = {
       'DOCUMENTATION': { weight: 0.20, score: 0, total: 0 },
@@ -26,8 +27,8 @@ export async function calculateOrganizationIntelligence(orgId: string): Promise<
       'TECHNICAL': { weight: 0.20, score: 0, total: 0 }
     };
 
-    requirements.forEach((req: any) => {
-      const catKey = req.category?.toUpperCase();
+    requirements.forEach((req: AuditRequirement) => {
+      const catKey = req.category?.toUpperCase() || '';
       const cat = categories[catKey];
       if (cat) {
         cat.total++;
@@ -63,7 +64,7 @@ export async function calculateOrganizationIntelligence(orgId: string): Promise<
       score: finalScore,
       openIncidents,
       totalRequirements: requirements.length,
-      verifiedRequirements: requirements.filter((r: any) => r.status === 'VERIFIED').length
+      verifiedRequirements: requirements.filter((r: AuditRequirement) => r.status === 'VERIFIED').length
     };
   });
 }

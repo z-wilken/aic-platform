@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle, NodePgDatabase, NodePgTransaction } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schema';
 import * as dotenv from 'dotenv';
@@ -14,6 +14,9 @@ const pool = new Pool({
 
 export const db = drizzle(pool, { schema });
 
+export type AICDatabase = typeof db;
+export type AICTransaction = any; // Simplified to avoid complex relational/enum type constraints
+
 /**
  * INSTITUTIONAL TENANT ISOLATION
  * 
@@ -21,7 +24,7 @@ export const db = drizzle(pool, { schema });
  * 'app.current_org_id' session variable. This enforces Row Level Security (RLS)
  * at the database level.
  */
-export async function withTenant<T>(orgId: string, callback: (tx: any) => Promise<T>): Promise<T> {
+export async function withTenant<T>(orgId: string, callback: (tx: AICTransaction) => Promise<T>): Promise<T> {
   return await db.transaction(async (tx) => {
     // Set the session variable for RLS
     // Using .execute instead of .run for node-postgres compatibility

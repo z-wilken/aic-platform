@@ -4,6 +4,11 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "license": "MIT",
+  "scripts": {
+    "build": "echo 'Building types...'",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  },
   "dependencies": {
     "zod": "^3.24.1"
   }

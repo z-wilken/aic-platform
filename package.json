@@ -2,27 +2,21 @@
   "name": "aic-platform-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@11.6.2",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "dev": "npx concurrently \"npm run dev:web\" \"npm run dev:platform\" \"npm run dev:admin\" \"npm run dev:hq\"",
-    "dev:web": "cd apps/web && npm run dev",
-    "dev:platform": "cd apps/platform && npm run dev -- -p 3001",
-    "dev:admin": "cd apps/admin && npm run dev -- -p 3002",
-    "dev:hq": "cd apps/hq && npm run dev",
-    "build": "npx concurrently \"cd apps/web && npm run build\" \"cd apps/platform && npm run build\" \"cd apps/admin && npm run build\" \"cd apps/hq && npm run build\"",
-    "start": "npx concurrently \"cd apps/web && npm run start\" \"cd apps/platform && npm run start\" \"cd apps/admin && npm run start\" \"cd apps/hq && npm run start\"",
-    "test": "vitest run",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "test": "turbo test",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:engine": "cd apps/engine && pytest tests/ -v --tb=short",
-    "test:web": "vitest run --project web",
-    "test:platform": "vitest run --project platform",
     "test:e2e": "npx playwright test",
-    "lint": "npx concurrently \"npm run lint --workspaces --if-present\"",
-    "type-check": "npx concurrently \"npm run type-check --workspaces --if-present\"",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -37,6 +31,7 @@
     "husky": "^9.1.7",
     "jsdom": "^24.0.0",
     "lint-staged": "^16.2.7",
+    "turbo": "^2.8.7",
     "vitest": "^1.3.0"
   },
   "lint-staged": {
