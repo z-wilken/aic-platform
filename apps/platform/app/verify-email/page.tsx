@@ -14,13 +14,13 @@ function VerifyEmailContent() {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        if (!token) {
-            setStatus('error');
-            setMessage('Verification token is missing.');
-            return;
-        }
-
         const verify = async () => {
+            if (!token) {
+                setStatus('error');
+                setMessage('Verification token is missing.');
+                return;
+            }
+
             try {
                 const res = await fetch('/api/auth/verify-email', {
                     method: 'POST',

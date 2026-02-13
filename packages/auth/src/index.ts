@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthConfig, User, Session } from "next-auth"
+import NextAuth, { NextAuthConfig, Session } from "next-auth"
 import { JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
@@ -14,14 +14,10 @@ declare module "next-auth" {
   interface Session {
     user: AICSessionUser
   }
-  interface User extends Partial<AICSessionUser> {
-    passwordHash?: string;
-    isActive?: boolean;
-  }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT extends Partial<AICSessionUser> {}
+  type JWT = AICSessionUser
 }
 
 export const authConfig: NextAuthConfig = {
@@ -169,17 +165,20 @@ export const authConfig: NextAuthConfig = {
       }
 
       if (token.orgId && !token.orgName) {
-        try {
-          const [org] = await db
-            .select({ name: organizations.name, tier: organizations.tier })
-            .from(organizations)
-            .where(eq(organizations.id, token.orgId))
-            .limit(1);
-          if (org) {
-            token.orgName = org.name
-            token.tier = org.tier as CertificationTier
-          }
-        } catch (e) {}
+                try {
+                  const [org] = await db
+                    .select({ name: organizations.name, tier: organizations.tier })
+                    .from(organizations)
+                    .where(eq(organizations.id, token.orgId))
+                    .limit(1);
+                  if (org) {
+                    token.orgName = org.name
+                    token.tier = org.tier as CertificationTier
+                  }
+                } catch {
+                  // Ignore fetch errors during JWT enrichment
+                }
+        
       }
 
       return token

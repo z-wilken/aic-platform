@@ -28,6 +28,6 @@ export enum AICErrorCode {
 export interface AICErrorResponse {
   code: AICErrorCode;
   message: string;
-  detail?: any;
+  detail?: unknown;
   timestamp: string;
 }

@@ -1,4 +1,4 @@
-import { drizzle, NodePgDatabase, NodePgTransaction } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schema';
 import * as dotenv from 'dotenv';
@@ -15,7 +15,7 @@ const pool = new Pool({
 export const db = drizzle(pool, { schema });
 
 export type AICDatabase = typeof db;
-export type AICTransaction = any; // Simplified to avoid complex relational/enum type constraints
+export type AICTransaction = unknown; // Simplified to avoid complex relational/enum type constraints
 
 /**
  * INSTITUTIONAL TENANT ISOLATION

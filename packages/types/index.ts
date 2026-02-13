@@ -94,9 +94,9 @@ export interface AuditLog {
   org_id: string;
   system_name: string;
   event_type: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   status: AuditStatus;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   integrity_hash: string;
   previous_hash?: string | null;
   sequence_number: number;

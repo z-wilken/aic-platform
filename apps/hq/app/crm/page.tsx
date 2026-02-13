@@ -6,19 +6,19 @@ import { toast } from 'sonner';
 
 export default function EnterpriseCRMPage() {
     const [leads, setLeads] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const fetchLeads = () => {
-        setLoading(true);
-        fetch('/api/leads')
-            .then(res => res.json())
-            .then(data => {
-                setLeads(data.leads || []);
-                setLoading(false);
-            });
-    };
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        const fetchLeads = async () => {
+            setLoading(true);
+            try {
+                const res = await fetch('/api/leads');
+                const data = await res.json();
+                setLeads(data.leads || []);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchLeads();
     }, []);
 
