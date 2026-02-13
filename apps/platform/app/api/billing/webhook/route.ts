@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
   // Handle the event
   switch (event.type) {
-    case 'checkout.session.completed':
+    case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;
       const orgId = session.metadata?.orgId;
       // Update organization tier/status in database
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
           // await query('UPDATE organizations SET ... WHERE id = $1', [orgId]);
       }
       break;
+    }
     default:
       console.log(`Unhandled event type ${event.type}`);
   }

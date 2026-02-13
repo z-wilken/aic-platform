@@ -14,6 +14,8 @@ requests==2.31.0
 sentry-sdk[fastapi]==2.20.0
 celery==5.4.0
 redis==5.2.1
+PyJWT==2.10.1
+cryptography==44.0.0
 # Security Tools
 bandit==1.7.7
 pip-audit==2.7.2

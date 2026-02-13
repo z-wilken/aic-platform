@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum, decimal } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 // Enums

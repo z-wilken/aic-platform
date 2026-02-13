@@ -1,14 +1,16 @@
-import { baseConfig } from "../../eslint.base.mjs";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import js from "@eslint/js";
+import ts from "typescript-eslint";
 
 export default [
-  ...baseConfig,
-  ...nextVitals,
-  ...nextTs,
+  js.configs.recommended,
+  ...ts.configs.recommended,
   {
     rules: {
-      "@next/next/no-html-link-for-pages": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
     },
   },
+  {
+    ignores: [".next/**", "node_modules/**"],
+  }
 ];

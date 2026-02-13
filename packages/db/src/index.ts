@@ -4,6 +4,7 @@ import * as schema from './schema';
 import * as dotenv from 'dotenv';
 import path from 'path';
 import { sql } from 'drizzle-orm';
+import { PgTransaction, PgQueryResultHKT } from 'drizzle-orm/pg-core';
 
 // Load .env from monorepo root
 dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
@@ -30,7 +31,8 @@ export function getTenantDb(orgId: string) {
     // We override the select/insert/update/delete methods to enforce the tenant context
     // This is a simplified proxy for the MVP-to-Sovereign transition.
     // In a full implementation, we use a Proxy object to wrap the entire Drizzle API.
-    query: async <T>(callback: (tx: any) => Promise<T>): Promise<T> => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    query: async <T>(callback: (tx: PgTransaction<PgQueryResultHKT, typeof schema, any>) => Promise<T>): Promise<T> => {
       return await rawDb.transaction(async (tx) => {
         await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
         return await callback(tx);
@@ -51,8 +53,11 @@ export function getSystemDb() {
 }
 
 export * from './schema';
+export { schema }; // Exporting namespace for types
+export type { PgTransaction, PgQueryResultHKT }; // FIXED: Use 'export type' for isolatedModules
 export { pool };
 export { sql, eq, and, or, desc, asc, like } from 'drizzle-orm';
 export * from './services/intelligence';
 export * from './services/storage';
 export * from './services/ledger';
+export * from './services/events';

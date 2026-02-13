@@ -1,5 +1,7 @@
-import { db, systemLedger, desc, sql } from '../index';
+import { getSystemDb, systemLedger, desc, PgTransaction, PgQueryResultHKT, schema } from '../index';
 import { createHash } from 'crypto';
+
+const db = getSystemDb();
 
 /**
  * INSTITUTIONAL LEDGER SERVICE
@@ -12,7 +14,8 @@ export class LedgerService {
    * Append a new notarized entry to the global system ledger
    */
   static async append(action: string, actorId: string | null, details: Record<string, unknown>) {
-    return await db.transaction(async (tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return await db.transaction(async (tx: PgTransaction<PgQueryResultHKT, typeof schema, any>) => {
       // 1. Fetch the latest entry to get its hash
       const [lastEntry] = await tx
         .select({ 

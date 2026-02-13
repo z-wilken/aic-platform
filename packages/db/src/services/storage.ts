@@ -59,13 +59,20 @@ export class StorageService {
   }
 
   /**
+   * Generate a temporary pre-signed URL for internal model consumption
+   */
+  static async generatePresignedUrl(evidenceId: string): Promise<string> {
+    return await minioClient.presignedGetObject(BUCKET_NAME, evidenceId, 600); // 10 minutes expiry
+  }
+
+  /**
    * Retrieve evidence for analysis
    */
   static async getEvidence(evidenceId: string): Promise<Buffer> {
     const stream = await minioClient.getObject(BUCKET_NAME, evidenceId);
     return new Promise((resolve, reject) => {
-      const chunks: any[] = [];
-      stream.on('data', (chunk) => chunks.push(chunk));
+      const chunks: Uint8Array[] = [];
+      stream.on('data', (chunk: Uint8Array) => chunks.push(chunk));
       stream.on('end', () => resolve(Buffer.concat(chunks)));
       stream.on('error', (err) => reject(err));
     });

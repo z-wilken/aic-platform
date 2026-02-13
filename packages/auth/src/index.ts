@@ -189,4 +189,5 @@ export const authConfig: NextAuthConfig = {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig)
+export * from "./services/signing"
 export * from "@aic/types"

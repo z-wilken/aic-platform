@@ -1,5 +1,16 @@
-import { baseConfig } from "../../eslint.base.mjs";
+import js from "@eslint/js";
+import ts from "typescript-eslint";
 
 export default [
-  ...baseConfig,
+  js.configs.recommended,
+  ...ts.configs.recommended,
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    },
+  },
+  {
+    ignores: ["node_modules/**", "dist/**"],
+  }
 ];
