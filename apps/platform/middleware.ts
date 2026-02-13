@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
 
   // 2. Auth Check (Closed by Default)
   const token = await getToken({
-    req: request,
+    req: request as any,
     secret: process.env.NEXTAUTH_SECRET
   })
 

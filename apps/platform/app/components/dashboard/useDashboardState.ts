@@ -9,17 +9,17 @@ export function useDashboardState() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  useEffect(() => {
-    const fetchNotifs = async () => {
-      try {
-        const res = await fetch('/api/notifications');
-        const data = await res.json();
-        setNotifications(data.notifications || []);
-      } catch (err) {
-        console.error('Failed to fetch notifications:', err);
-      }
-    };
+  const fetchNotifs = async () => {
+    try {
+      const res = await fetch('/api/notifications');
+      const data = await res.json();
+      setNotifications(data.notifications || []);
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    }
+  };
 
+  useEffect(() => {
     fetchNotifs();
     const interval = setInterval(fetchNotifs, 30000);
     return () => clearInterval(interval);

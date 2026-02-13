@@ -15,7 +15,8 @@ export interface IntelligenceStats {
  * called by the Engine, the Platform, or CLI tools with zero drift.
  */
 export async function calculateOrganizationIntelligence(orgId: string): Promise<IntelligenceStats> {
-  return await withTenant(orgId, async (tx) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return await withTenant(orgId, async (tx: any) => {
     // 1. Fetch requirements (RLS will automatically filter by orgId)
     const requirements = await tx.select().from(auditRequirements);
     type AuditRequirement = typeof auditRequirements.$inferSelect;

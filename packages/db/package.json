@@ -10,9 +10,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.45.1",
-    "pg": "^8.18.0",
-    "dotenv": "^16.4.5"
+    "pg": "^8.18.0"
   },
   "devDependencies": {
     "@types/pg": "^8.11.0",

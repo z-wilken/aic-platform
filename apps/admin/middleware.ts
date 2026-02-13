@@ -17,8 +17,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const token: any = await getToken({
-    req: request,
+    req: request as any,
     secret: process.env.NEXTAUTH_SECRET
   })
 

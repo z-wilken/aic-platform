@@ -1,24 +1,10 @@
-import NextAuth, { NextAuthConfig, Session } from "next-auth"
-import { JWT } from "next-auth/jwt"
+import NextAuth, { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
 import { db, users, organizations, eq, like } from "@aic/db"
-import { AICSessionUser, UserRole, CertificationTier, Permissions } from "@aic/types"
+import { UserRole, CertificationTier, Permissions } from "@aic/types"
 import bcrypt from "bcrypt"
-
-/**
- * Module augmentation for NextAuth types
- */
-declare module "next-auth" {
-  interface Session {
-    user: AICSessionUser
-  }
-}
-
-declare module "next-auth/jwt" {
-  type JWT = AICSessionUser
-}
 
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -105,7 +91,8 @@ export const authConfig: NextAuthConfig = {
     maxAge: 24 * 60 * 60, // 24 hours
   },
   callbacks: {
-    async signIn({ user, account }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async signIn({ user, account }: { user: any, account?: any }) {
       if (account?.provider === 'google' || account?.provider === 'microsoft-entra-id') {
         try {
           const [existingUser] = await db
@@ -153,45 +140,46 @@ export const authConfig: NextAuthConfig = {
       }
       return true
     },
-    async jwt({ token, user }): Promise<JWT> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, user }: { token: any, user: any }) {
       if (user) {
         token.id = user.id
-        token.role = user.role as UserRole
+        token.role = user.role
         token.orgId = user.orgId
         token.orgName = user.orgName
-        token.tier = user.tier as CertificationTier
+        token.tier = user.tier
         token.isSuperAdmin = user.isSuperAdmin
-        token.permissions = user.permissions as Permissions
+        token.permissions = user.permissions
       }
 
       if (token.orgId && !token.orgName) {
-                try {
-                  const [org] = await db
-                    .select({ name: organizations.name, tier: organizations.tier })
-                    .from(organizations)
-                    .where(eq(organizations.id, token.orgId))
-                    .limit(1);
-                  if (org) {
-                    token.orgName = org.name
-                    token.tier = org.tier as CertificationTier
-                  }
-                } catch {
-                  // Ignore fetch errors during JWT enrichment
-                }
-        
+        try {
+          const [org] = await db
+            .select({ name: organizations.name, tier: organizations.tier })
+            .from(organizations)
+            .where(eq(organizations.id, token.orgId as string))
+            .limit(1);
+          if (org) {
+            token.orgName = org.name
+            token.tier = org.tier as CertificationTier
+          }
+        } catch {
+          // Ignore fetch errors during JWT enrichment
+        }
       }
 
       return token
     },
-    async session({ session, token }): Promise<Session> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async session({ session, token }: { session: any, token: any }) {
       if (token && session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as UserRole
-        session.user.orgId = token.orgId as string
-        session.user.orgName = token.orgName as string
-        session.user.tier = token.tier as CertificationTier
-        session.user.isSuperAdmin = token.isSuperAdmin as boolean
-        session.user.permissions = token.permissions as Permissions
+        session.user.id = token.id
+        session.user.role = token.role
+        session.user.orgId = token.orgId
+        session.user.orgName = token.orgName
+        session.user.tier = token.tier
+        session.user.isSuperAdmin = token.isSuperAdmin
+        session.user.permissions = token.permissions
       }
       return session
     }

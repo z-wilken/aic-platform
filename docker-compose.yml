@@ -95,7 +95,7 @@ services:
       engine:
         condition: service_started
 
-  # 5. Audit Factory / Admin (Port 3002)
+  # 5. Audit Factory / Admin (Port 3002) - DEPRECATING SOON
   admin:
     build:
       context: .
@@ -107,6 +107,24 @@ services:
       - "3002:3000"
     environment:
       - NEXTAUTH_URL=http://localhost:3002
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - POSTGRES_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # 5b. Internal Command Portal (New Port 3005 for transition)
+  internal:
+    build:
+      context: .
+      dockerfile: Dockerfile.next
+      args:
+        APP_NAME: internal
+    container_name: aic_internal_portal
+    ports:
+      - "3005:3000"
+    environment:
+      - NEXTAUTH_URL=http://localhost:3005
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       - POSTGRES_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     depends_on:

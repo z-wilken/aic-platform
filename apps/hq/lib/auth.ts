@@ -20,7 +20,7 @@ export async function getCurrentUser(): Promise<AICSessionUser> {
     redirect('/login')
   }
 
-  return session.user
+  return session.user as AICSessionUser
 }
 
 /**

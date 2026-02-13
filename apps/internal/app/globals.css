@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Crimson Pro", serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --color-aic-gold: #D4AF37;
+  --color-aic-black: #080808;
+  --color-aic-paper: #FDFCFB;
+  --color-aic-red: #8B0000;
+  --color-aic-bg: #050505;
+}
+
+@layer base {
+  body {
+    @apply bg-aic-bg text-white antialiased;
+  }
+}

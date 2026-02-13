@@ -8,7 +8,7 @@ type AuditRequirement = typeof auditRequirements.$inferSelect;
 
 export async function GET() {
   try {
-    const session: Session | null = await auth();
+    const session = await auth() as any;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -18,7 +18,7 @@ export async function GET() {
     const intel = await calculateOrganizationIntelligence(orgId);
 
     // 2. Fetch Additional Telemetry (Using withTenant to ensure RLS context)
-    const result = await withTenant(orgId, async (tx: AICTransaction) => {
+    const result = await withTenant(orgId, async (tx: any) => {
       const [org] = await tx.select().from(organizations).limit(1);
       
       const requirements = await tx.select().from(auditRequirements);

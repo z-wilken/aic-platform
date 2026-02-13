@@ -8,17 +8,18 @@ export default function EnterpriseCRMPage() {
     const [leads, setLeads] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
 
+    const fetchLeads = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/leads');
+            const data = await res.json();
+            setLeads(data.leads || []);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchLeads = async () => {
-            setLoading(true);
-            try {
-                const res = await fetch('/api/leads');
-                const data = await res.json();
-                setLeads(data.leads || []);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchLeads();
     }, []);
 
