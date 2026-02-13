@@ -28,8 +28,9 @@ export class StorageService {
   static async initialize() {
     const exists = await minioClient.bucketExists(BUCKET_NAME);
     if (!exists) {
-      await minioClient.makeBucket(BUCKET_NAME, 'af-south-1');
-      console.log(`[STORAGE] Created institutional bucket: ${BUCKET_NAME}`);
+      const region = process.env.MINIO_REGION || 'us-east-1';
+      await minioClient.makeBucket(BUCKET_NAME, region);
+      console.log(`[STORAGE] Created institutional bucket: ${BUCKET_NAME} in region: ${region}`);
     }
   }
 

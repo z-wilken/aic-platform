@@ -10,20 +10,20 @@ export default function RegionalExpansionPage() {
         <div className="space-y-16">
             <div className="flex justify-between items-end border-b border-white/5 pb-12">
                 <div>
-                    <h1 className="text-5xl font-serif font-medium tracking-tight tracking-tighter mb-4 text-white">Market Expansion</h1>
+                    <h1 className="text-5xl font-serif font-medium tracking-tight tracking-tighter mb-4 text-white">Global Expansion</h1>
                     <p className="text-gray-500 font-serif italic text-lg max-w-2xl">
-                        Strategic tracking of AIC institutional entry across SADC jurisdictions.
+                        Strategic tracking of AIC institutional entry across global jurisdictions.
                     </p>
                 </div>
                 <div className="text-right text-aic-gold font-mono text-[10px] font-bold uppercase tracking-[0.4em]">
-                    Continental Scale: v1.0
+                    Global Scale: v1.0
                 </div>
             </div>
 
             <div className="grid grid-cols-1 gap-8">
-                {registry.map((j, i) => (
+                {registry.map((j: any, i) => (
                     <motion.div 
-                        key={j.country}
+                        key={j.jurisdiction || j.country}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
@@ -32,7 +32,7 @@ export default function RegionalExpansionPage() {
                         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 relative z-10">
                             <div className="lg:col-span-1 border-r border-white/5 pr-12">
                                 <span className="text-[10px] font-mono font-bold text-gray-600 uppercase tracking-widest mb-4 block">Jurisdiction</span>
-                                <h3 className="text-3xl font-serif font-bold text-white mb-2">{j.country}</h3>
+                                <h3 className="text-3xl font-serif font-bold text-white mb-2">{j.jurisdiction || j.country}</h3>
                                 <span className={`text-[8px] font-mono font-bold px-2 py-1 rounded border ${
                                     j.status === 'GOLD_STANDARD' ? 'border-green-500/20 text-green-500' : 'border-aic-gold/20 text-aic-gold'
                                 }`}>
@@ -44,7 +44,7 @@ export default function RegionalExpansionPage() {
                                 <span className="text-[10px] font-mono font-bold text-gray-600 uppercase tracking-widest mb-4 block">Regulatory Mapping</span>
                                 <p className="text-sm font-serif italic text-gray-400 mb-6">"{j.law}"</p>
                                 <div className="flex flex-wrap gap-2">
-                                    {j.rights.map(r => (
+                                    {j.rights.map((r: string) => (
                                         <span key={r} className="px-3 py-1 bg-white/5 rounded-lg text-[9px] font-mono text-gray-500 uppercase tracking-tighter italic">
                                             {r}
                                         </span>

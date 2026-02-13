@@ -5,7 +5,7 @@ import { AICSessionUser } from '@aic/types';
 /**
  * INSTITUTIONAL REPORT GENERATOR
  * 
- * Generates SANAS-compliant PDF certificates for AI Integrity Audits.
+ * Generates ISO/IEC 42001-compliant PDF certificates for AI Integrity Audits.
  * Automatically archives reports in the sovereign evidence vault (MinIO).
  */
 export class ReportGenerator {
@@ -59,7 +59,7 @@ export class ReportGenerator {
       });
 
       doc.moveDown(2);
-      doc.fillColor('gray').fontSize(8).text('This document is cryptographically signed and stored in the AIC National Ledger.', { align: 'center' });
+      doc.fillColor('gray').fontSize(8).text('This document is cryptographically signed and stored in the Global AIC Ledger Network.', { align: 'center' });
 
       doc.end();
     });

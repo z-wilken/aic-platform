@@ -1,6 +1,7 @@
 export const SADC_LEGAL_REGISTRY = {
     ZA: {
-        country: "South Africa",
+        jurisdiction: process.env.LEGAL_JURISDICTION || "GLOBAL",
+  standard: "ISO/IEC 42001 & NIST AI RMF",
         law: "Protection of Personal Information Act (POPIA)",
         automated_decision_section: "Section 71",
         rights: ["Agency", "Explanation", "Empathy", "Correction", "Truth"],

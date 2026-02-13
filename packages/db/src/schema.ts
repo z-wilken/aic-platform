@@ -141,6 +141,18 @@ export const complianceReports = pgTable('compliance_reports', {
   auditStatus: varchar('audit_status', { length: 50 }).default('COMPLIANT'),
   findingsCount: integer('findings_count').default(0),
   reportUrl: text('report_url'),
+  isFinalized: boolean('is_finalized').default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Audit Signatures (Multi-Sig Ledger)
+export const auditSignatures = pgTable('audit_signatures', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  reportId: uuid('report_id').references(() => complianceReports.id, { onDelete: 'cascade' }),
+  auditorId: uuid('auditor_id').references(() => users.id),
+  signature: text('signature').notNull(), // RS256 signature
+  publicKey: text('public_key').notNull(),
+  metadata: jsonb('metadata').default({}),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
