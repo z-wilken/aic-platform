@@ -93,6 +93,50 @@ class BatchAnalysisRequest(BaseModel):
     """Each item: {"type": "disparate_impact"|"equalized_odds"|..., "params": {...}}"""
 
 
+# --- Task Monitoring & Async Integration ---
+
+from app.tasks.analysis import (
+    task_disparate_impact, task_equalized_odds, task_intersectional
+)
+from celery.result import AsyncResult
+
+@router.get("/tasks/{task_id}")
+def get_task_status(task_id: str):
+    """Check status and retrieve results for any async task."""
+    result = AsyncResult(task_id)
+    return {
+        "task_id": task_id,
+        "status": result.status,
+        "result": result.result if result.ready() else None
+    }
+
+@router.post("/analyze/async")
+@limiter.limit("30/minute")
+def disparate_impact_async(body: BiasAuditRequest, request: Request):
+    task = task_disparate_impact.delay(
+        body.data, body.protected_attribute, body.outcome_variable, body.previous_hash
+    )
+    return {"task_id": task.id, "status": "PENDING"}
+
+@router.post("/analyze/equalized-odds/async")
+@limiter.limit("30/minute")
+def equalized_odds_async(body: EqualizedOddsRequest, request: Request):
+    task = task_equalized_odds.delay(
+        body.data, body.protected_attribute, body.actual_outcome, 
+        body.predicted_outcome, body.threshold, body.previous_hash
+    )
+    return {"task_id": task.id, "status": "PENDING"}
+
+@router.post("/analyze/intersectional/async")
+@limiter.limit("20/minute")
+def intersectional_analysis_async(body: IntersectionalRequest, request: Request):
+    task = task_intersectional.delay(
+        body.data, body.protected_attributes, body.outcome_variable, 
+        body.min_group_size, body.previous_hash
+    )
+    return {"task_id": task.id, "status": "PENDING"}
+
+
 # --- Core audit endpoints ---
 
 @router.post("/audit/privacy")

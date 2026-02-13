@@ -29,7 +29,31 @@ services:
       - ENGINE_API_KEY=${ENGINE_API_KEY:-}
       - AUDIT_SIGNING_KEY=${AUDIT_SIGNING_KEY:-}
       - AUDIT_VERIFY_KEY=${AUDIT_VERIFY_KEY:-}
+      - REDIS_URL=redis://redis:6379/0
       - CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3004
+    depends_on:
+      - redis
+
+  # 2b. The Task Worker
+  worker:
+    build:
+      context: ./apps/engine
+    container_name: aic_engine_worker
+    command: celery -A app.core.celery_app worker --loglevel=info
+    environment:
+      - ENGINE_API_KEY=${ENGINE_API_KEY:-}
+      - AUDIT_SIGNING_KEY=${AUDIT_SIGNING_KEY:-}
+      - AUDIT_VERIFY_KEY=${AUDIT_VERIFY_KEY:-}
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+
+  # 2c. Redis Broker
+  redis:
+    image: redis:7-alpine
+    container_name: aic_redis
+    ports:
+      - "6379:6379"
 
   # 3. Marketing Web (Port 3000)
   web:
