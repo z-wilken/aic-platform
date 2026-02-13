@@ -1,2 +1,2 @@
-import { handlers } from "../../../../lib/auth-options"
+import { handlers } from "@aic/auth"
 export const { GET, POST } = handlers

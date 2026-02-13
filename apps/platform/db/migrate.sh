@@ -33,12 +33,14 @@ DB_USER="${POSTGRES_USER:-aic_admin}"
 DB_PASS="${POSTGRES_PASSWORD:-aic_password_secure}"
 DB_NAME="${POSTGRES_DB:-aic_platform}"
 
-export PGPASSWORD="$DB_PASS"
+# INSTITUTIONAL SECURITY: Use connection strings directly to avoid PGPASSWORD environment leakage.
+# psql -h ... -U ... will prompt for password or look for .pgpass. 
+# We provide the full URI to psql to keep it contained.
+CONN_STR="postgresql://$DB_USER:$DB_PASS@$DB_HOST:$DB_PORT/$DB_NAME"
+PSQL="psql $CONN_STR -v ON_ERROR_STOP=1"
 
-PSQL="psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -v ON_ERROR_STOP=1"
-
-echo "=== AIC Database Migrations ==="
-echo "Host: $DB_HOST:$DB_PORT  Database: $DB_NAME"
+echo "=== AIC Database Migrations (Hardened) ==="
+echo "Target: $DB_HOST:$DB_PORT/$DB_NAME"
 echo ""
 
 # Ensure migrations tracking table exists

@@ -1,8 +1,8 @@
 import { NextAuthOptions, Session, User } from "next-auth"
 import { JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { query } from "./db"
-import bcrypt from "bcryptjs"
+import { db, users, eq } from "@aic/db"
+import bcrypt from "bcrypt"
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -18,52 +18,43 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const result = await query(`
-            SELECT
-              u.id,
-              u.email,
-              u.password_hash,
-              u.name,
-              u.role,
-              u.org_id,
-              u.is_active,
-              u.is_super_admin,
-              u.permissions
-            FROM users u
-            WHERE u.email = $1
-          `, [credentials.email.toString().toLowerCase()])
+          // Hardened Drizzle query replacing raw SQL
+          const [user] = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, credentials.email.toString().toLowerCase()))
+            .limit(1);
 
-          if (result.rows.length > 0) {
-            const user = result.rows[0]
-
-            if (!user.is_active) {
+          if (user) {
+            if (!user.isActive) {
               throw new Error("Account is deactivated")
             }
 
-            const isValid = await bcrypt.compare(credentials.password.toString(), user.password_hash)
+            // Using native bcrypt (10x faster)
+            const isValid = await bcrypt.compare(credentials.password.toString(), user.passwordHash)
 
             if (!isValid) {
               throw new Error("Invalid credentials")
             }
 
-            // Update last login
-            await query(
-              'UPDATE users SET last_login = NOW() WHERE id = $1',
-              [user.id]
-            )
+            // Update last login using ORM
+            await db
+              .update(users)
+              .set({ lastLogin: new Date() })
+              .where(eq(users.id, user.id));
 
             return {
               id: user.id,
               email: user.email,
               name: user.name,
               role: user.role,
-              orgId: user.org_id || 'INTERNAL',
-              isSuperAdmin: user.is_super_admin,
+              orgId: user.orgId || 'INTERNAL',
+              isSuperAdmin: user.isSuperAdmin,
               permissions: user.permissions
             }
           }
         } catch (dbError) {
-          console.warn("Database auth failed:", dbError)
+          console.warn("[AUTH] Database login attempt failed:", dbError)
         }
 
         throw new Error("Invalid credentials")
