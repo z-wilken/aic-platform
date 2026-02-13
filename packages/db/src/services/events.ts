@@ -6,9 +6,41 @@ dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379/0';
 
-// We use two clients: one for publishing, one for subscribing
-const pubClient = new Redis(redisUrl);
-const subClient = new Redis(redisUrl);
+let pubClient: Redis | null = null;
+let subClient: Redis | null = null;
+
+function getPubClient() {
+  if (!pubClient) {
+    pubClient = new Redis(redisUrl, {
+      maxRetriesPerRequest: null,
+      retryStrategy: (times) => Math.min(times * 50, 2000),
+    });
+    pubClient.on('error', (err) => {
+      // Log only once per connection failure to avoid spamming
+      if (err.message.includes('ECONNREFUSED')) {
+        console.warn('[REDIS] Publisher offline. Real-time events will be queued or skipped.');
+      } else {
+        console.error('[REDIS] Publisher error:', err.message);
+      }
+    });
+  }
+  return pubClient;
+}
+
+function getSubClient() {
+  if (!subClient) {
+    subClient = new Redis(redisUrl, {
+      maxRetriesPerRequest: null,
+      retryStrategy: (times) => Math.min(times * 50, 2000),
+    });
+    subClient.on('error', (err) => {
+      if (!err.message.includes('ECONNREFUSED')) {
+        console.error('[REDIS] Subscriber error:', err.message);
+      }
+    });
+  }
+  return subClient;
+}
 
 /**
  * INSTITUTIONAL EVENT BUS SERVICE
@@ -21,16 +53,21 @@ export class EventBusService {
    * Publish an event to a specific tenant's channel
    */
   static async publish(orgId: string, eventType: string, payload: Record<string, unknown>) {
-    const channel = `tenant:${orgId}:events`;
-    const message = JSON.stringify({
-      type: eventType,
-      orgId,
-      payload,
-      timestamp: new Date().toISOString(),
-    });
-    
-    await pubClient.publish(channel, message);
-    console.log(`[EVENT_BUS] Published ${eventType} to ${channel}`);
+    try {
+      const client = getPubClient();
+      const channel = `tenant:${orgId}:events`;
+      const message = JSON.stringify({
+        type: eventType,
+        orgId,
+        payload,
+        timestamp: new Date().toISOString(),
+      });
+      
+      await client.publish(channel, message);
+      console.log(`[EVENT_BUS] Published ${eventType} to ${channel}`);
+    } catch (err) {
+      console.warn('[EVENT_BUS] Failed to publish event (Redis likely offline)');
+    }
   }
 
   /**
@@ -38,10 +75,11 @@ export class EventBusService {
    */
   static subscribe(orgId: string, onMessage: (data: string) => void) {
     const channel = `tenant:${orgId}:events`;
+    const client = getSubClient();
     
-    subClient.subscribe(channel, (err) => {
+    client.subscribe(channel, (err) => {
       if (err) {
-        console.error(`[EVENT_BUS] Failed to subscribe to ${channel}:`, err);
+        console.warn(`[EVENT_BUS] Failed to subscribe to ${channel} (Redis likely offline)`);
         return;
       }
       console.log(`[EVENT_BUS] Subscribed to ${channel}`);
@@ -53,12 +91,12 @@ export class EventBusService {
       }
     };
 
-    subClient.on('message', handler);
+    client.on('message', handler);
 
     // Return cleanup function
     return () => {
-      subClient.removeListener('message', handler);
-      subClient.unsubscribe(channel);
+      client.removeListener('message', handler);
+      client.unsubscribe(channel).catch(() => {}); // Ignore errors on unsubscribe
     };
   }
 }
