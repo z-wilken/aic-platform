@@ -3,6 +3,8 @@
  * Source of truth for institutional data models across the monorepo.
  */
 
+import { z } from 'zod';
+
 export * from './errors';
 
 export type CertificationTier = 'TIER_1' | 'TIER_2' | 'TIER_3';
@@ -11,6 +13,13 @@ export type UserRole = 'ADMIN' | 'COMPLIANCE_OFFICER' | 'AUDITOR' | 'VIEWER';
 export type IncidentStatus = 'OPEN' | 'INVESTIGATING' | 'RESOLVED' | 'DISMISSED' | 'CLOSED';
 export type ScheduledAuditStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 export type CorrectionStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'RESOLVED' | 'REJECTED';
+
+export interface Permissions {
+  can_publish: boolean;
+  can_verify: boolean;
+  can_manage_users: boolean;
+  [key: string]: boolean;
+}
 
 export interface Organization {
   id: string;
@@ -33,11 +42,52 @@ export interface User {
   is_active: boolean;
   email_verified: boolean;
   is_super_admin: boolean;
-  permissions: Record<string, any>;
+  permissions: Permissions;
   last_login?: Date | string | null;
   created_at: Date | string;
   updated_at: Date | string;
 }
+
+/**
+ * Institutional Session User (Strictly Typed)
+ */
+export interface AICSessionUser {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  orgId: string;
+  orgName: string;
+  tier: CertificationTier;
+  isSuperAdmin: boolean;
+  permissions: Permissions;
+}
+
+// --- API Schemas (Directive A) ---
+
+export const StatsResponseSchema = z.object({
+  orgName: z.string(),
+  orgId: z.string().uuid(),
+  tier: z.string(), // Could be TIER_1 | TIER_2 | TIER_3
+  score: z.number().min(0).max(100),
+  openIncidents: z.number().min(0),
+  totalRequirements: z.number().min(0),
+  verifiedRequirements: z.number().min(0),
+  velocityData: z.array(z.object({
+    month: z.string(),
+    score: z.number().min(0).max(100)
+  })),
+  radarData: z.array(z.object({
+    subject: z.string(),
+    A: z.number().min(0).max(100),
+    fullMark: z.number()
+  })),
+  status: z.string()
+});
+
+export type StatsResponse = z.infer<typeof StatsResponseSchema>;
+
+// --- Other Data Models ---
 
 export interface AuditLog {
   id: string;
@@ -61,44 +111,6 @@ export interface Incident {
   system_name?: string | null;
   description: string;
   status: IncidentStatus;
-  resolution_details?: string | null;
-  human_reviewer_id?: string | null;
-  created_at: Date | string;
-  updated_at: Date | string;
-}
-
-export interface ScheduledAudit {
-  id: string;
-  org_id: string;
-  auditor_id?: string | null;
-  scheduled_at: Date | string;
-  status: ScheduledAuditStatus;
-  notes?: string | null;
-  created_at: Date | string;
-  updated_at: Date | string;
-}
-
-export interface ModelRegistryEntry {
-  id: string;
-  org_id: string;
-  name: string;
-  version: string;
-  type: string;
-  description?: string | null;
-  metadata: Record<string, any>;
-  is_active: boolean;
-  created_at: Date | string;
-  updated_at: Date | string;
-}
-
-export interface CorrectionRequest {
-  id: string;
-  org_id: string;
-  decision_id?: string | null;
-  citizen_email: string;
-  reason: string;
-  supporting_evidence_url?: string | null;
-  status: CorrectionStatus;
   resolution_details?: string | null;
   human_reviewer_id?: string | null;
   created_at: Date | string;
