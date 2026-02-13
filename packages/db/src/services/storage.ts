@@ -34,6 +34,19 @@ export class StorageService {
   }
 
   /**
+   * Simple upload and return presigned URL
+   */
+  static async uploadEvidence(
+    orgId: string,
+    fileName: string,
+    buffer: Buffer,
+    contentType: string
+  ): Promise<string> {
+    const { evidenceId } = await this.saveEvidence(orgId, fileName, buffer, contentType);
+    return await this.generatePresignedUrl(evidenceId);
+  }
+
+  /**
    * Persist evidence with tenant isolation and hashing
    */
   static async saveEvidence(

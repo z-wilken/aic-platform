@@ -52,6 +52,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           },
           required: ["orgId"],
         },
+      },
+      {
+        name: "get_remediation_advice",
+        description: "Get specific, actionable advice to resolve failing audit requirements.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            requirementId: { type: "string", description: "The ID of the failing requirement" },
+          },
+          required: ["requirementId"],
+        },
       }
     ],
   };
@@ -92,6 +103,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       
       return {
         content: [{ type: "text", text: text || "No requirements found." }],
+      };
+    }
+
+    case "get_remediation_advice": {
+      const requirementId = args?.requirementId as string;
+      const [req] = await db
+        .select()
+        .from(auditRequirements)
+        .where(eq(auditRequirements.id, requirementId))
+        .limit(1);
+      
+      if (!req) return { content: [{ type: "text", text: "Requirement not found." }] };
+
+      let advice = "No specific remediation found.";
+      if (req.title.toLowerCase().includes("bias")) {
+        advice = "ACTION: Perform a disparate impact analysis on protected classes. Re-weight features using the Reweighing preprocessing technique.";
+      } else if (req.title.toLowerCase().includes("privacy")) {
+        advice = "ACTION: Implement k-anonymity (k=5) on all training sets. Enable PII scrubbing in the data ingestion pipeline.";
+      } else if (req.title.toLowerCase().includes("explainability")) {
+        advice = "ACTION: Generate SHAP values for the top 1000 outlier predictions. Document feature importance in the Model Card.";
+      }
+
+      return {
+        content: [{ type: "text", text: `Requirement: ${req.title}\nStatus: ${req.status}\n\n${advice}` }],
       };
     }
 

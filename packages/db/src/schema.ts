@@ -16,6 +16,13 @@ export const organizations = pgTable('organizations', {
   tier: tierEnum('tier').default('TIER_3'),
   integrityScore: integer('integrity_score').default(0),
   isAlpha: boolean('is_alpha').default(false),
+  oidcConfig: jsonb('oidc_config').default({
+    enabled: false,
+    issuer: null,
+    clientId: null,
+    clientSecret: null,
+    allowRegistration: false
+  }),
   contactEmail: varchar('contact_email', { length: 255 }),
   apiKey: varchar('api_key', { length: 255 }),
   auditorId: uuid('auditor_id'),
