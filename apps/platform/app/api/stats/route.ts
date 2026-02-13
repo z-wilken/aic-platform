@@ -4,6 +4,8 @@ import { auth } from '@aic/auth';
 import { StatsResponseSchema } from '@aic/types';
 import { Session } from 'next-auth';
 
+type AuditRequirement = typeof auditRequirements.$inferSelect;
+
 export async function GET() {
   try {
     const session: Session | null = await auth();
@@ -48,7 +50,7 @@ export async function GET() {
         { subject: 'Empathy', A: 0, total: 0 },
     ];
 
-    requirements.forEach((req: any) => {
+    requirements.forEach((req: AuditRequirement) => {
         const catMap: Record<string, string> = {
             'OVERSIGHT': 'Oversight',
             'DOCUMENTATION': 'Documentation',
