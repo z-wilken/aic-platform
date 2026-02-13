@@ -22,24 +22,6 @@ export default function PlatformDashboard() {
             });
     }, []);
 
-    // Institutional Data Mockups for Visualization
-    const velocityData = [
-        { month: 'Sep', score: 45 },
-        { month: 'Oct', score: 52 },
-        { month: 'Nov', score: 68 },
-        { month: 'Dec', score: 84 },
-        { month: 'Jan', score: 92 },
-        { month: 'Feb', score: stats?.score || 92 },
-    ];
-
-    const radarData = [
-        { subject: 'Oversight', A: 85, fullMark: 100 },
-        { subject: 'Documentation', A: 98, fullMark: 100 },
-        { subject: 'Transparency', A: 70, fullMark: 100 },
-        { subject: 'Technical', A: 90, fullMark: 100 },
-        { subject: 'Empathy', A: 65, fullMark: 100 },
-    ];
-
     if (loading) return <DashboardShell><div className="p-12 text-center text-gray-500 italic">Initializing intelligence core...</div></DashboardShell>;
 
     return (
@@ -51,7 +33,7 @@ export default function PlatformDashboard() {
                         <p className="text-gray-500 font-serif mt-4 italic text-lg">{stats.orgName} • {stats.tier?.replace('_', ' ')} Status</p>
                     </div>
                     <div className="text-right">
-                        <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest block mb-2">Live Integrity Score</span>
+                        <span className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest block mb-2">Live Integrity Score</span>
                         <div className="text-6xl font-serif font-medium">{stats.score}</div>
                     </div>
                 </div>
@@ -59,10 +41,10 @@ export default function PlatformDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Primary Graph: Integrity Velocity */}
                     <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-aic-black/5 shadow-xl">
-                        <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-8">Integrity Velocity (6 Months)</h3>
+                        <h3 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest mb-8">Integrity Velocity (Telemetry)</h3>
                         <div className="h-[300px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={velocityData}>
+                                <AreaChart data={stats.velocityData}>
                                     <defs>
                                         <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3}/>
@@ -81,10 +63,10 @@ export default function PlatformDashboard() {
 
                     {/* Secondary Graph: Radar Framework Mapping */}
                     <div className="bg-aic-black p-8 rounded-[2.5rem] text-white shadow-xl flex flex-col">
-                        <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-8">Framework Distribution</h3>
+                        <h3 className="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-8">Framework Distribution</h3>
                         <div className="h-[300px] w-full mt-auto">
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={stats.radarData}>
                                     <PolarGrid stroke="#333" />
                                     <PolarAngleAxis dataKey="subject" tick={{fill: '#999', fontSize: 8, fontFamily: 'monospace'}} />
                                     <Radar name="Compliance" dataKey="A" stroke="#D4AF37" fill="#D4AF37" fillOpacity={0.6} />

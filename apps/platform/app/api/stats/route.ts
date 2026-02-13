@@ -1,82 +1,101 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db/drizzle';
-import { organizations, auditRequirements, incidents } from '@/db/schema';
-import { eq, and, sql as drizzleSql } from 'drizzle-orm';
-import { getSession } from '@/lib/auth';
+import { db, organizations, auditRequirements, complianceReports, eq, desc, withTenant, calculateOrganizationIntelligence } from '@aic/db';
+import { auth } from '@aic/auth';
+import { StatsResponseSchema } from '@aic/types';
 
 export async function GET() {
   try {
-    const session: any = await getSession();
+    const session = await auth();
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const orgId = session.user.orgId;
+    const orgId = session.user.orgId as string;
 
-    // 1. Fetch organization details
-    const org = await db.query.organizations.findFirst({
-        where: eq(organizations.id, orgId)
+    // 1. Execute Core Business Logic (Decoupled & RLS Enforced)
+    const intel = await calculateOrganizationIntelligence(orgId);
+
+    // 2. Fetch Additional Telemetry (Using withTenant to ensure RLS context)
+    const result = await withTenant(orgId, async (tx) => {
+      const [org] = await tx.select().from(organizations).limit(1);
+      
+      const requirements = await tx.select().from(auditRequirements);
+      
+      const velocityResults = await tx
+        .select({
+            month: complianceReports.monthYear,
+            score: complianceReports.integrityScore
+        })
+        .from(complianceReports)
+        .orderBy(desc(complianceReports.monthYear))
+        .limit(6);
+
+      return { org, requirements, velocityResults };
     });
+
+    const { org, requirements, velocityResults } = result;
 
     if (!org) {
         return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    // 2. Fetch requirements for scoring
-    const requirements = await db.query.auditRequirements.findMany({
-        where: eq(auditRequirements.orgId, orgId)
-    });
-    
-    const categories = {
-        'DOCUMENTATION': { weight: 0.20, score: 0, total: 0 },
-        'OVERSIGHT': { weight: 0.35, score: 0, total: 0 },
-        'REPORTS': { weight: 0.25, score: 0, total: 0 },
-        'TECHNICAL': { weight: 0.20, score: 0, total: 0 }
-    };
+    // 3. Map Framework Distribution (Radar Data)
+    const radarData = [
+        { subject: 'Oversight', A: 0, total: 0 },
+        { subject: 'Documentation', A: 0, total: 0 },
+        { subject: 'Transparency', A: 0, total: 0 },
+        { subject: 'Technical', A: 0, total: 0 },
+        { subject: 'Empathy', A: 0, total: 0 },
+    ];
 
     requirements.forEach(req => {
-        const cat = categories[req.category as keyof typeof categories];
-        if (cat) {
-            cat.total++;
-            if (req.status === 'VERIFIED') cat.score++;
+        const catMap: Record<string, string> = {
+            'OVERSIGHT': 'Oversight',
+            'DOCUMENTATION': 'Documentation',
+            'TRANSPARENCY': 'Transparency',
+            'TECHNICAL': 'Technical',
+            'EMPATHY': 'Empathy'
+        };
+        const subject = catMap[req.category?.toUpperCase() || ''] || 'Technical';
+        const dataPoint = radarData.find(d => d.subject === subject);
+        if (dataPoint) {
+            dataPoint.total++;
+            if (req.status === 'VERIFIED') dataPoint.A += 1;
         }
     });
 
-    let calculatedScore = 0;
-    Object.values(categories).forEach(cat => {
-        if (cat.total > 0) {
-            calculatedScore += (cat.score / cat.total) * cat.weight * 100;
-        }
-    });
+    const finalRadarData = radarData.map(d => ({
+        subject: d.subject,
+        A: d.total > 0 ? Math.round((d.A / d.total) * 100) : 0,
+        fullMark: 100
+    }));
 
-    // 3. Apply Penalty for unresolved incidents
-    const openIncidentsResult = await db.select({ count: drizzleSql<number>`count(*)` })
-        .from(incidents)
-        .where(and(eq(incidents.orgId, orgId), eq(incidents.status, 'OPEN')));
-    
-    const openIncidents = Number(openIncidentsResult[0]?.count || 0);
-    const penalty = openIncidents * 5;
+    // 4. Map Velocity Data
+    let velocityData = velocityResults.reverse().map(v => ({
+        month: v.month,
+        score: v.score
+    }));
 
-    const finalScore = Math.max(0, Math.round(calculatedScore) - penalty);
-
-    // Update organization score if it differs
-    if (finalScore !== org.integrityScore) {
-        await db.update(organizations)
-            .set({ integrityScore: finalScore })
-            .where(eq(organizations.id, orgId));
+    if (velocityData.length === 0) {
+        velocityData.push({ month: 'Live', score: intel.score });
     }
 
-    return NextResponse.json({
+    // --- Institutional Integrity Check (Zod Validation) ---
+    const validatedData = StatsResponseSchema.parse({
       orgName: org.name,
       orgId: orgId,
-      tier: org.tier,
-      score: finalScore,
-      openIncidents: openIncidents,
-      totalRequirements: requirements.length,
-      verifiedRequirements: requirements.filter(r => r.status === 'VERIFIED').length,
-      status: finalScore === 100 ? 'CERTIFIED' : 'ACTIVE_AUDIT'
+      tier: org.tier || 'TIER_3',
+      score: intel.score,
+      openIncidents: intel.openIncidents,
+      totalRequirements: intel.totalRequirements,
+      verifiedRequirements: intel.verifiedRequirements,
+      velocityData,
+      radarData: finalRadarData,
+      status: 'ACTIVE_AUDIT'
     });
+
+    return NextResponse.json(validatedData);
   } catch (error) {
-    console.error('Stats API Error:', error);
-    return NextResponse.json({ error: 'Failed to retrieve organization intelligence' }, { status: 500 });
+    console.error('[STATS API] Institutional Failure:', error);
+    return NextResponse.json({ error: 'Internal intelligence failure' }, { status: 500 });
   }
 }
