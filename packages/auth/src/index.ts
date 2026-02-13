@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google"
 import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
 import { getSystemDb, users, organizations, eq, like } from "@aic/db"
 import { UserRole, CertificationTier, Permissions } from "@aic/types"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 
 const db = getSystemDb();
 

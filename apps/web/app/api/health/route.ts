@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getSystemDb, sql } from '@aic/db';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
 const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
@@ -12,11 +12,12 @@ interface ServiceCheck {
 
 export async function GET() {
   const checks: Record<string, ServiceCheck> = {};
+  const db = getSystemDb();
 
   // 1. Database check
   const dbStart = Date.now();
   try {
-    await query('SELECT 1');
+    await db.execute(sql`SELECT 1`);
     checks.database = { status: 'ok', latency_ms: Date.now() - dbStart };
   } catch (err: any) {
     checks.database = { status: 'error', latency_ms: Date.now() - dbStart, detail: err.message };

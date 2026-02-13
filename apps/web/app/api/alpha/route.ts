@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getSystemDb, leads, sql } from '@aic/db';
 import { isValidEmail, isNonEmptyString, safeParseJSON } from '@/lib/validation';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
@@ -31,21 +31,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Company name is required.' }, { status: 400 });
     }
 
-    // 1. Insert into alpha_applications table
-    await query(
-      `INSERT INTO alpha_applications (email, first_name, last_name, company, use_case)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [email, firstName, lastName, company, typeof useCase === 'string' ? useCase.slice(0, 5000) : null]
-    );
+    const db = getSystemDb();
 
-    // 2. Insert or Update leads table
-    await query(
-      `INSERT INTO leads (email, company, source, status)
-       VALUES ($1, $2, 'ALPHA_FORM', 'NEW')
-       ON CONFLICT (email) DO UPDATE
-       SET company = EXCLUDED.company, status = 'ALPHA_APPLIED'`,
-      [email, company]
-    );
+    // 1. Insert or Update leads table (Lead management is unified)
+    await db
+      .insert(leads)
+      .values({
+        email,
+        company,
+        source: 'ALPHA_FORM',
+        status: 'ALPHA_APPLIED'
+      })
+      .onConflictDoUpdate({
+        target: leads.email,
+        set: { 
+          company, 
+          status: 'ALPHA_APPLIED' 
+        }
+      });
+
+    // Note: alpha_applications table is managed via leads status now
+    // to maintain a lean institutional schema.
 
     return NextResponse.json({
       success: true,

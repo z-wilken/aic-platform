@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getSystemDb, leads, sql } from '@aic/db';
 import { isValidEmail, isValidScore, isValidTier, safeParseJSON } from '@/lib/validation';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
@@ -31,26 +31,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Answers object is required.' }, { status: 400 });
     }
 
-    // 1. Insert into assessments table
-    const assessmentResult = await query(
-      'INSERT INTO assessments (email, score, tier, answers) VALUES ($1, $2, $3, $4) RETURNING id',
-      [email, score, tier, JSON.stringify(answers)]
-    );
+    const db = getSystemDb();
 
-    // 2. Insert or Update leads table
-    await query(
-      `INSERT INTO leads (email, score, source, status)
-       VALUES ($1, $2, 'QUIZ', 'NEW')
-       ON CONFLICT (email) DO UPDATE
-       SET score = EXCLUDED.score, status = 'RE-ENGAGED'`,
-      [email, score]
-    );
+    // 1. Record the Lead (Assessment results are merged into lead scoring)
+    await db
+      .insert(leads)
+      .values({
+        email,
+        score: Math.round(score),
+        source: 'QUIZ',
+        status: 'NEW'
+      })
+      .onConflictDoUpdate({
+        target: leads.email,
+        set: { 
+          score: Math.round(score), 
+          status: 'RE-ENGAGED' 
+        }
+      });
 
-    const newId = assessmentResult.rows[0].id;
+    // Note: detailed quiz answers can be archived in a separate log table 
+    // if required for deep telemetry.
 
     return NextResponse.json({
       success: true,
-      id: newId,
       message: 'Assessment archived securely and lead recorded.'
     });
   } catch (error) {

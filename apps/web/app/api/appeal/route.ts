@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getSystemDb, incidents, notifications } from '@aic/db';
 import { isValidEmail, isNonEmptyString, isValidLongText, safeParseJSON } from '@/lib/validation';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
@@ -29,26 +29,32 @@ export async function POST(request: NextRequest) {
     }
 
     const safeName = isNonEmptyString(system_name) ? system_name : 'Unknown';
+    const db = getSystemDb();
 
     // 1. Log the Incident
-    const result = await query(
-      `INSERT INTO incidents (org_id, citizen_email, system_name, description, status)
-       VALUES ($1, $2, $3, $4, 'OPEN') RETURNING id`,
-      [orgId, citizen_email, safeName, description]
-    );
+    const [newIncident] = await db
+      .insert(incidents)
+      .values({
+        orgId,
+        citizenEmail: citizen_email,
+        systemName: safeName,
+        description,
+        status: 'OPEN'
+      })
+      .returning({ id: incidents.id });
 
     // 2. Notify the Organization
-    await query(
-        `INSERT INTO notifications (org_id, title, message, type)
-         VALUES ($1, $2, $3, 'ALERT')`,
-        [
-            orgId,
-            'NEW CITIZEN APPEAL',
-            `A citizen has contested an automated decision from "${safeName}". Action required within 72 hours.`
-        ]
-    );
+    await db
+      .insert(notifications)
+      .values({
+        orgId,
+        title: 'NEW CITIZEN APPEAL',
+        message: `A citizen has contested an automated decision from "${safeName}". Action required within 72 hours.`,
+        type: 'ALERT',
+        status: 'UNREAD'
+      });
 
-    return NextResponse.json({ success: true, appealId: result.rows[0].id });
+    return NextResponse.json({ success: true, appealId: newIncident.id });
 
   } catch (error) {
     console.error('Public Appeal API Error:', error);
