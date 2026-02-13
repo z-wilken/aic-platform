@@ -39,9 +39,56 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "AI Integrity Certification (AIC)",
+    "url": "https://aic.co.za",
+    "logo": "https://aic.co.za/logo.png",
+    "description": "The national authority for AI Integrity & Compliance in South Africa, aligning with POPIA Section 71.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "ZA"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "AIC Certification Tiers",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Tier 1: Critical Accountability",
+            "description": "Highest level of certification for AI systems with significant human rights impact."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Tier 2: Elevated Supervision",
+            "description": "Rigorous monitoring and human-in-the-loop requirements for medium-risk systems."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Tier 3: Standard Governance",
+            "description": "Base-level certification for standard business AI integrations."
+          }
+        }
+      ]
+    }
+  };
+
   return (
     <html lang="en">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <Script
