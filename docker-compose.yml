@@ -55,6 +55,20 @@ services:
     ports:
       - "6379:6379"
 
+  # 2d. MinIO Evidence Store (S3-compatible)
+  minio:
+    image: minio/minio
+    container_name: aic_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-aic_storage_admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-aic_storage_secure_2026}
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
   # 3. Marketing Web (Port 3000)
   web:
     build:
@@ -151,3 +165,4 @@ services:
 
 volumes:
   postgres_data:
+  minio_data:
