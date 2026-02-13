@@ -56,7 +56,7 @@ export * from './schema';
 export { schema }; // Exporting namespace for types
 export type { PgTransaction, PgQueryResultHKT }; // FIXED: Use 'export type' for isolatedModules
 export { pool };
-export { sql, eq, and, or, desc, asc, like } from 'drizzle-orm';
+export { sql, eq, and, or, desc, asc, like, gte } from 'drizzle-orm';
 export * from './services/intelligence';
 export * from './services/storage';
 export * from './services/ledger';

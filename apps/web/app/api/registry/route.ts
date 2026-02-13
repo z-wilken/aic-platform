@@ -1,36 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../../platform/lib/db'; // Unified DB access
+import { getSystemDb, organizations, eq, gte, desc } from '@aic/db';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const verifyId = searchParams.get('verify_id');
+    const db = getSystemDb();
 
     if (!verifyId) {
-        // Return active registry list
-        const result = await query(`
-            SELECT id, name, tier, integrity_score, created_at
-            FROM organizations 
-            WHERE integrity_score >= 100 
-            ORDER BY created_at DESC
-        `);
-        return NextResponse.json({ registry: result.rows });
+        // Return active registry list (Orgs with score >= 100)
+        const registryOrgs = await db
+            .select({
+                id: organizations.id,
+                name: organizations.name,
+                tier: organizations.tier,
+                integrity_score: organizations.integrityScore,
+                created_at: organizations.createdAt
+            })
+            .from(organizations)
+            .where(gte(organizations.integrityScore, 100))
+            .orderBy(desc(organizations.createdAt));
+
+        return NextResponse.json({ registry: registryOrgs });
     }
 
     // Single verification
-    const result = await query(`
-        SELECT id, name, tier, integrity_score, created_at
-        FROM organizations 
-        WHERE id = $1
-    `, [verifyId]);
+    const [organization] = await db
+        .select({
+            id: organizations.id,
+            name: organizations.name,
+            tier: organizations.tier,
+            integrity_score: organizations.integrityScore,
+            created_at: organizations.createdAt
+        })
+        .from(organizations) 
+        .where(eq(organizations.id, verifyId))
+        .limit(1);
 
-    if (result.rows.length === 0) {
+    if (!organization) {
         return NextResponse.json({ error: 'Certificate not found' }, { status: 404 });
     }
 
     return NextResponse.json({ 
         success: true, 
-        organization: result.rows[0],
+        organization,
         verified_at: new Date().toISOString()
     });
 
