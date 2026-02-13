@@ -75,6 +75,23 @@ The AIC Pulse platform currently suffers from a "Vision-Code Gap": while the str
     *   **Deliverable:** A dedicated, immutable hash-chain for internal administrative actions.
     *   **Success Criteria:** Proof of non-tampering for internal system changes (SANAS Ready).
 
+## Phase 4: Sovereign Infrastructure Hardening (Immediate Priority)
+**Goal:** Transition from "Soft Isolation" to "Zero-Bypass Multi-Tenancy" and "Immutable Evidence."
+
+### Execution Plan: Phase 4
+1.  **Step 4.1: Zero-Bypass Multi-Tenancy (Database Proxy)**
+    *   **Owner:** Lead Architect / Backend Engineer
+    *   **Deliverable:** Refactor `@aic/db` to hide the raw `db` instance. Developers must use `tenantDb(orgId)` which automatically enforces RLS.
+    *   **Success Criteria:** Impossible to execute a query without an `orgId` context except for explicitly marked system operations.
+2.  **Step 4.2: Real-Time Event Bus (SSE/WebSockets)**
+    *   **Owner:** Backend / Senior Frontend
+    *   **Deliverable:** Replace notification polling with a persistent event stream powered by Redis Pub/Sub.
+    *   **Success Criteria:** 90% reduction in "Read-Lock" DB traffic from dashboard polling.
+3.  **Step 4.3: Service-to-Service OIDC/JWT Auth**
+    *   **Owner:** DevOps / Lead Architect
+    *   **Deliverable:** Replace `ENGINE_API_KEY` with short-lived, RSA-signed JWTs for Platform -> Engine calls.
+    *   **Success Criteria:** System survives a compromised Platform API without compromising the Engine's integrity.
+
 ---
 
 ## Risks & Mitigation

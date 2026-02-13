@@ -13,12 +13,13 @@ export async function GET() {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId as string;
+    const tdb = getTenantDb(orgId);
 
     // 1. Execute Core Business Logic (Decoupled & RLS Enforced)
     const intel = await calculateOrganizationIntelligence(orgId);
 
-    // 2. Fetch Additional Telemetry (Using withTenant to ensure RLS context)
-    const result = await withTenant(orgId, async (tx: any) => {
+    // 2. Fetch Additional Telemetry (Using tdb.query to ensure RLS context)
+    const result = await tdb.query(async (tx) => {
       const [org] = await tx.select().from(organizations).limit(1);
       
       const requirements = await tx.select().from(auditRequirements);

@@ -2,9 +2,11 @@ import NextAuth, { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
-import { db, users, organizations, eq, like } from "@aic/db"
+import { getSystemDb, users, organizations, eq, like } from "@aic/db"
 import { UserRole, CertificationTier, Permissions } from "@aic/types"
 import bcrypt from "bcrypt"
+
+const db = getSystemDb();
 
 export const authConfig: NextAuthConfig = {
   providers: [
