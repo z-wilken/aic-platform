@@ -15,9 +15,25 @@ export type ScheduledAuditStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | '
 export type CorrectionStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'RESOLVED' | 'REJECTED';
 
 export interface Permissions {
-  can_publish: boolean;
-  can_verify: boolean;
+  // Audit Permissions
+  can_view_audits: boolean;
+  can_trigger_audit: boolean;
+  can_verify_requirements: boolean;
+  
+  // Incident Permissions
+  can_view_incidents: boolean;
+  can_resolve_incidents: boolean;
+  can_export_pii: boolean;
+  
+  // Intelligence Permissions
+  can_view_intelligence: boolean;
+  can_manage_models: boolean;
+  
+  // Administrative Permissions
   can_manage_users: boolean;
+  can_manage_org: boolean;
+  can_access_ledger: boolean;
+  
   [key: string]: boolean;
 }
 

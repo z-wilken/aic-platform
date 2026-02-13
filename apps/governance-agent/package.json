@@ -1,0 +1,24 @@
+{
+  "name": "governance-agent",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aic/db": "*",
+    "@aic/types": "*",
+    "@modelcontextprotocol/sdk": "^1.6.0",
+    "dotenv": "^16.4.5",
+    "tsx": "^4.19.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.19",
+    "typescript": "^5.7.3"
+  }
+}

@@ -48,6 +48,11 @@ export const auditLogs = pgTable('audit_logs', {
   details: jsonb('details').notNull(),
   status: auditStatusEnum('status').default('PENDING'),
   metadata: jsonb('metadata').default({}),
+  resourceUsage: jsonb('resource_usage').default({
+    compute_ms: 0,
+    memory_mb: 0,
+    carbon_estimate_g: 0
+  }),
   integrityHash: varchar('integrity_hash', { length: 64 }),
   previousHash: varchar('previous_hash', { length: 64 }),
   sequenceNumber: integer('sequence_number'),
