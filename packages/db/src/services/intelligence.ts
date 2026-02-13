@@ -1,0 +1,69 @@
+import { db, organizations, auditRequirements, incidents, eq, and, sql, withTenant } from '../index';
+
+export interface IntelligenceStats {
+  score: number;
+  openIncidents: number;
+  totalRequirements: number;
+  verifiedRequirements: number;
+}
+
+/**
+ * INSTITUTIONAL BUSINESS LOGIC: Integrity Scoring
+ * 
+ * Calculates the weighted integrity score for an organization.
+ * This logic is decoupled from the API layer to ensure it can be
+ * called by the Engine, the Platform, or CLI tools with zero drift.
+ */
+export async function calculateOrganizationIntelligence(orgId: string): Promise<IntelligenceStats> {
+  return await withTenant(orgId, async (tx) => {
+    // 1. Fetch requirements (RLS will automatically filter by orgId)
+    const requirements = await tx.select().from(auditRequirements);
+    
+    const categories: Record<string, { weight: number; score: number; total: number }> = {
+      'DOCUMENTATION': { weight: 0.20, score: 0, total: 0 },
+      'OVERSIGHT': { weight: 0.35, score: 0, total: 0 },
+      'REPORTS': { weight: 0.25, score: 0, total: 0 },
+      'TECHNICAL': { weight: 0.20, score: 0, total: 0 }
+    };
+
+    requirements.forEach((req: any) => {
+      const catKey = req.category?.toUpperCase();
+      const cat = categories[catKey];
+      if (cat) {
+        cat.total++;
+        if (req.status === 'VERIFIED') cat.score++;
+      }
+    });
+
+    let calculatedScore = 0;
+    Object.values(categories).forEach(cat => {
+      if (cat.total > 0) {
+        calculatedScore += (cat.score / cat.total) * cat.weight * 100;
+      }
+    });
+
+    // 2. Fetch Open Incidents (RLS filtered)
+    const openIncidentsResult = await tx
+      .select({ count: sql<number>`count(*)` })
+      .from(incidents)
+      .where(eq(incidents.status, 'OPEN'));
+    
+    const openIncidents = Number(openIncidentsResult[0]?.count || 0);
+    const penalty = openIncidents * 5;
+
+    const finalScore = Math.max(0, Math.round(calculatedScore) - penalty);
+
+    // 3. Persist score to organization table (Atomic update)
+    await tx
+      .update(organizations)
+      .set({ integrityScore: finalScore })
+      .where(eq(organizations.id, orgId));
+
+    return {
+      score: finalScore,
+      openIncidents,
+      totalRequirements: requirements.length,
+      verifiedRequirements: requirements.filter((r: any) => r.status === 'VERIFIED').length
+    };
+  });
+}
