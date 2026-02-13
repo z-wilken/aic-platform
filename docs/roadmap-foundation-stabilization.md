@@ -1,79 +1,90 @@
-# Roadmap: Foundation Stabilization
+# AIC Pulse: Foundation Stabilization Roadmap (2026)
 
-Version: 1.0.0
-Status: High Priority Directive
-Objective: Transition AIC Pulse from a fragile prototype to a resilient, type-safe, and secure production system.
+## Executive Summary
+The AIC Pulse platform currently suffers from a "Vision-Code Gap": while the strategic trajectory is world-class, the technical implementation is a fragile MVP masquerading as an institutional-grade system. To become the SANAS-accredited national authority for AI Integrity, we must first stabilize our own infrastructure. This roadmap prioritizes **technical integrity over feature velocity**, focusing on type safety, architectural decoupling, and CI/CD enforcement. We will not process real organizational data until this foundation is hardened.
 
-## 1. Executive Summary
-The "A+ MVP / C- Production" assessment is accurate. While we have achieved functional parity with the PRD, the implementation is procedural and high-risk. This roadmap prioritizes Compile-time Safety over Runtime Hope. By implementing a type-safe ORM, centralized security middleware, and a shared component library, we eliminate entire classes of bugs (SQL injection, data leaks, UI drift) before they reach production.
+## Current State vs. Desired State
 
-## 2. Current State vs. Desired State
-
-| Dimension | Current State (Fragile) | Desired State (Resilient) |
+| Metric | Current State (MVP) | Desired State (Institutional) |
 | :--- | :--- | :--- |
-| Data Access | Raw SQL strings (pg) | Drizzle ORM (Type-safe) |
-| Multi-tenancy | Local per-route WHERE clauses | Global Middleware enforcement |
-| Code Sharing | Duplicated types/interfaces | Shared @aic/types package |
-| UI Structure | "God Components" (DashboardShell) | Atomic, testable UI units |
-| Security | Manual parameterized queries | Schema-level validation & ORM |
-| CI/CD | Manual verification | Automated "Green-to-Merge" gate |
-
-## 3. Implementation Phases
-
-### Phase 1: Immediate Stability (Short-term, 1–2 Weeks)
-Focus: Security, Data Integrity, and Monorepo Hygiene.
-1. Drizzle ORM Migration: Eliminate raw SQL and establish a single source of truth for the schema.
-2. Global Tenant Isolation: Move org_id checks to Next.js Middleware.
-3. Shared Types Package: Centralize all DB and API models.
-4. CI/CD Baseline: GitHub Actions for linting and build validation.
-
-### Phase 2: Architectural Hardening (Medium-term)
-Focus: UI Consistency and Component Decomposition.
-1. Shadcn Component Library: Build @aic/ui to stop UI drifting.
-2. Dashboard Refactor: Decompose DashboardShell into modular units.
-3. Unified Error Handling: Implement granular error codes and global boundaries.
-4. API Versioning: Formalize the contract between Platform and Engine.
-
-### Phase 3: Production Readiness (Long-term)
-Focus: Scaling and Reliability.
-1. Testing Enforcement: 80% coverage for business logic (Vitest + Playwright).
-2. Production Docker: Hardened, non-root Docker configurations.
-3. Monitoring: Sentry/OpenTelemetry integration.
+| **Monorepo** | Basic workspaces (no `turbo.json`). | Fully optimized Turborepo with caching. |
+| **Type Safety** | Widespread `any`; failing type-checks. | 100% strict TypeScript; zero `any`. |
+| **Security** | Application-layer tenant filtering. | Database-level Row Level Security (RLS). |
+| **Code Quality** | Duplicated logic between `admin` & `hq`. | Unified Internal Portal with strict RBAC. |
+| **Resilience** | Synchronous heavy analysis (Engine). | Asynchronous task queues (Redis/Celery). |
+| **Verification** | Zero test coverage; manual audits. | 70%+ coverage; automated CI enforcement. |
 
 ---
 
-## 4. Step-by-Step Execution Plan
+## Phase 1: Immediate Stability (Weeks 1-2)
+**Goal:** Fix the "Monorepo Illusion" and eradicate "Type-Safety Myths."
 
-### Phase 1: Infrastructure & Data
-
-| Step | Task | Owner | Success Criteria | Effort |
-| :--- | :--- | :--- | :--- | :--- |
-| 1.1 | Setup `@aic/types` | Architect | No duplicate interfaces in apps/ | 1 Day |
-| 1.2 | Install & Config Drizzle | Backend | Successful connection & schema introspection | 2 Days |
-| 1.3 | Middleware Tenant Check | Backend | API 401s if org_id is missing/mismatched | 1 Day |
-| 1.4 | GitHub Actions Setup | DevOps | PRs cannot merge if npm run build fails | 1 Day |
-
-### Phase 2: Refactoring & Quality
-
-| Step | Task | Owner | Success Criteria | Effort |
-| :--- | :--- | :--- | :--- | :--- |
-| 2.1 | Setup `@aic/ui` (Shadcn) | Frontend | Shared library with Button, Input, Modal | 2 Days |
-| 2.2 | Decompose `DashboardShell` | Frontend | Main file < 150 lines; logic in hooks | 2 Days |
-| 2.3 | Port Core Routes to Drizzle | Backend | Dashboard/Stats routes use zero raw SQL | 3 Days |
-| 2.4 | Standardize Error Codes | Backend | All API errors return { code, message } | 1 Day |
+### Execution Plan: Phase 1
+1.  **Step 1.1: Formalize Turborepo Configuration**
+    *   **Owner:** DevOps Engineer
+    *   **Deliverable:** `turbo.json` with defined pipelines for `build`, `lint`, `type-check`, and `test`.
+    *   **Success Criteria:** `npm run build` utilizes Turborepo caching and parallel execution.
+2.  **Step 1.2: Strict Type Hardening & `any` Purge**
+    *   **Owner:** Lead Architect
+    *   **Deliverable:** Purge all `any` usages from `@aic/auth`, `@aic/db`, and core API routes.
+    *   **Success Criteria:** `npm run type-check` passes monorepo-wide.
+3.  **Step 1.3: Version Stabilization**
+    *   **Owner:** Lead Architect
+    *   **Deliverable:** Align monorepo on stable Next.js 15.x and React 19.x.
+    *   **Success Criteria:** Resolved build-time library incompatibilities.
+4.  **Step 1.4: Sanitize React Anti-Patterns**
+    *   **Owner:** Senior Frontend
+    *   **Deliverable:** Fix "impure renders" (Math.random) and "infinite loops" (unguarded setState in effects).
+    *   **Success Criteria:** Zero hydration warnings in browser console.
 
 ---
 
-## 5. Risks & Mitigation
-* Risk: Migration to Drizzle takes longer than expected.
-    * Mitigation: Hybrid approach—keep pg for complex legacy queries initially, but use Drizzle for all new and refactored logic.
-* Risk: Breaking existing features during Middleware refactor.
-    * Mitigation: Implement regression smoke tests in Playwright before refactoring.
-* Risk: Developer friction from strict CI.
-    * Mitigation: Provide clear linting/fixing scripts to run locally before pushing.
+## Phase 2: Architectural Hardening (Weeks 3-6)
+**Goal:** Consolidate redundant systems and enforce data isolation.
 
-## 6. Success Metrics
-1. Zero Raw SQL: No occurrences of query('SELECT...') in the main data paths.
-2. Type Coverage: 100% of API responses mapped to shared @aic/types.
-3. Automated Gate: 100% of merges to main passed CI.
-4. UI Performance: 20% reduction in DashboardShell bundle size via decomposition.
+### Execution Plan: Phase 2
+1.  **Step 2.1: Internal Portal Consolidation**
+    *   **Owner:** Senior Frontend / Backend
+    *   **Deliverable:** Merge `apps/admin` and `apps/hq` into a single `@aic/internal` portal using RBAC.
+    *   **Success Criteria:** Deletion of one redundant application directory; functionality preserved.
+2.  **Step 2.2: Standardized Drizzle Migration System**
+    *   **Owner:** Backend Engineer
+    *   **Deliverable:** Versioned migrations using `drizzle-kit generate` and `migrate.sh`.
+    *   **Success Criteria:** Schema changes are traceable and reproducible across environments.
+3.  **Step 2.3: Centralized Shared UI Library**
+    *   **Owner:** Senior Frontend
+    *   **Deliverable:** Refactor `packages/ui` to use Radix UI primitives and Shadcn-style architecture.
+    *   **Success Criteria:** Consistent styling and WCAG 2.2 AA compliance across all apps.
+
+---
+
+## Phase 3: Production Readiness & Scale (Months 2-3)
+**Goal:** Automate resilience and establish the Sovereign Audit Ledger.
+
+### Execution Plan: Phase 3
+1.  **Step 3.1: Async Evidence Pipeline**
+    *   **Owner:** Backend / DevOps
+    *   **Deliverable:** Integration of S3/MinIO for immutable audio/code storage.
+    *   **Success Criteria:** Large file uploads no longer cause OOM errors in the API.
+2.  **Step 3.2: CI/CD Enforcement (The "Green Barrier")**
+    *   **Owner:** DevOps Engineer
+    *   **Deliverable:** GitHub Actions that block merges unless `lint`, `type-check`, and `test` pass.
+    *   **Success Criteria:** Main branch remains in a 100% "ready to deploy" state.
+3.  **Step 3.3: Global Audit Ledger**
+    *   **Owner:** Lead Architect
+    *   **Deliverable:** A dedicated, immutable hash-chain for internal administrative actions.
+    *   **Success Criteria:** Proof of non-tampering for internal system changes (SANAS Ready).
+
+---
+
+## Risks & Mitigation
+- **Risk:** Migration from Next.js 16 (beta) to 15 (stable) may break experimental features.
+  - **Mitigation:** Comprehensive audit of feature usage before downgrade; use polyfills where necessary.
+- **Risk:** Consolidation of Admin/HQ may disrupt current "simulated" workflows.
+  - **Mitigation:** Map all existing routes to the new RBAC structure before moving code.
+
+## Success Metrics (Stable Foundation)
+1.  **Zero-Error Baseline:** `lint` and `type-check` pass 100% of the time.
+2.  **Single Source of Truth:** All domain models originate from `@aic/types` or `@aic/db`.
+3.  **Sovereign Isolation:** Zero data leakage between tenants (Verified via RLS).
+4.  **Auditable History:** 100% of database changes are versioned through Drizzle migrations.
