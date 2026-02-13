@@ -36,5 +36,6 @@ export async function withTenant<T>(orgId: string, callback: (tx: AICTransaction
 export * from './schema';
 export * from './services/intelligence';
 export * from './services/storage';
+export * from './services/ledger';
 export { pool };
 export { sql, eq, and, or, desc, asc, like } from 'drizzle-orm';

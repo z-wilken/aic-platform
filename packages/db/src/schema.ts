@@ -169,3 +169,15 @@ export const correctionRequests = pgTable('correction_requests', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
+
+// System Ledger (Immutable Global Audit Trail)
+export const systemLedger = pgTable('system_ledger', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  action: varchar('action', { length: 255 }).notNull(),
+  actorId: uuid('actor_id').references(() => users.id),
+  details: jsonb('details').notNull(),
+  previousHash: varchar('previous_hash', { length: 64 }),
+  integrityHash: varchar('integrity_hash', { length: 64 }).notNull(),
+  sequenceNumber: integer('sequence_number').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
