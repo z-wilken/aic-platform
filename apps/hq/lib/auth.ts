@@ -1,45 +1,39 @@
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "./auth-options"
+export * from "@aic/auth"
+import { auth } from "@aic/auth"
 import { redirect } from 'next/navigation'
-
-export type UserRole = 'ADMIN' | 'COMPLIANCE_OFFICER' | 'AUDITOR' | 'VIEWER'
-
-export interface SessionUser {
-  id: string
-  email: string
-  name: string
-  role: UserRole
-  orgId: string
-}
+import { AICSessionUser, UserRole } from "@aic/types"
 
 /**
  * Get the current session (server-side)
  */
 export async function getSession() {
-  return await getServerSession(authOptions as any)
+  return await auth()
 }
 
 /**
  * Get current user or redirect to login
  */
-export async function getCurrentUser(): Promise<SessionUser> {
-  const session: any = await getSession()
+export async function getCurrentUser(): Promise<AICSessionUser> {
+  const session = await auth()
 
   if (!session?.user) {
     redirect('/login')
   }
 
-  return session.user as unknown as SessionUser
+  return session.user
 }
 
 /**
- * Server action to check auth and strict role
+ * Server action to check auth and role
  */
-export async function requireAdminAuth() {
+export async function requireAuth(minRole?: UserRole) {
   const user = await getCurrentUser()
 
-  if (user.role !== 'ADMIN' && user.role !== 'AUDITOR') {
-    redirect('/unauthorized')
+  if (minRole) {
+    const roles: UserRole[] = ['VIEWER', 'AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN']
+    if (roles.indexOf(user.role) < roles.indexOf(minRole)) {
+      redirect('/unauthorized')
+    }
   }
 
   return user

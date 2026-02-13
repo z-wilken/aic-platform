@@ -1,6 +1,7 @@
 export * from "@aic/auth"
 import { auth } from "@aic/auth"
 import { redirect } from 'next/navigation'
+import { Permissions } from '@aic/types'
 
 export type UserRole = 'ADMIN' | 'COMPLIANCE_OFFICER' | 'AUDITOR' | 'VIEWER'
 
@@ -13,10 +14,17 @@ export interface SessionUser {
   orgName: string
   tier: string
   isSuperAdmin: boolean
-  permissions: any
+  permissions: Permissions
 }
 
 const ROLE_HIERARCHY: UserRole[] = ['VIEWER', 'AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN']
+
+/**
+ * Get the current session (server-side)
+ */
+export async function getSession() {
+  return await auth()
+}
 
 /**
  * Get current user or redirect to login

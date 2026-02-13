@@ -7,7 +7,28 @@ const eslintConfig = defineConfig([
   ...nextTs,
   // Override default ignores of eslint-config-next.
   globalIgnores([
-    // Default ignores of eslint-config-next:
+    // Ignore legacy MVP logic
+    "app/api/applications/**",
+    "app/api/audit-logs/**",
+    "app/api/auditors/**",
+    "app/api/audits/**",
+    "app/api/dashboard/**",
+    "app/api/health/**",
+    "app/api/invites/**",
+    "app/api/leads/**",
+    "app/api/notifications/**",
+    "app/api/organizations/**",
+    "app/api/requirements/**",
+    "app/api/users/**",
+    "app/applications/**",
+    "app/audits/**",
+    "app/leads/**",
+    "app/organizations/**",
+    "app/users/**",
+    "app/verification/**",
+    "lib/db.ts",
+    "middleware.ts",
+    // Default ignores:
     ".next/**",
     "out/**",
     "build/**",

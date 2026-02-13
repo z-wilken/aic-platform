@@ -5,14 +5,40 @@ import AdminShell from './components/AdminShell'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
+interface DashboardData {
+  stats: {
+    pendingApplications: number;
+    activeCertifications: number;
+    totalLeads: number;
+    auditsTotal: number;
+  };
+  activeOrgs: Array<{
+    name: string;
+    integrity_score: number;
+    tier: string;
+  }>;
+  recentApplications: Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    company: string;
+  }>;
+  recentLeads: Array<{
+    id: string;
+    email: string;
+    source: string;
+    score: number;
+  }>;
+}
+
 export default function AdminDashboard() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/dashboard')
         .then(res => res.json())
-        .then(dashData => {
+        .then((dashData: DashboardData) => {
             setData(dashData);
             setLoading(false);
         });
@@ -83,7 +109,7 @@ export default function AdminDashboard() {
                             { name: 'Standard Bank', integrity_score: 94, tier: 'TIER_1' },
                             { name: 'Investec Health', integrity_score: 82, tier: 'TIER_2' },
                             { name: 'Discovery Ltd', integrity_score: 100, tier: 'TIER_3' }
-                        ]).map((org: any, i: number) => (
+                        ]).map((org, i: number) => (
                             <div key={i} className="space-y-2">
                                 <div className="flex justify-between items-end text-xs font-mono">
                                     <span className="text-white font-bold uppercase tracking-widest">{org.name}</span>
@@ -142,7 +168,7 @@ export default function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5 font-mono text-xs text-white">
-                            {(data?.recentApplications || []).map((app: any) => (
+                            {(data?.recentApplications || []).map((app) => (
                                 <tr key={app.id} className="hover:bg-white/5 transition-colors">
                                     <td className="p-4">{app.first_name} {app.last_name}</td>
                                     <td className="p-4 text-gray-400">{app.company}</td>
@@ -164,7 +190,7 @@ export default function AdminDashboard() {
             <div>
                 <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">CRM Integration Feed</h3>
                 <div className="space-y-4">
-                    {(data?.recentLeads || []).map((lead: any) => (
+                    {(data?.recentLeads || []).map((lead) => (
                         <div key={lead.id} className="flex items-center justify-between p-6 bg-black/40 border border-white/5 rounded-2xl group hover:border-blue-500/30 transition-all">
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">

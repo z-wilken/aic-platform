@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { db, organizations, auditRequirements, complianceReports, eq, desc, withTenant, calculateOrganizationIntelligence } from '@aic/db';
+import { organizations, auditRequirements, complianceReports, desc, withTenant, calculateOrganizationIntelligence } from '@aic/db';
 import { auth } from '@aic/auth';
 import { StatsResponseSchema } from '@aic/types';
+import { Session } from 'next-auth';
 
 export async function GET() {
   try {
-    const session = await auth();
+    const session: Session | null = await auth();
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -47,7 +48,7 @@ export async function GET() {
         { subject: 'Empathy', A: 0, total: 0 },
     ];
 
-    requirements.forEach(req => {
+    requirements.forEach((req: any) => {
         const catMap: Record<string, string> = {
             'OVERSIGHT': 'Oversight',
             'DOCUMENTATION': 'Documentation',
@@ -63,14 +64,14 @@ export async function GET() {
         }
     });
 
-    const finalRadarData = radarData.map(d => ({
+    const finalRadarData = radarData.map((d) => ({
         subject: d.subject,
         A: d.total > 0 ? Math.round((d.A / d.total) * 100) : 0,
         fullMark: 100
     }));
 
     // 4. Map Velocity Data
-    let velocityData = velocityResults.reverse().map(v => ({
+    const velocityData = velocityResults.reverse().map((v: { month: string; score: number }) => ({
         month: v.month,
         score: v.score
     }));

@@ -8,9 +8,10 @@ import {
     Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
     AreaChart, Area
 } from 'recharts';
+import { StatsResponse } from '@aic/types';
 
 export default function PlatformDashboard() {
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<StatsResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,11 +31,11 @@ export default function PlatformDashboard() {
                 <div className="flex justify-between items-end border-b border-aic-black/5 pb-8">
                     <div>
                         <h1 className="text-4xl font-serif font-bold text-aic-black tracking-tight underline decoration-aic-gold underline-offset-8">Intelligence Center</h1>
-                        <p className="text-gray-500 font-serif mt-4 italic text-lg">{stats.orgName} • {stats.tier?.replace('_', ' ')} Status</p>
+                        <p className="text-gray-500 font-serif mt-4 italic text-lg">{stats?.orgName} • {stats?.tier?.replace('_', ' ')} Status</p>
                     </div>
                     <div className="text-right">
                         <span className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest block mb-2">Live Integrity Score</span>
-                        <div className="text-6xl font-serif font-medium">{stats.score}</div>
+                        <div className="text-6xl font-serif font-medium">{stats?.score}</div>
                     </div>
                 </div>
 
@@ -44,7 +45,7 @@ export default function PlatformDashboard() {
                         <h3 className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest mb-8">Integrity Velocity (Telemetry)</h3>
                         <div className="h-[300px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={stats.velocityData}>
+                                <AreaChart data={stats?.velocityData}>
                                     <defs>
                                         <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3}/>
@@ -66,7 +67,7 @@ export default function PlatformDashboard() {
                         <h3 className="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-8">Framework Distribution</h3>
                         <div className="h-[300px] w-full mt-auto">
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={stats.radarData}>
+                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={stats?.radarData}>
                                     <PolarGrid stroke="#333" />
                                     <PolarAngleAxis dataKey="subject" tick={{fill: '#999', fontSize: 8, fontFamily: 'monospace'}} />
                                     <Radar name="Compliance" dataKey="A" stroke="#D4AF37" fill="#D4AF37" fillOpacity={0.6} />
@@ -79,8 +80,8 @@ export default function PlatformDashboard() {
                 {/* Quick Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     {[
-                        { l: 'Verification Ratio', v: `${stats.verifiedRequirements}/${stats.totalRequirements}`, c: 'text-aic-black' },
-                        { l: 'Open Incidents', v: stats.openIncidents, c: stats.openIncidents > 0 ? 'text-aic-red font-bold' : 'text-green-600' },
+                        { l: 'Verification Ratio', v: `${stats?.verifiedRequirements}/${stats?.totalRequirements}`, c: 'text-aic-black' },
+                        { l: 'Open Incidents', v: stats?.openIncidents || 0, c: (stats?.openIncidents || 0) > 0 ? 'text-aic-red font-bold' : 'text-green-600' },
                         { l: 'Last Audit', v: '48h ago', c: 'text-gray-500' },
                         { l: 'Next Renewal', v: 'Feb 2027', c: 'text-gray-500' }
                     ].map((s, i) => (

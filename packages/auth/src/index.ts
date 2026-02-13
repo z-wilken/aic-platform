@@ -142,7 +142,7 @@ export const authConfig: NextAuthConfig = {
                 role: 'VIEWER',
                 passwordHash: 'SSO_ONLY',
                 isActive: true,
-                email_verified: true
+                emailVerified: true
               }).returning({ id: users.id, role: users.role });
               
               user.id = newUser.id
