@@ -64,4 +64,4 @@ export * from './schema';
 export { schema }; 
 export type { PgTransaction, PgQueryResultHKT };
 export { pool }; // Note: This will be null until first DB access
-export { sql, eq, and, or, desc, asc, like, gte } from 'drizzle-orm';
+export { sql, eq, and, or, desc, asc, like, gte, lt } from 'drizzle-orm';

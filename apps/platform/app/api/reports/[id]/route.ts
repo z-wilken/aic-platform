@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, complianceReports, organizations, eq, and } from '@aic/db';
+import { getSession } from '../../../../lib/auth';
 import { generatePDF, getReportTemplate } from '../../../../lib/pdf-generator';
+import type { Session } from 'next-auth';
 
 export async function GET(
   request: NextRequest,
@@ -9,51 +10,60 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    // 1. Fetch report details and ensure it belongs to this org
-    const result = await query(
-      `SELECT r.*, o.name as org_name 
-       FROM compliance_reports r 
-       JOIN organizations o ON r.org_id = o.id 
-       WHERE r.id = $1 AND r.org_id = $2`,
-      [id, orgId]
-    );
+    return await db.query(async (tx) => {
+      // 1. Fetch report details and ensure it belongs to this org (RLS + manual check)
+      const [report] = await tx
+        .select({
+          id: complianceReports.id,
+          orgId: complianceReports.orgId,
+          monthYear: complianceReports.monthYear,
+          integrityScore: complianceReports.integrityScore,
+          findingsCount: complianceReports.findingsCount,
+          auditStatus: complianceReports.auditStatus,
+          orgName: organizations.name
+        })
+        .from(complianceReports)
+        .innerJoin(organizations, eq(complianceReports.orgId, organizations.id))
+        .where(and(eq(complianceReports.id, id), eq(complianceReports.orgId, orgId)))
+        .limit(1);
 
-    if (result.rows.length === 0) {
-      return NextResponse.json({ error: 'Report not found' }, { status: 404 });
-    }
+      if (!report) {
+        return NextResponse.json({ error: 'Report not found' }, { status: 404 });
+      }
 
-    const report = result.rows[0];
-    const data = {
-        id: report.id,
-        orgName: report.org_name,
-        orgId: report.org_id,
-        monthYear: report.month_year,
-        integrityScore: report.integrity_score,
-        findingsCount: report.findings_count,
-        auditStatus: report.audit_status,
-        tier: session.user.tier
-    };
+      const data = {
+          id: report.id,
+          orgName: report.orgName,
+          orgId: report.orgId,
+          monthYear: report.monthYear,
+          integrityScore: report.integrityScore,
+          findingsCount: report.findingsCount,
+          auditStatus: report.auditStatus,
+          tier: session.user.tier
+      };
 
-    // 2. Generate PDF
-    const html = getReportTemplate(data);
-    const pdfBuffer = await generatePDF(html);
+      // 2. Generate PDF
+      const html = getReportTemplate(data);
+      const pdfBuffer = await generatePDF(html);
 
-    // 3. Return as PDF download
-    return new NextResponse(pdfBuffer as any, {
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="AIC-Report-${report.month_year.replace(' ', '-')}.pdf"`,
-      },
+      // 3. Return as PDF download
+      return new NextResponse(pdfBuffer as Uint8Array, {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `attachment; filename="AIC-Report-${report.monthYear.replace(' ', '-')}.pdf"`,
+        },
+      });
     });
 
   } catch (error) {
-    console.error('PDF Generation Error:', error);
+    console.error('[SECURITY] PDF Generation Error:', error);
     return NextResponse.json({ error: 'Failed to generate PDF report' }, { status: 500 });
   }
 }

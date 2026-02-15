@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getSystemDb, organizations, incidents, notifications, eq } from '@aic/db';
 import { checkRateLimit, getClientIP } from '../../../../lib/rate-limit';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
 
-    const { orgName, systemName, citizen_email, description } = body;
+    const { orgId: providedOrgId, orgName, systemName, citizen_email, description } = body;
 
     if (typeof citizen_email !== 'string' || !EMAIL_RE.test(citizen_email) || citizen_email.length > 254) {
       return NextResponse.json({ error: 'Valid email address is required' }, { status: 400 });
@@ -28,46 +28,54 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Description is required (max 5000 characters)' }, { status: 400 });
     }
 
-    const safeOrgName = typeof orgName === 'string' ? orgName.slice(0, 200) : '';
     const safeSysName = typeof systemName === 'string' && systemName.trim() ? systemName.slice(0, 200) : 'Not Specified';
 
-    // 1. Resolve Org ID (Simple match for demo, in production we'd use a more robust lookup)
-    let orgId = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'; // Fallback to demo org
-    if (safeOrgName) {
-      const orgResult = await query(
-          'SELECT id FROM organizations WHERE name ILIKE $1 LIMIT 1',
-          [`%${safeOrgName}%`]
-      );
-      if (orgResult.rows[0]?.id) {
-        orgId = orgResult.rows[0].id;
-      }
+    const db = getSystemDb();
+
+    // Task M9: Institutional Hardening - Strict Organization Resolution
+    let resolvedOrgId: string | null = null;
+
+    if (typeof providedOrgId === 'string' && providedOrgId.length === 36) {
+        resolvedOrgId = providedOrgId;
+    } else if (typeof orgName === 'string' && orgName.trim()) {
+        const [org] = await db
+            .select({ id: organizations.id })
+            .from(organizations)
+            .where(eq(organizations.name, orgName.trim()))
+            .limit(1);
+        if (org) resolvedOrgId = org.id;
     }
 
-    // 2. Insert into Incidents table
-    const result = await query(
-        `INSERT INTO incidents (org_id, citizen_email, system_name, description, status)
-         VALUES ($1, $2, $3, $4, 'OPEN') RETURNING id`,
-        [orgId, citizen_email, safeSysName, description]
-    );
+    if (!resolvedOrgId) {
+        return NextResponse.json({ error: 'Valid Organization Identifier is required for lodging appeals' }, { status: 400 });
+    }
 
-    // 3. Create Notification for the Organization's Admin
-    await query(
-        'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4)',
-        [
-            orgId,
-            'New Citizen Appeal',
-            `A new appeal has been lodged by ${citizen_email} regarding ${safeSysName}.`,
-            'ALERT'
-        ]
-    );
+    return await db.transaction(async (tx) => {
+      // 2. Insert into Incidents table
+      const [newIncident] = await tx.insert(incidents).values({
+        orgId: resolvedOrgId as string,
+        citizenEmail: citizen_email,
+        systemName: safeSysName,
+        description: description,
+        status: 'OPEN'
+      }).returning({ id: incidents.id });
 
-    return NextResponse.json({
-        success: true,
-        incidentId: result.rows[0].id
+      // 3. Create Notification for the Organization's Admin
+      await tx.insert(notifications).values({
+          orgId: resolvedOrgId as string,
+          title: 'New Citizen Appeal',
+          message: `A new appeal has been lodged by ${citizen_email} regarding ${safeSysName}.`,
+          type: 'ALERT'
+      });
+
+      return NextResponse.json({
+          success: true,
+          incidentId: newIncident.id
+      });
     });
 
   } catch (error) {
-    console.error('Public Incident API Error:', error);
+    console.error('[SECURITY] Public Incident API Error:', error);
     return NextResponse.json({ error: 'Failed to lodge appeal' }, { status: 500 });
   }
 }

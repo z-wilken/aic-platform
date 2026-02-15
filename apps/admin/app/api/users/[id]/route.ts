@@ -69,7 +69,11 @@ export async function DELETE(
     // Task M7: org_id validation if provided
     const whereClause = eq(users.id, id);
     if (org_id) {
-        return await db.delete(users).where(and(eq(users.id, id), eq(users.orgId, org_id))).returning({ id: users.id });
+        const [deletedUser] = await db.delete(users).where(and(eq(users.id, id), eq(users.orgId, org_id))).returning({ id: users.id });
+        if (!deletedUser) {
+          return NextResponse.json({ error: 'User not found or org_id mismatch' }, { status: 404 });
+        }
+        return NextResponse.json({ success: true, message: 'User removed from registry' });
     }
 
     const [deletedUser] = await db

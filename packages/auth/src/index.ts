@@ -1,45 +1,9 @@
-import NextAuth, { NextAuthConfig, DefaultSession } from "next-auth"
+import NextAuth, { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
 import { getSystemDb, users, organizations, eq, like } from "@aic/db"
 import { UserRole, CertificationTier, Permissions } from "@aic/types"
-
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string
-      role: UserRole
-      orgId: string
-      orgName: string
-      tier: CertificationTier
-      isSuperAdmin: boolean
-      permissions: Permissions
-    } & DefaultSession["user"]
-  }
-
-  interface User {
-    id?: string
-    role?: UserRole
-    orgId?: string
-    orgName?: string
-    tier?: CertificationTier
-    isSuperAdmin?: boolean
-    permissions?: Permissions
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string
-    role: UserRole
-    orgId: string
-    orgName: string
-    tier: CertificationTier
-    isSuperAdmin: boolean
-    permissions: Permissions
-  }
-}
 
 export const authConfig: NextAuthConfig = {
   providers: [

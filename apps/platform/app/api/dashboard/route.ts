@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, organizations, auditLogs, eq, sql, desc } from '@aic/db';
+import { NextResponse } from 'next/server';
+import { getTenantDb, organizations, auditLogs, models, correctionRequests, eq, sql, desc } from '@aic/db';
 import { getSession } from '../../../lib/auth';
 import type { Session } from 'next-auth';
 
@@ -36,39 +36,68 @@ export async function GET() {
       })
       .from(auditLogs);
 
+      const flagged = Number(stats.flagged) || 0;
+
       // 3. Get recent audit logs
       const recentLogs = await tx.select()
         .from(auditLogs)
         .orderBy(desc(auditLogs.createdAt))
         .limit(10);
 
-      const integrityScore = org.integrityScore || 0;
-      const flagged = Number(stats.flagged) || 0;
+      // Task M37: Institutional Rights Calculation
+      // 1. Human Agency: Based on bias audit status
+      const humanAgencyScore = flagged === 0 ? 100 : Math.max(20, 100 - (flagged * 15));
+      
+      // 2. Explanation: Based on presence of model metadata and XAI usage
+      const modelCount = await tx.select({ count: sql<number>`count(*)` }).from(models);
+      const explanationLogs = await tx.select({ count: sql<number>`count(*)` }).from(auditLogs).where(eq(auditLogs.eventType, 'TRANSPARENCY_EXPLANATION'));
+      const explanationScore = Number(modelCount[0].count) > 0 
+        ? Math.min(100, 60 + (Number(explanationLogs[0].count) * 10)) 
+        : 50;
+
+      // 3. Empathy: Based on Empathy Audit results
+      const empathyLogs = await tx.select().from(auditLogs).where(eq(auditLogs.eventType, 'EMPATHY_CHECK')).limit(5);
+      const avgEmpathy = empathyLogs.length > 0
+        ? empathyLogs.reduce((acc, log) => acc + (Number((log.details as Record<string, unknown>)?.empathy_score) || 0), 0) / empathyLogs.length
+        : 75; // Default baseline
+      const empathyScore = Math.round(avgEmpathy);
+
+      // 4. Correction: Based on Appeal resolution time and volume
+      const totalAppeals = await tx.select({ count: sql<number>`count(*)` }).from(correctionRequests);
+      const resolvedAppeals = await tx.select({ count: sql<number>`count(*)` }).from(correctionRequests).where(eq(correctionRequests.status, 'RESOLVED'));
+      const correctionScore = Number(totalAppeals[0].count) > 0
+        ? Math.round((Number(resolvedAppeals[0].count) / Number(totalAppeals[0].count)) * 100)
+        : 90; // Standard process baseline
+
+      // 5. Truth: Based on AI Disclosure audits
+      const disclosureLogs = await tx.select().from(auditLogs).where(eq(auditLogs.eventType, 'INSURANCE_SYNC')); // Example proxy
+      const truthScore = disclosureLogs.length > 0 ? 95 : 85;
+
       const rightsCompliance = {
         human_agency: {
           name: 'Right to Human Agency',
-          status: flagged === 0 ? 'COMPLIANT' : 'ATTENTION_NEEDED',
-          score: flagged === 0 ? 100 : Math.max(60, 100 - (flagged * 10))
+          status: humanAgencyScore >= 80 ? 'COMPLIANT' : 'ATTENTION_NEEDED',
+          score: humanAgencyScore
         },
         explanation: {
           name: 'Right to Explanation',
-          status: 'COMPLIANT',
-          score: 85
+          status: explanationScore >= 80 ? 'COMPLIANT' : 'PARTIAL',
+          score: explanationScore
         },
         empathy: {
           name: 'Right to Empathy',
-          status: 'COMPLIANT',
-          score: 80
+          status: empathyScore >= 70 ? 'COMPLIANT' : 'NEEDS_REWRITE',
+          score: empathyScore
         },
         correction: {
           name: 'Right to Correction',
-          status: 'COMPLIANT',
-          score: 90
+          status: correctionScore >= 80 ? 'COMPLIANT' : 'SLUGGISH',
+          score: correctionScore
         },
         truth: {
           name: 'Right to Truth',
-          status: 'COMPLIANT',
-          score: 95
+          status: truthScore >= 90 ? 'COMPLIANT' : 'PARTIAL',
+          score: truthScore
         }
       };
 
@@ -138,31 +167,6 @@ export async function GET() {
     console.error('[SECURITY] Dashboard API Error:', error);
     return NextResponse.json({ error: 'Failed to retrieve institutional intelligence' }, { status: 500 });
   }
-}
-
-function getTierRequirements(tier: string) {
-  const requirements = {
-    TIER_1: {
-      human_review: '100% of decisions',
-      audit_frequency: 'Quarterly',
-      incident_response: '24 hours',
-      governance: 'Board-level oversight required'
-    },
-    TIER_2: {
-      human_review: 'Edge cases and flagged decisions',
-      audit_frequency: 'Annual',
-      incident_response: '72 hours',
-      governance: 'Designated compliance officer'
-    },
-    TIER_3: {
-      human_review: 'Periodic sampling',
-      audit_frequency: 'Annual self-assessment',
-      incident_response: '7 days',
-      governance: 'Internal policy documentation'
-    }
-  };
-
-  return requirements[tier as keyof typeof requirements] || requirements.TIER_3;
 }
 
 function getTierRequirements(tier: string) {

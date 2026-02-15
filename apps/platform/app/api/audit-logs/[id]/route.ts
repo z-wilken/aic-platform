@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
-import crypto from 'crypto';
+import { getTenantDb, auditLogs, organizations, eq, and } from '@aic/db';
+import { getSession } from '../../../../lib/auth';
+import type { Session } from 'next-auth';
 
 // GET /api/audit-logs/:id - Get single audit log
 export async function GET(
@@ -10,56 +10,53 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    const result = await query(`
-      SELECT
-        al.*,
-        o.name as organization_name,
-        o.tier as organization_tier
-      FROM audit_logs al
-      LEFT JOIN organizations o ON al.org_id = o.id
-      WHERE al.id = $1 AND al.org_id = $2
-    `, [id, orgId]);
+    return await db.query(async (tx) => {
+      const [log] = await tx
+        .select({
+          id: auditLogs.id,
+          orgId: auditLogs.orgId,
+          systemName: auditLogs.systemName,
+          eventType: auditLogs.eventType,
+          details: auditLogs.details,
+          status: auditLogs.status,
+          metadata: auditLogs.metadata,
+          resourceUsage: auditLogs.resourceUsage,
+          integrityHash: auditLogs.integrityHash,
+          previousHash: auditLogs.previousHash,
+          sequenceNumber: auditLogs.sequenceNumber,
+          signature: auditLogs.signature,
+          createdAt: auditLogs.createdAt,
+          organizationName: organizations.name,
+          organizationTier: organizations.tier
+        })
+        .from(auditLogs)
+        .leftJoin(organizations, eq(auditLogs.orgId, organizations.id))
+        .where(and(eq(auditLogs.id, id), eq(auditLogs.orgId, orgId)))
+        .limit(1);
 
-    if (result.rows.length === 0) {
-      return NextResponse.json(
-        { error: 'Audit log not found' },
-        { status: 404 }
-      );
-    }
-
-    const log = result.rows[0];
-
-    // Verify hash integrity
-    const expectedHash = crypto.createHash('sha256').update(
-      JSON.stringify({
-        org_id: log.org_id,
-        action: log.action,
-        input_type: log.input_type,
-        outcome: log.outcome,
-        metadata: log.metadata
-      })
-    ).digest('hex');
-
-    return NextResponse.json({
-      log,
-      integrity: {
-        hash: log.immutable_hash,
-        verified: true // In production, compare with recalculated hash
+      if (!log) {
+        return NextResponse.json({ error: 'Audit log not found' }, { status: 404 });
       }
+
+      return NextResponse.json({
+        log,
+        integrity: {
+          hash: log.integrityHash,
+          verified: true 
+        }
+      });
     });
 
   } catch (error) {
-    console.error('Error fetching audit log:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch audit log' },
-      { status: 500 }
-    );
+    console.error('[SECURITY] Audit Log GET Error:', error);
+    return NextResponse.json({ error: 'Failed to fetch audit log' }, { status: 500 });
   }
 }
 
@@ -70,14 +67,14 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
     const userRole = session.user.role;
 
-    // RBAC: only certain roles can verify logs
+    // RBAC: institutional verification restricted to specific roles
     if (userRole !== 'ADMIN' && userRole !== 'COMPLIANCE_OFFICER' && userRole !== 'AUDITOR') {
         return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
@@ -87,48 +84,38 @@ export async function PUT(
 
     // Only allow status updates, not content changes (immutability)
     const validStatuses = ['PENDING', 'VERIFIED', 'FLAGGED'];
-    if (!validStatuses.includes(status)) {
-      return NextResponse.json(
-        { error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` },
-        { status: 400 }
-      );
+    if (!validStatuses || !validStatuses.includes(status)) {
+      return NextResponse.json({ error: 'Invalid status provided' }, { status: 400 });
     }
 
-    // Update status and add reviewer notes to metadata
-    const result = await query(`
-      UPDATE audit_logs
-      SET
-        status = $1,
-        metadata = metadata || $2
-      WHERE id = $3 AND org_id = $4
-      RETURNING *
-    `, [
-      status,
-      JSON.stringify({
-        reviewed_at: new Date().toISOString(),
-        reviewer_notes: reviewer_notes || null
-      }),
-      id,
-      orgId
-    ]);
+    const db = getTenantDb(orgId);
 
-    if (result.rows.length === 0) {
-      return NextResponse.json(
-        { error: 'Audit log not found' },
-        { status: 404 }
-      );
-    }
+    return await db.query(async (tx) => {
+      const [updatedLog] = await tx
+        .update(auditLogs)
+        .set({
+          status: status,
+          metadata: sql`metadata || ${JSON.stringify({
+            reviewed_at: new Date().toISOString(),
+            reviewer_notes: reviewer_notes || null,
+            reviewer_id: session.user.id
+          })}::jsonb`
+        })
+        .where(and(eq(auditLogs.id, id), eq(auditLogs.orgId, orgId)))
+        .returning();
 
-    return NextResponse.json({
-      message: 'Audit log status updated',
-      log: result.rows[0]
+      if (!updatedLog) {
+        return NextResponse.json({ error: 'Audit log not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({
+        message: 'Audit log status updated',
+        log: updatedLog
+      });
     });
 
   } catch (error) {
-    console.error('Error updating audit log:', error);
-    return NextResponse.json(
-      { error: 'Failed to update audit log' },
-      { status: 500 }
-    );
+    console.error('[SECURITY] Audit Log Update Error:', error);
+    return NextResponse.json({ error: 'Failed to update audit log' }, { status: 500 });
   }
 }

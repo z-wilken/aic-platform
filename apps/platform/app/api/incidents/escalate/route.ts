@@ -1,56 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, incidents, organizations, auditRequirements, notifications, eq, and, lt } from '@aic/db';
+import { auth } from '@aic/auth';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const session: any = await getSession();
-    if (!session || session.user?.role !== 'ADMIN') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    // Task M11: Institutional Escalation - SuperAdmin Only
+    if (!session?.user?.isSuperAdmin) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
+    const db = getSystemDb();
+    const seventyTwoHoursAgo = new Date(Date.now() - 72 * 60 * 60 * 1000);
+
     // 1. Identify incidents older than 72 hours that are still 'OPEN'
-    const staleIncidents = await query(`
-      SELECT i.*, o.name as org_name 
-      FROM incidents i
-      JOIN organizations o ON i.org_id = o.id
-      WHERE i.status = 'OPEN' 
-      AND i.created_at < NOW() - INTERVAL '72 hours'
-    `);
+    const staleIncidents = await db
+      .select({
+        id: incidents.id,
+        orgId: incidents.orgId,
+        citizenEmail: incidents.citizenEmail,
+        orgName: organizations.name
+      })
+      .from(incidents)
+      .innerJoin(organizations, eq(incidents.orgId, organizations.id))
+      .where(
+        and(
+          eq(incidents.status, 'OPEN'),
+          lt(incidents.createdAt, seventyTwoHoursAgo)
+        )
+      );
 
     const results = [];
 
-    for (const incident of staleIncidents.rows) {
-        // 2. Create a High-Priority Audit Requirement for remediation
-        await query(`
-            INSERT INTO audit_requirements (org_id, title, description, category, status)
-            VALUES ($1, $2, $3, 'OVERSIGHT', 'PENDING')
-        `, [
-            incident.org_id,
-            `URGENT: Incident Remediation (${incident.citizen_email})`,
-            `Automated escalation: Incident response exceeded 72-hour regulatory threshold. Immediate human review required.`
-        ]);
+    await db.transaction(async (tx) => {
+      for (const incident of staleIncidents) {
+          // 2. Create a High-Priority Audit Requirement for remediation
+          await tx.insert(auditRequirements).values({
+              orgId: incident.orgId,
+              title: `URGENT: Incident Remediation (${incident.citizenEmail})`,
+              description: `Automated escalation: Incident response exceeded 72-hour regulatory threshold. Immediate human review required.`,
+              category: 'OVERSIGHT',
+              status: 'PENDING'
+          });
 
-        // 3. Send Alert Notification
-        await query(`
-            INSERT INTO notifications (org_id, title, message, type)
-            VALUES ($1, 'REGULATORY ESCALATION', $2, 'ALERT')
-        `, [
-            incident.org_id,
-            `Incident response for ${incident.citizen_email} has been escalated to Audit Oversight. Integrity Score impact pending.`
-        ]);
+          // 3. Send Alert Notification
+          await tx.insert(notifications).values({
+              orgId: incident.orgId,
+              title: 'REGULATORY ESCALATION',
+              message: `Incident response for ${incident.citizenEmail} has been escalated to Audit Oversight. Integrity Score impact pending.`,
+              type: 'ALERT'
+          });
 
-        results.push(incident.id);
-    }
+          results.push(incident.id);
+      }
+    });
 
     return NextResponse.json({ 
         success: true, 
-        escalated_count: staleIncidents.rows.length,
+        escalated_count: staleIncidents.length,
         incident_ids: results 
     });
 
   } catch (error) {
-    console.error('Escalation Job Error:', error);
+    console.error('[SECURITY] Escalation Job Error:', error);
     return NextResponse.json({ error: 'Failed to process escalations' }, { status: 500 });
   }
 }

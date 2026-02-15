@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTenantDb, incidents, auditLogs, eq, and } from '@aic/db';
-import { getSession } from '../../../lib/auth';
+import { getSession } from '../../../../lib/auth';
 import type { Session } from 'next-auth';
 
 export async function PATCH(

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTenantDb, getSystemDb, organizations, auditLogs, eq, sql } from '@aic/db';
-import { getSession } from '../../../lib/auth';
+import { getSession } from '../../../../lib/auth';
 import type { Session } from 'next-auth';
 
 // GET /api/organizations/:id - Get organization details
