@@ -1,52 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, users, eq, and } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session: any = await getSession();
-  if (!session || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await auth();
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
     const { id } = await params;
     const { role, is_active, name } = await request.json();
 
-    const updates: string[] = [];
-    const values: any[] = [];
-    let paramIndex = 1;
+    const db = getSystemDb();
 
-    if (role !== undefined) {
-      updates.push(`role = $${paramIndex++}`);
-      values.push(role);
-    }
-    if (is_active !== undefined) {
-      updates.push(`is_active = $${paramIndex++}`);
-      values.push(is_active);
-    }
-    if (name !== undefined) {
-      updates.push(`name = $${paramIndex++}`);
-      values.push(name);
-    }
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        role, 
+        isActive: is_active, 
+        name,
+        updatedAt: new Date() 
+      })
+      .where(eq(users.id, id))
+      .returning({ 
+        id: users.id, 
+        email: users.email, 
+        name: users.name, 
+        role: users.role, 
+        isActive: users.isActive 
+      });
 
-    if (updates.length === 0) {
-      return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
-    }
-
-    values.push(id);
-    const result = await query(
-      `UPDATE users SET ${updates.join(', ')}, updated_at = NOW() WHERE id = $${paramIndex} RETURNING id, email, name, role, is_active`,
-      values
-    );
-
-    if (result.rows.length === 0) {
+    if (!updatedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, user: result.rows[0] });
+    return NextResponse.json({ success: true, user: updatedUser });
   } catch (error) {
     console.error('User Patch Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -57,23 +49,36 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session: any = await getSession();
-  if (!session || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await auth();
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
     const { id } = await params;
+    const { searchParams } = new URL(request.url);
+    const org_id = searchParams.get('org_id');
     
     // Don't allow deleting yourself
     if (id === session.user.id) {
         return NextResponse.json({ error: 'Cannot delete self' }, { status: 400 });
     }
 
-    const result = await query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
+    const db = getSystemDb();
 
-    if (result.rows.length === 0) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    // Task M7: org_id validation if provided
+    const whereClause = eq(users.id, id);
+    if (org_id) {
+        return await db.delete(users).where(and(eq(users.id, id), eq(users.orgId, org_id))).returning({ id: users.id });
+    }
+
+    const [deletedUser] = await db
+      .delete(users)
+      .where(whereClause)
+      .returning({ id: users.id });
+
+    if (!deletedUser) {
+      return NextResponse.json({ error: 'User not found or org_id mismatch' }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, message: 'User removed from registry' });

@@ -1,20 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, newsletterSubscribers, desc, eq } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function GET() {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
-    const result = await query(
-      'SELECT * FROM newsletter_subscribers WHERE status = $1 ORDER BY subscribed_at DESC',
-      ['ACTIVE']
-    );
-    return NextResponse.json({ subscribers: result.rows });
+    const db = getSystemDb();
+    const result = await db
+      .select()
+      .from(newsletterSubscribers)
+      .where(eq(newsletterSubscribers.status, 'ACTIVE'))
+      .orderBy(desc(newsletterSubscribers.subscribedAt));
+
+    return NextResponse.json({ subscribers: result });
   } catch (error) {
     console.error('HQ Subscribers API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -22,7 +25,6 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  // Public-facing part of the API (called from apps/web)
   try {
     const body = await request.json();
     const { email } = body;
@@ -31,10 +33,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    await query(
-      'INSERT INTO newsletter_subscribers (email) VALUES ($1) ON CONFLICT (email) DO UPDATE SET status = $2',
-      [email.toLowerCase(), 'ACTIVE']
-    );
+    const db = getSystemDb();
+    await db
+      .insert(newsletterSubscribers)
+      .values({ email: email.toLowerCase() })
+      .onConflictDoUpdate({
+        target: newsletterSubscribers.email,
+        set: { status: 'ACTIVE' }
+      });
 
     return NextResponse.json({ success: true, message: 'Subscribed successfully' });
   } catch (error) {

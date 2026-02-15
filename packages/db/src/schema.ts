@@ -171,9 +171,11 @@ export const leads = pgTable('leads', {
 export const apiKeys = pgTable('api_keys', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
-  keyHash: varchar('key_hash', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
-  lastUsedAt: timestamp('last_login', { withTimezone: true }),
+  keyPrefix: varchar('key_prefix', { length: 16 }).notNull(),
+  keyHash: varchar('key_hash', { length: 255 }).notNull(),
+  isActive: boolean('is_active').default(true),
+  lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
   expiresAt: timestamp('expires_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
@@ -225,4 +227,38 @@ export const passwordResetTokens = pgTable('password_reset_tokens', {
   used: boolean('used').default(false),
   expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Alpha Applications
+export const alphaApplications = pgTable('alpha_applications', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  company: varchar('company', { length: 255 }),
+  useCase: text('use_case'),
+  status: varchar('status', { length: 50 }).default('PENDING'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Posts (Internal CMS)
+export const posts = pgTable('posts', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).unique().notNull(),
+  content: text('content').notNull(),
+  excerpt: text('excerpt'),
+  category: varchar('category', { length: 50 }).default('General'),
+  status: varchar('status', { length: 50 }).default('DRAFT'),
+  authorId: uuid('author_id').references(() => users.id),
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// Newsletter Subscribers
+export const newsletterSubscribers = pgTable('newsletter_subscribers', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar('email', { length: 255 }).unique().notNull(),
+  status: varchar('status', { length: 50 }).default('ACTIVE'),
+  subscribedAt: timestamp('subscribed_at', { withTimezone: true }).defaultNow(),
 });

@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getTenantDb, auditLogs } from '@aic/db';
 import { getSession } from '../../../lib/auth';
-import { query } from '../../../lib/db';
+import type { Session } from 'next-auth';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
 const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
 
 export async function POST(request: NextRequest) {
   try {
-    const session: any = await getSession();
-    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    const session = await getSession() as Session | null;
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
 
     const body = await request.json();
     const { modelType, inputFeatures, decision } = body;
@@ -33,23 +37,25 @@ export async function POST(request: NextRequest) {
 
     const explanation = await engineResponse.json();
 
+    const db = getTenantDb(orgId);
+
     // 2. Log this as a transparency event in audit_logs
-    await query(
-        `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash) 
-         VALUES ($1, $2, $3, $4, $5)`,
-        [
-            orgId,
-            modelType,
-            'TRANSPARENCY_EXPLANATION',
-            JSON.stringify({ input: inputFeatures, output: explanation }),
-            'SHA256-GEN-EXP'
-        ]
-    );
+    await db.query(async (tx) => {
+      await tx.insert(auditLogs).values({
+        orgId,
+        systemName: modelType,
+        eventType: 'TRANSPARENCY_EXPLANATION',
+        details: { input: inputFeatures, output: explanation },
+        status: 'VERIFIED',
+        integrityHash: `EXP-${Date.now()}`
+      });
+    });
 
     return NextResponse.json({ success: true, explanation });
 
-  } catch (error: any) {
-    console.error('Explanation Service Error:', error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[SECURITY] Explanation Service Error:', message);
     return NextResponse.json({ error: 'Failed to generate explanation' }, { status: 500 });
   }
 }

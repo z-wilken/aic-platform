@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, scheduledAudits, eq } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function PATCH(
   request: NextRequest,
@@ -8,51 +8,32 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user?.isSuperAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const { status, notes, auditor_id, scheduled_at } = await request.json();
 
-    const updates: string[] = [];
-    const values: any[] = [];
-    let paramIndex = 1;
+    const db = getSystemDb();
 
-    if (status !== undefined) {
-      updates.push(`status = $${paramIndex++}`);
-      values.push(status);
-    }
-    if (notes !== undefined) {
-      updates.push(`notes = $${paramIndex++}`);
-      values.push(notes);
-    }
-    if (auditor_id !== undefined) {
-      updates.push(`auditor_id = $${paramIndex++}`);
-      values.push(auditor_id);
-    }
-    if (scheduled_at !== undefined) {
-      updates.push(`scheduled_at = $${paramIndex++}`);
-      values.push(scheduled_at);
-    }
+    const [updatedAudit] = await db
+      .update(scheduledAudits)
+      .set({ 
+        status, 
+        notes, 
+        auditorId: auditor_id, 
+        scheduledAt: scheduled_at ? new Date(scheduled_at) : undefined,
+        updatedAt: new Date() 
+      })
+      .where(eq(scheduledAudits.id, id))
+      .returning();
 
-    if (updates.length === 0) {
-      return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
-    }
-
-    values.push(id);
-    const result = await query(`
-      UPDATE scheduled_audits 
-      SET ${updates.join(', ')}, updated_at = NOW() 
-      WHERE id = $${paramIndex} 
-      RETURNING *
-    `, values);
-
-    if (result.rows.length === 0) {
+    if (!updatedAudit) {
       return NextResponse.json({ error: 'Audit not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, audit: result.rows[0] });
+    return NextResponse.json({ success: true, audit: updatedAudit });
   } catch (error) {
     console.error('Scheduled Audit PATCH Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -65,14 +46,18 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
-    if (!session || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user?.isSuperAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const result = await query('DELETE FROM scheduled_audits WHERE id = $1 RETURNING id', [id]);
+    const db = getSystemDb();
+    const [deletedAudit] = await db
+      .delete(scheduledAudits)
+      .where(eq(scheduledAudits.id, id))
+      .returning({ id: scheduledAudits.id });
 
-    if (result.rows.length === 0) {
+    if (!deletedAudit) {
       return NextResponse.json({ error: 'Audit not found' }, { status: 404 });
     }
 

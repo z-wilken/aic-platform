@@ -1,84 +1,51 @@
-import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { getSystemDb, leads, desc } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function GET() {
+  const session = await auth();
 
-  const session: any = await getSession();
-
-
-
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
-
-
 
   try {
+    const db = getSystemDb();
+    const result = await db.select().from(leads).orderBy(desc(leads.createdAt));
 
-    const result = await query('SELECT * FROM leads ORDER BY created_at DESC');
-
-    return NextResponse.json({ leads: result.rows });
-
+    return NextResponse.json({ leads: result });
   } catch (error) {
-
     console.error('Admin Leads API Error:', error);
-
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-
   }
-
 }
 
+export async function POST(request: NextRequest) {
+  const session = await auth();
 
-
-export async function POST(request: Request) {
-
-  const session: any = await getSession();
-
-
-
-  if (!session || session.user.role !== 'ADMIN') {
-
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
-
-
 
   try {
-
     const body = await request.json();
-
     const { email, company, status = 'PROSPECT' } = body;
 
-
-
     if (!email) {
-
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
-
     }
 
+    const db = getSystemDb();
+    const [newLead] = await db.insert(leads).values({
+      email: email.toLowerCase(),
+      company: company || '',
+      source: 'MANUAL',
+      status: status
+    }).returning();
 
-
-    const result = await query(
-      "INSERT INTO leads (email, company, source, status) VALUES ($1, $2, 'MANUAL', $3) RETURNING *",
-      [email.toLowerCase(), company || '', status]
-    );
-
-
-
-    return NextResponse.json({ success: true, lead: result.rows[0] });
-
+    return NextResponse.json({ success: true, lead: newLead });
   } catch (error) {
-
     console.error('Admin Lead Create Error:', error);
-
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-
   }
-
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, getSystemDb, organizations, auditLogs, eq, sql } from '@aic/db';
+import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
 // GET /api/organizations/:id - Get organization details
 export async function GET(
@@ -9,7 +10,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -20,56 +21,34 @@ export async function GET(
         return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
-    const result = await query(
-      'SELECT * FROM organizations WHERE id = $1',
-      [id]
-    );
+    const db = session.user.isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    if (result.rows.length === 0) {
-      return NextResponse.json(
-        { error: 'Organization not found' },
-        { status: 404 }
-      );
-    }
+    return await db.query(async (tx) => {
+      const [org] = await tx.select().from(organizations).where(eq(organizations.id, id)).limit(1);
 
-    const org = result.rows[0];
-
-    // Get recent audit stats
-    const statsResult = await query(`
-      SELECT
-        COUNT(*) as total_audits,
-        COUNT(*) FILTER (WHERE status = 'VERIFIED') as verified,
-        COUNT(*) FILTER (WHERE status = 'FLAGGED') as flagged,
-        COUNT(*) FILTER (WHERE status = 'PENDING') as pending
-      FROM audit_logs
-      WHERE org_id = $1
-    `, [id]);
-
-    const stats = statsResult.rows[0];
-
-    return NextResponse.json({
-      organization: {
-        id: org.id,
-        name: org.name,
-        tier: org.tier,
-        integrity_score: org.integrity_score,
-        is_alpha: org.is_alpha,
-        created_at: org.created_at
-      },
-      audit_stats: {
-        total: parseInt(stats.total_audits) || 0,
-        verified: parseInt(stats.verified) || 0,
-        flagged: parseInt(stats.flagged) || 0,
-        pending: parseInt(stats.pending) || 0
+      if (!org) {
+        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
       }
+
+      // Get recent audit stats (using direct SQL filter for efficiency)
+      const [stats] = await tx.select({
+        total: sql<number>`count(*)`,
+        verified: sql<number>`count(*) filter (where status = 'VERIFIED')`,
+        flagged: sql<number>`count(*) filter (where status = 'FLAGGED')`,
+        pending: sql<number>`count(*) filter (where status = 'PENDING')`
+      })
+      .from(auditLogs)
+      .where(eq(auditLogs.orgId, id));
+
+      return NextResponse.json({
+        organization: org,
+        audit_stats: stats
+      });
     });
 
   } catch (error) {
-    console.error('Error fetching organization:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch organization' },
-      { status: 500 }
-    );
+    console.error('[SECURITY] Organization GET Error:', error);
+    return NextResponse.json({ error: 'Failed to fetch organization' }, { status: 500 });
   }
 }
 
@@ -80,7 +59,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
 
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -91,55 +70,39 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { name, tier, integrity_score } = body;
+    const { name, tier } = body;
 
-    const updates: string[] = [];
-    const values: any[] = [];
-    let paramIndex = 1;
+    // Task M15: Institutional Security - integrity_score is READ-ONLY for users
+    // It is only updated by the Intelligence Service.
 
-    if (name !== undefined) {
-      updates.push(`name = $${paramIndex++}`);
-      values.push(name);
-    }
-    if (tier !== undefined) {
-      updates.push(`tier = $${paramIndex++}`);
-      values.push(tier);
-    }
-    if (integrity_score !== undefined) {
-      updates.push(`integrity_score = $${paramIndex++}`);
-      values.push(integrity_score);
+    if (name === undefined && tier === undefined) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
-    if (updates.length === 0) {
-      return NextResponse.json(
-        { error: 'No fields to update' },
-        { status: 400 }
-      );
-    }
+    const db = session.user.isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    values.push(id);
-    const result = await query(
-      `UPDATE organizations SET ${updates.join(', ')} WHERE id = $${paramIndex} RETURNING *`,
-      values
-    );
+    return await db.query(async (tx) => {
+      const [updatedOrg] = await tx
+        .update(organizations)
+        .set({ 
+          name: name,
+          tier: tier
+        })
+        .where(eq(organizations.id, id))
+        .returning();
 
-    if (result.rows.length === 0) {
-      return NextResponse.json(
-        { error: 'Organization not found' },
-        { status: 404 }
-      );
-    }
+      if (!updatedOrg) {
+        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+      }
 
-    return NextResponse.json({
-      message: 'Organization updated successfully',
-      organization: result.rows[0]
+      return NextResponse.json({
+        message: 'Organization updated successfully',
+        organization: updatedOrg
+      });
     });
 
   } catch (error) {
-    console.error('Error updating organization:', error);
-    return NextResponse.json(
-      { error: 'Failed to update organization' },
-      { status: 500 }
-    );
+    console.error('[SECURITY] Organization Update Error:', error);
+    return NextResponse.json({ error: 'Failed to update organization' }, { status: 500 });
   }
 }

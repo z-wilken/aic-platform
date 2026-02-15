@@ -1,34 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, auditLogs, organizations, eq, desc } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function GET(request: NextRequest) {
-  const session: any = await getSession();
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await auth();
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
     const { searchParams } = new URL(request.url);
     const org_id = searchParams.get('org_id');
 
-    let sql = `
-      SELECT al.*, o.name as organization_name 
-      FROM audit_logs al
-      JOIN organizations o ON al.org_id = o.id
-    `;
-    const params = [];
+    const db = getSystemDb();
+    
+    const result = await db
+      .select({
+        id: auditLogs.id,
+        orgId: auditLogs.orgId,
+        systemName: auditLogs.systemName,
+        eventType: auditLogs.eventType,
+        status: auditLogs.status,
+        createdAt: auditLogs.createdAt,
+        integrityHash: auditLogs.integrityHash,
+        organizationName: organizations.name
+      })
+      .from(auditLogs)
+      .innerJoin(organizations, eq(auditLogs.orgId, organizations.id))
+      .where(org_id ? eq(auditLogs.orgId, org_id) : undefined)
+      .orderBy(desc(auditLogs.createdAt))
+      .limit(100);
 
-    if (org_id) {
-      sql += ` WHERE al.org_id = $1`;
-      params.push(org_id);
-    }
-
-    sql += ` ORDER BY al.created_at DESC LIMIT 100`;
-
-    const result = await query(sql, params);
-
-    return NextResponse.json({ logs: result.rows });
+    return NextResponse.json({ logs: result });
   } catch (error) {
     console.error('Admin Audit Logs API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

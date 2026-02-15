@@ -1,17 +1,18 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, alphaApplications, desc } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function GET() {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
-    const result = await query('SELECT * FROM alpha_applications ORDER BY created_at DESC');
-    return NextResponse.json({ applications: result.rows });
+    const db = getSystemDb();
+    const result = await db.select().from(alphaApplications).orderBy(desc(alphaApplications.createdAt));
+    return NextResponse.json({ applications: result });
   } catch (error) {
     console.error('Admin Applications API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

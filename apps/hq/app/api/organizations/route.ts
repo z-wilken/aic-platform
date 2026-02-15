@@ -1,24 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, organizations, users, auditRequirements, notifications, leads, eq, desc } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function GET() {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
-    const result = await query(`
-      SELECT 
-        o.*, 
-        u.name as auditor_name 
-      FROM organizations o
-      LEFT JOIN users u ON o.auditor_id = u.id
-      ORDER BY o.created_at DESC
-    `);
-    return NextResponse.json({ organizations: result.rows });
+    const db = getSystemDb();
+    const result = await db
+      .select({
+        id: organizations.id,
+        name: organizations.name,
+        tier: organizations.tier,
+        integrityScore: organizations.integrityScore,
+        isAlpha: organizations.isAlpha,
+        createdAt: organizations.createdAt,
+        auditorName: users.name
+      })
+      .from(organizations)
+      .leftJoin(users, eq(organizations.auditorId, users.id))
+      .orderBy(desc(organizations.createdAt));
+
+    return NextResponse.json({ organizations: result });
   } catch (error) {
     console.error('Admin Organizations API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -26,10 +33,10 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -40,10 +47,10 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'org_id is required' }, { status: 400 });
     }
 
-    await query(
-      'UPDATE organizations SET auditor_id = $1 WHERE id = $2',
-      [auditor_id === 'none' ? null : auditor_id, org_id]
-    );
+    const db = getSystemDb();
+    await db.update(organizations)
+      .set({ auditorId: auditor_id === 'none' ? null : auditor_id })
+      .where(eq(organizations.id, org_id));
 
     return NextResponse.json({ success: true, message: 'Auditor assigned successfully' });
   } catch (error) {
@@ -53,10 +60,10 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -67,43 +74,53 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Name and Tier are required' }, { status: 400 });
     }
 
-    // 1. Create the Organization
-    const orgResult = await query(
-      'INSERT INTO organizations (name, tier, is_alpha) VALUES ($1, $2, TRUE) RETURNING id',
-      [name, tier]
-    );
-    const orgId = orgResult.rows[0].id;
+    const db = getSystemDb();
 
-    // 2. If a lead_id is provided, update the lead status
-    if (lead_id) {
-        await query(
-            "UPDATE leads SET status = 'ALPHA_ENROLLED' WHERE id = $1",
-            [lead_id]
-        );
-    }
+    return await db.transaction(async (tx) => {
+      // 1. Create the Organization
+      const [newOrg] = await tx.insert(organizations).values({
+        name,
+        tier,
+        isAlpha: true
+      }).returning({ id: organizations.id });
 
-    // 3. Generate Initial Audit Requirements for the new Alpha Participant
-    const initialRequirements = [
-        ['POPIA Section 71 Policy', 'Formal document outlining human intervention procedures.', 'DOCUMENTATION'],
-        ['AI System Inventory', 'List of all production models and their business purpose.', 'DOCUMENTATION'],
-        ['Human-in-the-Loop Interface', 'Technical proof of manual override capabilities.', 'OVERSIGHT'],
-        ['Initial Bias Audit', 'Baseline statistical analysis of primary model datasets.', 'TECHNICAL']
-    ];
+      const orgId = newOrg.id;
 
-    for (const [title, desc, cat] of initialRequirements) {
-        await query(
-            'INSERT INTO audit_requirements (org_id, title, description, category, status) VALUES ($1, $2, $3, $4, $5)',
-            [orgId, title, desc, cat, 'PENDING']
-        );
-    }
+      // 2. If a lead_id is provided, update the lead status
+      if (lead_id) {
+          await tx.update(leads)
+            .set({ status: 'ALPHA_ENROLLED' })
+            .where(eq(leads.id, lead_id));
+      }
 
-    // 4. Send Welcome Notification
-    await query(
-        'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4)',
-        [orgId, 'Welcome to AIC Alpha', 'Your certification roadmap has been generated. Please review your initial requirements.', 'WELCOME']
-    );
+      // 3. Generate Initial Audit Requirements
+      const initialRequirements = [
+          { title: 'POPIA Section 71 Policy', description: 'Formal document outlining human intervention procedures.', category: 'DOCUMENTATION' },
+          { title: 'AI System Inventory', description: 'List of all production models and their business purpose.', category: 'DOCUMENTATION' },
+          { title: 'Human-in-the-Loop Interface', description: 'Technical proof of manual override capabilities.', category: 'OVERSIGHT' },
+          { title: 'Initial Bias Audit', description: 'Baseline statistical analysis of primary model datasets.', category: 'TECHNICAL' }
+      ];
 
-    return NextResponse.json({ success: true, orgId });
+      for (const req of initialRequirements) {
+          await tx.insert(auditRequirements).values({
+            orgId,
+            title: req.title,
+            description: req.description,
+            category: req.category,
+            status: 'PENDING'
+          });
+      }
+
+      // 4. Send Welcome Notification
+      await tx.insert(notifications).values({
+          orgId,
+          title: 'Welcome to AIC Alpha',
+          message: 'Your certification roadmap has been generated. Please review your initial requirements.',
+          type: 'WELCOME'
+      });
+
+      return NextResponse.json({ success: true, orgId });
+    });
   } catch (error) {
     console.error('Admin Organization Create Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

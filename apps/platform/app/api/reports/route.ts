@@ -1,56 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, complianceReports, organizations, incidents, eq, desc, sql, and } from '@aic/db';
+import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
 export async function GET() {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    const result = await query(
-      'SELECT * FROM compliance_reports WHERE org_id = $1 ORDER BY created_at DESC',
-      [orgId]
-    );
+    return await db.query(async (tx) => {
+      const result = await tx
+        .select()
+        .from(complianceReports)
+        .where(eq(complianceReports.orgId, orgId))
+        .orderBy(desc(complianceReports.createdAt));
 
-    return NextResponse.json({
-        reports: result.rows
+      return NextResponse.json({
+          reports: result
+      });
     });
   } catch (error) {
-    console.error('Reports API Error:', error);
+    console.error('[SECURITY] Reports GET Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
     try {
-        const session: any = await getSession();
+        const session = await getSession() as Session | null;
         if (!session || !session.user?.orgId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         const orgId = session.user.orgId;
+        const db = getTenantDb(orgId);
 
-        // 1. Fetch current score and findings
-        const orgResult = await query('SELECT integrity_score FROM organizations WHERE id = $1', [orgId]);
-        const incidentResult = await query("SELECT count(*) FROM incidents WHERE org_id = $1 AND status = 'OPEN'", [orgId]);
-        
-        const score = orgResult.rows[0].integrity_score;
-        const findings = parseInt(incidentResult.rows[0].count);
-        const monthYear = new Date().toLocaleString('default', { month: 'short', year: 'numeric' });
+        return await db.query(async (tx) => {
+          // 1. Fetch current score and findings
+          const [org] = await tx.select({ integrityScore: organizations.integrityScore }).from(organizations).where(eq(organizations.id, orgId)).limit(1);
+          const [incidentCount] = await tx.select({ count: sql<number>`count(*)` }).from(incidents).where(and(eq(incidents.orgId, orgId), eq(incidents.status, 'OPEN')));
+          
+          if (!org) {
+            return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+          }
 
-        // 2. Insert new report snapshot
-        const result = await query(
-            `INSERT INTO compliance_reports (org_id, month_year, integrity_score, audit_status, findings_count) 
-             VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-            [orgId, monthYear, score, score >= 80 ? 'COMPLIANT' : 'REMEDIATION_REQUIRED', findings]
-        );
+          const score = org.integrityScore || 0;
+          const findings = Number(incidentCount?.count || 0);
+          const monthYear = new Date().toLocaleString('default', { month: 'short', year: 'numeric' });
 
-        return NextResponse.json({ success: true, report: result.rows[0] });
+          // 2. Insert new report snapshot
+          const [newReport] = await tx.insert(complianceReports).values({
+            orgId,
+            monthYear,
+            integrityScore: score,
+            auditStatus: score >= 80 ? 'COMPLIANT' : 'REMEDIATION_REQUIRED',
+            findingsCount: findings
+          }).returning();
+
+          return NextResponse.json({ success: true, report: newReport });
+        });
 
     } catch (error) {
-        console.error('Report Generation Error:', error);
+        console.error('[SECURITY] Report Generation Error:', error);
         return NextResponse.json({ error: 'Failed to generate report' }, { status: 500 });
     }
 }

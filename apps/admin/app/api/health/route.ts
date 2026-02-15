@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getSystemDb, sql } from '@aic/db';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
 const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
@@ -16,10 +16,12 @@ export async function GET() {
   // 1. Database check
   const dbStart = Date.now();
   try {
-    await query('SELECT 1');
+    const db = getSystemDb();
+    await db.execute(sql`SELECT 1`);
     checks.database = { status: 'ok', latency_ms: Date.now() - dbStart };
-  } catch (err: any) {
-    checks.database = { status: 'error', latency_ms: Date.now() - dbStart, detail: err.message };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    checks.database = { status: 'error', latency_ms: Date.now() - dbStart, detail: message };
   }
 
   // 2. Engine check
@@ -27,7 +29,7 @@ export async function GET() {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(`${ENGINE_URL}/health`, {
+    const res = await fetch(`${ENGINE_URL}/`, {
       signal: controller.signal,
       headers: ENGINE_API_KEY ? { 'X-API-Key': ENGINE_API_KEY } : {},
     });
@@ -38,16 +40,18 @@ export async function GET() {
       checks.engine = {
         status: 'ok',
         latency_ms: Date.now() - engineStart,
-        detail: `v${data.version || 'unknown'} — ${(data.capabilities || []).length} capabilities`,
+        detail: data.status || 'Operational',
       };
     } else {
       checks.engine = { status: 'error', latency_ms: Date.now() - engineStart, detail: `HTTP ${res.status}` };
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    const isTimeout = err instanceof Error && err.name === 'AbortError';
     checks.engine = {
       status: 'error',
       latency_ms: Date.now() - engineStart,
-      detail: err.name === 'AbortError' ? 'Timeout (5s)' : err.message,
+      detail: isTimeout ? 'Timeout (5s)' : message,
     };
   }
 

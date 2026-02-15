@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { ErrorFactory } from '@/lib/errors';
+import { getSystemDb, users, passwordResetTokens, eq } from '@aic/db';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
@@ -8,29 +7,41 @@ export async function POST(request: NextRequest) {
         const body = await request.json().catch(() => null);
         
         if (!body || !body.email) {
-            return ErrorFactory.badRequest('Email is required');
+            return NextResponse.json({ error: 'Email is required' }, { status: 400 });
         }
 
         const email = body.email;
-        const userResult = await query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+        const db = getSystemDb();
 
-        if (userResult.rows.length === 0) {
+        const [user] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(eq(users.email, email.toLowerCase()))
+            .limit(1);
+
+        if (!user) {
             // For security, don't reveal if user exists
             return NextResponse.json({ success: true, message: 'If an account exists, a reset link has been sent.' });
         }
 
-        const userId = userResult.rows[0].id;
         const token = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 3600000); // 1 hour
 
-        // Deactivate old tokens for this user
-        await query('UPDATE password_reset_tokens SET used = TRUE WHERE user_id = $1', [userId]);
+        await db.transaction(async (tx) => {
+            // Task M5: Atomic Token Management
+            // Deactivate old tokens for this user
+            await tx
+                .update(passwordResetTokens)
+                .set({ used: true })
+                .where(eq(passwordResetTokens.userId, user.id));
 
-        // Insert new token
-        await query(
-            'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
-            [userId, token, expiresAt]
-        );
+            // Insert new token
+            await tx.insert(passwordResetTokens).values({
+                userId: user.id,
+                token,
+                expiresAt
+            });
+        });
 
         // In production, send real email. For now, log to console.
         const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
@@ -42,7 +53,7 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error('Forgot Password Error:', error);
-        return ErrorFactory.internal('Failed to process recovery request');
+        console.error('[SECURITY] Forgot Password Failure:', error);
+        return NextResponse.json({ error: 'Technical validation failed during recovery' }, { status: 500 });
     }
 }
