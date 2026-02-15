@@ -2,24 +2,23 @@ import { NextResponse } from 'next/server';
 import { organizations, auditRequirements, complianceReports, desc, getTenantDb, calculateOrganizationIntelligence } from '@aic/db';
 import { auth } from '@aic/auth';
 import { StatsResponseSchema } from '@aic/types';
-import { Session } from 'next-auth';
 
 type AuditRequirement = typeof auditRequirements.$inferSelect;
 
 export async function GET() {
   try {
-    const session = await auth() as any;
+    const session = await auth();
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const orgId = session.user.orgId as string;
+    const orgId = session.user.orgId;
     const tdb = getTenantDb(orgId);
 
     // 1. Execute Core Business Logic (Decoupled & RLS Enforced)
     const intel = await calculateOrganizationIntelligence(orgId);
 
     // 2. Fetch Additional Telemetry (Using tdb.query to ensure RLS context)
-    const result = await tdb.query(async (tx: any) => {
+    const result = await tdb.query(async (tx) => {
       const [org] = await tx.select().from(organizations).limit(1);
       
       const requirements = await tx.select().from(auditRequirements);
