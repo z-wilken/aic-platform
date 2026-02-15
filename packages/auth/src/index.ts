@@ -1,12 +1,45 @@
-import NextAuth, { NextAuthConfig } from "next-auth"
+import NextAuth, { NextAuthConfig, DefaultSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
 import { getSystemDb, users, organizations, eq, like } from "@aic/db"
 import { UserRole, CertificationTier, Permissions } from "@aic/types"
-import bcrypt from "bcryptjs"
 
-const db = getSystemDb();
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string
+      role: UserRole
+      orgId: string
+      orgName: string
+      tier: CertificationTier
+      isSuperAdmin: boolean
+      permissions: Permissions
+    } & DefaultSession["user"]
+  }
+
+  interface User {
+    id?: string
+    role?: UserRole
+    orgId?: string
+    orgName?: string
+    tier?: CertificationTier
+    isSuperAdmin?: boolean
+    permissions?: Permissions
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string
+    role: UserRole
+    orgId: string
+    orgName: string
+    tier: CertificationTier
+    isSuperAdmin: boolean
+    permissions: Permissions
+  }
+}
 
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -30,6 +63,7 @@ export const authConfig: NextAuthConfig = {
           throw new Error("Email and password required")
         }
 
+        const db = getSystemDb();
         try {
           const [user] = await db
             .select({
@@ -55,7 +89,8 @@ export const authConfig: NextAuthConfig = {
               throw new Error("Account is deactivated")
             }
 
-            const isValid = await bcrypt.compare(credentials.password.toString(), user.passwordHash)
+            const bcrypt = await import("bcryptjs")
+            const isValid = await bcrypt.default.compare(credentials.password.toString(), user.passwordHash)
 
             if (!isValid) {
               throw new Error("Invalid credentials")
@@ -73,7 +108,7 @@ export const authConfig: NextAuthConfig = {
               orgName: user.orgName || 'AIC Internal',
               tier: (user.tier as CertificationTier) || 'TIER_3',
               isSuperAdmin: user.isSuperAdmin || false,
-              permissions: (user.permissions as unknown as Permissions) || { can_publish: false, can_verify: false, can_manage_users: false }
+              permissions: (user.permissions as unknown as Permissions) || { can_view_audits: true, can_view_incidents: true, can_view_intelligence: true }
             }
           }
         } catch (dbError) {
@@ -96,6 +131,7 @@ export const authConfig: NextAuthConfig = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async signIn({ user, account }: { user: any, account?: any }) {
       if (account?.provider === 'google' || account?.provider === 'microsoft-entra-id') {
+        const db = getSystemDb();
         try {
           const [existingUser] = await db
             .select({ id: users.id, orgId: users.orgId, role: users.role })
@@ -155,6 +191,7 @@ export const authConfig: NextAuthConfig = {
       }
 
       if (token.orgId && !token.orgName) {
+        const db = getSystemDb();
         try {
           const [org] = await db
             .select({ name: organizations.name, tier: organizations.tier })
@@ -188,6 +225,10 @@ export const authConfig: NextAuthConfig = {
   },
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig)
+const nextAuth = NextAuth(authConfig);
+export const handlers = nextAuth.handlers;
+export const auth = nextAuth.auth;
+export const signIn = nextAuth.signIn;
+export const signOut = nextAuth.signOut;
+
 export * from "./services/signing"
-export * from "@aic/types"

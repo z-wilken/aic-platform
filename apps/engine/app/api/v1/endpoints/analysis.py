@@ -96,7 +96,7 @@ class BatchAnalysisRequest(BaseModel):
 # --- Task Monitoring & Async Integration ---
 
 from app.tasks.analysis import (
-    task_disparate_impact, task_equalized_odds, task_intersectional
+    task_disparate_impact, task_equalized_odds, task_intersectional, task_explain
 )
 from celery.result import AsyncResult
 
@@ -133,6 +133,16 @@ def intersectional_analysis_async(body: IntersectionalRequest, request: Request)
     task = task_intersectional.delay(
         body.data, body.protected_attributes, body.outcome_variable, 
         body.min_group_size, body.previous_hash
+    )
+    return {"task_id": task.id, "status": "PENDING"}
+
+@router.post("/explain/async")
+@limiter.limit("20/minute")
+def explain_async(body: ExplainabilityRequest, request: Request):
+    """Asynchronous explanation request (SHAP or LIME)."""
+    task = task_explain.delay(
+        body.data, body.target_column, body.instance,
+        body.method, body.num_features
     )
     return {"task_id": task.id, "status": "PENDING"}
 

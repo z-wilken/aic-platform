@@ -17,11 +17,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const token: any = await getToken({
-    req: request as any,
+   
+  const token = await getToken({
+    req: request,
     secret: process.env.NEXTAUTH_SECRET
-  })
+  });
 
   // Not authenticated - redirect to login
   if (!token) {

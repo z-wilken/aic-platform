@@ -1,23 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, users, organizations, eq, desc } from '@aic/db';
+import { auth } from '@aic/auth';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+
+const UserCreateSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  name: z.string().min(1),
+  role: z.enum(['ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER']),
+  orgId: z.string().uuid().optional().nullable()
+});
 
 export async function GET() {
-  const session: any = await getSession();
-  if (!session || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await auth();
+  if (!session?.user?.isSuperAdmin) {
+    console.warn(`[SECURITY] Unauthorized access attempt to global users by ${session?.user?.email}`);
+    return NextResponse.json({ error: 'Unauthorized: SuperAdmin privileges required' }, { status: 403 });
   }
 
   try {
-    const result = await query(`
-      SELECT u.id, u.email, u.name, u.role, u.is_active, u.created_at, o.name as org_name
-      FROM users u
-      LEFT JOIN organizations o ON u.org_id = o.id
-      ORDER BY u.created_at DESC
-    `);
+    const db = getSystemDb();
+    const result = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        role: users.role,
+        isActive: users.isActive,
+        createdAt: users.createdAt,
+        orgName: organizations.name
+      })
+      .from(users)
+      .leftJoin(organizations, eq(users.orgId, organizations.id))
+      .orderBy(desc(users.createdAt));
 
-    return NextResponse.json({ users: result.rows });
+    return NextResponse.json({ users: result });
   } catch (error) {
     console.error('Admin Users GET Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -25,29 +43,41 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const session: any = await getSession();
-  if (!session || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await auth();
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
     const body = await request.json();
-    const { email, password, name, role, org_id } = body;
+    const validation = UserCreateSchema.safeParse(body);
 
-    if (!email || !password || !name || !role) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!validation.success) {
+      return NextResponse.json({ error: 'Validation failed', details: validation.error.format() }, { status: 400 });
     }
 
-    const salt = await bcrypt.genSalt(10);
+    const { email, password, name, role, orgId } = validation.data;
+
+    const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const result = await query(`
-      INSERT INTO users (email, password_hash, name, role, org_id)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING id, email, name, role
-    `, [email.toLowerCase(), passwordHash, name, role, org_id || null]);
+    const db = getSystemDb();
+    const [newUser] = await db.insert(users).values({
+      email: email.toLowerCase(),
+      passwordHash,
+      name,
+      role,
+      orgId: orgId || null,
+      isActive: true,
+      emailVerified: true
+    }).returning({
+      id: users.id,
+      email: users.email,
+      name: users.name,
+      role: users.role
+    });
 
-    return NextResponse.json({ success: true, user: result.rows[0] });
+    return NextResponse.json({ success: true, user: newUser });
   } catch (error) {
     console.error('Admin Users POST Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

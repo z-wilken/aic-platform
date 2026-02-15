@@ -1,170 +1,164 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
+import { getTenantDb, auditLogs, eq, desc, sql } from '@aic/db';
 import { getSession } from '../../../lib/auth';
+import { enqueueEngineTask } from '@/lib/queue';
+import { z } from 'zod';
+import type { Session } from 'next-auth';
 
-const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
-const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
+// Directive A: Zod Schema Validation
+const AuditLogSchema = z.object({
+  systemName: z.string().min(1).max(255),
+  data: z.object({
+    protected_attribute: z.string().optional(),
+    outcome_variable: z.string().optional(),
+    rows: z.array(z.record(z.string(), z.any())).min(1)
+  })
+});
 
-function engineHeaders(): Record<string, string> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
-    return headers;
-}
+const AdvancedAuditSchema = z.object({
+  systemName: z.string().min(1).max(255),
+  type: z.enum(['EQUALIZED_ODDS', 'INTERSECTIONAL']).default('EQUALIZED_ODDS'),
+  data: z.object({
+    protected_attribute: z.string().optional(),
+    protected_attributes: z.array(z.string()).optional(),
+    actual_outcome: z.string().optional(),
+    predicted_outcome: z.string().optional(),
+    outcome_variable: z.string().optional(),
+    min_group_size: z.number().optional(),
+    rows: z.array(z.record(z.string(), z.any())).min(1)
+  })
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
     
     const body = await request.json();
-    const { systemName, data } = body;
-
-    // 1. Fetch the last hash for this organization to maintain the chain
-    const lastLog = await query(
-        'SELECT integrity_hash FROM audit_logs WHERE org_id = $1 ORDER BY created_at DESC LIMIT 1',
-        [orgId]
-    );
-    const previousHash = lastLog.rows[0]?.integrity_hash || null;
-
-    // 2. Forward to Python Engine for Rigorous Bias Audit
-    const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze`, {
-        method: 'POST',
-        headers: engineHeaders(),
-        body: JSON.stringify({
-            protected_attribute: data.protected_attribute || 'group',
-            outcome_variable: data.outcome_variable || 'hired',
-            data: data.rows || [],
-            previous_hash: previousHash
-        })
-    });
-
-    if (!engineResponse.ok) {
-        const errorDetail = await engineResponse.text();
-        throw new Error(`Engine analysis failed: ${errorDetail}`);
+    const validation = AuditLogSchema.safeParse(body);
+    
+    if (!validation.success) {
+      return NextResponse.json({ error: 'Validation failed', details: validation.error.format() }, { status: 400 });
     }
 
-    const analysisResult = await engineResponse.json();
+    const { systemName, data } = validation.data;
 
-    // 3. Automated Alerting for Critical Drift or Bias
-    if (analysisResult.status === 'CRITICAL_DRIFT' || analysisResult.overall_status === 'BIASED') {
-        await query(
-            'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4)',
-            [
-                orgId, 
-                'CRITICAL ACCOUNTABILITY ALERT', 
-                `Automated analysis detected ${analysisResult.status || analysisResult.overall_status} in system: ${systemName}. Immediate remediation roadmap updated.`,
-                'ALERT'
-            ]
-        );
-    }
+    const db = getTenantDb(orgId);
+    
+    return await db.query(async (tx) => {
+      // 1. Fetch last hash for chain (Within Tenant Boundary)
+      const [lastLog] = await tx.select({ integrityHash: auditLogs.integrityHash })
+        .from(auditLogs)
+        .where(eq(auditLogs.orgId, orgId))
+        .orderBy(desc(auditLogs.createdAt))
+        .limit(1);
 
-    // 4. Save Audit Log to Database with linking
-    const logResult = await query(
-        `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash, previous_hash) 
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-        [
-            orgId, 
-            systemName, 
-            'BIAS_AUDIT', 
-            JSON.stringify(analysisResult),
-            analysisResult.audit_hash,
-            previousHash
-        ]
-    );
+      const previousHash = lastLog?.integrityHash || null;
 
-    return NextResponse.json({ 
+      // 2. Create PENDING audit log entry
+      const [newLog] = await tx.insert(auditLogs).values({
+        orgId,
+        systemName,
+        eventType: 'BIAS_AUDIT',
+        details: { status: 'PENDING_ANALYSIS' },
+        status: 'PENDING',
+        previousHash
+      }).returning({ id: auditLogs.id });
+
+      // 3. Enqueue Async Task
+      const jobId = await enqueueEngineTask('disparate_impact', {
+        protected_attribute: data.protected_attribute || 'group',
+        outcome_variable: data.outcome_variable || 'hired',
+        data: data.rows,
+        previous_hash: previousHash
+      }, newLog.id, orgId);
+
+      return NextResponse.json({ 
         success: true, 
-        auditId: logResult.rows[0].id,
-        analysis: analysisResult 
+        auditId: newLog.id,
+        jobId,
+        message: 'Institutional audit analysis enqueued' 
+      });
     });
 
-  } catch (error: any) {
-    console.error('Audit Engine Integration Error:', error.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[CRITICAL] Audit Engine Integration Error:', message);
     return NextResponse.json({ 
         error: 'Technical validation failed', 
-        detail: error.message 
+        detail: message 
     }, { status: 500 });
   }
 }
 
 export async function PATCH(request: NextRequest) {
     try {
-      const session: any = await getSession();
+      const session = await getSession() as Session | null;
       if (!session || !session.user?.orgId) {
           return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
       const orgId = session.user.orgId;
       
       const body = await request.json();
-      const { systemName, data, type = 'EQUALIZED_ODDS' } = body;
+      const validation = AdvancedAuditSchema.safeParse(body);
 
-      // 1. Fetch the last hash for this organization to maintain the chain
-      const lastLog = await query(
-          'SELECT integrity_hash FROM audit_logs WHERE org_id = $1 ORDER BY created_at DESC LIMIT 1',
-          [orgId]
-      );
-      const previousHash = lastLog.rows[0]?.integrity_hash || null;
-  
-      let engineEndpoint = '';
-      let payload: any = { previous_hash: previousHash };
-      let eventType = '';
-
-      if (type === 'EQUALIZED_ODDS') {
-          engineEndpoint = `${ENGINE_URL}/api/v1/analyze/equalized-odds`;
-          payload = {
-              ...payload,
-              protected_attribute: data.protected_attribute || 'group',
-              actual_outcome: data.actual_outcome || 'actual',
-              predicted_outcome: data.predicted_outcome || 'predicted',
-              data: data.rows || []
-          };
-          eventType = 'ADVANCED_BIAS_AUDIT';
-      } else if (type === 'INTERSECTIONAL') {
-          engineEndpoint = `${ENGINE_URL}/api/v1/analyze/intersectional`;
-          payload = {
-              ...payload,
-              protected_attributes: data.protected_attributes || ['race', 'gender'],
-              outcome_variable: data.outcome_variable || 'hired',
-              min_group_size: data.min_group_size || 1,
-              data: data.rows || []
-          };
-          eventType = 'INTERSECTIONAL_BIAS_AUDIT';
-      } else {
-          return NextResponse.json({ error: 'Unsupported audit type' }, { status: 400 });
+      if (!validation.success) {
+        return NextResponse.json({ error: 'Validation failed', details: validation.error.format() }, { status: 400 });
       }
-  
-      const engineResponse = await fetch(engineEndpoint, {
-          method: 'POST',
-          headers: engineHeaders(),
-          body: JSON.stringify(payload)
+
+      const { systemName, data, type } = validation.data;
+      const db = getTenantDb(orgId);
+
+      return await db.query(async (tx) => {
+        const [lastLog] = await tx.select({ integrityHash: auditLogs.integrityHash })
+          .from(auditLogs)
+          .where(eq(auditLogs.orgId, orgId))
+          .orderBy(desc(auditLogs.createdAt))
+          .limit(1);
+
+        const previousHash = lastLog?.integrityHash || null;
+        const eventType = type === 'EQUALIZED_ODDS' ? 'ADVANCED_BIAS_AUDIT' : 'INTERSECTIONAL_BIAS_AUDIT';
+
+        const [newLog] = await tx.insert(auditLogs).values({
+          orgId,
+          systemName,
+          eventType,
+          details: { status: 'PENDING_ANALYSIS' },
+          status: 'PENDING',
+          previousHash
+        }).returning({ id: auditLogs.id });
+
+        const taskType = type === 'EQUALIZED_ODDS' ? 'equalized_odds' : 'intersectional';
+        const payload = type === 'EQUALIZED_ODDS' ? {
+            protected_attribute: data.protected_attribute || 'group',
+            actual_outcome: data.actual_outcome || 'actual',
+            predicted_outcome: data.predicted_outcome || 'predicted',
+            data: data.rows,
+            previous_hash: previousHash
+        } : {
+            protected_attributes: data.protected_attributes || ['race', 'gender'],
+            outcome_variable: data.outcome_variable || 'hired',
+            min_group_size: data.min_group_size || 1,
+            data: data.rows,
+            previous_hash: previousHash
+        };
+
+        const jobId = await enqueueEngineTask(taskType, payload, newLog.id, orgId);
+
+        return NextResponse.json({ success: true, auditId: newLog.id, jobId });
       });
   
-      if (!engineResponse.ok) {
-          const errorMsg = await engineResponse.text();
-          throw new Error(`Engine advanced analysis failed: ${errorMsg}`);
-      }
-  
-      const analysisResult = await engineResponse.json();
-  
-      await query(
-          `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash, previous_hash) 
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-          [orgId, systemName, eventType, JSON.stringify(analysisResult), analysisResult.audit_hash, previousHash]
-      );
-  
-      return NextResponse.json({ success: true, analysis: analysisResult });
-  
-    } catch (error: any) {
+    } catch (error: unknown) {
       return NextResponse.json({ error: 'Advanced validation failed' }, { status: 500 });
     }
 }
 
 export async function GET(request: NextRequest) {
     try {
-        const session: any = await getSession();
+        const session = await getSession() as Session | null;
         if (!session || !session.user?.orgId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -172,42 +166,43 @@ export async function GET(request: NextRequest) {
 
         const { searchParams } = new URL(request.url);
         const q = searchParams.get('q');
-        const limit = parseInt(searchParams.get('limit') || '25');
+        const limit = Math.min(parseInt(searchParams.get('limit') || '25'), 100);
         const page = parseInt(searchParams.get('page') || '1');
         const offset = (page - 1) * limit;
 
-        let sql = 'SELECT * FROM audit_logs WHERE org_id = $1';
-        let countSql = 'SELECT COUNT(*) FROM audit_logs WHERE org_id = $1';
-        const params: any[] = [orgId];
+        const db = getTenantDb(orgId);
 
-        if (q) {
-            const searchParam = `%${q}%`;
-            sql += ' AND (system_name ILIKE $2 OR event_type ILIKE $2)';
-            countSql += ' AND (system_name ILIKE $2 OR event_type ILIKE $2)';
-            params.push(searchParam);
-        }
+        return await db.query(async (tx) => {
+          let whereClause = eq(auditLogs.orgId, orgId);
+          if (q) {
+            whereClause = sql`${whereClause} AND (${auditLogs.systemName} ILIKE ${`%${q}%`} OR ${auditLogs.eventType} ILIKE ${`%${q}%`})`;
+          }
 
-        sql += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-        const finalParams = [...params, limit, offset];
+          const logs = await tx.select()
+            .from(auditLogs)
+            .where(whereClause)
+            .orderBy(desc(auditLogs.createdAt))
+            .limit(limit)
+            .offset(offset);
 
-        const [result, countResult] = await Promise.all([
-            query(sql, finalParams),
-            query(countSql, params)
-        ]);
+          const [countResult] = await tx.select({ count: sql`count(*)` })
+            .from(auditLogs)
+            .where(whereClause);
 
-        const total = parseInt(countResult.rows[0].count);
+          const total = parseInt(countResult.count as string);
 
-        return NextResponse.json({ 
-            logs: result.rows,
-            pagination: {
-                total,
-                page,
-                limit,
-                pages: Math.ceil(total / limit)
-            }
+          return NextResponse.json({ 
+              logs,
+              pagination: {
+                  total,
+                  page,
+                  limit,
+                  pages: Math.ceil(total / limit)
+              }
+          });
         });
-    } catch (error) {
-        console.error('Audit Logs Retrieval Error:', error);
-        return NextResponse.json({ error: 'Failed to retrieve logs' }, { status: 500 });
+        } catch {
+            return NextResponse.json({ error: 'Failed to retrieve logs' }, { status: 500 });
+        }
     }
-}
+    

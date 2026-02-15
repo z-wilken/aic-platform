@@ -1,4 +1,4 @@
-import { getSystemDb, systemLedger, desc, PgTransaction, PgQueryResultHKT, schema } from '../index';
+import { getSystemDb, systemLedger, desc, PgTransaction, PgQueryResultHKT, schema } from '../db';
 import { createHash } from 'crypto';
 
 const db = getSystemDb();

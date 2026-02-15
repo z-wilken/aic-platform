@@ -1,5 +1,24 @@
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface DashboardHeaderProps {
+  pathname: string;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  handleSearch: (e: React.FormEvent) => void;
+  onMenuOpen: () => void;
+  unreadCount: number;
+  showNotifs: boolean;
+  setShowNotifs: (show: boolean) => void;
+  notifications: Array<{
+    id: string;
+    title: string;
+    message: string;
+    status: string;
+    created_at: string;
+  }>;
+  markAsRead: (id: string) => void;
+}
+
 export function DashboardHeader({ 
   pathname, 
   searchQuery, 
@@ -11,7 +30,7 @@ export function DashboardHeader({
   setShowNotifs,
   notifications,
   markAsRead
-}: any) {
+}: DashboardHeaderProps) {
   return (
     <header className="flex justify-between items-center mb-12 glass-panel p-4 md:p-6 rounded-3xl sticky top-6 z-30 shadow-xl shadow-black/[0.02]">
         <div className="flex items-center gap-4">
@@ -35,6 +54,14 @@ export function DashboardHeader({
         </div>
         
         <div className="flex items-center gap-8">
+            <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-100 rounded-full mr-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+                <span className="text-[9px] font-mono font-bold text-green-600 uppercase tracking-widest flex items-center gap-1.5">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    Integrity: Secure
+                </span>
+            </div>
+
             <form onSubmit={handleSearch} className="hidden lg:flex items-center gap-3 px-4 py-2 bg-aic-paper border border-aic-black/5 rounded-xl text-gray-400 focus-within:border-aic-gold transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 <input 
@@ -74,7 +101,7 @@ export function DashboardHeader({
                                     <span className="text-[10px] font-mono font-bold text-aic-gold bg-aic-gold/10 px-2 py-0.5 rounded-full">{unreadCount} Critical</span>
                                 </div>
                                 <div className="max-h-[32rem] overflow-y-auto">
-                                    {notifications.map((n: any) => (
+                                    {notifications.map((n) => (
                                         <div 
                                             key={n.id} 
                                             onClick={() => markAsRead(n.id)}

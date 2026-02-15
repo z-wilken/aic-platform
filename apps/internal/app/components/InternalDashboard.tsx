@@ -34,8 +34,10 @@ export default function InternalDashboard() {
   const { data: session } = useSession();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Ported from admin logic
     fetch('/api/dashboard')
         .then(res => res.json())
@@ -46,7 +48,7 @@ export default function InternalDashboard() {
         .catch(() => setLoading(false));
   }, []);
 
-  if (loading) {
+  if (!mounted || loading) {
     return <div className="flex items-center justify-center h-screen italic text-gray-500">Syncing with institutional registry...</div>;
   }
 
@@ -58,7 +60,7 @@ export default function InternalDashboard() {
       <header className="flex justify-between items-end border-b border-white/5 pb-8">
         <div>
           <h1 className="text-5xl font-serif font-bold text-white tracking-tighter mb-4">Internal Command.</h1>
-          <p className="text-gray-500 font-serif italic text-lg">Logged in as {session?.user?.name} ({role})</p>
+          <p className="text-gray-500 font-serif italic text-lg">Logged in as {session?.user?.name || 'Administrator'} ({role})</p>
         </div>
         <div className="text-right">
           <span className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest block mb-2">Registry Status</span>
@@ -115,7 +117,7 @@ export default function InternalDashboard() {
         )}
 
         {/* Verification Queue (AUDITOR specific) */}
-        {(role === 'AUDITOR' || role === 'ADMIN') && (
+        {((role as string) === 'AUDITOR' || (role as string) === 'ADMIN') && (
           <div className="space-y-6">
             <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Verification Feed</h3>
             <div className="bg-[#080808] border border-white/5 rounded-[2.5rem] p-8">
