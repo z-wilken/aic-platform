@@ -16,6 +16,10 @@ function getDbInstance() {
   if (!db) {
     pool = new Pool({
       connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
+      max: 50, // Institutional Capacity
+      connectionTimeoutMillis: 5000,
+      idleTimeoutMillis: 30000,
+      maxUses: 7500, // Prevent memory leaks in long-running processes
     });
     db = drizzle(pool, { schema });
   }

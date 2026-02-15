@@ -35,6 +35,12 @@ export async function POST(request: NextRequest) {
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Task M13: Institutional RBAC Enforcement
+    if (session.user.role !== 'ADMIN' && session.user.role !== 'COMPLIANCE_OFFICER') {
+        return NextResponse.json({ error: 'Elevated privileges required to execute audits' }, { status: 403 });
+    }
+
     const orgId = session.user.orgId;
     
     const body = await request.json();
@@ -100,6 +106,11 @@ export async function PATCH(request: NextRequest) {
       if (!session || !session.user?.orgId) {
           return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
+
+      if (session.user.role !== 'ADMIN' && session.user.role !== 'COMPLIANCE_OFFICER') {
+          return NextResponse.json({ error: 'Elevated privileges required to execute audits' }, { status: 403 });
+      }
+
       const orgId = session.user.orgId;
       
       const body = await request.json();

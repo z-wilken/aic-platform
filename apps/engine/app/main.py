@@ -67,9 +67,15 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
         if (
             request.url.path in PUBLIC_PATHS
             or request.method == "OPTIONS"
-            or not PLATFORM_PUBLIC_KEY
         ):
             return await call_next(request)
+
+        if not PLATFORM_PUBLIC_KEY:
+            logger.error("PLATFORM_PUBLIC_KEY is not configured. Rejecting all authenticated requests.")
+            return JSONResponse(
+                status_code=503,
+                content={"error": "Sovereign identity provider offline"},
+            )
 
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):

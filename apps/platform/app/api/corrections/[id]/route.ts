@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, correctionRequests, eq, and } from '@aic/db';
+import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
 export async function PATCH(
   request: NextRequest,
@@ -8,30 +9,43 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const orgId = session.user.orgId;
-    const userId = session.user.id;
 
-    const { status, resolution_details } = await request.json();
-
-    const result = await query(
-      `UPDATE correction_requests 
-       SET status = $1, resolution_details = $2, human_reviewer_id = $3, updated_at = NOW() 
-       WHERE id = $4 AND org_id = $5 
-       RETURNING *`,
-      [status, resolution_details, userId, id, orgId]
-    );
-
-    if (result.rows.length === 0) {
-      return NextResponse.json({ error: 'Correction request not found' }, { status: 404 });
+    // Task M12: RBAC check (require ADMIN or COMPLIANCE_OFFICER)
+    if (session.user.role !== 'ADMIN' && session.user.role !== 'COMPLIANCE_OFFICER') {
+        return NextResponse.json({ error: 'Institutional review requires Compliance Officer privileges' }, { status: 403 });
     }
 
-    return NextResponse.json({ success: true, correction: result.rows[0] });
+    const orgId = session.user.orgId;
+    const userId = session.user.id;
+    const { status, resolution_details } = await request.json();
+
+    const db = getTenantDb(orgId);
+
+    return await db.query(async (tx) => {
+      const [updatedCorrection] = await tx
+        .update(correctionRequests)
+        .set({ 
+          status, 
+          resolutionDetails: resolution_details, 
+          humanReviewerId: userId, 
+          updatedAt: new Date() 
+        })
+        .where(and(eq(correctionRequests.id, id), eq(correctionRequests.orgId, orgId)))
+        .returning();
+
+      if (!updatedCorrection) {
+        return NextResponse.json({ error: 'Correction request not found' }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true, correction: updatedCorrection });
+    });
+
   } catch (error) {
-    console.error('Correction PATCH Error:', error);
+    console.error('[SECURITY] Correction PATCH Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

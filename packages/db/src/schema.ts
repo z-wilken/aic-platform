@@ -167,6 +167,17 @@ export const leads = pgTable('leads', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
+// API Keys
+export const apiKeys = pgTable('api_keys', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  keyHash: varchar('key_hash', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
+  lastUsedAt: timestamp('last_login', { withTimezone: true }),
+  expiresAt: timestamp('expires_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
 // Decision Records
 export const decisionRecords = pgTable('decision_records', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -203,5 +214,15 @@ export const systemLedger = pgTable('system_ledger', {
   previousHash: varchar('previous_hash', { length: 64 }),
   integrityHash: varchar('integrity_hash', { length: 64 }).notNull(),
   sequenceNumber: integer('sequence_number').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Password Reset Tokens
+export const passwordResetTokens = pgTable('password_reset_tokens', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  token: varchar('token', { length: 255 }).unique().notNull(),
+  used: boolean('used').default(false),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
