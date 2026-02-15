@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, auditLogs, organizations, eq, and } from '@aic/db';
+import { getTenantDb, auditLogs, organizations, eq, and, sql } from '@aic/db';
 import { getSession } from '../../../../lib/auth';
 import type { Session } from 'next-auth';
 

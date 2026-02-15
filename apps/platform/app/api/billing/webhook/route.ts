@@ -7,7 +7,8 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(request: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
-    apiVersion: '2025-01-27',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    apiVersion: '2026-01-28.clover' as any,
   });
 
   const body = await request.text();

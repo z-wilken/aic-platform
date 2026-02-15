@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getSystemDb, incidents, organizations, auditRequirements, notifications, eq, and, lt } from '@aic/db';
 import { auth } from '@aic/auth';
 
@@ -30,7 +30,7 @@ export async function POST() {
         )
       );
 
-    const results = [];
+    const results: string[] = [];
 
     await db.transaction(async (tx) => {
       for (const incident of staleIncidents) {

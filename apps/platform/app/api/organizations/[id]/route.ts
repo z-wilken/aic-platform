@@ -21,9 +21,11 @@ export async function GET(
         return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
-    const db = session.user.isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
+    const isSuperAdmin = session.user.isSuperAdmin;
+    const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    return await db.query(async (tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const execute = async (tx: any) => {
       const [org] = await tx.select().from(organizations).where(eq(organizations.id, id)).limit(1);
 
       if (!org) {
@@ -44,7 +46,15 @@ export async function GET(
         organization: org,
         audit_stats: stats
       });
-    });
+    };
+
+    if (isSuperAdmin) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).transaction(execute);
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).query(execute);
+    }
 
   } catch (error) {
     console.error('[SECURITY] Organization GET Error:', error);
@@ -79,9 +89,11 @@ export async function PUT(
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
     }
 
-    const db = session.user.isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
+    const isSuperAdmin = session.user.isSuperAdmin;
+    const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    return await db.query(async (tx) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const execute = async (tx: any) => {
       const [updatedOrg] = await tx
         .update(organizations)
         .set({ 
@@ -99,7 +111,15 @@ export async function PUT(
         message: 'Organization updated successfully',
         organization: updatedOrg
       });
-    });
+    };
+
+    if (isSuperAdmin) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).transaction(execute);
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).query(execute);
+    }
 
   } catch (error) {
     console.error('[SECURITY] Organization Update Error:', error);

@@ -73,6 +73,8 @@ export async function GET() {
       const disclosureLogs = await tx.select().from(auditLogs).where(eq(auditLogs.eventType, 'INSURANCE_SYNC')); // Example proxy
       const truthScore = disclosureLogs.length > 0 ? 95 : 85;
 
+      const integrityScore = org.integrityScore || 0;
+
       const rightsCompliance = {
         human_agency: {
           name: 'Right to Human Agency',

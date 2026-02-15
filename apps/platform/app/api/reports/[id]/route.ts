@@ -54,7 +54,8 @@ export async function GET(
       const pdfBuffer = await generatePDF(html);
 
       // 3. Return as PDF download
-      return new NextResponse(pdfBuffer as Uint8Array, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return new NextResponse(pdfBuffer as any, {
         headers: {
           'Content-Type': 'application/pdf',
           'Content-Disposition': `attachment; filename="AIC-Report-${report.monthYear.replace(' ', '-')}.pdf"`,
