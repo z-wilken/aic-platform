@@ -1,9 +1,9 @@
 # AIC: AI Integrity Certification
-**The Accountability Layer for South African AI**
+**The Accountability Layer for Sovereign AI Governance**
 
 > "We do not regulate AI. We certify that humans remain accountable."
 
-AIC is the first POPIA Section 71 compliant accountability framework for South African AI deployments. This monorepo contains the complete digital ecosystem — from marketing to deep-tech bias audit logic — designed to ensure that when a system makes a decision affecting human dignity, a human remains responsible.
+AIC is a POPIA Section 71 compliant accountability framework for AI deployments, aligned with ISO/IEC 42001 for global sovereign AI governance. This monorepo contains the complete digital ecosystem — from marketing to deep-tech bias audit logic — designed to ensure that when a system makes a decision affecting human dignity, a human remains responsible.
 
 ---
 
@@ -18,21 +18,26 @@ aic-platform/
 │   ├── hq/            # Governance & growth HQ (port 3004)
 │   └── engine/        # Python audit engine (port 8000)
 ├── packages/
-│   ├── auth/          # Shared NextAuth configuration
-│   ├── ui/            # Shared React components (@aic/ui)
-│   ├── events/        # Event system (stub)
-│   ├── sockets/       # WebSocket utilities (stub)
-│   └── legal/         # Legal framework (stub)
+│   ├── api-client/    # Typed API client (@aic/api-client)
+│   ├── auth/          # Shared NextAuth configuration (@aic/auth)
+│   ├── db/            # Drizzle ORM schema & migrations (@aic/db)
+│   ├── events/        # Event system (@aic/events)
+│   ├── legal/         # Legal/compliance utilities (@aic/legal)
+│   ├── reports/       # PDF report generation (@aic/reports)
+│   ├── sockets/       # WebSocket utilities (@aic/sockets)
+│   ├── types/         # Shared TypeScript types (@aic/types)
+│   └── ui/            # Radix UI component library (@aic/ui)
 ├── docs/              # Strategic & business documentation
+├── turbo.json         # Turborepo pipeline configuration
 └── docker-compose.yml # Local development orchestration
 ```
 
 | Application | Stack | Purpose |
 |:---|:---|:---|
-| **`apps/web`** | Next.js 16, Framer Motion | Marketing site, lead generation, self-assessment quiz |
-| **`apps/platform`** | Next.js 16, NextAuth v5-beta, PostgreSQL | Client SaaS dashboard — integrity scores, audit logs, certification |
-| **`apps/admin`** | Next.js 16, NextAuth v4 | Internal ops — lead management, audit workflow, certifications |
-| **`apps/hq`** | Next.js 16, NextAuth v4 | Governance, HR, CRM, training curriculum, engine monitoring |
+| **`apps/web`** | Next.js, Framer Motion | Marketing site, lead generation, self-assessment quiz |
+| **`apps/platform`** | Next.js, NextAuth v5-beta, Drizzle ORM | Client SaaS dashboard — integrity scores, audit logs, certification |
+| **`apps/admin`** | Next.js, NextAuth v4 | Internal ops — lead management, audit workflow, certifications |
+| **`apps/hq`** | Next.js, NextAuth v4 | Governance, HR, CRM, training curriculum, engine monitoring |
 | **`apps/engine`** | FastAPI, pandas, scipy, SHAP | Audit engine — 40+ bias/fairness/XAI endpoints |
 
 ---
@@ -78,18 +83,16 @@ npm install
 cp .env.example .env
 # Edit .env with your database credentials and a random NEXTAUTH_SECRET
 
-# 3. Start database
+# 3. Start database and run migrations
 docker-compose up db -d
-# Wait for healthcheck to pass, then:
-psql -U aic_admin -d aic_platform -f apps/platform/db/schema.sql
-psql -U aic_admin -d aic_platform -f apps/platform/db/seed.sql  # demo data only
+npm run db:migrate
 
 # 4. Start the engine
 cd apps/engine
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 
-# 5. Start all Next.js apps (in another terminal)
+# 5. Start all apps via Turborepo (in another terminal)
 cd /path/to/aic-platform
 npm run dev
 ```
@@ -116,17 +119,24 @@ docker-compose up --build
 ## Running Tests
 
 ```bash
-# All TypeScript tests (90 tests: auth, scoring, report generation)
+# All TypeScript tests via Turborepo
 npm test
 
-# Python engine tests (141 tests: bias, fairness, drift, signing, PII, API)
+# Python engine tests (bias, fairness, drift, signing, PII, API)
 cd apps/engine && python -m pytest tests/ -v
+
+# End-to-end tests
+npm run test:e2e
+
+# Lint all apps
+npm run lint
+
+# Type-check all apps
+npm run type-check
 
 # Security scan
 cd apps/engine && bandit -r app/ -ll && pip-audit
 ```
-
-**Current test status:** 231 tests passing (141 Python + 90 TypeScript), 0 failures.
 
 ---
 
@@ -148,7 +158,15 @@ Copy `.env.example` and configure:
 
 ## Database
 
-Schema source of truth: `apps/platform/db/schema.sql` (30+ tables).
+Database management uses Drizzle ORM via the `@aic/db` shared package.
+
+```bash
+npm run db:generate   # Generate migration files from schema changes
+npm run db:push       # Push schema changes directly (dev only)
+npm run db:migrate    # Run pending migrations
+```
+
+Legacy schema reference: `apps/platform/db/schema.sql` (30+ tables).
 Demo seed data: `apps/platform/db/seed.sql` (separate, never run in production).
 
 Key tables: `organizations`, `users`, `audit_logs` (hash-chained), `audit_requirements`, `compliance_reports`, `incidents`, `api_keys`, `leads`, `assessments`.
@@ -159,10 +177,12 @@ Key tables: `organizations`, `users`, `audit_logs` (hash-chained), `audit_requir
 
 | Document | Location |
 |----------|----------|
+| Documentation Index | `docs/README.md` |
 | Technical Spec | `docs/AIC_TECHNICAL_SPEC.md` |
-| Product Requirements | `docs/PRD.md` |
+| Product Specification | `docs/product/PRODUCT_SPEC.md` |
 | Founder's Vision | `docs/FOUNDERS_VISION.md` |
 | Strategic Roadmap | `docs/STRATEGIC_ROADMAP.md` |
+| Engineering Roadmap | `docs/ENGINEERING_ROADMAP.md` |
 | Pilot Program | `docs/PILOT_PROGRAM.md` |
 | Audit Methodology | `docs/METHODOLOGY.md` |
 | Engine Requirements | `docs/ENGINE_REQUIREMENTS.md` |
@@ -174,11 +194,14 @@ Key tables: `organizations`, `users`, `audit_logs` (hash-chained), `audit_requir
 
 - **Authentication:** NextAuth.js with bcrypt password hashing, JWT sessions (24h)
 - **Authorization:** Role-based (ADMIN, COMPLIANCE_OFFICER, AUDITOR, VIEWER)
+- **Multi-tenancy:** Zero-bypass tenant isolation via database proxy pattern
+- **PII encryption:** Automatic encryption of personally identifiable information at rest
 - **Engine auth:** API key middleware with constant-time comparison
-- **SQL injection:** Parameterized queries only
+- **SQL injection:** Parameterized queries via Drizzle ORM
 - **Audit trail:** SHA-256 hash-chained logs with RSA-3072 cryptographic signatures
 - **PII protection:** Automatic log redaction (email, phone, SSN patterns)
 - **Rate limiting:** slowapi (5-60 req/min by endpoint)
+- **Circuit breakers:** Resilience patterns for external service dependencies
 - **Security headers:** X-Frame-Options, X-Content-Type-Options, Referrer-Policy
 
 ---

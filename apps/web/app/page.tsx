@@ -11,7 +11,7 @@ import { InstitutionalFooter } from '@aic/ui';
 
 export const metadata: Metadata = {
   title: "AIC | Home - AI Integrity Certification",
-  description: "The definitive trust infrastructure for South African AI. POPIA Section 71 Compliance Framework.",
+  description: "The definitive trust infrastructure for sovereign AI governance. POPIA Section 71 & ISO/IEC 42001 Compliance Framework.",
 };
 
 export default function Home() {
@@ -62,9 +62,10 @@ export default function Home() {
                 <p className="font-serif text-3xl text-aic-black">Grounding AI in Universal Rights.</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
                 {[
                     { n: 'POPIA Section 71', j: 'South Africa', d: 'The prohibition of automated decision making without meaningful human intervention.' },
+                    { n: 'ISO/IEC 42001', j: 'International', d: 'The global standard for AI management systems establishing governance, risk, and accountability requirements.' },
                     { n: 'EU AI Act', j: 'European Union', d: 'Risk-based classification requiring strict conformity assessments for high-risk systems.' },
                     { n: 'EEOC Title VII', j: 'United States', d: 'Enforcing the Four-Fifths rule to prevent algorithmic discrimination in employment.' }
                 ].map((item) => (

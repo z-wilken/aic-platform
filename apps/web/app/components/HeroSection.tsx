@@ -22,7 +22,7 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="font-mono text-aic-gold uppercase tracking-[0.3em] text-xs mb-6"
           >
-            POPIA Section 71 Compliance Framework
+            POPIA Section 71 &amp; ISO/IEC 42001 Compliance
           </motion.p>
           
           <motion.h1 
@@ -43,7 +43,7 @@ const HeroSection = () => {
           >
             <div>
                 <p className="text-lg leading-relaxed text-gray-600 font-serif mb-8">
-                    AIC is the definitive trust infrastructure for South African AI. We certify the humans accountable for algorithmic outcomes, ensuring compliance with Section 71 of POPIA.
+                    AIC is the definitive trust infrastructure for sovereign AI governance. We certify the humans accountable for algorithmic outcomes, ensuring compliance with POPIA Section 71 and ISO/IEC 42001.
                 </p>
                 <div className="flex flex-col gap-4">
                     <motion.a
