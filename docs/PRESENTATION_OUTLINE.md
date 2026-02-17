@@ -1,7 +1,13 @@
-# presentation Outline: Information Regulator Meeting
+# Presentation Outline: Information Regulator Meeting
 
 **Duration:** 15 Minutes
 **Objective:** Secure a "Letter of Support" or acknowledgment of AIC alignment with POPIA Section 71.
+
+---
+
+## Opening Context (30 seconds)
+
+Before diving in: AIC is a global accountability framework. We are starting in South Africa because POPIA Section 71 is the most progressive automated decision-making law in the world. This meeting is about how AIC can help the Regulator enforce the spirit of Section 71 through third-party certification.
 
 ---
 
@@ -11,10 +17,12 @@
 *   **The UW Study:** Highlight the 85.1% bias rate in resume screening as proof that intervention is often a "rubber stamp" without a framework.
 
 ## 2. The Solution: AI Integrity Certification (4 min)
+*   **AIC's Identity:** A global accountability framework whose initial market is South Africa, because POPIA Section 71 is the world's most progressive human oversight law. We bring global methodology to South African enforcement.
 *   **Third-Party Validation:** Moving from self-attestation to independent audit.
-*   **The 3-Tier Framework:** 
-    *   **Tier 1:** Mandatory approval.
-    *   **Tier 2:** Real-time supervision.
+*   **The 5 Algorithmic Rights:** The foundational framework — universal, jurisdiction-agnostic rights that POPIA Section 71 expresses in South African law.
+*   **The 3-Tier Framework:**
+    *   **Tier 1:** Mandatory human approval.
+    *   **Tier 2:** Real-time human supervision.
     *   **Tier 3:** Periodic monitoring.
 *   **The Integrity Score:** A quantitative 0-100 metric measuring accountability infrastructure.
 
@@ -35,4 +43,8 @@
 
 ---
 
-**"We do not regulate AI. We certify that humans remain accountable."**
+---
+
+**"We do not regulate AI. We certify that human empathy and accountability remain in the loop."**
+
+*AIC is a global accountability framework. South Africa — through POPIA Section 71 — is where we prove what the world needs.*

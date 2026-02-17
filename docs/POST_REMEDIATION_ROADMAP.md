@@ -12,6 +12,8 @@
 
 This document outlines the strategic roadmap **after** the 16-week remediation phase is complete. Once the platform achieves Series A technical readiness (target: June 2026), the focus shifts from **fixing** to **scaling**.
 
+**Strategic Context:** The post-remediation phase marks the transition from "South African beachhead validation" to "global framework expansion." The platform being built in these phases must serve not just POPIA Section 71 alignment in South Africa, but the universal 5 Algorithmic Rights framework in any jurisdiction. Architecture decisions should reflect this global ambition: multi-regulatory-framework support, multi-language capability, and extensible certification models.
+
 **Timeline:** Months 5-18 (June 2026 - July 2027)
 
 ---

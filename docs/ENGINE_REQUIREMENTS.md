@@ -8,7 +8,9 @@
 
 ## Executive Summary
 
-This document defines the requirements for the AIC Python Audit Engine to ensure **safety, POPIA Section 71 compliance**, and alignment with the Mathematical Architectures and Engineering Standards for Algorithmic Accountability framework.
+This document defines the requirements for the AIC Python Audit Engine to ensure **safety, human accountability, and alignment with the 5 Algorithmic Rights** as established in AIC's Declaration of Algorithmic Rights. The Engine operationalises the 5 Algorithmic Rights through statistical analysis — with the **Right to Empathy** (sentiment analysis of automated communications) and the **Right to Explanation** (SHAP/LIME explainability) being AIC's unique technical differentiators in the global governance landscape.
+
+While the current implementation focuses on POPIA Section 71 requirements as the regulatory anchor for the South African market, the Engine's architecture is designed to support multiple regulatory framework mappings. Every capability maps back to one of the 5 Rights, making the Engine jurisdiction-agnostic at its core.
 
 **Current overall readiness has been upgraded from ~35% to ~85% after Sprint 3.** SHAP, LIME, cryptographic signing, and batch processing are now implemented. The sections below reflect the updated status and detail what remains to be done.
 
@@ -100,11 +102,13 @@ This document defines the requirements for the AIC Python Audit Engine to ensure
 
 ### 1.6 5 Algorithmic Rights
 
+> The 5 Algorithmic Rights table below is the Engine's **primary organizational principle**. Every capability in this Engine exists to enforce one or more of these Rights. This is not a POPIA compliance checklist — it is a universal framework that maps to any jurisdiction requiring human oversight of automated decisions. The Rights are jurisdiction-agnostic; the regulatory mappings (POPIA Sec 71, EU AI Act, etc.) are jurisdiction-specific overlays.
+
 | Right | Description | Current Status | Priority |
 |-------|-------------|----------------|----------|
 | **Right to Human Agency** | Bias detection, intervention tests | ✅ Implemented + Tested | P0 |
-| **Right to Explanation** | Decision explainability | ✅ Implemented + Tested | P0 |
-| **Right to Empathy** | Sentiment analysis of communications | ✅ Implemented + Tested | P1 |
+| **Right to Explanation** | Decision explainability (SHAP/LIME) — *AIC technical differentiator* | ✅ Implemented + Tested | P0 |
+| **Right to Empathy** | Sentiment analysis of automated communications — *AIC's unique contribution, unmatched globally* | ✅ Implemented + Tested | P1 |
 | **Right to Correction** | Appeal workflow validation | ✅ Implemented + Tested | P1 |
 | **Right to Truth** | AI disclosure analysis | ✅ Implemented + Tested | P1 |
 

@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-AIC is a POPIA Section 71 compliant accountability framework for South African AI deployments. It certifies that organizations maintain genuine human oversight over algorithmic decisions using a risk-based three-tier certification model.
+AIC is the global standard for human accountability in automated decision systems. We certify that human empathy and accountability remain in the loop for every consequential automated decision — starting in South Africa with POPIA Section 71 as the market entry regulatory anchor, and built for global applicability. The framework is built on the 5 Algorithmic Rights and operationalised through a risk-based three-tier certification model.
 
-**Core Philosophy:** "We do not regulate AI. We certify that humans remain accountable."
+**Core Philosophy:** "We certify that human empathy and accountability remain in the loop."
 
 ## Architecture
 

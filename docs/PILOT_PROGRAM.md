@@ -34,6 +34,8 @@ costs \<ZAR 500K but de-risks the entire business.
 
 **ALPHA PROGRAM OVERVIEW**
 
+> **Vision Context:** The Alpha Program validates AIC's universal framework in the South African market, using POPIA Section 71 as the regulatory anchor. South Africa is the proving ground; the framework is built for the world. Every methodology refinement, case study, and unit economics data point produced in the Alpha Program feeds into a global certification standard.
+
 **Program Objectives:**
 
 -   • Validate pricing: Confirm organizations will pay ZAR 60K-120K for

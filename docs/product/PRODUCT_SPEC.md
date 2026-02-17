@@ -9,22 +9,39 @@
 ## 1. Executive Summary
 
 ### Vision
-AIC (AI Integrity Certification) is the world's first comprehensive accountability framework designed to prevent the abuse of AI by power-hungry individuals and organizations. Starting with POPIA Section 71 compliance in South Africa, AIC expands to address global AI governance requirements.
+AIC (AI Integrity Certification) is the world's first comprehensive accountability framework designed to ensure no final decision about a human being is made solely by a machine. We certify that human empathy, emotion, and accountability remain in the loop — everywhere, for every consequential automated system, not just AI. Starting with POPIA Section 71 alignment in South Africa, AIC is built from day one for global applicability.
 
 ### Core Principle
-> "We do not regulate AI. We certify that humans remain accountable."
+> "We certify that human empathy and accountability remain in the loop."
 
-AIC certifies **human accountability** in AI deployment — not the AI technology itself.
+AIC certifies **human accountability** in automated decision systems — not the technology itself. The framework applies to AI, legacy algorithms, rules-based systems, and any other automated process that makes consequential decisions about human beings.
 
 ### The Problem
-1. **Accountability Gap**: 82% of Fortune 500 companies using AI-powered systems lack governance certification
-2. **Power Asymmetry**: AI systems make decisions about loans, jobs, insurance, healthcare without human oversight
-3. **Proven Harm**: Mobley v. Workday (2025) established AI vendors can be liable; EEOC v. iTutorGroup ($365k settlement)
-4. **Regulatory Mandate**: POPIA Section 71 prohibits automated decision-making without human oversight
+1. **Accountability Gap**: When automated systems fail — discriminating, excluding, or dehumanizing — there is no one accountable. 82% of Fortune 500 companies using AI-powered systems lack governance certification.
+2. **Power Asymmetry**: Automated systems make decisions about loans, jobs, insurance, healthcare without genuine human oversight
+3. **Dignity Gap**: No existing standard certifies whether automated interactions preserve human dignity — whether the *experience* of being processed by an algorithm treats you as a human being
+4. **Proven Harm**: Mobley v. Workday (2025) established AI vendors can be liable; EEOC v. iTutorGroup ($365k settlement)
+5. **Regulatory Mandate**: POPIA Section 71 (SA), EU AI Act, and emerging regulations globally require meaningful human oversight of automated decisions
 
 ---
 
-## 2. Three-Tier Certification Framework
+## 2. The 5 Algorithmic Rights (Primary Framework)
+
+The 5 Algorithmic Rights are AIC's foundational product — the Declaration from which all certifications, methodologies, and regulatory mappings derive. They are universal, jurisdiction-agnostic, and apply to all consequential automated decision systems.
+
+| Right | Principle | Technical Implementation |
+|-------|-----------|--------------------------|
+| **1. Right to Human Agency** | No final decision affecting dignity, freedom, or livelihood shall be made solely by a machine | Bias detection, HITL rate measurement, override capability verification |
+| **2. Right to Explanation** | Every person has the right to know *why* an automated decision was made | SHAP/LIME feature importance, decision explainability validation |
+| **3. Right to Empathy** | Automated interactions must preserve human dignity; cold bureaucratic rejection is a design failure | TextBlob sentiment analysis of automated communications, dignity scoring |
+| **4. Right to Correction** | Every system must provide a clear, human-staffed mechanism to correct errors and appeal unjust decisions | Appeal mechanism validation, correction request workflow verification |
+| **5. Right to Truth** | Every person has the right to know if they are interacting with AI; deception is a violation | AI disclosure compliance checking |
+
+**The Right to Empathy is AIC's singular contribution to the global governance discourse.** No other certification body — ISO 42001, the EU AI Act, Big 4 consulting, Credo AI, Fiddler AI — certifies whether automated interactions preserve human dignity. AIC does.
+
+---
+
+## 3. Three-Tier Certification Framework
 
 | Tier | Name | Human Role | Examples | Requirements |
 |------|------|------------|----------|--------------|

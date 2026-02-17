@@ -4,6 +4,8 @@
 **AI Integrity Certification**
 *February 2026*
 
+> **Strategic Context:** AIC is a global accountability framework building from a South African beachhead. The operational stages below execute the South African market validation. Hiring decisions, partnerships, and platform features in each stage are optimized for SA execution while maintaining the architecture needed for global expansion.
+
 ---
 
 ## Current State Assessment

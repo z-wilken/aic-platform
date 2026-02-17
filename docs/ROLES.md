@@ -39,7 +39,7 @@ This document outlines the core roles within AI Integrity Certification (AIC), t
 ---
 
 ## 3. Regulatory & Legal Advisor
-**Objective:** Ensure that AIC's framework remains the definitive legal interpretation of POPIA Section 71.
+**Objective:** Ensure that AIC's framework maintains rigorous POPIA Section 71 alignment in the South African market, and develops regulatory mappings for additional jurisdictions as AIC expands globally.
 
 ### Requirements:
 *   Qualified Legal Professional (LLB) with focus on ICT/Privacy Law.
