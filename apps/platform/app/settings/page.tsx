@@ -12,11 +12,11 @@ export default function OrganizationalSettings() {
         contactEmail: '',
         integrityScore: 0,
         isAlpha: false,
+        twoFactorEnabled: false,
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [saved, setSaved] = useState(false);
-    const [keys, setKeys] = useState<any[]>([]);
+    const [keys, setKeys] = useState<Array<{ id: string; label: string; key_prefix: string; created_at: string; last_used_at: string | null }>>([]);
     const [loadingKeys, setLoadingKeys] = useState(true);
     const [newKeyLabel, setNewKeyLabel] = useState('');
     const [generatedKey, setGeneratedKey] = useState<string | null>(null);
@@ -24,6 +24,9 @@ export default function OrganizationalSettings() {
     const [inviteName, setInviteName] = useState('');
     const [inviteRole, setInviteRole] = useState('VIEWER');
     const [generatedInvite, setGeneratedInvite] = useState<string | null>(null);
+    const [mfaSetup, setMfaSetup] = useState<{ secret: string, qrCode: string } | null>(null);
+    const [mfaToken, setMfaToken] = useState('');
+    const [isMfaEnabling, setIsMfaEnabling] = useState(false);
 
     useEffect(() => {
         fetch('/api/settings')
@@ -35,6 +38,7 @@ export default function OrganizationalSettings() {
                     contactEmail: data.contactEmail || '',
                     integrityScore: data.integrityScore || 0,
                     isAlpha: data.isAlpha || false,
+                    twoFactorEnabled: data.twoFactorEnabled || false,
                 });
                 setLoading(false);
             })
@@ -72,6 +76,44 @@ export default function OrganizationalSettings() {
             }
         } finally {
             setSaving(false);
+        }
+    };
+
+    const startMfaSetup = async () => {
+        try {
+            const res = await fetch('/api/auth/mfa/setup');
+            const data = await res.json();
+            if (res.ok) {
+                setMfaSetup(data);
+            } else {
+                toast.error(data.error || 'Failed to start MFA setup');
+            }
+        } catch (_err) {
+            toast.error('Network error during MFA setup');
+        }
+    };
+
+    const completeMfaSetup = async () => {
+        if (!mfaSetup || !mfaToken) return;
+        setIsMfaEnabling(true);
+        try {
+            const res = await fetch('/api/auth/mfa/setup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ secret: mfaSetup.secret, token: mfaToken })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success('MFA enabled successfully');
+                setMfaSetup(null);
+                setMfaToken('');
+                // Refresh settings to show MFA as active
+                window.location.reload();
+            } else {
+                toast.error(data.error || 'Verification failed');
+            }
+        } finally {
+            setIsMfaEnabling(false);
         }
     };
 
@@ -239,14 +281,65 @@ export default function OrganizationalSettings() {
                         <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10 relative z-10">Security Protocol</h3>
 
                         <div className="space-y-8 relative z-10">
-                            <div className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl">
-                                <div>
-                                    <p className="text-sm font-serif font-bold text-white mb-1">Multi-Factor Authentication (MFA)</p>
-                                    <p className="text-[10px] font-mono text-gray-500 uppercase">Mandatory for {settings.tier} Organizations</p>
+                            <div className="p-6 bg-white/5 border border-white/10 rounded-2xl">
+                                <div className="flex justify-between items-center mb-4">
+                                    <div>
+                                        <p className="text-sm font-serif font-bold text-white mb-1">Multi-Factor Authentication (MFA)</p>
+                                        <p className="text-[10px] font-mono text-gray-500 uppercase">Mandatory for {settings.tier} Organizations</p>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        {settings.twoFactorEnabled && <span className="text-[8px] font-mono font-bold text-aic-gold bg-aic-gold/10 px-2 py-1 rounded">ACTIVE</span>}
+                                        <button 
+                                            onClick={startMfaSetup}
+                                            className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-mono text-[10px] font-bold uppercase transition-all"
+                                        >
+                                            {settings.twoFactorEnabled ? 'Reset MFA' : 'Configure MFA'}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="h-6 w-12 bg-aic-gold rounded-full p-1 flex justify-end items-center">
-                                    <div className="h-4 w-4 bg-white rounded-full shadow-lg" />
-                                </div>
+
+                                {mfaSetup && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        className="mt-6 pt-6 border-t border-white/10 space-y-6"
+                                    >
+                                        <div className="flex flex-col md:flex-row gap-8 items-center">
+                                            <div className="bg-white p-4 rounded-2xl">
+                                                <img src={mfaSetup.qrCode} alt="MFA QR Code" className="w-32 h-32" />
+                                            </div>
+                                            <div className="flex-1 space-y-4">
+                                                <p className="text-xs text-gray-400 leading-relaxed font-serif">
+                                                    1. Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.)<br/>
+                                                    2. Enter the 6-digit verification code below to confirm setup.
+                                                </p>
+                                                <div className="flex gap-3">
+                                                    <input 
+                                                        type="text"
+                                                        maxLength={6}
+                                                        placeholder="000000"
+                                                        value={mfaToken}
+                                                        onChange={e => setMfaToken(e.target.value)}
+                                                        className="bg-white/5 border border-white/10 rounded-xl p-3 font-mono text-center tracking-[0.5em] focus:border-aic-gold outline-none w-32"
+                                                    />
+                                                    <button 
+                                                        onClick={completeMfaSetup}
+                                                        disabled={isMfaEnabling || mfaToken.length !== 6}
+                                                        className="bg-aic-gold text-aic-black px-6 py-3 rounded-xl font-mono text-[10px] font-bold uppercase hover:bg-white transition-all disabled:opacity-50"
+                                                    >
+                                                        {isMfaEnabling ? 'Verifying...' : 'Enable MFA'}
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => setMfaSetup(null)}
+                                                        className="text-[10px] font-mono font-bold text-gray-500 uppercase hover:text-white"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
                             </div>
 
                             <div className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl">

@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthConfig, type DefaultSession } from "next-auth"
+import NextAuth, { NextAuthConfig } from "next-auth"
 import { type JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
@@ -6,11 +6,12 @@ import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
 import { getSystemDb, users, organizations, auditLogs, eq, like } from "@aic/db"
 import { UserRole, CertificationTier, Permissions } from "@aic/types"
 import jwt from 'jsonwebtoken';
+import { MFAService } from "./services/mfa";
 
 const PRIVATE_KEY = process.env.PLATFORM_PRIVATE_KEY?.replace(/\\n/g, '\n');
 const PUBLIC_KEY = process.env.PLATFORM_PUBLIC_KEY?.replace(/\\n/g, '\n');
 
-async function logAuthEvent(eventType: string, details: Record<string, any>, orgId?: string | null) {
+async function logAuthEvent(eventType: string, details: Record<string, unknown>, orgId?: string | null) {
   const db = getSystemDb();
   try {
     await db.insert(auditLogs).values({
@@ -42,7 +43,8 @@ export const authConfig: NextAuthConfig = {
       name: 'Credentials',
       credentials: {
         email: { label: "Email", type: "email", placeholder: "admin@enterprise.co.za" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        mfaToken: { label: "MFA Token", type: "text" }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -62,6 +64,10 @@ export const authConfig: NextAuthConfig = {
               isActive: users.isActive,
               isSuperAdmin: users.isSuperAdmin,
               permissions: users.permissions,
+              failedLoginAttempts: users.failedLoginAttempts,
+              lockoutUntil: users.lockoutUntil,
+              twoFactorSecret: users.twoFactorSecret,
+              twoFactorEnabled: users.twoFactorEnabled,
               orgName: organizations.name,
               tier: organizations.tier,
             })
@@ -76,16 +82,50 @@ export const authConfig: NextAuthConfig = {
               throw new Error("Account is deactivated")
             }
 
+            // Check for lockout
+            if (user.lockoutUntil && new Date(user.lockoutUntil) > new Date()) {
+              const minutesLeft = Math.ceil((new Date(user.lockoutUntil).getTime() - new Date().getTime()) / 60000);
+              await logAuthEvent('LOGIN_REJECTED', { email: credentials.email, reason: 'Account locked' }, user.orgId);
+              throw new Error(`Account locked. Try again in ${minutesLeft} minutes.`)
+            }
+
             const bcrypt = await import("bcryptjs")
             const isValid = await bcrypt.default.compare(credentials.password.toString(), user.passwordHash)
 
             if (!isValid) {
-              await logAuthEvent('LOGIN_FAILURE', { email: credentials.email, reason: 'Invalid credentials' }, user.orgId);
+              const newAttempts = (user.failedLoginAttempts || 0) + 1;
+              const updateData: { failedLoginAttempts: number; lockoutUntil?: Date } = { failedLoginAttempts: newAttempts };
+              
+              if (newAttempts >= 5) {
+                updateData.lockoutUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minute lockout
+                await logAuthEvent('ACCOUNT_LOCKED', { email: credentials.email, attempts: newAttempts }, user.orgId);
+              }
+
+              await db.update(users).set(updateData).where(eq(users.id, user.id));
+              await logAuthEvent('LOGIN_FAILURE', { email: credentials.email, reason: 'Invalid credentials', attempts: newAttempts }, user.orgId);
               throw new Error("Invalid credentials")
             }
 
-            // Update last login
-            await db.update(users).set({ lastLogin: new Date() }).where(eq(users.id, user.id));
+            // Institutional Hardening: MFA Check
+            if (user.twoFactorEnabled && user.twoFactorSecret) {
+              if (!credentials.mfaToken) {
+                // Signal to UI that MFA is required
+                throw new Error("MFA_REQUIRED")
+              }
+
+              const isMFAValid = MFAService.verifyToken(user.twoFactorSecret, credentials.mfaToken.toString());
+              if (!isMFAValid) {
+                await logAuthEvent('MFA_FAILURE', { email: user.email, userId: user.id }, user.orgId);
+                throw new Error("Invalid MFA token")
+              }
+            }
+
+            // Update last login and reset failed attempts
+            await db.update(users).set({ 
+              lastLogin: new Date(),
+              failedLoginAttempts: 0,
+              lockoutUntil: null
+            }).where(eq(users.id, user.id));
 
             await logAuthEvent('LOGIN_SUCCESS', { email: user.email, userId: user.id }, user.orgId);
 
@@ -130,15 +170,15 @@ export const authConfig: NextAuthConfig = {
     }
   },
   jwt: {
-    async encode({ token, secret }) {
+    async encode({ token, secret: _secret }) {
         if (!PRIVATE_KEY) return ""; // Fail closed if no key in production-intent mode
         return jwt.sign(token!, PRIVATE_KEY, { algorithm: 'RS256' });
     },
-    async decode({ token, secret }) {
+    async decode({ token, secret: _secret }) {
         if (!PUBLIC_KEY || !token) return null;
         try {
             return jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] }) as JWT;
-        } catch (e) {
+        } catch {
             return null;
         }
     }
@@ -207,6 +247,12 @@ export const authConfig: NextAuthConfig = {
         token.tier = user.tier as CertificationTier
         token.isSuperAdmin = user.isSuperAdmin as boolean
         token.permissions = user.permissions as Permissions
+        
+        // Generate JTI if not present (Institutional Hardening P0)
+        if (!token.jti) {
+          const crypto = await import("crypto");
+          token.jti = crypto.randomUUID();
+        }
       }
 
       // Task P1: Token Revocation Check
@@ -257,3 +303,5 @@ export const signOut = nextAuth.signOut;
 
 export * from "./services/signing"
 export * from "./services/revocation"
+export * from "./services/mfa"
+export * from "./helpers"

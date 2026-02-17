@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, organizations, incidents, notifications, eq } from '@aic/db';
+import { getTenantDb, organizations, incidents, notifications, eq } from '@aic/db';
 import { checkRateLimit, getClientIP } from '../../../../lib/rate-limit';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
 
-    const { orgId: providedOrgId, orgName, systemName, citizen_email, description } = body;
+    const { orgId: providedOrgId, systemName, citizen_email, description } = body;
 
     if (typeof citizen_email !== 'string' || !EMAIL_RE.test(citizen_email) || citizen_email.length > 254) {
       return NextResponse.json({ error: 'Valid email address is required' }, { status: 400 });
@@ -30,13 +30,9 @@ export async function POST(request: NextRequest) {
 
     const safeSysName = typeof systemName === 'string' && systemName.trim() ? systemName.slice(0, 200) : 'Not Specified';
 
-    const db = getSystemDb();
-
-    // Task M9: Institutional Hardening - Strict Organization Resolution
+    // 1. Resolve and Validate Organization
     let resolvedOrgId: string | null = null;
-
     if (typeof providedOrgId === 'string' && providedOrgId.length === 36) {
-        // Strict UUID check (Basic)
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (uuidRegex.test(providedOrgId)) {
             resolvedOrgId = providedOrgId;
@@ -44,11 +40,24 @@ export async function POST(request: NextRequest) {
     }
 
     if (!resolvedOrgId) {
-        return NextResponse.json({ error: 'Valid Organization UUID is required for lodging appeals' }, { status: 400 });
+        return NextResponse.json({ error: 'Valid Organization UUID is required' }, { status: 400 });
     }
 
-    return await db.transaction(async (tx) => {
-      // 2. Insert into Incidents table
+    const tenantDb = getTenantDb(resolvedOrgId);
+    const orgExists = await tenantDb.query(async (tx) => {
+        const [org] = await tx.select({ id: organizations.id })
+            .from(organizations)
+            .where(eq(organizations.id, resolvedOrgId as string))
+            .limit(1);
+        return org;
+    });
+
+    if (!orgExists) {
+        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    }
+
+    return await tenantDb.query(async (tx) => {
+      // 2. Insert into Incidents table (RLS enforced)
       const [newIncident] = await tx.insert(incidents).values({
         orgId: resolvedOrgId as string,
         citizenEmail: citizen_email,

@@ -50,6 +50,9 @@ def calculate_confusion_metrics(df: pd.DataFrame, actual: str, predicted: str, g
     return results
 
 def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome_variable: str, previous_hash: str = None):
+    if not data:
+        return {"error": "No data provided for analysis"}
+
     size_error = validate_data_size(data)
     if size_error:
         return size_error
@@ -124,6 +127,9 @@ def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome
     return result
 
 def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_outcome: str, predicted_outcome: str, threshold: float, previous_hash: str = None):
+    if not data:
+        return {"error": "No data provided for analysis"}
+
     size_error = validate_data_size(data)
     if size_error:
         return size_error
@@ -169,6 +175,9 @@ def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_ou
     }
 
 def analyze_intersectional(data: List[Dict], protected_attributes: List[str], outcome_variable: str, min_group_size: int, previous_hash: str = None):
+    if not data:
+        return {"error": "No data provided for analysis"}
+
     size_error = validate_data_size(data)
     if size_error:
         return size_error

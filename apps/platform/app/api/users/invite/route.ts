@@ -38,7 +38,9 @@ export async function POST(request: NextRequest) {
                 .limit(1);
 
             if (existingUser) {
-                return { error: 'User already exists', status: 400 };
+                // Return success to mitigate email enumeration, but don't actually send new invite
+                // in a real system we would send a 'you are already invited' email.
+                return { success: true, alreadyExists: true };
             }
 
             // 2. Create user with hashed dummy password and is_active = FALSE
@@ -70,8 +72,11 @@ export async function POST(request: NextRequest) {
             return { success: true, token };
         });
 
-        if ('error' in result) {
-            return NextResponse.json({ error: result.error }, { status: result.status });
+        if (result.alreadyExists) {
+            return NextResponse.json({ 
+                success: true, 
+                message: 'Institutional invitation issued successfully.' 
+            });
         }
 
         const inviteLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${result.token}`;

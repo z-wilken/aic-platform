@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, models, eq, and, desc } from '@aic/db';
+import { getTenantDb, models, eq, and, desc, LedgerService } from '@aic/db';
 import { getSession } from '../../../lib/auth';
 import type { Session } from 'next-auth';
 
@@ -53,6 +53,14 @@ export async function POST(request: NextRequest) {
         description,
         metadata: metadata || {}
       }).returning();
+
+      // Record to Institutional Ledger
+      await LedgerService.append('MODEL_REGISTERED', session.user.id, {
+        modelId: newModel.id,
+        orgId,
+        name,
+        version: version || '1.0.0'
+      });
 
       return NextResponse.json({ success: true, model: newModel });
     });

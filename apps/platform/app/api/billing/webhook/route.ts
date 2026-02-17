@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getSystemDb, organizations, eq } from '@aic/db';
+import { getSystemDb, organizations, eq, LedgerService } from '@aic/db';
 import type { CertificationTier } from '@aic/types';
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -33,12 +33,27 @@ export async function POST(request: NextRequest) {
 
       // Task M36: Institutional Billing - Update organization tier/status
       if (orgId && tier) {
-          console.log(`[BILLING] Subscription completed for Org: ${orgId}, Tier: ${tier}`);
           const db = getSystemDb();
-          await db
-            .update(organizations)
-            .set({ tier: tier })
-            .where(eq(organizations.id, orgId));
+          
+          // Verify org exists before update to prevent orphan records/logic errors
+          const [org] = await db.select({ id: organizations.id }).from(organizations).where(eq(organizations.id, orgId)).limit(1);
+          
+          if (org) {
+              console.log(`[BILLING] Subscription completed for Org: ${orgId}, Tier: ${tier}`);
+              await db
+                .update(organizations)
+                .set({ tier: tier })
+                .where(eq(organizations.id, orgId));
+
+              // Record in immutable ledger
+              await LedgerService.append('ORG_TIER_UPDATE', null, {
+                  orgId,
+                  newTier: tier,
+                  source: 'STRIPE_WEBHOOK'
+              });
+          } else {
+              console.warn(`[BILLING] Received webhook for non-existent Org: ${orgId}`);
+          }
       }
       break;
     }

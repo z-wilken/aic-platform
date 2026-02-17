@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTenantDb, auditLogs } from '@aic/db';
+import { EngineClient } from '@aic/api-client';
 import { getSession } from '../../../lib/auth';
 import type { Session } from 'next-auth';
-
-const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
-const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,18 +20,9 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. Call Python Engine for NLP Empathy Analysis
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
+    const result = await EngineClient.analyzeEmpathy(orgId, text, context);
 
-    const engineResponse = await fetch(`${ENGINE_URL}/api/v1/analyze/empathy`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ text, context })
-    });
-
-    if (!engineResponse.ok) throw new Error('Empathy analysis failed');
-
-    const result = await engineResponse.json();
+    if (result.error) throw new Error(result.error);
 
     const db = getTenantDb(orgId);
 

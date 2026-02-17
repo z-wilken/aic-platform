@@ -14,6 +14,10 @@ ALTER TABLE "api_keys" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "audit_signatures" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "system_ledger" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "password_reset_tokens" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "leads" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "alpha_applications" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "newsletter_subscribers" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "posts" ENABLE ROW LEVEL SECURITY;
 
 -- 1. Organizations Policy: Can only see your own organization
 CREATE POLICY organization_isolation_policy ON "organizations"
@@ -64,6 +68,10 @@ USING (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid)
 WITH CHECK (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid);
 
 CREATE POLICY api_keys_isolation_policy ON "api_keys" 
+USING (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid)
+WITH CHECK (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid);
+
+CREATE POLICY leads_isolation_policy ON "leads" 
 USING (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid)
 WITH CHECK (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid);
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, incidents, notifications } from '@aic/db';
+import { getTenantDb, incidents, notifications } from '@aic/db';
 import { isValidEmail, isNonEmptyString, isValidLongText, safeParseJSON } from '@/lib/validation';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
@@ -29,32 +29,34 @@ export async function POST(request: NextRequest) {
     }
 
     const safeName = isNonEmptyString(system_name) ? system_name : 'Unknown';
-    const db = getSystemDb();
+    const db = getTenantDb(orgId);
 
-    // 1. Log the Incident
-    const [newIncident] = await db
-      .insert(incidents)
-      .values({
-        orgId,
-        citizenEmail: citizen_email,
-        systemName: safeName,
-        description,
-        status: 'OPEN'
-      })
-      .returning({ id: incidents.id });
+    return await db.query(async (tx) => {
+      // 1. Log the Incident
+      const [newIncident] = await tx
+        .insert(incidents)
+        .values({
+          orgId,
+          citizenEmail: citizen_email,
+          systemName: safeName,
+          description,
+          status: 'OPEN'
+        })
+        .returning({ id: incidents.id });
 
-    // 2. Notify the Organization
-    await db
-      .insert(notifications)
-      .values({
-        orgId,
-        title: 'NEW CITIZEN APPEAL',
-        message: `A citizen has contested an automated decision from "${safeName}". Action required within 72 hours.`,
-        type: 'ALERT',
-        status: 'UNREAD'
-      });
+      // 2. Notify the Organization
+      await tx
+        .insert(notifications)
+        .values({
+          orgId,
+          title: 'NEW CITIZEN APPEAL',
+          message: `A citizen has contested an automated decision from "${safeName}". Action required within 72 hours.`,
+          type: 'ALERT',
+          status: 'UNREAD'
+        });
 
-    return NextResponse.json({ success: true, appealId: newIncident.id });
+      return NextResponse.json({ success: true, appealId: newIncident.id });
+    });
 
   } catch (error) {
     console.error('Public Appeal API Error:', error);

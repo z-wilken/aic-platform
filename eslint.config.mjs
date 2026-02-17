@@ -9,6 +9,18 @@ export default [
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "react/no-unescaped-entities": "off",
+      "no-restricted-imports": ["error", {
+        "patterns": [
+          {
+            "group": ["apps/*/*", "!@/*"],
+            "message": "Apps must not import from other apps. Use shared packages instead."
+          },
+          {
+            "group": ["**/apps/*/**"],
+            "message": "Direct imports from apps directory are forbidden."
+          }
+        ]
+      }]
     },
   },
   {

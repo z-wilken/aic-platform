@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, users, eq, and } from '@aic/db';
+import { getSystemDb, users, eq, and, LedgerService } from '@aic/db';
 import { auth } from '@aic/auth';
 
 export async function PATCH(
@@ -37,6 +37,12 @@ export async function PATCH(
     if (!updatedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
+
+    // Record to Institutional Ledger
+    await LedgerService.append('USER_UPDATED', session.user.id, {
+        targetUserId: id,
+        updates: { role, is_active, name }
+    });
 
     return NextResponse.json({ success: true, user: updatedUser });
   } catch (error) {

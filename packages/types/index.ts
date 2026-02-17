@@ -242,3 +242,37 @@ export const EngineErrorResultSchema = z.object({
 });
 
 export type EngineErrorResult = z.infer<typeof EngineErrorResultSchema>;
+
+// Additional Engine Result Types
+
+export interface DecisionExplanation {
+  right_enforced: string;
+  audit_hash: string;
+  timestamp: string;
+  popia_compliance: boolean;
+  explanation: string;
+  plain_language_summary: string;
+  feature_contributions: Array<{ feature: string; impact: string; direction: 'positive' | 'negative' | 'neutral' }>;
+  confidence_breakdown?: string;
+  signature?: string;
+}
+
+export interface EmpathyAnalysisResult {
+  right_enforced: string;
+  audit_hash: string;
+  timestamp: string;
+  popia_compliance: boolean;
+  sentiment_score: number;
+  sentiment_label: 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE';
+  empathy_score: number;
+  tone_flags: string[];
+  recommendations: string[];
+  signature?: string;
+}
+
+export interface TaskStatusResult {
+  task_id: string;
+  status: 'PENDING' | 'STARTED' | 'SUCCESS' | 'FAILURE' | 'REVOKED';
+  result?: Record<string, unknown>;
+  error?: string;
+}

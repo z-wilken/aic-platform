@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, leads, eq, sql, desc } from '@aic/db';
+import { getSystemDb, getTenantDb, leads, eq, and, sql, desc } from '@aic/db';
 import { auth } from '@aic/auth';
 
 // GET /api/leads - List leads (admin use only)
@@ -7,27 +7,31 @@ export async function GET(request: NextRequest) {
   try {
     const session = await auth();
     
-    // Task M3: Admin-only global access
-    if (!session?.user?.isSuperAdmin) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    if (!session?.user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const isSuperAdmin = session.user.isSuperAdmin;
+    const userOrgId = session.user.orgId;
 
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get('status');
     const source = searchParams.get('source');
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
 
-    const db = getSystemDb();
+    const db = isSuperAdmin ? getSystemDb() : getTenantDb(userOrgId as string);
 
-    return await db.transaction(async (tx) => {
-      let whereClause = undefined;
-      if (status && source) {
-        whereClause = sql`${leads.status} = ${status} AND ${leads.source} = ${source}`;
-      } else if (status) {
-        whereClause = eq(leads.status, status);
-      } else if (source) {
-        whereClause = eq(leads.source, source);
+    const execute = async (tx: typeof db) => {
+      const conditions = [];
+      
+      if (status) {
+        conditions.push(eq(leads.status, status));
       }
+      if (source) {
+        conditions.push(eq(leads.source, source));
+      }
+
+      const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
       const result = await tx
         .select()
@@ -45,13 +49,20 @@ export async function GET(request: NextRequest) {
         converted: sql<number>`count(*) filter (where status = 'CONVERTED')`,
         from_quiz: sql<number>`count(*) filter (where source = 'QUIZ')`,
         from_alpha: sql<number>`count(*) filter (where source = 'ALPHA_FORM')`
-      }).from(leads);
+      }).from(leads)
+      .where(isSuperAdmin ? undefined : undefined); // RLS handles this for tenants
 
       return NextResponse.json({
         leads: result,
         stats
       });
-    });
+    };
+
+    if (isSuperAdmin && 'transaction' in db) {
+        return await db.transaction(execute);
+    } else {
+        return await db.query(execute);
+    }
 
   } catch (error) {
     console.error('[SECURITY] Leads GET Error:', error);
@@ -65,17 +76,22 @@ export async function GET(request: NextRequest) {
 // POST /api/leads - Create new lead (Public route)
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
     const body = await request.json();
     const {
       email,
       company,
       source = 'WEB',
       score,
+      orgId: providedOrgId
     } = body;
 
     if (!email) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
+
+    // Resolve orgId: prefer session, then provided (if superadmin), else null
+    const resolvedOrgId: string | null = (session?.user?.orgId as string) || providedOrgId || null;
 
     const db = getSystemDb();
 
@@ -92,6 +108,7 @@ export async function POST(request: NextRequest) {
         const [updatedLead] = await tx
           .update(leads)
           .set({
+            orgId: resolvedOrgId || existingLead.orgId,
             company: company || existingLead.company,
             source: source === 'ALPHA_FORM' ? 'ALPHA_FORM' : existingLead.source,
             score: score !== undefined ? Math.round(score) : existingLead.score,
@@ -105,6 +122,7 @@ export async function POST(request: NextRequest) {
 
       // 2. Create new lead
       const [newLead] = await tx.insert(leads).values({
+        orgId: resolvedOrgId,
         email: email.toLowerCase(),
         company: company || null,
         source,

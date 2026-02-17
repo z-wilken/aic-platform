@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum, index, PgTable } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum, index, type AnyPgColumn } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 // Enums
@@ -36,11 +36,15 @@ export const users = pgTable('users', {
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   role: userRoleEnum('role').default('VIEWER'),
-  orgId: uuid('org_id').references((): any => organizations.id),
+  orgId: uuid('org_id').references((): AnyPgColumn => organizations.id),
   isActive: boolean('is_active').default(true),
   emailVerified: boolean('email_verified').default(false),
   isSuperAdmin: boolean('is_super_admin').default(false),
   permissions: jsonb('permissions').default({}),
+  failedLoginAttempts: integer('failed_login_attempts').default(0),
+  lockoutUntil: timestamp('lockout_until', { withTimezone: true }),
+  twoFactorSecret: text('two_factor_secret'),
+  twoFactorEnabled: boolean('two_factor_enabled').default(false),
   lastLogin: timestamp('last_login', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
@@ -168,6 +172,7 @@ export const auditSignatures = pgTable('audit_signatures', {
 // Leads
 export const leads = pgTable('leads', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'set null' }),
   email: varchar('email', { length: 255 }).unique().notNull(),
   company: varchar('company', { length: 255 }),
   source: varchar('source', { length: 50 }).default('WEB'),

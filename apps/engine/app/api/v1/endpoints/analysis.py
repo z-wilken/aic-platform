@@ -1,8 +1,10 @@
-from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import JSONResponse, StreamingResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
+import json
 
 from app.api.v1.schemas.analysis import (
     BiasAuditRequest, EqualizedOddsRequest, IntersectionalRequest, ExplainRequest,
@@ -26,7 +28,7 @@ from app.services.fairness_metrics import statistical_parity_difference, epsilon
 from app.services.drift_monitoring import analyze_drift
 from app.services.hash_chain import HashChain
 from app.services.chain_verification import verify_hash_chain
-from app.services.explainability import explain_from_data
+from app.services.explainability import explain_from_data, explain_from_data_stream
 from app.core.signing import sign_data, verify_signature, get_public_key_pem, is_signing_available
 
 limiter = Limiter(key_func=get_remote_address)
@@ -81,6 +83,13 @@ class ExplainabilityRequest(BaseModel):
     data: List[Dict[str, Any]]
     target_column: str
     instance: Dict[str, Any]
+    method: str = Field(default="shap", pattern="^(shap|lime)$")
+    num_features: int = Field(default=10, ge=1, le=50)
+
+class ExplainStreamingRequest(BaseModel):
+    data: List[Dict[str, Any]]
+    target_column: str
+    instances: List[Dict[str, Any]]
     method: str = Field(default="shap", pattern="^(shap|lime)$")
     num_features: int = Field(default=10, ge=1, le=50)
 
@@ -186,8 +195,8 @@ def get_integrity_score(body: IntegrityScoreRequest, request: Request):
 
 @router.post("/analyze")
 @limiter.limit("30/minute")
-def disparate_impact(body: BiasAuditRequest, request: Request):
-    result = analyze_disparate_impact(body.data, body.protected_attribute, body.outcome_variable, body.previous_hash)
+async def disparate_impact(body: BiasAuditRequest, request: Request):
+    result = await run_in_threadpool(analyze_disparate_impact, body.data, body.protected_attribute, body.outcome_variable, body.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     result["signature"] = sign_data(result["audit_hash"])
@@ -195,8 +204,8 @@ def disparate_impact(body: BiasAuditRequest, request: Request):
 
 @router.post("/analyze/equalized-odds")
 @limiter.limit("30/minute")
-def equalized_odds(body: EqualizedOddsRequest, request: Request):
-    result = analyze_equalized_odds(body.data, body.protected_attribute, body.actual_outcome, body.predicted_outcome, body.threshold, body.previous_hash)
+async def equalized_odds(body: EqualizedOddsRequest, request: Request):
+    result = await run_in_threadpool(analyze_equalized_odds, body.data, body.protected_attribute, body.actual_outcome, body.predicted_outcome, body.threshold, body.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     result["signature"] = sign_data(result["audit_hash"])
@@ -204,8 +213,8 @@ def equalized_odds(body: EqualizedOddsRequest, request: Request):
 
 @router.post("/analyze/intersectional")
 @limiter.limit("20/minute")
-def intersectional_analysis(body: IntersectionalRequest, request: Request):
-    result = analyze_intersectional(body.data, body.protected_attributes, body.outcome_variable, body.min_group_size, body.previous_hash)
+async def intersectional_analysis(body: IntersectionalRequest, request: Request):
+    result = await run_in_threadpool(analyze_intersectional, body.data, body.protected_attributes, body.outcome_variable, body.min_group_size, body.previous_hash)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     result["signature"] = sign_data(result["audit_hash"])
@@ -337,9 +346,10 @@ def create_audit_record(body: HashChainCreateRequest, request: Request):
 
 @router.post("/explain/shap")
 @limiter.limit("10/minute")
-def shap_explanation(body: ExplainabilityRequest, request: Request):
+async def shap_explanation(body: ExplainabilityRequest, request: Request):
     """SHAP-based model explanation. Trains a surrogate model on provided data."""
-    result = explain_from_data(
+    result = await run_in_threadpool(
+        explain_from_data,
         body.data, body.target_column, body.instance,
         method="shap", num_features=body.num_features,
     )
@@ -349,15 +359,28 @@ def shap_explanation(body: ExplainabilityRequest, request: Request):
 
 @router.post("/explain/lime")
 @limiter.limit("10/minute")
-def lime_explanation(body: ExplainabilityRequest, request: Request):
+async def lime_explanation(body: ExplainabilityRequest, request: Request):
     """LIME-based local model explanation."""
-    result = explain_from_data(
+    result = await run_in_threadpool(
+        explain_from_data,
         body.data, body.target_column, body.instance,
         method="lime", num_features=body.num_features,
     )
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
+
+@router.post("/explain/stream")
+@limiter.limit("5/minute")
+async def explain_streaming(body: ExplainStreamingRequest, request: Request):
+    """Streaming explanation request for multiple instances."""
+    return StreamingResponse(
+        explain_from_data_stream(
+            body.data, body.target_column, body.instances,
+            body.method, body.num_features
+        ),
+        media_type="application/x-ndjson"
+    )
 
 
 # --- Cryptographic signature endpoints ---
@@ -388,7 +411,7 @@ def signing_status(request: Request):
 
 @router.post("/analyze/batch")
 @limiter.limit("5/minute")
-def batch_analysis(body: BatchAnalysisRequest, request: Request):
+async def batch_analysis(body: BatchAnalysisRequest, request: Request):
     """
     Run multiple analyses in a single request.
     Each item specifies a type and params dict.
@@ -434,7 +457,7 @@ def batch_analysis(body: BatchAnalysisRequest, request: Request):
             continue
 
         try:
-            result = ANALYSIS_MAP[analysis_type](params)
+            result = await run_in_threadpool(ANALYSIS_MAP[analysis_type], params)
             results.append({"index": i, "type": analysis_type, "result": result})
         except KeyError as e:
             results.append({

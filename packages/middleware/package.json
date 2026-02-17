@@ -1,9 +1,0 @@
-{
-  "name": "@aic/middleware",
-  "version": "1.0.0",
-  "main": "./src/rate-limit.ts",
-  "types": "./src/rate-limit.ts",
-  "dependencies": {
-    "ioredis": "^5.5.0"
-  }
-}

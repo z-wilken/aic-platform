@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, organizations, users, eq, and } from '@aic/db';
+import { getTenantDb, organizations, users, eq } from '@aic/db';
 import { getSession } from '../../../lib/auth';
 import type { Session } from 'next-auth';
 
@@ -22,10 +22,11 @@ export async function GET() {
                 isAlpha: organizations.isAlpha, 
                 createdAt: organizations.createdAt,
                 contactEmail: users.email,
-                contactName: users.name
+                contactName: users.name,
+                twoFactorEnabled: users.twoFactorEnabled
               })
               .from(organizations)
-              .leftJoin(users, and(eq(users.orgId, organizations.id), eq(users.role, 'ADMIN')))
+              .leftJoin(users, eq(users.id, session.user?.id as string))
               .where(eq(organizations.id, orgId))
               .limit(1);
 
@@ -81,10 +82,11 @@ export async function PATCH(request: NextRequest) {
                 isAlpha: organizations.isAlpha, 
                 createdAt: organizations.createdAt,
                 contactEmail: users.email,
-                contactName: users.name
+                contactName: users.name,
+                twoFactorEnabled: users.twoFactorEnabled
               })
               .from(organizations)
-              .leftJoin(users, and(eq(users.orgId, organizations.id), eq(users.role, 'ADMIN')))
+              .leftJoin(users, eq(users.id, session.user?.id as string))
               .where(eq(organizations.id, orgId))
               .limit(1);
 

@@ -31,7 +31,7 @@ except ImportError:
     lime = None
     logging.warning("LIME library not available")
 
-from app.core.config import MAX_FEATURES, MAX_DATA_ROWS, MAX_BATCH_SIZE
+from app.core.config import MAX_FEATURES, MAX_DATA_ROWS, MAX_BATCH_SIZE, MAX_CACHE_ENTRIES, CACHE_TTL_SECONDS
 
 logger = logging.getLogger("aic.engine.explainability")
 
@@ -42,6 +42,29 @@ MAX_EXPLANATION_INSTANCES = MAX_BATCH_SIZE
 
 # Task 6: SHAP/LIME Surrogate Model Cache
 _MODEL_CACHE = {}
+
+def _cleanup_cache():
+    """Remove expired entries and enforce size limit."""
+    global _MODEL_CACHE
+    now = datetime.utcnow()
+    
+    # 1. Remove expired entries
+    expired_keys = [
+        k for k, v in _MODEL_CACHE.items() 
+        if (now - v["timestamp"]).total_seconds() > CACHE_TTL_SECONDS
+    ]
+    for k in expired_keys:
+        del _MODEL_CACHE[k]
+    if expired_keys:
+        logger.info(f"Cleared {len(expired_keys)} expired entries from model cache.")
+
+    # 2. Enforce size limit (LRU)
+    if len(_MODEL_CACHE) > MAX_CACHE_ENTRIES:
+        sorted_keys = sorted(_MODEL_CACHE.keys(), key=lambda k: _MODEL_CACHE[k]["timestamp"])
+        num_to_remove = len(_MODEL_CACHE) - MAX_CACHE_ENTRIES + 5 # Remove extra to avoid immediate thrashing
+        for i in range(min(num_to_remove, len(sorted_keys))):
+            del _MODEL_CACHE[sorted_keys[i]]
+        logger.info(f"Model cache exceeded limit. Removed {num_to_remove} oldest entries.")
 
 def _generate_hash(data: Any) -> str:
     """Generate SHA-256 hash for audit trail and caching."""
@@ -285,6 +308,7 @@ def explain_from_data(
         return {"error": f"Target column '{target_column}' not found in data"}
 
     # Task 6: Implement Model Caching
+    _cleanup_cache()
     data_hash = _generate_hash({"data": data, "target": target_column})
     
     # Always compute X_array and feature names from current data to avoid fatal memory growth
@@ -311,7 +335,9 @@ def explain_from_data(
     if data_hash in _MODEL_CACHE:
         cache_entry = _MODEL_CACHE[data_hash]
         model = cache_entry["model"]
-        # Use encoders and feature names from cache if they were different (unlikely with same hash)
+        # Update timestamp to mark as recently used
+        cache_entry["timestamp"] = datetime.utcnow()
+        # Use encoders and feature names from cache if they were different
         if "encoders" in cache_entry: encoders = cache_entry["encoders"]
         if "feature_names" in cache_entry: feature_names = cache_entry["feature_names"]
         logger.info(f"Using cached surrogate model for data hash {data_hash[:8]}")
@@ -330,11 +356,7 @@ def explain_from_data(
             "encoders": encoders,
             "timestamp": datetime.utcnow()
         }
-        
-        # Cleanup old cache entries (simple TTL/Size limit could be added)
-        if len(_MODEL_CACHE) > 20:
-            oldest_key = min(_MODEL_CACHE.keys(), key=lambda k: _MODEL_CACHE[k]["timestamp"])
-            del _MODEL_CACHE[oldest_key]
+        logger.info(f"Trained and cached new surrogate model for data hash {data_hash[:8]}")
 
     # Build instance array
     feature_cols = feature_names # use names from trained model
@@ -371,6 +393,78 @@ def explain_from_data(
         )
     else:
         return {"error": f"Unknown method '{method}'. Use 'shap' or 'lime'."}
+
+
+def explain_from_data_stream(
+    data: List[Dict[str, Any]],
+    target_column: str,
+    instances: List[Dict[str, Any]],
+    method: str = "shap",
+    num_features: int = 10,
+):
+    """
+    Generator that yields explanations one by one for a batch of instances.
+    Enables streaming responses for long-running batch explanations.
+    """
+    if not data or not instances:
+        yield json.dumps({"error": "Data and instances required"})
+        return
+
+    # 1. Prepare / Train model (cached)
+    _cleanup_cache()
+    data_hash = _generate_hash({"data": data, "target": target_column})
+    
+    df = pd.DataFrame(data)
+    feature_cols = [c for c in df.columns if c != target_column]
+    encoders = {}
+    X = df[feature_cols].copy()
+    for col in X.columns:
+        if X[col].dtype == object:
+            le = LabelEncoder()
+            X[col] = le.fit_transform(X[col].astype(str))
+            encoders[col] = le
+
+    y = df[target_column].values
+    feature_names = list(X.columns)
+    X_array = X.values.astype(float)
+
+    if data_hash in _MODEL_CACHE:
+        cache_entry = _MODEL_CACHE[data_hash]
+        model = cache_entry["model"]
+        cache_entry["timestamp"] = datetime.utcnow()
+    else:
+        model = GradientBoostingClassifier(n_estimators=50, max_depth=3, random_state=42)
+        model.fit(X_array, y)
+        _MODEL_CACHE[data_hash] = {
+            "model": model,
+            "feature_names": feature_names,
+            "encoders": encoders,
+            "timestamp": datetime.utcnow()
+        }
+
+    # 2. Process instances one by one
+    for i, instance_data in enumerate(instances):
+        try:
+            instance_values = []
+            for col in feature_names:
+                val = instance_data.get(col)
+                if val is None:
+                    yield json.dumps({"index": i, "error": f"Missing feature '{col}'"})
+                    continue
+                if col in encoders:
+                    val = encoders[col].transform([str(val)])[0]
+                instance_values.append(float(val))
+
+            instance_array = np.array(instance_values).reshape(1, -1)
+
+            if method == "shap":
+                res = explain_with_shap(model.predict_proba, X_array, instance_array, feature_names)
+            else:
+                res = explain_with_lime(model.predict_proba, X_array, instance_array[0], feature_names, num_features=num_features)
+            
+            yield json.dumps({"index": i, "result": res}) + "\n"
+        except Exception as e:
+            yield json.dumps({"index": i, "error": str(e)}) + "\n"
 
 
 def _build_explanation_text(top_contributions: list) -> str:
