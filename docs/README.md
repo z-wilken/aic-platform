@@ -25,6 +25,9 @@
 ### "What happens after remediation?"
 **Read:** [POST_REMEDIATION_ROADMAP.md](./POST_REMEDIATION_ROADMAP.md)
 
+### "What do I do TODAY?"
+**Read:** [NEXT_STEPS_CHECKLIST.md](./NEXT_STEPS_CHECKLIST.md) - Daily actionable checklist
+
 ### "What's the business vision?"
 **Read:** [MASTER_PLAN.md](./MASTER_PLAN.md)
 
@@ -38,6 +41,7 @@
 |----------|---------|---------|
 | [TECHNICAL_AUDIT_2026-02-17.md](./TECHNICAL_AUDIT_2026-02-17.md) | Honest 360-degree assessment | Feb 17, 2026 |
 | [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md) | 16-week technical fix plan | Feb 17, 2026 |
+| [NEXT_STEPS_CHECKLIST.md](./NEXT_STEPS_CHECKLIST.md) | **Daily actionable checklist** | Feb 17, 2026 |
 | [STAKEHOLDER_BRIEFING_2026-02-17.md](./STAKEHOLDER_BRIEFING_2026-02-17.md) | Investor/board communication | Feb 17, 2026 |
 | [POST_REMEDIATION_ROADMAP.md](./POST_REMEDIATION_ROADMAP.md) | What comes after Week 16 | Feb 17, 2026 |
 
