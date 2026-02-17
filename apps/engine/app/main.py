@@ -15,6 +15,8 @@ from datetime import datetime
 import jwt
 from jwt.exceptions import InvalidTokenError
 
+from app.core.config import MAX_BODY_SIZE
+
 # Initialize Sentry
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 if SENTRY_DSN:
@@ -40,12 +42,6 @@ PLATFORM_PUBLIC_KEY = os.environ.get("PLATFORM_PUBLIC_KEY", "").replace("\\n", "
 _boot_time = time.time()
 
 # Rate limiter
-limiter = Limiter(key_func=get_remote_address)
-
-# Max request body size: 10 MB
-MAX_BODY_SIZE = 10 * 1024 * 1024
-
-# Paths that don't require authentication
 PUBLIC_PATHS = {"/", "/health", "/docs", "/redoc", "/openapi.json"}
 
 class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
@@ -141,4 +137,4 @@ def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, workers=4, reload=False)

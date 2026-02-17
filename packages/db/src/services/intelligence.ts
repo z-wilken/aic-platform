@@ -1,4 +1,4 @@
-import { organizations, auditRequirements, incidents, eq, sql, getTenantDb } from '../db';
+import { organizations, auditRequirements, incidents, eq, sql, getTenantDb, TenantTransaction } from '../db';
 
 export interface IntelligenceStats {
   score: number;
@@ -16,8 +16,7 @@ export interface IntelligenceStats {
  */
 export async function calculateOrganizationIntelligence(orgId: string): Promise<IntelligenceStats> {
   const tdb = getTenantDb(orgId);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return await tdb.query(async (tx: any) => {
+  return await tdb.query(async (tx: TenantTransaction) => {
     // 1. Fetch requirements (RLS will automatically filter by orgId)
     const requirements = await tx.select().from(auditRequirements);
     type AuditRequirement = typeof auditRequirements.$inferSelect;

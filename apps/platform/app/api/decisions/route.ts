@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, decisionRecords, eq, desc } from '@aic/db';
+import { getTenantDb, decisionRecords, eq, desc, LedgerService } from '@aic/db';
 import { getSession } from '../../../lib/auth';
 import crypto from 'crypto';
 import type { Session } from 'next-auth';
@@ -59,6 +59,14 @@ export async function POST(request: NextRequest) {
         explanation,
         integrityHash: integrity_hash
       }).returning();
+
+      // Record to Institutional Ledger
+      await LedgerService.append('DECISION_RECORDED', session.user.id, {
+        decisionId: newDecision.id,
+        orgId,
+        systemName: system_name,
+        integrityHash: integrity_hash
+      });
 
       return NextResponse.json({ success: true, decision: newDecision });
     });

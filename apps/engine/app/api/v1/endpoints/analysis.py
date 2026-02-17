@@ -95,8 +95,9 @@ class BatchAnalysisRequest(BaseModel):
 
 # --- Task Monitoring & Async Integration ---
 
+from app.tasks.explainability import compute_explanation_task
 from app.tasks.analysis import (
-    task_disparate_impact, task_equalized_odds, task_intersectional, task_explain
+    task_disparate_impact, task_equalized_odds, task_intersectional
 )
 from celery.result import AsyncResult
 
@@ -140,7 +141,7 @@ def intersectional_analysis_async(body: IntersectionalRequest, request: Request)
 @limiter.limit("20/minute")
 def explain_async(body: ExplainabilityRequest, request: Request):
     """Asynchronous explanation request (SHAP or LIME)."""
-    task = task_explain.delay(
+    task = compute_explanation_task.delay(
         body.data, body.target_column, body.instance,
         body.method, body.num_features
     )

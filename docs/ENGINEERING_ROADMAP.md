@@ -1,475 +1,302 @@
 # AIC Engineering Roadmap
+## Technical Debt, Security Hardening & Production Readiness
 
-**Technical Debt, Security Hardening & Production Readiness**
-
-*February 2026 | CONFIDENTIAL*
+**Version:** 3.0 (Major Revision)
+**Date:** February 17, 2026
+**Classification:** CONFIDENTIAL
 
 ---
 
 ## Executive Summary
 
-This document outlines the engineering work required to take the AIC platform from MVP/demo state to production-ready. It addresses technical debt, security vulnerabilities, missing infrastructure, and architectural improvements needed before handling real compliance data.
+This document supersedes all previous versions following a comprehensive 360-degree technical audit. The previous assessments (February 12 and February 15, 2026) contained inaccurate progress reports.
 
-**Current State:** Credible MVP for demos and alpha recruitment
-**Target State:** Production-ready platform suitable for handling sensitive compliance data
+### Assessment Evolution
 
----
-
-## Critical Issues (Must Fix Before Production)
-
-### 1. No Automated Testing
-
-**Current State:** Zero test files across all applications
-**Risk:** Cannot verify changes don't break existing functionality; compliance platform without tests is liability
-
-**Action Items:**
-```
-Priority: CRITICAL
-Timeline: Weeks 1-4
-
-1. Set up Jest + React Testing Library for Next.js apps
-   - apps/web: Smoke tests for all pages, form submissions
-   - apps/platform: Dashboard data rendering, auth flows
-   - apps/admin: Certification workflow
-
-2. Set up pytest for apps/engine
-   - Bias analysis functions (disparate impact, equalized odds)
-   - API endpoint responses
-   - Edge cases in statistical calculations
-
-3. Add CI/CD pipeline (GitHub Actions)
-   - Run tests on every PR
-   - Block merges if tests fail
-   - Code coverage reporting (target: 70% minimum)
-
-4. Integration tests
-   - API route → Database → Response validation
-   - Auth flow end-to-end
-```
-
-**Files to Create:**
-- `apps/platform/__tests__/` - Jest test files
-- `apps/engine/tests/` - pytest files (directory exists but empty)
-- `.github/workflows/test.yml` - CI pipeline
+| Date | Assessment | Reality |
+|------|------------|---------|
+| Feb 12, 2026 | Vision 10/10, Code 3/10 | Accurate |
+| Feb 15, 2026 | Vision 10/10, Code 7/10 | **Overstated** |
+| Feb 17, 2026 | Vision 10/10, Code 4/10 | **Current accurate state** |
 
 ---
 
-### 2. Hardcoded Secrets & Insecure Defaults
+## Critical Issues (Updated Status)
 
-**Current State:** Multiple hardcoded secrets throughout codebase
-**Risk:** Security breach if code is exposed; credentials in version control
+### Issue 1: Authentication Security - NOT RESOLVED
 
-**Locations Found:**
-```typescript
-// apps/platform/lib/db.ts
-const pool = new Pool({
-  user: process.env.POSTGRES_USER || 'aic_admin',
-  password: process.env.POSTGRES_PASSWORD || 'aic_password_secure',  // HARDCODED
-  ...
-});
+**Previous Claim:** "Auth hardening complete"
+**Actual Status:** Tutorial-level authentication
 
-// apps/platform/lib/auth-options.ts
-secret: process.env.NEXTAUTH_SECRET || 'aic-secret-key-change-in-production',  // HARDCODED
+| Feature | Status | Risk |
+|---------|--------|------|
+| Multi-Factor Authentication | NOT IMPLEMENTED | CRITICAL |
+| Account Lockout | NOT IMPLEMENTED | CRITICAL |
+| Token Revocation | BROKEN (JTI not generated) | HIGH |
+| Key Rotation | NOT SUPPORTED | HIGH |
+| Brute Force Protection | NONE | HIGH |
+| Identity Proofing | EMAIL DOMAIN ONLY | MEDIUM |
 
-// Similar patterns in apps/admin, apps/hq
+**Remediation Required:** 40+ hours
+
+### Issue 2: Data Sovereignty - NOT RESOLVED
+
+**Previous Claim:** "RLS resolved via getTenantDb()"
+**Actual Status:** 9 endpoints bypass RLS
+
+| Endpoint | Method | Risk Level |
+|----------|--------|------------|
+| /api/incidents/public | POST | CRITICAL |
+| /api/incidents/escalate | POST | HIGH |
+| /api/billing/webhook | POST | HIGH |
+| /api/leads | GET/POST | HIGH |
+| /api/auth/* | Various | MEDIUM |
+| /api/organizations/[id] | Various | MEDIUM |
+
+**Remediation Required:** 16+ hours
+
+### Issue 3: Credentials in Version Control - CRITICAL
+
+**Previous Status:** "Improved - dev fallbacks remain"
+**Actual Status:** Plaintext credentials committed to git
+
+```
+Files containing credentials:
+- .env (binary, committed)
+- apps/*/env (various)
+Contains: POSTGRES_PASSWORD, NEXTAUTH_SECRET, etc.
 ```
 
-**Action Items:**
-```
-Priority: CRITICAL
-Timeline: Week 1
+**Remediation Required:** 4 hours + secret rotation
 
-1. Remove ALL hardcoded fallback values
-   - Database credentials
-   - NextAuth secrets
-   - API keys
+### Issue 4: Engine Scalability - NOT RESOLVED
 
-2. Create proper environment configuration
-   - .env.example with placeholder values
-   - .env.local for development (gitignored)
-   - Production secrets via secure secret manager
+**Previous Claim:** "Celery async tasks complete"
+**Actual Status:** 4 of 40+ endpoints use Celery
 
-3. Add startup validation
-   - App should FAIL to start if required env vars missing
-   - No silent fallbacks to insecure defaults
+| Component | Issue | Impact |
+|-----------|-------|--------|
+| API Endpoints | All synchronous | 4 concurrent max |
+| SHAP/LIME | 100-500MB per request | OOM |
+| Model Cache | Unbounded growth | 10GB/24h |
+| Workers | 4 Uvicorn, blocking | No scaling |
 
-4. Implement secrets management
-   - Use Vercel Environment Variables (production)
-   - Or HashiCorp Vault / AWS Secrets Manager for enterprise
-```
+**Remediation Required:** 48+ hours
 
-**Code Change Example:**
-```typescript
-// BEFORE (insecure)
-const pool = new Pool({
-  password: process.env.POSTGRES_PASSWORD || 'aic_password_secure',
-});
+### Issue 5: Monorepo Architecture - NOT ENFORCED
 
-// AFTER (secure)
-if (!process.env.POSTGRES_PASSWORD) {
-  throw new Error('POSTGRES_PASSWORD environment variable is required');
-}
-const pool = new Pool({
-  password: process.env.POSTGRES_PASSWORD,
-});
-```
+**Previous Claim:** "Turborepo properly configured"
+**Actual Status:** Zero import boundary enforcement
+
+| Issue | Evidence |
+|-------|----------|
+| Dead packages | 5 packages never imported |
+| Duplicate code | 3 identical auth files |
+| Competing implementations | 2 EngineClient versions |
+| No ESLint boundaries | Apps can import anything |
+
+**Remediation Required:** 20+ hours
 
 ---
 
-### 3. Hardcoded Fallback Data Masks Failures
+## Revised Engineering Backlog
 
-**Current State:** API routes return mock/demo data when database fails
-**Risk:** Production errors silently return fake data instead of failing visibly
+### P0 - Emergency (Week 1)
 
-**Example (apps/platform/app/api/dashboard/route.ts):**
-```typescript
-} catch (error) {
-  console.error('Error:', error);
-  // Returns hardcoded demo data on ANY error
-  return NextResponse.json({
-    integrity_score: 78,
-    tier: 'TIER_2',
-    // ... fake data
-  });
-}
-```
+| Task | Description | Effort | Owner |
+|------|-------------|--------|-------|
+| PURGE-CREDS | Remove credentials from git history | 4h | DevOps |
+| FIX-INCIDENTS | Validate orgId in public endpoint | 2h | Backend |
+| ACCOUNT-LOCK | Implement account lockout | 4h | Backend |
+| GEN-JTI | Generate JTI for all tokens | 2h | Backend |
 
-**Action Items:**
-```
-Priority: HIGH
-Timeline: Weeks 2-3
+### P0 - Security Foundation (Weeks 2-4)
 
-1. Remove all fallback demo data from production code
-   - API routes should return proper error responses
-   - Frontend should handle error states gracefully
+| Task | Description | Effort | Owner |
+|------|-------------|--------|-------|
+| IMPL-MFA | TOTP multi-factor authentication | 16h | Auth |
+| AUDIT-RLS | Document all getSystemDb() calls | 8h | Backend |
+| SECRETS-VAULT | Move secrets to secure vault | 8h | DevOps |
+| KEY-ROTATION | Support multiple signing keys | 12h | Auth |
+| LEADS-ORG | Add org_id to leads table | 4h | Backend |
 
-2. Create separate demo/seed data mechanism
-   - Seed script for development database
-   - Demo mode toggle (env var) for sales demos only
-   - Clear visual indicator when in demo mode
+### P1 - Engine Stabilization (Weeks 5-8)
 
-3. Implement proper error handling
-   - Structured error responses
-   - Error tracking (Sentry or similar)
-   - Alerting for critical failures
-```
+| Task | Description | Effort | Owner |
+|------|-------------|--------|-------|
+| ASYNC-ALL | Convert all endpoints to async | 24h | Python |
+| CACHE-TTL | Implement LRU with TTL | 8h | Python |
+| CELERY-ALL | Migrate heavy ops to Celery | 16h | Python |
+| STREAM-SHAP | Streaming for large computations | 16h | Python |
 
----
+### P1 - Architecture Cleanup (Weeks 9-12)
 
-### 4. Audit Engine Not Integrated
+| Task | Description | Effort | Owner |
+|------|-------------|--------|-------|
+| DELETE-DEAD | Remove unused packages | 4h | Tech Lead |
+| MERGE-AUTH | Consolidate auth utilities | 8h | Backend |
+| ESLINT-BOUNDS | Add import boundary rules | 8h | Tech Lead |
+| LEDGER-ENFORCE | Make ledger mandatory | 16h | Backend |
+| SINGLE-CLIENT | Consolidate EngineClient | 8h | Backend |
 
-**Current State:** Python FastAPI engine exists but not called from Next.js apps
-**Risk:** Core value proposition (bias detection) not actually functional
+### P2 - Production Hardening (Weeks 13-16)
 
-**Action Items:**
-```
-Priority: HIGH
-Timeline: Weeks 3-4
-
-1. Create integration layer
-   - apps/platform/lib/engine-client.ts
-   - HTTP client to call engine API
-   - Type definitions for request/response
-
-2. Wire up to platform workflows
-   - Certification assessment triggers engine analysis
-   - Results stored in database
-   - Dashboard displays engine output
-
-3. Add health checks
-   - Platform checks engine availability on startup
-   - Graceful degradation if engine unavailable
-   - Admin dashboard shows engine status
-
-4. Document API contract
-   - OpenAPI spec for engine
-   - TypeScript types generated from spec
-```
+| Task | Description | Effort | Owner |
+|------|-------------|--------|-------|
+| LOAD-TEST | Test with 50+ concurrent orgs | 16h | QA |
+| SAST-CI | Add security scanning to CI | 4h | DevOps |
+| STAGING | Deploy staging environment | 8h | DevOps |
+| SECURITY-AUDIT | External penetration test | 16h | External |
+| MONITORING | Implement observability | 16h | DevOps |
 
 ---
 
-## High Priority Improvements
+## Definition of "Production Ready" (Revised)
 
-### 5. Database Migrations
+### Security Checklist
 
-**Current State:** Schema in single SQL file; changes require manual execution
-**Risk:** Schema drift between environments; no rollback capability
+| Requirement | Previous Status | Required Action |
+|-------------|-----------------|-----------------|
+| No credentials in git | FAILING | Purge history |
+| MFA implemented | FAILING | Implement TOTP |
+| All RLS enforced | FAILING | Audit 9 endpoints |
+| Token revocation works | FAILING | Generate JTI |
+| Account lockout | FAILING | Implement |
+| Secrets in vault | FAILING | Migrate |
+| Key rotation | FAILING | Implement |
 
-**Action Items:**
-```
-Priority: HIGH
-Timeline: Week 2
+### Scalability Checklist
 
-1. Set up migration tool
-   - Option A: Drizzle ORM (TypeScript native)
-   - Option B: Prisma (popular, good DX)
-   - Option C: node-pg-migrate (lightweight)
+| Requirement | Previous Status | Required Action |
+|-------------|-----------------|-----------------|
+| Engine handles 50+ orgs | FAILING | Async + Celery |
+| Model cache bounded | FAILING | LRU + TTL |
+| Rate limiting | FAILING | Redis-based |
+| Load tested | FAILING | Performance tests |
 
-2. Convert schema.sql to migrations
-   - One migration per logical change
-   - Timestamped, ordered execution
+### Architecture Checklist
 
-3. Add migration commands
-   - npm run db:migrate (apply pending)
-   - npm run db:rollback (undo last)
-   - npm run db:status (show current state)
-```
-
----
-
-### 6. TypeScript Type Safety
-
-**Current State:** Heavy use of `any` types; runtime errors possible
-**Risk:** Type mismatches cause runtime failures; reduced developer confidence
-
-**Action Items:**
-```
-Priority: MEDIUM
-Timeline: Ongoing
-
-1. Enable stricter TypeScript config
-   - "noImplicitAny": true
-   - "strictNullChecks": true (already enabled)
-
-2. Create shared type definitions
-   - packages/types/ - Shared TypeScript types
-   - Database row types
-   - API request/response types
-
-3. Remove explicit `any` usage
-   - Replace with proper types
-   - Use `unknown` where type is truly unknown
-```
+| Requirement | Previous Status | Required Action |
+|-------------|-----------------|-----------------|
+| No dead code | FAILING | Delete 5 packages |
+| No duplicate code | FAILING | Consolidate auth |
+| Import boundaries | FAILING | ESLint rules |
+| Audit trail mandatory | FAILING | Enforce ledger |
 
 ---
 
-### 7. API Input Validation
+## Effort Summary (Revised)
 
-**Current State:** Minimal input validation on API routes
-**Risk:** SQL injection (parameterized queries help), data corruption, security vulnerabilities
+### Previous Estimate (Inaccurate)
+| Category | Hours |
+|----------|-------|
+| Remaining Total | 50-75 |
+| Timeline | 1.5-2 weeks |
 
-**Action Items:**
-```
-Priority: MEDIUM
-Timeline: Weeks 3-4
+### Actual Estimate (Corrected)
+| Category | Hours |
+|----------|-------|
+| Security (P0) | 60-80 |
+| Engine (P1) | 60-80 |
+| Architecture (P1) | 40-60 |
+| Production (P2) | 50-60 |
+| **Total** | **210-280** |
 
-1. Add Zod validation to all API routes
-   - Request body validation
-   - Query parameter validation
-   - Type-safe parsing
-
-2. Standardize error responses
-   - Consistent error format
-   - Validation error details
-   - HTTP status codes
-
-Example:
-```typescript
-import { z } from 'zod';
-
-const CreateIncidentSchema = z.object({
-  title: z.string().min(1).max(255),
-  severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']),
-  description: z.string().optional(),
-});
-
-export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const result = CreateIncidentSchema.safeParse(body);
-
-  if (!result.success) {
-    return NextResponse.json({ error: result.error }, { status: 400 });
-  }
-  // ... proceed with validated data
-}
-```
-```
+**Timeline:** 12-16 weeks with dedicated resources
 
 ---
 
-### 8. Authentication Hardening
+## Engineering Team Requirements
 
-**Current State:** Basic NextAuth setup; some routes may be unprotected
-**Risk:** Unauthorized access to sensitive compliance data
+| Role | Allocation | Duration | Focus |
+|------|------------|----------|-------|
+| Backend Engineer | 100% | 16 weeks | Security, RLS, Ledger |
+| Python Engineer | 100% | 8 weeks | Engine async, Celery |
+| Auth Specialist | 50% | 4 weeks | MFA, Key rotation |
+| DevOps Engineer | 25% | Ongoing | Secrets, CI, Staging |
+| Tech Lead | 25% | Ongoing | Architecture decisions |
 
-**Action Items:**
-```
-Priority: HIGH
-Timeline: Weeks 2-3
-
-1. Audit all API routes for auth requirements
-   - Document which routes need auth
-   - Add middleware protection where missing
-
-2. Implement rate limiting
-   - Prevent brute force attacks
-   - Rate limit login attempts
-
-3. Add MFA support (for Tier 1 orgs)
-   - TOTP (Google Authenticator)
-   - Required for admin roles
-
-4. Session management
-   - Secure session expiry
-   - Force logout on password change
-   - Session activity logging
-```
+**Minimum Team:** 2 full-time engineers
+**Ideal Team:** 3 engineers + DevOps
 
 ---
 
-## Medium Priority Improvements
+## Weekly Milestones
 
-### 9. Monitoring & Observability
-
-**Current State:** Console.log only; no production monitoring
-
-**Action Items:**
-```
-Priority: MEDIUM
-Timeline: Weeks 4-6
-
-1. Error tracking
-   - Sentry integration
-   - Error grouping and alerting
-
-2. Application Performance Monitoring
-   - Vercel Analytics (if deployed there)
-   - Or custom metrics (Datadog, New Relic)
-
-3. Database monitoring
-   - Query performance tracking
-   - Connection pool health
-   - Slow query logging
-
-4. Uptime monitoring
-   - External health checks
-   - Alerting on downtime
-```
+| Week | Milestone | Success Criteria |
+|------|-----------|------------------|
+| 1 | Emergency security | Creds purged, lockout implemented |
+| 2 | MFA foundation | Database schema, TOTP logic |
+| 3 | MFA deployment | Mandatory for admin roles |
+| 4 | Security audit | All getSystemDb() documented |
+| 5 | Engine async start | 10 endpoints converted |
+| 6 | Engine async complete | All endpoints async |
+| 7 | Celery migration | Heavy ops in background |
+| 8 | Cache implementation | LRU + TTL operational |
+| 9 | Dead code removal | 5 packages deleted |
+| 10 | Auth consolidation | Single source of truth |
+| 11 | Import boundaries | ESLint rules enforced |
+| 12 | Ledger enforcement | All state changes logged |
+| 13 | Load testing | 50+ orgs sustained |
+| 14 | Security audit | External pentest passed |
+| 15 | Staging deployment | Mirror of production |
+| 16 | Due diligence ready | All checklists green |
 
 ---
 
-### 10. Documentation
+## Risk Register
 
-**Current State:** CLAUDE.md provides good overview; missing API docs, deployment guide
-
-**Action Items:**
-```
-Priority: MEDIUM
-Timeline: Weeks 5-6
-
-1. API Documentation
-   - OpenAPI/Swagger spec for all routes
-   - Auto-generated from code if possible
-
-2. Deployment Guide
-   - Step-by-step production deployment
-   - Environment variable reference
-   - Infrastructure requirements
-
-3. Developer Onboarding
-   - Local development setup
-   - Architecture decision records
-   - Contribution guidelines
-```
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Timeline slips | HIGH | HIGH | Weekly checkpoints |
+| Scope creep | HIGH | MEDIUM | Feature freeze |
+| Key person leaves | MEDIUM | HIGH | Documentation |
+| External audit fails | MEDIUM | HIGH | Internal pre-audit |
+| Investor discovers issues | HIGH | CRITICAL | Pause fundraising |
 
 ---
 
-## Recommended Implementation Timeline
+## Success Metrics
 
-### Week 1-2: Security Foundation
-- [ ] Remove all hardcoded secrets
-- [ ] Create .env.example files
-- [ ] Add startup validation for required env vars
-- [ ] Set up Jest/pytest infrastructure
-- [ ] Write first 20 critical tests
+### Week 4 Checkpoint
+- [ ] No credentials in git history
+- [ ] MFA operational for admin roles
+- [ ] Account lockout implemented
+- [ ] All getSystemDb() documented
 
-### Week 3-4: Core Reliability
-- [ ] Remove fallback demo data from API routes
-- [ ] Implement proper error handling
-- [ ] Set up database migrations
-- [ ] Integrate audit engine with platform
-- [ ] Add Zod validation to API routes
+### Week 8 Checkpoint
+- [ ] All engine endpoints async
+- [ ] Celery processing heavy operations
+- [ ] Model cache bounded (LRU + 1hr TTL)
+- [ ] No OOM under 50 concurrent requests
 
-### Week 5-6: Production Readiness
-- [ ] Add Sentry error tracking
-- [ ] Implement rate limiting
-- [ ] Create deployment documentation
-- [ ] API documentation (OpenAPI)
-- [ ] Load testing critical paths
+### Week 12 Checkpoint
+- [ ] Dead packages removed
+- [ ] Auth utilities consolidated
+- [ ] ESLint boundaries enforced
+- [ ] Ledger mandatory for state changes
 
-### Week 7-8: Polish
-- [ ] Reach 70% test coverage
-- [ ] Performance optimization
-- [ ] Security audit
-- [ ] Accessibility audit (WCAG 2.1)
+### Week 16 Checkpoint (Series A Ready)
+- [ ] External security audit passed
+- [ ] Load testing completed
+- [ ] Staging environment operational
+- [ ] All production checklists green
 
 ---
 
-## Definition of "Production Ready"
+## Conclusion
 
-The platform is production-ready when:
+The engineering roadmap has been **completely revised** to reflect actual platform state. Previous assessments underestimated remaining work by approximately 3x.
 
-1. **Security**
-   - [ ] No hardcoded secrets in codebase
-   - [ ] All API routes properly authenticated
-   - [ ] Input validation on all endpoints
-   - [ ] Rate limiting implemented
-   - [ ] Security headers configured
+**Key Corrections:**
+- Security is NOT resolved (40+ hours needed)
+- Engine is NOT stable (48+ hours needed)
+- Architecture is NOT enforced (20+ hours needed)
+- Timeline is NOT 4-6 weeks (12-16 weeks realistic)
 
-2. **Reliability**
-   - [ ] 70%+ test coverage
-   - [ ] CI/CD pipeline with test gates
-   - [ ] Error tracking and alerting
-   - [ ] Database migrations versioned
-   - [ ] No demo data in production code
-
-3. **Integration**
-   - [ ] Audit engine connected and functional
-   - [ ] Email notifications working
-   - [ ] All API routes returning real data
-
-4. **Operations**
-   - [ ] Deployment documentation complete
-   - [ ] Monitoring dashboards set up
-   - [ ] Backup and recovery tested
-   - [ ] On-call runbook created
+The platform requires focused remediation before Series A discussions resume.
 
 ---
 
-## Effort Estimates
-
-| Category | Estimated Hours | Priority |
-|----------|-----------------|----------|
-| Testing Infrastructure | 40-60 | Critical |
-| Security Hardening | 20-30 | Critical |
-| Error Handling | 15-20 | High |
-| Engine Integration | 20-30 | High |
-| Database Migrations | 10-15 | High |
-| Input Validation | 15-20 | Medium |
-| Monitoring | 15-20 | Medium |
-| Documentation | 10-15 | Medium |
-| **Total** | **145-210 hours** | — |
-
-At full-time pace: **4-6 weeks**
-At part-time (20 hrs/week): **8-10 weeks**
-
----
-
-## Recommended Tooling
-
-| Purpose | Recommended Tool | Alternative |
-|---------|-----------------|-------------|
-| Testing (JS) | Jest + RTL | Vitest |
-| Testing (Python) | pytest | unittest |
-| CI/CD | GitHub Actions | GitLab CI |
-| Error Tracking | Sentry | Rollbar |
-| Database Migrations | Drizzle | Prisma |
-| API Validation | Zod | Yup |
-| API Docs | OpenAPI/Swagger | - |
-| Secrets Management | Vercel Env | Vault |
-
----
-
-*This roadmap should be reviewed and updated weekly as work progresses.*
-
-*AI Integrity Certification | Engineering Roadmap | February 2026 | CONFIDENTIAL*
+*AI Integrity Certification | Engineering Roadmap v3.0 | February 17, 2026*
+*Supersedes versions 1.0 and 2.0*

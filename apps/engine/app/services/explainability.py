@@ -9,22 +9,42 @@ LIME: Local interpretable model-agnostic explanations.
 """
 
 import numpy as np
+import pandas as pd
 from typing import List, Dict, Any, Optional, Callable
 from datetime import datetime
 import hashlib
 import json
 import logging
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.preprocessing import LabelEncoder
+
+# Task 7: Module-level imports to mitigate overhead
+try:
+    import shap
+except ImportError:
+    shap = None
+    logging.warning("SHAP library not available")
+
+try:
+    import lime.lime_tabular
+except ImportError:
+    lime = None
+    logging.warning("LIME library not available")
+
+from app.core.config import MAX_FEATURES, MAX_DATA_ROWS, MAX_BATCH_SIZE
 
 logger = logging.getLogger("aic.engine.explainability")
 
 # Maximum model/data sizes to prevent resource exhaustion
-MAX_FEATURES = 500
-MAX_SAMPLES = 50_000
-MAX_EXPLANATION_INSTANCES = 100
+# Replaced by centralized config imports
+MAX_SAMPLES = MAX_DATA_ROWS
+MAX_EXPLANATION_INSTANCES = MAX_BATCH_SIZE
 
+# Task 6: SHAP/LIME Surrogate Model Cache
+_MODEL_CACHE = {}
 
-def _generate_hash(data: Dict) -> str:
-    """Generate SHA-256 hash for audit trail."""
+def _generate_hash(data: Any) -> str:
+    """Generate SHA-256 hash for audit trail and caching."""
     json_str = json.dumps(data, sort_keys=True, default=str)
     return hashlib.sha256(json_str.encode()).hexdigest()
 
@@ -38,20 +58,8 @@ def explain_with_shap(
 ) -> Dict[str, Any]:
     """
     Generate SHAP explanations for one or more instances.
-
-    Args:
-        predict_fn: Model prediction function (accepts np.ndarray, returns np.ndarray).
-        background_data: Training data summary for KernelExplainer.
-        instances: Instance(s) to explain (2D array).
-        feature_names: Optional list of feature names.
-        max_background_samples: Max background samples for KernelExplainer.
-
-    Returns:
-        Dict with SHAP values, base values, and feature importance ranking.
     """
-    try:
-        import shap
-    except ImportError:
+    if shap is None:
         return {"error": "SHAP library not installed. Add shap>=0.44.0 to requirements."}
 
     # Validate inputs
@@ -169,9 +177,7 @@ def explain_with_lime(
     Returns:
         Dict with feature contributions, prediction probabilities, and explanation text.
     """
-    try:
-        import lime.lime_tabular
-    except ImportError:
+    if lime is None:
         return {"error": "LIME library not installed. Add lime>=0.2.0 to requirements."}
 
     # Validate inputs
@@ -273,29 +279,23 @@ def explain_from_data(
     Returns:
         Explanation dict with feature contributions and compliance info.
     """
-    try:
-        import pandas as pd
-        from sklearn.ensemble import GradientBoostingClassifier
-        from sklearn.preprocessing import LabelEncoder
-    except ImportError as e:
-        return {"error": f"Required library not available: {e}"}
-
     if not data:
         return {"error": "No training data provided"}
     if target_column not in data[0]:
         return {"error": f"Target column '{target_column}' not found in data"}
 
+    # Task 6: Implement Model Caching
+    data_hash = _generate_hash({"data": data, "target": target_column})
+    
+    # Always compute X_array and feature names from current data to avoid fatal memory growth
     df = pd.DataFrame(data)
-
     if target_column not in df.columns:
         return {"error": f"Target column '{target_column}' not found"}
 
-    # Separate features and target
     feature_cols = [c for c in df.columns if c != target_column]
     if not feature_cols:
         return {"error": "No feature columns found"}
 
-    # Encode categorical columns
     encoders = {}
     X = df[feature_cols].copy()
     for col in X.columns:
@@ -308,7 +308,36 @@ def explain_from_data(
     feature_names = list(X.columns)
     X_array = X.values.astype(float)
 
+    if data_hash in _MODEL_CACHE:
+        cache_entry = _MODEL_CACHE[data_hash]
+        model = cache_entry["model"]
+        # Use encoders and feature names from cache if they were different (unlikely with same hash)
+        if "encoders" in cache_entry: encoders = cache_entry["encoders"]
+        if "feature_names" in cache_entry: feature_names = cache_entry["feature_names"]
+        logger.info(f"Using cached surrogate model for data hash {data_hash[:8]}")
+    else:
+        # Train a simple model
+        model = GradientBoostingClassifier(n_estimators=50, max_depth=3, random_state=42)
+        try:
+            model.fit(X_array, y)
+        except Exception as e:
+            return {"error": f"Model training failed: {str(e)}"}
+
+        # Store in cache (MINIMAL ENTRY - NO X_ARRAY)
+        _MODEL_CACHE[data_hash] = {
+            "model": model,
+            "feature_names": feature_names,
+            "encoders": encoders,
+            "timestamp": datetime.utcnow()
+        }
+        
+        # Cleanup old cache entries (simple TTL/Size limit could be added)
+        if len(_MODEL_CACHE) > 20:
+            oldest_key = min(_MODEL_CACHE.keys(), key=lambda k: _MODEL_CACHE[k]["timestamp"])
+            del _MODEL_CACHE[oldest_key]
+
     # Build instance array
+    feature_cols = feature_names # use names from trained model
     instance_values = []
     for col in feature_cols:
         val = instance_data.get(col)
@@ -322,13 +351,6 @@ def explain_from_data(
         instance_values.append(float(val))
 
     instance_array = np.array(instance_values)
-
-    # Train a simple model
-    model = GradientBoostingClassifier(n_estimators=50, max_depth=3, random_state=42)
-    try:
-        model.fit(X_array, y)
-    except Exception as e:
-        return {"error": f"Model training failed: {str(e)}"}
 
     # Generate explanation
     if method == "shap":

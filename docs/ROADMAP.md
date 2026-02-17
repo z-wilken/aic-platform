@@ -1,220 +1,260 @@
 # AIC Platform Roadmap
+## Master Development & Remediation Tracker
 
-**Updated:** February 4, 2026
-**Version:** 1.0
-
----
-
-## Current Status Overview
-
-| Component | Status | Test Coverage | Priority |
-|-----------|--------|---------------|----------|
-| Repository structure | ✅ Complete | — | — |
-| apps/web (marketing) | ✅ MVP Complete | 51 tests | LOW (Maintenance) |
-| apps/platform (dashboard) | 🟡 Dashboard Working | 39 tests | **HIGH** |
-| apps/admin (operations) | 🟡 Dashboard Working | — | **HIGH** |
-| apps/engine (bias audit) | ✅ Complete | 71 tests (92% coverage) | LOW (Maintenance) |
-| Test Infrastructure | ✅ Complete | 161 total tests | — |
-| Documentation | ✅ Integrated | — | — |
-| Alpha Program | 🟡 Recruiting | — | **HIGH** |
+**Version:** 3.0 (Major Revision)
+**Updated:** February 17, 2026
+**Status:** Active Remediation Phase
 
 ---
 
-## What's Complete
+## CRITICAL NOTICE
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| **Marketing Website** | ✅ Complete | Production-ready with Gallery aesthetic |
-| **Self-Assessment Quiz** | ✅ Complete | 20 questions, PDF export, lead capture |
-| **Audit Engine** | ✅ Complete | 13 endpoints, 92% test coverage |
-| **Test Infrastructure** | ✅ Complete | 161 tests passing |
-| **Platform Dashboard** | ✅ Working | Fetches real data from PostgreSQL |
-| **Admin Dashboard** | ✅ Working | Fetches real data from PostgreSQL |
+This roadmap has been **completely revised** following a comprehensive 360-degree technical audit conducted on February 17, 2026. Previous versions contained inaccurate progress assessments.
 
----
+### Document Hierarchy
 
-## Next Priorities
-
-### Priority 1: Platform Detail Pages (HIGH)
-
-The platform dashboard is functional but detail pages need implementation.
-
-| Page | Current State | Work Required | Est. Effort |
-|------|---------------|---------------|-------------|
-| `/audits` | UI shell only | Full audit log display, filtering, export | 1 day |
-| `/certificate` | UI shell only | Certificate generation, download, validation | 1 day |
-| `/settings` | UI shell only | Organization settings, user management | 1 day |
-| `/login` | Scaffolded | Complete NextAuth flow | 0.5 day |
-
-**Total estimated effort:** 3-4 days
-
-### Priority 2: Admin Management Pages (HIGH)
-
-The admin dashboard works but management pages need CRUD implementations.
-
-| Page | Current State | Work Required | Est. Effort |
-|------|---------------|---------------|-------------|
-| `/applications` | UI shell only | Application review, status updates, notes | 1 day |
-| `/audits` | UI shell only | Audit assignment, findings tracking | 1 day |
-| `/certifications` | UI shell only | Certification workflow, approvals | 1 day |
-| `/verification` | UI shell only | Decision verification workflows | 1 day |
-
-**Total estimated effort:** 4-5 days
-
-### Priority 3: Authentication Completion (MEDIUM)
-
-| Task | Status | Est. Effort |
-|------|--------|-------------|
-| NextAuth configuration | 🟡 Setup exists | 0.5 day |
-| Role-based access control | ✅ Functions tested | — |
-| Session management | 🟡 Needs completion | 0.5 day |
-| Protected routes | 🟡 Needs implementation | 1 day |
-
-**Total estimated effort:** 2 days
-
-### Priority 4: Integration Testing (MEDIUM)
-
-| Task | Status | Est. Effort |
-|------|--------|-------------|
-| End-to-end user flows | ⬜ Not started | 1 day |
-| API integration tests | ⬜ Not started | 1 day |
-| Database seeding scripts | ⬜ Not started | 0.5 day |
-
-**Total estimated effort:** 2-3 days
+| Document | Purpose | Priority |
+|----------|---------|----------|
+| **TECHNICAL_AUDIT_2026-02-17.md** | Complete audit findings | READ FIRST |
+| **REMEDIATION_ROADMAP.md** | Step-by-step fix plan | PRIMARY |
+| **CURRENT_GAPS.md** | Gap analysis | REFERENCE |
+| **SERIES_A_ROADMAP.md** | Investment timeline | PLANNING |
+| **ENGINEERING_ROADMAP.md** | Technical backlog | EXECUTION |
 
 ---
 
-## Week-by-Week Execution Plan
+## Current Status Overview (Accurate)
 
-### Week 3 (Current): Platform Build
-
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| Mon | Platform audit page | Audit log display with filtering |
-| Tue | Platform certificate page | PDF certificate generation |
-| Wed | Platform settings page | Organization profile management |
-| Thu | Admin applications page | Application review workflow |
-| Fri | Admin audits page | Audit assignment and tracking |
-
-### Week 4: Admin Completion + Auth
-
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| Mon | Admin certifications | Certification approval workflow |
-| Tue | Admin verification | Decision verification interface |
-| Wed | NextAuth completion | Full authentication flow |
-| Thu | Protected routes | Role-based page protection |
-| Fri | Integration testing | E2E test suite for critical paths |
-
-### Week 5: Alpha Outreach Intensification
-
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| Mon-Tue | Platform polish | Bug fixes, UX improvements |
-| Wed-Fri | Alpha recruitment | 10 discovery calls scheduled |
-
-### Week 6: Regulatory Engagement
-
-| Day | Focus | Deliverables |
-|-----|-------|--------------|
-| Mon-Tue | SANAS research | Document accreditation requirements |
-| Wed | Info Regulator follow-up | Meeting confirmation |
-| Thu-Fri | Case study prep | Template for Alpha participants |
+| Component | Previous Claim | Actual Status | Grade |
+|-----------|----------------|---------------|-------|
+| apps/web (marketing) | Complete | Complete | B |
+| apps/platform (dashboard) | 60% | **40%** | D+ |
+| apps/admin (operations) | 50% | **35%** | D |
+| apps/engine (audit) | Complete | **OOM Risk** | C- |
+| Security Posture | "Resolved" | **Critical Gaps** | F |
+| Test Infrastructure | 268 tests | 268 tests | B |
+| RLS Implementation | "Complete" | **9 Bypasses** | F |
 
 ---
 
-## Technical Architecture
+## Critical Issues Requiring Immediate Attention
 
-### Database Schema (Active)
-- `organizations` - Client organizations
-- `leads` - Marketing leads from assessment
-- `audit_logs` - Compliance audit trail
-- `users` - Platform users with roles
+### Blockers (Must Fix Before Any Deployment)
 
-### API Structure
-- `/api/v1/*` - Engine (Python FastAPI) - Bias analysis
-- `/api/*` - Next.js API routes - CRUD operations
-- PostgreSQL via `pg` package - Shared database
+| # | Issue | Severity | Effort |
+|---|-------|----------|--------|
+| 1 | Credentials in git history | CRITICAL | 4h |
+| 2 | No MFA implementation | CRITICAL | 16h |
+| 3 | 9 RLS bypass endpoints | CRITICAL | 8h |
+| 4 | Token revocation broken | HIGH | 2h |
+| 5 | No account lockout | HIGH | 4h |
+| 6 | Engine OOM risk | HIGH | 48h |
 
-### Testing Strategy
-- **Python:** pytest with pytest-cov (threshold: 80%)
-- **TypeScript:** Vitest with @testing-library
-- **Coverage:** Critical business logic prioritized
+### Architecture Issues
+
+| # | Issue | Severity | Effort |
+|---|-------|----------|--------|
+| 7 | 5 dead shared packages | MEDIUM | 4h |
+| 8 | 3 duplicate auth files | MEDIUM | 8h |
+| 9 | 55 type violations | MEDIUM | 8h |
+| 10 | No import boundaries | MEDIUM | 8h |
+| 11 | Ledger not mandatory | MEDIUM | 16h |
+
+---
+
+## Remediation Timeline
+
+### Phase 0: Emergency Security (Week 1)
+**Goal:** Patch critical vulnerabilities
+
+- [ ] Purge credentials from git history
+- [ ] Fix incidents/public orgId validation
+- [ ] Implement account lockout
+- [ ] Generate JTI for all tokens
+
+### Phase 1: Security Foundation (Weeks 2-4)
+**Goal:** Enterprise-grade authentication
+
+- [ ] Implement MFA (TOTP)
+- [ ] Audit all getSystemDb() calls
+- [ ] Move secrets to vault
+- [ ] Implement key rotation
+
+### Phase 2: Stability (Weeks 5-8)
+**Goal:** Production-stable engine
+
+- [ ] Convert engine to async
+- [ ] Implement cache LRU with TTL
+- [ ] Migrate all ops to Celery
+- [ ] Add streaming for SHAP/LIME
+
+### Phase 3: Architecture (Weeks 9-12)
+**Goal:** Clean, maintainable codebase
+
+- [ ] Delete dead packages
+- [ ] Consolidate auth utilities
+- [ ] Add ESLint boundaries
+- [ ] Enforce ledger as mandatory
+
+### Phase 4: Production (Weeks 13-16)
+**Goal:** Series A due diligence ready
+
+- [ ] Load testing (50+ orgs)
+- [ ] External security audit
+- [ ] Staging environment
+- [ ] Monitoring & observability
 
 ---
 
 ## Success Metrics
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Test coverage (Engine) | 80%+ | ✅ 92% |
-| Test coverage (TypeScript) | 70%+ | 🟡 In progress |
-| Platform pages complete | 6/6 | 🟡 2/6 |
-| Admin pages complete | 5/5 | 🟡 1/5 |
-| Alpha applications | 3+ | Pending |
-| Discovery calls | 10+ | Pending |
+### Technical Debt
+
+| Metric | Current | Target | Timeline |
+|--------|---------|--------|----------|
+| Type violations | 55 | <10 | Week 8 |
+| Dead packages | 5 | 0 | Week 10 |
+| Duplicate code | 3 files | 0 | Week 10 |
+| RLS bypasses | 9 | 0 | Week 4 |
+
+### Security
+
+| Metric | Current | Target | Timeline |
+|--------|---------|--------|----------|
+| MFA coverage | 0% | 100% (admin) | Week 3 |
+| Account lockout | No | Yes | Week 1 |
+| Token revocation | Broken | Working | Week 1 |
+| Secrets in vault | No | Yes | Week 4 |
+
+### Performance
+
+| Metric | Current | Target | Timeline |
+|--------|---------|--------|----------|
+| Async endpoints | 10% | 100% | Week 6 |
+| Max concurrent | 4 | 50+ | Week 8 |
+| Cache TTL | None | 1 hour | Week 7 |
+| OOM risk | HIGH | NONE | Week 8 |
 
 ---
 
-## Technical Debt Backlog
+## Previous Status (SUPERSEDED)
 
-| Item | Priority | Effort |
-|------|----------|--------|
-| Remove inline function implementations from auth tests | Low | 1 hour |
-| Add database seeding scripts | Medium | 4 hours |
-| Implement error boundaries in React apps | Medium | 2 hours |
-| Add loading states to all data-fetching components | Low | 3 hours |
-| Configure CI/CD pipeline with test execution | Medium | 4 hours |
+The following assessments from February 15, 2026 have been **invalidated**:
 
----
-
-## Long-Term Vision (Strategic Roadmap Reference)
-
-| Phase | Timeline | Objective |
-|-------|----------|-----------|
-| **Phase 0** | Weeks 1-2 ✅ | Website MVP, Quiz, Lead Generation |
-| **Phase 1** | Months 1-2 | Alpha Program recruitment (5-7 participants) |
-| **Phase 2** | Months 3-4 | Alpha certification execution |
-| **Phase 3** | Months 5-6 | Investment readiness, SANAS application |
-| **Phase 4** | Months 7-12 | Platform build, team hiring, accreditation |
-| **Phase 5** | Year 2-3 | SADC regional expansion |
+| Previous Claim | Correction |
+|----------------|------------|
+| "RLS resolved via getTenantDb()" | 9 endpoints bypass RLS |
+| "Auth hardening complete" | No MFA, no lockout |
+| "Celery async tasks complete" | 4 of 40+ endpoints |
+| "70-80% production ready" | 35-40% actual |
+| "4-6 weeks to Series A" | 12-16 weeks required |
+| "11 shared packages operational" | 5 are dead code |
 
 ---
 
-## Quick Reference
+## Resource Requirements
 
-### Running Tests
+| Role | Allocation | Duration |
+|------|------------|----------|
+| Backend Engineer | 100% | 16 weeks |
+| Python Engineer | 100% | 8 weeks |
+| Auth Specialist | 50% | 4 weeks |
+| DevOps Engineer | 25% | Ongoing |
+
+**Total Effort:** 200-270 engineering hours
+
+---
+
+## Weekly Checkpoints
+
+| Week | Checkpoint | Owner |
+|------|------------|-------|
+| 1 | Emergency security complete | Backend |
+| 4 | MFA operational | Auth |
+| 8 | Engine stable | Python |
+| 12 | Architecture clean | Tech Lead |
+| 16 | Due diligence ready | All |
+
+---
+
+## What's Actually Complete
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| Marketing Website | Complete | Production-ready |
+| Self-Assessment Quiz | Complete | Lead capture working |
+| Test Infrastructure | Complete | 268 tests passing |
+| CI/CD Pipeline | Complete | 3 workflows |
+| Database Schema | Complete | Drizzle ORM |
+| Basic Dashboard UI | Complete | Needs real data |
+
+---
+
+## What's NOT Complete (Contrary to Previous Claims)
+
+| Component | Previous Claim | Actual Status |
+|-----------|----------------|---------------|
+| MFA | Not mentioned | Not implemented |
+| RLS Enforcement | Complete | 9 bypasses |
+| Token Revocation | Not mentioned | JTI not generated |
+| Account Lockout | Not mentioned | Not implemented |
+| Engine Async | Complete | 90% synchronous |
+| Model Cache | Not mentioned | Unbounded growth |
+| Key Rotation | Not mentioned | Not supported |
+| Ledger Enforcement | Production-ready | Optional |
+
+---
+
+## Development Commands
+
 ```bash
-# Python tests (apps/engine)
-cd apps/engine && python -m pytest tests/ -v
-
-# TypeScript tests (all apps)
-npm test
-
-# With coverage
-npm run test:coverage
-```
-
-### Development
-```bash
-# Start all apps
+# Start all apps concurrently
 npm run dev
 
-# Individual apps
-npm run dev:web      # Marketing site (port 3000)
-npm run dev:platform # Dashboard (port 3001)
-npm run dev:admin    # Admin (port 3002)
+# Start individual apps
+npm run dev:web        # Marketing site on :3000
+npm run dev:platform   # Platform dashboard on :3001
+npm run dev:admin      # Admin panel on :3002
+npm run dev:hq         # HQ governance on :3004
 
-# Python engine
-cd apps/engine && uvicorn app.main:app --reload
+# Start database
+docker-compose up -d
+
+# Run all tests
+npm test               # TypeScript tests (Vitest)
+cd apps/engine && python -m pytest  # Python tests
+
+# Start engine
+cd apps/engine && uvicorn app.main:app --reload --port 8000
 ```
 
 ---
 
-> **Current Focus:** Complete the platform and admin apps to support Alpha Program participants. The public-facing marketing site and audit engine are production-ready.
+## Related Documents
 
-*"The foundation is solid. Now we build the house."*
+- [Technical Audit (Feb 17)](TECHNICAL_AUDIT_2026-02-17.md) - Complete findings
+- [Remediation Roadmap](REMEDIATION_ROADMAP.md) - Fix plan
+- [Current Gaps](CURRENT_GAPS.md) - Gap analysis
+- [Series A Roadmap](SERIES_A_ROADMAP.md) - Investment timeline
+- [Engineering Roadmap](ENGINEERING_ROADMAP.md) - Technical backlog
+- [Critical Review](critical-project-review.md) - Assessment history
+- [Master Plan](MASTER_PLAN.md) - Business strategy
 
 ---
 
-*AI Integrity Certification | Platform Roadmap | February 2026*
+## Bottom Line
+
+**The platform has solid vision and documentation. The code requires significant remediation.**
+
+- Vision: 10/10
+- Documentation: 10/10
+- Code: 4/10
+- Security: 2/10
+- Scalability: 3/10
+
+**Series A ready:** Q3 2026 (not Q1 as previously claimed)
+
+---
+
+*AI Integrity Certification | Platform Roadmap v3.0 | February 17, 2026*
+*Supersedes all previous versions*

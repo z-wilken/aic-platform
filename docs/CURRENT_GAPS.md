@@ -1,303 +1,316 @@
-# AIC Current Gaps & Action Items
+# AIC Platform: Current Gaps & Critical Issues
+## Honest Assessment - February 17, 2026
 
-**Status Assessment | February 2026**
-
-This document identifies gaps between current state and what's needed for successful Alpha Program execution.
+**Classification:** Internal Engineering Document
+**Previous Version:** February 15, 2026 (SUPERSEDED - contained inaccurate assessments)
 
 ---
 
 ## Executive Summary
 
-| Category | Status | Priority |
-|----------|--------|----------|
-| Documentation | 90% Complete | Low - mostly done |
-| Marketing Website | 95% Complete | Low |
-| Audit Framework | 70% Complete | **HIGH** |
-| Platform/Admin Apps | 35% Complete | Medium |
-| Legal/Regulatory | 10% Started | **HIGH** |
-| Team Assembly | 0% Started | **HIGH** |
+A comprehensive 360-degree technical audit conducted on February 17, 2026 revealed that previous gap assessments significantly understated the platform's issues. This document provides an honest, technically precise assessment of current gaps.
+
+### Revised Status Assessment
+
+| Category | Previous Claim | Actual Status | Delta |
+|----------|----------------|---------------|-------|
+| Documentation | 90% Complete | 90% Complete | Accurate |
+| Marketing Website | 95% Complete | 95% Complete | Accurate |
+| Audit Framework | 85% Complete | **60% Complete** | -25% |
+| Platform/Admin Apps | 60% Complete | **40% Complete** | -20% |
+| Security Posture | "Resolved" | **CRITICAL GAPS** | Misreported |
+| Auth Hardening | "Complete" | **NOT IMPLEMENTED** | Misreported |
+| RLS Implementation | "Complete" | **9 BYPASS POINTS** | Misreported |
 
 ---
 
-## 1. Documentation Gaps
+## CRITICAL SECURITY GAPS
 
-### Completed
-- [x] Founder's Vision - Comprehensive
-- [x] Business Plan - Evidence-based with real data
-- [x] Strategic Roadmap - 5-phase plan consolidated
-- [x] Technical Specs - 600+ lines
-- [x] Target Prospects - 20 organizations identified
-- [x] Competitive Analysis - 4 competitor categories
-- [x] Master Plan - Consolidated overview
-- [x] Operational Roadmap - Path to 10 employees
+### Gap S1: No Multi-Factor Authentication
+**Severity:** CRITICAL
+**Previous Status:** Not mentioned
+**Actual Status:** Zero MFA implementation
 
-### Gaps to Address
+- No TOTP support
+- No hardware key support (FIDO2/WebAuthn)
+- No backup codes
+- No adaptive MFA
+- Database schema has no MFA columns
 
-| Gap | Priority | Action Required |
-|-----|----------|-----------------|
-| **Investor Pitch Deck** | High | Create 15-slide deck for ZAR 10M raise |
-| **Financial Model Spreadsheet** | High | Excel/Sheets with 3-year projections |
-| **Legal Entity Structure** | High | Company registration documentation |
-| **SANAS Requirements Document** | Medium | Detailed ISO 17021 requirements mapping |
-| **Insurance Partnership Proposal** | Medium | One-pager for iTOO/Santam conversations |
+**Impact:** Single-factor auth for a national regulatory platform is unacceptable.
 
-### Inconsistencies Found
+**Remediation:** 16 hours to implement TOTP minimum
 
-1. **Duplicate PRD files**: `docs/PRD.md` and `docs/product/PRD.md` - consolidate to one
-2. **Date references**: Some docs say "January 2026", others "February 2026" - standardize
-3. **NextAuth versions**: Platform uses beta 5.0.0, Admin uses 4.24.13 - align versions
-4. **Pricing inconsistency**: Business Plan shows different tiers than SPECS.md pricing table
+### Gap S2: 9 RLS Bypass Endpoints
+**Severity:** CRITICAL
+**Previous Status:** "RLS resolved via getTenantDb()"
+**Actual Status:** 9 endpoints use getSystemDb(), bypassing RLS
 
----
+| Endpoint | Risk Level |
+|----------|------------|
+| `POST /api/incidents/public` | CRITICAL - accepts any orgId |
+| `POST /api/incidents/escalate` | HIGH - reads all incidents |
+| `POST /api/billing/webhook` | HIGH - updates any org |
+| `GET /api/leads` | HIGH - no tenant isolation |
+| Auth routes (5) | MEDIUM - global user lookup |
 
-## 2. Technical Platform Gaps
+**Impact:** Multi-tenancy claim is invalidated.
 
-### apps/web (Marketing) - 95% Complete
+**Remediation:** 8 hours to audit and fix
 
-| Feature | Status | Gap |
-|---------|--------|-----|
-| Homepage | Done | - |
-| Self-Assessment Quiz | Done | - |
-| Alpha Application | Done | - |
-| Lead Capture | Done | Email integration not tested |
-| Analytics | Done | GA4 tracking needs verification |
+### Gap S3: Credentials Committed to Git
+**Severity:** CRITICAL
+**Previous Status:** "Improved - fallbacks remain for dev mode"
+**Actual Status:** Plaintext passwords in .env files, committed to git history
 
-**Remaining:**
-- [ ] Email notification on lead capture (needs SMTP setup)
-- [ ] CRM integration (HubSpot or Pipedrive)
+```
+.env files detected as binary (committed)
+Contains: POSTGRES_PASSWORD=aic_password_secure
+```
 
-### apps/platform (Client Dashboard) - 40% Complete
+**Impact:** Immediate disqualification for any security-conscious investor.
 
-| Feature | Status | Gap |
-|---------|--------|-----|
-| Authentication | Partial | NextAuth configured, needs testing |
-| Dashboard UI | Partial | Layout exists, data binding incomplete |
-| Audit Log Viewer | Partial | API exists, UI incomplete |
-| Certificate Display | Not Started | Needs PDF generation |
-| Settings/Profile | Partial | Basic form, no persistence |
+**Remediation:** 4 hours to purge history and rotate secrets
 
-**Critical Gaps:**
-- [ ] Full authentication flow testing
-- [ ] Dashboard data integration with database
-- [ ] Real-time WebSocket updates
-- [ ] Certificate generation (PDF)
-- [ ] API key management UI
+### Gap S4: Token Revocation Non-functional
+**Severity:** HIGH
+**Previous Status:** Not mentioned
+**Actual Status:** JTI (JWT ID) referenced but never generated
 
-### apps/admin (Internal Operations) - 30% Complete
+```typescript
+// Code checks for JTI:
+if (token.jti && await RevocationService.isRevoked(token.jti))
+// But JTI is never generated:
+return jwt.sign(token!, PRIVATE_KEY, { algorithm: 'RS256' }); // No JTI
+```
 
-| Feature | Status | Gap |
-|---------|--------|-----|
-| Admin Authentication | Done | Super admin script exists |
-| Dashboard | Partial | Metrics API exists, UI basic |
-| Application Queue | Not Started | Core workflow missing |
-| Audit Assignment | Not Started | Auditor management missing |
-| Organization Management | Partial | CRUD API exists, UI incomplete |
+**Impact:** Cannot reliably revoke tokens on logout or security incident.
 
-**Critical Gaps:**
-- [ ] Complete certification workflow (application → review → audit → approve → certificate)
-- [ ] Auditor assignment and scheduling
-- [ ] Finding/evidence management
-- [ ] Report generation
+**Remediation:** 2 hours to generate JTI
 
-### apps/engine (Audit Microservice) - 80% Complete
+### Gap S5: No Account Lockout
+**Severity:** HIGH
+**Previous Status:** Not mentioned
+**Actual Status:** Unlimited brute force attempts allowed
 
-| Feature | Status | Gap |
-|---------|--------|-----|
-| Disparate Impact Analysis | Done | Four-Fifths Rule implemented |
-| Equalized Odds | Done | TPR/FPR parity testing |
-| Intersectional Analysis | Done | Multi-attribute support |
-| Decision Explanation | Done | Feature importance |
-| Batch Processing | Not Started | Large dataset support needed |
+- No failed attempt tracking
+- No exponential backoff
+- No IP-based rate limiting on login
+- No account lockout mechanism
 
-**Remaining:**
-- [ ] Batch processing for large datasets
-- [ ] Report PDF generation
-- [ ] Third-party tool integration (Credo AI, Fiddler)
+**Impact:** Admin credentials can be brute forced without limit.
+
+**Remediation:** 4 hours to implement
 
 ---
 
-## 3. Legal & Regulatory Gaps
+## ARCHITECTURE GAPS
 
-### Not Started - HIGH PRIORITY
+### Gap A1: Dead Shared Packages
+**Severity:** MEDIUM
+**Previous Status:** "11 packages operational"
+**Actual Status:** 5 packages have zero imports
 
-| Item | Priority | Action |
-|------|----------|--------|
-| **Company Registration** | Critical | Register (Pty) Ltd with CIPC |
-| **POPIA Registration** | Critical | Register as Responsible Party with Info Regulator |
-| **SANAS Consultation** | High | Schedule initial meeting |
-| **Info Regulator Meeting** | High | Request letter of support |
-| **Insurance Liability** | Medium | Professional indemnity coverage |
-| **Alpha Agreement Review** | Medium | Legal review of participant contract |
+| Package | Status | Action Required |
+|---------|--------|-----------------|
+| `@aic/api-client` | DEAD CODE | Delete or consolidate |
+| `@aic/sockets` | NEVER IMPORTED | Delete or document |
+| `@aic/events` | 7 LINES ONLY | Merge into types |
+| `@aic/middleware` | NEVER IMPORTED | Delete or use |
+| `@aic/reports` | NEVER IMPORTED | Delete or use |
 
-### Documentation Needed
+**Impact:** Engineering maturity concerns for investors.
 
-- [ ] Company constitution/MOI
-- [ ] Director resolution for bank account
-- [ ] POPIA compliance policy (for AIC itself)
-- [ ] Terms of Service for platform
-- [ ] Privacy Policy for website
-- [ ] Alpha Program contract (final legal review)
+### Gap A2: Duplicate Auth Utilities
+**Severity:** MEDIUM
+**Previous Status:** Not mentioned
+**Actual Status:** 3 identical lib/auth.ts files with inconsistent logic
 
----
+- `apps/platform/lib/auth.ts` uses `hasRole()` helper
+- `apps/admin/lib/auth.ts` re-implements role checking inline
+- `apps/hq/lib/auth.ts` re-implements role checking inline
 
-## 4. Team Assembly Gaps
+**Impact:** Code drift, inconsistent authorization behavior.
 
-### Current Team: 1 (Founder only)
+### Gap A3: Competing EngineClient Implementations
+**Severity:** MEDIUM
+**Previous Status:** Not mentioned
+**Actual Status:** Two completely different implementations
 
-### Needed for Alpha (Months 1-2):
+- `apps/platform/lib/engine-client.ts` - 391 lines, feature-complete, actively used
+- `packages/api-client/src/index.ts` - 66 lines, circuit breaker, NEVER IMPORTED
 
-| Role | Status | Action |
-|------|--------|--------|
-| **Contract ISO Auditor** | Not Started | Source via LinkedIn/SAATCA network |
-| **POPIA Legal Advisor** | Not Started | Identify firms (ENSafrica, Webber Wentzel) |
-| **Technical AI Specialist** | Not Started | Contract for bias testing support |
+**Impact:** Confusion about correct client to use.
 
-### Recruitment Actions:
+### Gap A4: No Import Boundary Enforcement
+**Severity:** MEDIUM
+**Previous Status:** "Turborepo configured"
+**Actual Status:** Turborepo provides zero import boundary enforcement
 
-1. **ISO Auditor**:
-   - Post on LinkedIn targeting "ISO 27001 Lead Auditor South Africa"
-   - Contact SAATCA (SA Association for Testing and Calibration Auditing)
-   - Rate: ZAR 8,000/day expected
+- No ESLint rules for cross-app imports
+- No forbidden zones defined
+- Apps can import from each other freely
 
-2. **Legal Advisor**:
-   - Contact ENSafrica, Webber Wentzel, Cliffe Dekker for POPIA specialists
-   - Request retainer quotes (budget: ZAR 50K)
-
-3. **AI Specialist**:
-   - Source from data science community (LinkedIn, Meetups)
-   - Rate: ZAR 80K project fee expected
+**Impact:** Monorepo is folder organization, not architecture.
 
 ---
 
-## 5. Sales & Marketing Gaps
+## PERFORMANCE GAPS
 
-### Completed
-- [x] Target prospect list (20 organizations)
-- [x] One-pager pitch document
-- [x] Pitch email templates
-- [x] Website with lead capture
+### Gap P1: Engine OOM Risk
+**Severity:** CRITICAL
+**Previous Status:** "Celery async tasks complete"
+**Actual Status:** Only 4 of 40+ endpoints use Celery
 
-### Gaps to Address
+- All bias analysis endpoints are synchronous
+- SHAP/LIME uses 100-500MB per request
+- 30-60 second blocking operations
+- Model cache unbounded growth
 
-| Gap | Priority | Action |
-|-----|----------|--------|
-| **CRM Setup** | High | Set up HubSpot free tier |
-| **LinkedIn Outreach Plan** | High | Script + sequence for 20 prospects |
-| **Contact Research** | High | Find decision-maker emails/numbers |
-| **Conference Calendar** | Medium | Identify speaking opportunities |
-| **Partnership Introductions** | Medium | Request intros from network |
+**Production Failure Scenario:**
+```
+Hour 0: 50 orgs hit system
+Hour 1: Memory climbs to 1GB per worker
+Hour 2: OOM crash
+```
 
-### Prospect Contact Research Needed:
+**Remediation:** 24 hours to convert to async
 
-| Organization | Role Needed | Status |
-|--------------|-------------|--------|
-| Investec | CRO | Not researched |
-| Capitec | CCO | Not researched |
-| Discovery Health | CMO | Not researched |
-| Giraffe/Harambee | COO | Not researched |
-| Santam | Head of Innovation | Not researched |
+### Gap P2: Model Cache Unbounded
+**Severity:** HIGH
+**Previous Status:** Not mentioned
+**Actual Status:** No TTL, no LRU, naive eviction
 
----
+```python
+# Current implementation:
+if len(_MODEL_CACHE) > 20:
+    oldest_key = min(_MODEL_CACHE.keys(), ...)
+    del _MODEL_CACHE[oldest_key]
+```
 
-## 6. Infrastructure Gaps
+**Impact:** 10GB memory in 24 hours under moderate load.
 
-### Development Environment
-- [x] Monorepo structure (Yarn workspaces)
-- [x] Docker Compose for database
-- [ ] CI/CD pipeline (GitHub Actions)
-- [ ] Staging environment
-- [ ] Production deployment (Vercel)
+**Remediation:** 8 hours to implement proper caching
 
-### Database
-- [x] PostgreSQL schema designed
-- [ ] Migrations script
-- [ ] Seed data for testing
-- [ ] Backup strategy
+### Gap P3: Synchronous Blocking Architecture
+**Severity:** HIGH
+**Previous Status:** Not mentioned
+**Actual Status:** 4 Uvicorn workers, all endpoints synchronous
 
-### Security
-- [ ] Environment variables management
-- [ ] API key rotation policy
-- [ ] Penetration testing (pre-launch)
-- [ ] SOC 2 preparation (future)
+- Hard ceiling at 4 concurrent requests
+- Additional requests queue indefinitely
+- No horizontal scaling possible with current architecture
+
+**Remediation:** 24 hours for full async migration
 
 ---
 
-## 7. Immediate Action Items (This Week)
+## TYPE SAFETY GAPS
 
-### Priority 1: Enable Alpha Outreach
+### Gap T1: 55 Type Violations
+**Severity:** MEDIUM
+**Previous Status:** "51 any types remaining"
+**Actual Status:** 55 total violations (35 any + 20 as any)
 
-1. **Complete Alpha Certification Framework**
-   - Finalize audit checklists for all 3 tiers
-   - Review Integrity Score methodology with advisor
-   - Create auditor briefing document
+**Worst Offenders:**
+1. `apps/platform/lib/engine-client.ts` - 20+ `Record<string, any>[]`
+2. `apps/platform/app/api/organizations/[id]/route.ts` - 3x `as any`
+3. `packages/api-client/src/index.ts` - Full client untyped
 
-2. **Research Prospect Contacts**
-   - LinkedIn search for 20 target decision-makers
-   - Build contact spreadsheet (name, email, LinkedIn, notes)
+### Gap T2: Inconsistent Type Definitions
+**Severity:** MEDIUM
+**Previous Status:** Not mentioned
+**Actual Status:** Organization/User defined in 5 different places
 
-3. **Set Up CRM**
-   - Create HubSpot free account
-   - Import prospect list
-   - Create outreach pipeline
+- `packages/types/index.ts` - canonical
+- `packages/db/src/schema.ts` - Drizzle (naming mismatch)
+- API responses - manual construction
+- NextAuth session - double-cast
+- Python Pydantic - separate schemas
 
-### Priority 2: Legal Foundation
-
-4. **Company Registration**
-   - File CIPC registration for AIC (Pty) Ltd
-   - Open business bank account
-
-5. **Schedule SANAS Call**
-   - Email SANAS to request consultation
-   - Prepare questions about ISO 17021 pathway
-
-6. **Identify Contract Auditor**
-   - LinkedIn outreach to 5 ISO auditors
-   - Request availability and day rates
-
-### Priority 3: Technical Cleanup
-
-7. **Consolidate Duplicate Files**
-   - Remove `docs/PRD.md` (keep `docs/product/PRD.md`)
-   - Align NextAuth versions in platform/admin
-
-8. **Email Integration**
-   - Set up transactional email (Resend or Postmark)
-   - Test lead capture notifications
+**Impact:** Silent type mismatches, runtime errors.
 
 ---
 
-## 8. Gap Closure Timeline
+## AUDIT TRAIL GAPS
 
-| Week | Focus | Deliverable |
-|------|-------|-------------|
-| Week 1 | Company setup | CIPC registration filed |
-| Week 1 | Contact research | 20 prospects with details |
-| Week 1 | CRM | HubSpot pipeline active |
-| Week 2 | Audit framework | Checklists finalized |
-| Week 2 | Auditor sourcing | 3 candidates identified |
-| Week 2 | SANAS | Consultation scheduled |
-| Week 3 | Legal advisor | Retainer agreement |
-| Week 3 | Outreach | First 10 prospects contacted |
-| Week 4 | Info Regulator | Meeting request sent |
-| Week 4 | Insurance | iTOO/Santam intro calls |
+### Gap L1: Ledger Not Mandatory
+**Severity:** HIGH
+**Previous Status:** "LedgerService production-ready"
+**Actual Status:** API routes can bypass ledger entirely
 
----
+**Where Ledger IS Used:**
+- audit-logs/route.ts
+- incidents/[id]/route.ts
 
-## Summary: Top 10 Gaps to Close
+**Where Ledger IS NOT Used:**
+- Decision records
+- Model registration
+- User permission changes
+- Organization tier changes
 
-| # | Gap | Owner | Deadline |
-|---|-----|-------|----------|
-| 1 | Company Registration (CIPC) | Founder | Week 1 |
-| 2 | Prospect Contact Research | Founder | Week 1 |
-| 3 | Alpha Audit Checklists Finalized | Founder | Week 2 |
-| 4 | Contract ISO Auditor Identified | Founder | Week 2 |
-| 5 | SANAS Consultation Scheduled | Founder | Week 2 |
-| 6 | CRM Setup (HubSpot) | Founder | Week 1 |
-| 7 | Legal Advisor Retained | Founder | Week 3 |
-| 8 | First 10 Outreach Conversations | Founder | Week 3 |
-| 9 | Info Regulator Meeting Request | Founder | Week 4 |
-| 10 | Insurance Partnership Intro | Founder | Week 4 |
+**Impact:** "Immutable audit trail" claim is marketing, not architecture.
 
 ---
 
-*AI Integrity Certification | Gap Analysis | February 2026*
+## OPERATIONAL GAPS
+
+### Gap O1: No Staging Environment
+**Status:** Not deployed
+**Impact:** Testing only possible in production
+
+### Gap O2: No Error Tracking
+**Status:** Sentry not configured
+**Impact:** Production errors undetected
+
+### Gap O3: No Load Testing
+**Status:** Never performed
+**Impact:** Unknown capacity limits
+
+### Gap O4: No Monitoring Dashboards
+**Status:** Console.log only
+**Impact:** No visibility into production health
+
+---
+
+## REVISED PRIORITY LIST
+
+### P0 - Block Alpha Deployment
+| # | Gap | Effort | Owner |
+|---|-----|--------|-------|
+| 1 | S3: Credentials in git | 4h | DevOps |
+| 2 | S2: Incidents/public bypass | 2h | Backend |
+| 3 | S5: Account lockout | 4h | Backend |
+| 4 | S4: Generate JTI | 2h | Backend |
+
+### P1 - Block Series A
+| # | Gap | Effort | Owner |
+|---|-----|--------|-------|
+| 5 | S1: Implement MFA | 16h | Auth |
+| 6 | S2: Audit all getSystemDb() | 8h | Backend |
+| 7 | P1: Fix engine OOM risk | 24h | Python |
+| 8 | P2: Implement cache TTL | 8h | Python |
+
+### P2 - Production Ready
+| # | Gap | Effort | Owner |
+|---|-----|--------|-------|
+| 9 | L1: Enforce ledger | 16h | Backend |
+| 10 | A1: Delete dead packages | 4h | Tech Lead |
+| 11 | T1: Fix type violations | 8h | Frontend |
+| 12 | O1: Deploy staging | 8h | DevOps |
+
+---
+
+## Summary
+
+**Previous assessment was overly optimistic.** The platform claimed:
+- "70-80% production ready" - Actual: 40-50%
+- "RLS resolved" - Actual: 9 bypass points
+- "Auth hardening complete" - Actual: No MFA, no lockout
+- "11 packages operational" - Actual: 5 are dead code
+
+**True Series A Timeline:** 10-16 weeks of intensive remediation, not 4-6 weeks as previously estimated.
+
+---
+
+*Updated: February 17, 2026 (Supersedes February 15 assessment)*

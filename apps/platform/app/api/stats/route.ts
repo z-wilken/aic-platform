@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { organizations, auditRequirements, complianceReports, desc, getTenantDb, calculateOrganizationIntelligence } from '@aic/db';
+import { organizations, auditRequirements, complianceReports, auditLogs, eq, and, desc, getTenantDb, calculateOrganizationIntelligence } from '@aic/db';
 import { auth } from '@aic/auth';
 import { StatsResponseSchema } from '@aic/types';
 
@@ -19,9 +19,9 @@ export async function GET() {
 
     // 2. Fetch Additional Telemetry (Using tdb.query to ensure RLS context)
     const result = await tdb.query(async (tx) => {
-      const [org] = await tx.select().from(organizations).limit(1);
+      const [org] = await tx.select().from(organizations).where(eq(organizations.id, orgId)).limit(1);
       
-      const requirements = await tx.select().from(auditRequirements);
+      const requirements = await tx.select().from(auditRequirements).where(eq(auditRequirements.orgId, orgId));
       
       const velocityResults = await tx
         .select({
@@ -29,58 +29,58 @@ export async function GET() {
             score: complianceReports.integrityScore
         })
         .from(complianceReports)
+        .where(eq(complianceReports.orgId, orgId))
         .orderBy(desc(complianceReports.monthYear))
         .limit(6);
 
-      return { org, requirements, velocityResults };
+      const [lastAudit] = await tx
+        .select({ createdAt: auditLogs.createdAt })
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.status, 'VERIFIED')))
+        .orderBy(desc(auditLogs.createdAt))
+        .limit(1);
+
+      return { org, requirements, velocityResults, lastAudit };
     });
 
-    const { org, requirements, velocityResults } = result;
+    const { org, requirements, velocityResults, lastAudit } = result;
 
     if (!org) {
         return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    // 3. Map Framework Distribution (Radar Data)
-    const radarData = [
-        { subject: 'Oversight', A: 0, total: 0 },
-        { subject: 'Documentation', A: 0, total: 0 },
-        { subject: 'Transparency', A: 0, total: 0 },
-        { subject: 'Technical', A: 0, total: 0 },
-        { subject: 'Empathy', A: 0, total: 0 },
-    ];
+    // --- Institutional Data Mapping ---
+    
+    // 1. Map Velocity Data (integrity progression)
+    const velocityData = velocityResults.map(v => ({
+      month: v.month,
+      score: v.score
+    })).reverse();
 
-    requirements.forEach((req: AuditRequirement) => {
-        const catMap: Record<string, string> = {
-            'OVERSIGHT': 'Oversight',
-            'DOCUMENTATION': 'Documentation',
-            'TRANSPARENCY': 'Transparency',
-            'TECHNICAL': 'Technical',
-            'EMPATHY': 'Empathy'
-        };
-        const subject = catMap[req.category?.toUpperCase() || ''] || 'Technical';
-        const dataPoint = radarData.find(d => d.subject === subject);
-        if (dataPoint) {
-            dataPoint.total++;
-            if (req.status === 'VERIFIED') dataPoint.A += 1;
-        }
+    // 2. Map Radar Data (framework distribution)
+    const categoryStats: Record<string, { total: number; verified: number }> = {};
+    requirements.forEach((req) => {
+      const cat = req.category || 'General';
+      if (!categoryStats[cat]) {
+        categoryStats[cat] = { total: 0, verified: 0 };
+      }
+      categoryStats[cat].total++;
+      if (req.status === 'VERIFIED') {
+        categoryStats[cat].verified++;
+      }
     });
 
-    const finalRadarData = radarData.map((d) => ({
-        subject: d.subject,
-        A: d.total > 0 ? Math.round((d.A / d.total) * 100) : 0,
-        fullMark: 100
+    const finalRadarData = Object.entries(categoryStats).map(([subject, stats]) => ({
+      subject,
+      A: Math.round((stats.verified / stats.total) * 100) || 0,
+      fullMark: 100
     }));
 
-    // 4. Map Velocity Data
-    const velocityData = velocityResults.reverse().map((v: { month: string; score: number }) => ({
-        month: v.month,
-        score: v.score
-    }));
-
-    if (velocityData.length === 0) {
-        velocityData.push({ month: 'Live', score: intel.score });
-    }
+    // Calculate Last Audit and Renewal (Task m34-35)
+    const lastAuditAt = lastAudit?.createdAt ? new Date(lastAudit.createdAt).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Pending';
+    const nextRenewalDate = lastAudit?.createdAt 
+        ? new Date(new Date(lastAudit.createdAt).setFullYear(new Date(lastAudit.createdAt).getFullYear() + 1)).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' })
+        : 'TBD';
 
     // --- Institutional Integrity Check (Zod Validation) ---
     const validatedData = StatsResponseSchema.parse({
@@ -93,6 +93,8 @@ export async function GET() {
       verifiedRequirements: intel.verifiedRequirements,
       velocityData,
       radarData: finalRadarData,
+      lastAuditAt,
+      nextRenewalDate,
       status: 'ACTIVE_AUDIT'
     });
 

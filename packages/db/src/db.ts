@@ -3,11 +3,17 @@ import { Pool } from 'pg';
 import * as schema from './schema';
 import * as dotenv from 'dotenv';
 import path from 'path';
-import { sql } from 'drizzle-orm';
+import { sql, ExtractTablesWithRelations } from 'drizzle-orm';
 import { PgTransaction, PgQueryResultHKT } from 'drizzle-orm/pg-core';
 
 // Load .env from monorepo root
 dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
+
+export type TenantTransaction = PgTransaction<
+  PgQueryResultHKT, 
+  typeof schema, 
+  ExtractTablesWithRelations<typeof schema>
+>;
 
 let pool: Pool | null = null;
 let db: ReturnType<typeof drizzle<typeof schema>> | null = null;
@@ -40,8 +46,7 @@ export function getTenantDb(orgId: string) {
 
   return {
     ...rawDb,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    query: async <T>(callback: (tx: PgTransaction<PgQueryResultHKT, typeof schema, any>) => Promise<T>): Promise<T> => {
+    query: async <T>(callback: (tx: TenantTransaction) => Promise<T>): Promise<T> => {
       return await rawDb.transaction(async (tx) => {
         await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
         return await callback(tx);

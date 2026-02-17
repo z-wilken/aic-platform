@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, getSystemDb, organizations, auditLogs, eq, sql } from '@aic/db';
+import { getTenantDb, getSystemDb, organizations, auditLogs, eq, sql, TenantTransaction, PgTransaction, PgQueryResultHKT, schema } from '@aic/db';
 import { getSession } from '../../../../lib/auth';
 import type { Session } from 'next-auth';
 
@@ -24,8 +24,7 @@ export async function GET(
     const isSuperAdmin = session.user.isSuperAdmin;
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const execute = async (tx: any) => {
+    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, any>) => {
       const [org] = await tx.select().from(organizations).where(eq(organizations.id, id)).limit(1);
 
       if (!org) {
@@ -48,13 +47,13 @@ export async function GET(
       });
     };
 
-    if (isSuperAdmin) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).transaction(execute);
-    } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).query(execute);
+    if (isSuperAdmin && 'transaction' in db) {
+        return await db.transaction(execute as any);
+    } else if ('query' in db) {
+        return await db.query(execute as any);
     }
+    
+    throw new Error('Database instance configuration error');
 
   } catch (error) {
     console.error('[SECURITY] Organization GET Error:', error);
@@ -92,8 +91,7 @@ export async function PUT(
     const isSuperAdmin = session.user.isSuperAdmin;
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const execute = async (tx: any) => {
+    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, any>) => {
       const [updatedOrg] = await tx
         .update(organizations)
         .set({ 
@@ -113,13 +111,13 @@ export async function PUT(
       });
     };
 
-    if (isSuperAdmin) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).transaction(execute);
-    } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).query(execute);
+    if (isSuperAdmin && 'transaction' in db) {
+        return await db.transaction(execute as any);
+    } else if ('query' in db) {
+        return await db.query(execute as any);
     }
+
+    throw new Error('Database instance configuration error');
 
   } catch (error) {
     console.error('[SECURITY] Organization Update Error:', error);

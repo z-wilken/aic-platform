@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTenantDb, organizations, auditLogs, models, correctionRequests, eq, sql, desc } from '@aic/db';
+import { getTenantDb, organizations, auditLogs, models, correctionRequests, eq, and, sql, desc } from '@aic/db';
 import { getSession } from '../../../lib/auth';
 import type { Session } from 'next-auth';
 
@@ -34,13 +34,15 @@ export async function GET() {
         last_24h: sql<number>`count(*) filter (where created_at >= ${yesterday})`,
         last_7d: sql<number>`count(*) filter (where created_at >= ${lastWeek})`,
       })
-      .from(auditLogs);
+      .from(auditLogs)
+      .where(eq(auditLogs.orgId, orgId));
 
       const flagged = Number(stats.flagged) || 0;
 
       // 3. Get recent audit logs
       const recentLogs = await tx.select()
         .from(auditLogs)
+        .where(eq(auditLogs.orgId, orgId))
         .orderBy(desc(auditLogs.createdAt))
         .limit(10);
 
@@ -49,28 +51,37 @@ export async function GET() {
       const humanAgencyScore = flagged === 0 ? 100 : Math.max(20, 100 - (flagged * 15));
       
       // 2. Explanation: Based on presence of model metadata and XAI usage
-      const modelCount = await tx.select({ count: sql<number>`count(*)` }).from(models);
-      const explanationLogs = await tx.select({ count: sql<number>`count(*)` }).from(auditLogs).where(eq(auditLogs.eventType, 'TRANSPARENCY_EXPLANATION'));
+      const modelCount = await tx.select({ count: sql<number>`count(*)` }).from(models).where(eq(models.orgId, orgId));
+      const explanationLogs = await tx.select({ count: sql<number>`count(*)` })
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.eventType, 'TRANSPARENCY_EXPLANATION')));
       const explanationScore = Number(modelCount[0].count) > 0 
         ? Math.min(100, 60 + (Number(explanationLogs[0].count) * 10)) 
         : 50;
 
       // 3. Empathy: Based on Empathy Audit results
-      const empathyLogs = await tx.select().from(auditLogs).where(eq(auditLogs.eventType, 'EMPATHY_CHECK')).limit(5);
+      const empathyLogs = await tx.select()
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.eventType, 'EMPATHY_CHECK')))
+        .limit(5);
       const avgEmpathy = empathyLogs.length > 0
         ? empathyLogs.reduce((acc, log) => acc + (Number((log.details as Record<string, unknown>)?.empathy_score) || 0), 0) / empathyLogs.length
         : 75; // Default baseline
       const empathyScore = Math.round(avgEmpathy);
 
       // 4. Correction: Based on Appeal resolution time and volume
-      const totalAppeals = await tx.select({ count: sql<number>`count(*)` }).from(correctionRequests);
-      const resolvedAppeals = await tx.select({ count: sql<number>`count(*)` }).from(correctionRequests).where(eq(correctionRequests.status, 'RESOLVED'));
+      const totalAppeals = await tx.select({ count: sql<number>`count(*)` }).from(correctionRequests).where(eq(correctionRequests.orgId, orgId));
+      const resolvedAppeals = await tx.select({ count: sql<number>`count(*)` })
+        .from(correctionRequests)
+        .where(and(eq(correctionRequests.orgId, orgId), eq(correctionRequests.status, 'RESOLVED')));
       const correctionScore = Number(totalAppeals[0].count) > 0
         ? Math.round((Number(resolvedAppeals[0].count) / Number(totalAppeals[0].count)) * 100)
         : 90; // Standard process baseline
 
       // 5. Truth: Based on AI Disclosure audits
-      const disclosureLogs = await tx.select().from(auditLogs).where(eq(auditLogs.eventType, 'INSURANCE_SYNC')); // Example proxy
+      const disclosureLogs = await tx.select()
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.eventType, 'INSURANCE_SYNC'))); // Example proxy
       const truthScore = disclosureLogs.length > 0 ? 95 : 85;
 
       const integrityScore = org.integrityScore || 0;

@@ -4,3 +4,8 @@ export * from './services/storage';
 export * from './services/ledger';
 export * from './services/events';
 export * from './services/encryption';
+export * from './services/organizations';
+export * from './services/users';
+export * from './services/audits';
+export * from './services/incidents';
+export * from './services/requirements';

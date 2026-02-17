@@ -108,6 +108,8 @@ export const StatsResponseSchema = z.object({
     A: z.number().min(0).max(100),
     fullMark: z.number()
   })),
+  lastAuditAt: z.string().optional().nullable(),
+  nextRenewalDate: z.string().optional().nullable(),
   status: z.string()
 });
 
@@ -142,3 +144,101 @@ export interface Incident {
   created_at: Date | string;
   updated_at: Date | string;
 }
+
+// --- Engine Analysis Results (Task 12) ---
+
+export type EngineAnalysisType = 
+  | 'DISPARATE_IMPACT' 
+  | 'EQUALIZED_ODDS' 
+  | 'INTERSECTIONAL' 
+  | 'EXPLANATION_SHAP' 
+  | 'EXPLANATION_LIME';
+
+export const BaseEngineResultSchema = z.object({
+  right_enforced: z.string(),
+  audit_hash: z.string(),
+  previous_hash: z.string().optional().nullable(),
+  timestamp: z.string(),
+  popia_compliance: z.boolean(),
+  signature: z.string().optional(),
+});
+
+export const DisparateImpactResultSchema = BaseEngineResultSchema.extend({
+  overall_status: z.enum(['FAIR', 'WARNING', 'BIASED']),
+  methodology: z.string(),
+  reference_group: z.string(),
+  reference_rate: z.number(),
+  flags: z.array(z.string()),
+  detailed_analysis: z.record(z.object({
+    selection_rate: z.number(),
+    disparate_impact_ratio: z.number(),
+    status: z.string(),
+    sample_size: z.number(),
+    selected_count: z.number(),
+    is_reference_group: z.boolean()
+  })),
+  recommendations: z.array(z.string())
+});
+
+export const EqualizedOddsResultSchema = BaseEngineResultSchema.extend({
+  overall_status: z.enum(['PASS', 'FAIL']),
+  methodology: z.string(),
+  tpr_parity: z.boolean(),
+  fpr_parity: z.boolean(),
+  tpr_difference: z.number(),
+  fpr_difference: z.number(),
+  threshold: z.number(),
+  flags: z.array(z.string()),
+  detailed_analysis: z.record(z.any())
+});
+
+export const IntersectionalResultSchema = BaseEngineResultSchema.extend({
+  overall_status: z.enum(['FAIR', 'BIASED']),
+  methodology: z.string(),
+  attributes_analyzed: z.array(z.string()),
+  groups_analyzed: z.number(),
+  reference_group: z.string(),
+  flags: z.array(z.string()),
+  detailed_analysis: z.record(z.any())
+});
+
+export const ExplanationResultSchema = BaseEngineResultSchema.extend({
+  method: z.string(),
+  instances_explained: z.number(),
+  n_features: z.number(),
+  feature_importance: z.array(z.object({ 
+    feature: z.string(), 
+    mean_abs_shap: z.number() 
+  })),
+  base_value: z.union([z.number(), z.array(z.number())]),
+  shap_values: z.any().optional(),
+  instance_explanations: z.array(z.object({
+    instance_index: z.number(),
+    feature_contributions: z.array(z.object({ 
+        feature: z.string(), 
+        shap_value: z.number() 
+    })),
+    prediction_explanation: z.string()
+  }))
+});
+
+export const EngineAnalysisResultSchema = z.union([
+  DisparateImpactResultSchema,
+  EqualizedOddsResultSchema,
+  IntersectionalResultSchema,
+  ExplanationResultSchema
+]);
+
+export type BaseEngineResult = z.infer<typeof BaseEngineResultSchema>;
+export type DisparateImpactResult = z.infer<typeof DisparateImpactResultSchema>;
+export type EqualizedOddsResult = z.infer<typeof EqualizedOddsResultSchema>;
+export type IntersectionalResult = z.infer<typeof IntersectionalResultSchema>;
+export type ExplanationResult = z.infer<typeof ExplanationResultSchema>;
+export type EngineAnalysisResult = z.infer<typeof EngineAnalysisResultSchema>;
+
+export const EngineErrorResultSchema = z.object({
+  error: z.string(),
+  details: z.any().optional()
+});
+
+export type EngineErrorResult = z.infer<typeof EngineErrorResultSchema>;

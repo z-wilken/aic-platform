@@ -82,8 +82,8 @@ export default function PlatformDashboard() {
                     {[
                         { l: 'Verification Ratio', v: `${stats?.verifiedRequirements}/${stats?.totalRequirements}`, c: 'text-aic-black' },
                         { l: 'Open Incidents', v: stats?.openIncidents || 0, c: (stats?.openIncidents || 0) > 0 ? 'text-aic-red font-bold' : 'text-green-600' },
-                        { l: 'Last Audit', v: '48h ago', c: 'text-gray-500' },
-                        { l: 'Next Renewal', v: 'Feb 2027', c: 'text-gray-500' }
+                        { l: 'Last Audit', v: stats?.lastAuditAt || 'Pending', c: 'text-gray-500' },
+                        { l: 'Next Renewal', v: stats?.nextRenewalDate || 'TBD', c: 'text-gray-500' }
                     ].map((s, i) => (
                         <div key={i} className="bg-white p-8 border border-aic-black/5 rounded-3xl shadow-sm group hover:border-aic-gold transition-colors">
                             <p className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-4">{s.l}</p>

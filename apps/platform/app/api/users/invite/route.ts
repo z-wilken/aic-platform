@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, users, passwordResetTokens, eq } from '@aic/db';
+import { getTenantDb, users, passwordResetTokens, eq } from '@aic/db';
 import { auth } from '@aic/auth';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
@@ -27,9 +27,9 @@ export async function POST(request: NextRequest) {
         }
 
         const { email, name, role } = validation.data;
-        const db = getSystemDb();
+        const db = getTenantDb(orgId);
 
-        const result = await db.transaction(async (tx) => {
+        const result = await db.query(async (tx) => {
             // 1. Check if user already exists
             const [existingUser] = await tx
                 .select({ id: users.id })

@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum, index, PgTable } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 // Enums
@@ -25,7 +25,7 @@ export const organizations = pgTable('organizations', {
   }),
   contactEmail: varchar('contact_email', { length: 255 }),
   apiKey: varchar('api_key', { length: 255 }),
-  auditorId: uuid('auditor_id'),
+  auditorId: uuid('auditor_id').references(() => users.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
@@ -36,7 +36,7 @@ export const users = pgTable('users', {
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   role: userRoleEnum('role').default('VIEWER'),
-  orgId: uuid('org_id').references(() => organizations.id),
+  orgId: uuid('org_id').references((): any => organizations.id),
   isActive: boolean('is_active').default(true),
   emailVerified: boolean('email_verified').default(false),
   isSuperAdmin: boolean('is_super_admin').default(false),
@@ -44,6 +44,10 @@ export const users = pgTable('users', {
   lastLogin: timestamp('last_login', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => {
+  return {
+    orgIdIdx: index('users_org_id_idx').on(table.orgId),
+  }
 });
 
 // Audit Logs
@@ -65,6 +69,11 @@ export const auditLogs = pgTable('audit_logs', {
   sequenceNumber: integer('sequence_number'),
   signature: text('signature'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table) => {
+  return {
+    orgCreatedAtIdx: index('audit_logs_org_created_at_idx').on(table.orgId, table.createdAt),
+    orgEventTypeIdx: index('audit_logs_org_event_type_idx').on(table.orgId, table.eventType),
+  }
 });
 
 // Incidents

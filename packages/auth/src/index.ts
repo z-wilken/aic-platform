@@ -1,12 +1,34 @@
-import NextAuth, { NextAuthConfig } from "next-auth"
+import NextAuth, { NextAuthConfig, type DefaultSession } from "next-auth"
+import { type JWT } from "next-auth/jwt"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import MicrosoftEntraIDProvider from "next-auth/providers/microsoft-entra-id"
-import { getSystemDb, users, organizations, eq, like } from "@aic/db"
+import { getSystemDb, users, organizations, auditLogs, eq, like } from "@aic/db"
 import { UserRole, CertificationTier, Permissions } from "@aic/types"
+import jwt from 'jsonwebtoken';
+
+const PRIVATE_KEY = process.env.PLATFORM_PRIVATE_KEY?.replace(/\\n/g, '\n');
+const PUBLIC_KEY = process.env.PLATFORM_PUBLIC_KEY?.replace(/\\n/g, '\n');
+
+async function logAuthEvent(eventType: string, details: Record<string, any>, orgId?: string | null) {
+  const db = getSystemDb();
+  try {
+    await db.insert(auditLogs).values({
+      orgId: orgId || null,
+      eventType: `AUTH_${eventType}`,
+      systemName: 'AIC_AUTH',
+      details,
+      status: 'VERIFIED',
+      createdAt: new Date()
+    });
+  } catch (error) {
+    console.error(`[AUTH] Critical: Failed to log auth event ${eventType}:`, error);
+  }
+}
 
 export const authConfig: NextAuthConfig = {
   providers: [
+// ... (providers mapping remains same)
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
@@ -50,6 +72,7 @@ export const authConfig: NextAuthConfig = {
 
           if (user) {
             if (!user.isActive) {
+              await logAuthEvent('LOGIN_REJECTED', { email: credentials.email, reason: 'Account deactivated' }, user.orgId);
               throw new Error("Account is deactivated")
             }
 
@@ -57,11 +80,14 @@ export const authConfig: NextAuthConfig = {
             const isValid = await bcrypt.default.compare(credentials.password.toString(), user.passwordHash)
 
             if (!isValid) {
+              await logAuthEvent('LOGIN_FAILURE', { email: credentials.email, reason: 'Invalid credentials' }, user.orgId);
               throw new Error("Invalid credentials")
             }
 
             // Update last login
             await db.update(users).set({ lastLogin: new Date() }).where(eq(users.id, user.id));
+
+            await logAuthEvent('LOGIN_SUCCESS', { email: user.email, userId: user.id }, user.orgId);
 
             return {
               id: user.id,
@@ -74,9 +100,12 @@ export const authConfig: NextAuthConfig = {
               isSuperAdmin: user.isSuperAdmin || false,
               permissions: (user.permissions as unknown as Permissions) || { can_view_audits: true, can_view_incidents: true, can_view_intelligence: true }
             }
+          } else {
+            await logAuthEvent('LOGIN_FAILURE', { email: credentials.email, reason: 'User not found' });
           }
         } catch (dbError) {
           console.warn("[AUTH] Login failed:", dbError)
+          throw dbError;
         }
 
         throw new Error("Invalid credentials")
@@ -91,9 +120,31 @@ export const authConfig: NextAuthConfig = {
     strategy: "jwt",
     maxAge: 24 * 60 * 60, // 24 hours
   },
+  events: {
+    async signOut({ token }) {
+      if (token?.jti && token?.exp) {
+        const { RevocationService } = await import("./services/revocation");
+        await RevocationService.revoke(token.jti as string, token.exp as number);
+        await logAuthEvent('LOGOUT', { userId: token.id, jti: token.jti }, token.orgId as string);
+      }
+    }
+  },
+  jwt: {
+    async encode({ token, secret }) {
+        if (!PRIVATE_KEY) return ""; // Fail closed if no key in production-intent mode
+        return jwt.sign(token!, PRIVATE_KEY, { algorithm: 'RS256' });
+    },
+    async decode({ token, secret }) {
+        if (!PUBLIC_KEY || !token) return null;
+        try {
+            return jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] }) as JWT;
+        } catch (e) {
+            return null;
+        }
+    }
+  },
   callbacks: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async signIn({ user, account }: { user: any, account?: any }) {
+    async signIn({ user, account }) {
       if (account?.provider === 'google' || account?.provider === 'microsoft-entra-id') {
         const db = getSystemDb();
         try {
@@ -107,6 +158,7 @@ export const authConfig: NextAuthConfig = {
             user.orgId = existingUser.orgId || undefined
             user.role = existingUser.role as UserRole
             user.id = existingUser.id
+            await logAuthEvent('SSO_LOGIN_SUCCESS', { email: user.email, provider: account.provider }, existingUser.orgId);
             return true
           }
 
@@ -128,30 +180,39 @@ export const authConfig: NextAuthConfig = {
                 passwordHash: 'SSO_ONLY',
                 isActive: true,
                 emailVerified: true
-              }).returning({ id: users.id, role: users.role });
+              }).returning({ id: newUser.id, role: users.role });
               
               user.id = newUser.id
               user.orgId = org.id
               user.role = newUser.role as UserRole
+              await logAuthEvent('SSO_USER_CREATED', { email: user.email, orgId: org.id }, org.id);
               return true
             }
           }
+          await logAuthEvent('SSO_LOGIN_REJECTED', { email: user.email, reason: 'No organization found for domain' });
+          return false; // Reject SSO if no org found
         } catch (error) {
           console.error("[AUTH] SSO SignIn Error:", error)
+          return false;
         }
       }
       return true
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async jwt({ token, user }: { token: any, user: any }) {
+    async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.role = user.role
-        token.orgId = user.orgId
-        token.orgName = user.orgName
-        token.tier = user.tier
-        token.isSuperAdmin = user.isSuperAdmin
-        token.permissions = user.permissions
+        token.id = user.id as string
+        token.role = user.role as UserRole
+        token.orgId = user.orgId as string
+        token.orgName = user.orgName as string
+        token.tier = user.tier as CertificationTier
+        token.isSuperAdmin = user.isSuperAdmin as boolean
+        token.permissions = user.permissions as Permissions
+      }
+
+      // Task P1: Token Revocation Check
+      const { RevocationService } = await import("./services/revocation");
+      if (token.jti && await RevocationService.isRevoked(token.jti)) {
+        return null; // Invalidate session
       }
 
       if (token.orgId && !token.orgName) {
@@ -160,7 +221,7 @@ export const authConfig: NextAuthConfig = {
           const [org] = await db
             .select({ name: organizations.name, tier: organizations.tier })
             .from(organizations)
-            .where(eq(organizations.id, token.orgId as string))
+            .where(eq(organizations.id, token.orgId))
             .limit(1);
           if (org) {
             token.orgName = org.name
@@ -173,8 +234,7 @@ export const authConfig: NextAuthConfig = {
 
       return token
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async session({ session, token }: { session: any, token: any }) {
+    async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id
         session.user.role = token.role
@@ -196,3 +256,4 @@ export const signIn = nextAuth.signIn;
 export const signOut = nextAuth.signOut;
 
 export * from "./services/signing"
+export * from "./services/revocation"

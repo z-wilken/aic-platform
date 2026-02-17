@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, incidents, auditLogs, eq, and } from '@aic/db';
+import { getTenantDb, incidents, auditLogs, eq, and, LedgerService } from '@aic/db';
 import { getSession } from '../../../../lib/auth';
 import type { Session } from 'next-auth';
 
@@ -51,6 +51,14 @@ export async function PATCH(
         status: 'VERIFIED',
         // In a real system we would chain this hash properly
         integrityHash: `RES-${id.substring(0,8)}-${Date.now()}` 
+      });
+
+      // 3. Record to Institutional Ledger
+      await LedgerService.append('INCIDENT_RESOLVED', session.user.id, {
+        incidentId: id,
+        orgId,
+        status,
+        reviewerId: userId
       });
 
       return NextResponse.json({ success: true, incident: updatedIncident });

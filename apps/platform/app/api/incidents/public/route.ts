@@ -36,18 +36,15 @@ export async function POST(request: NextRequest) {
     let resolvedOrgId: string | null = null;
 
     if (typeof providedOrgId === 'string' && providedOrgId.length === 36) {
-        resolvedOrgId = providedOrgId;
-    } else if (typeof orgName === 'string' && orgName.trim()) {
-        const [org] = await db
-            .select({ id: organizations.id })
-            .from(organizations)
-            .where(eq(organizations.name, orgName.trim()))
-            .limit(1);
-        if (org) resolvedOrgId = org.id;
+        // Strict UUID check (Basic)
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (uuidRegex.test(providedOrgId)) {
+            resolvedOrgId = providedOrgId;
+        }
     }
 
     if (!resolvedOrgId) {
-        return NextResponse.json({ error: 'Valid Organization Identifier is required for lodging appeals' }, { status: 400 });
+        return NextResponse.json({ error: 'Valid Organization UUID is required for lodging appeals' }, { status: 400 });
     }
 
     return await db.transaction(async (tx) => {

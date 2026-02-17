@@ -9,6 +9,13 @@ import re
 import uuid
 from datetime import datetime
 from app.api.v1.schemas.analysis import BiasStatus, EmpathyLevel, TierLevel, FrameworkType
+from app.core.config import MAX_DATA_ROWS
+
+def validate_data_size(data: List[Any]):
+    """Task 8: Prevent OOM by limiting input data size"""
+    if len(data) > MAX_DATA_ROWS:
+        return {"error": f"Data too large ({len(data)} rows). Maximum is {MAX_DATA_ROWS}."}
+    return None
 
 def generate_audit_hash(data: Dict, previous_hash: str = None) -> str:
     """Generate SHA-256 hash for audit trail integrity, linked to previous entry"""
@@ -43,6 +50,10 @@ def calculate_confusion_metrics(df: pd.DataFrame, actual: str, predicted: str, g
     return results
 
 def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome_variable: str, previous_hash: str = None):
+    size_error = validate_data_size(data)
+    if size_error:
+        return size_error
+
     df = pd.DataFrame(data)
 
     if protected_attribute not in df.columns:
@@ -113,6 +124,10 @@ def analyze_disparate_impact(data: List[Dict], protected_attribute: str, outcome
     return result
 
 def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_outcome: str, predicted_outcome: str, threshold: float, previous_hash: str = None):
+    size_error = validate_data_size(data)
+    if size_error:
+        return size_error
+
     df = pd.DataFrame(data)
 
     for col in [protected_attribute, actual_outcome, predicted_outcome]:
@@ -154,6 +169,10 @@ def analyze_equalized_odds(data: List[Dict], protected_attribute: str, actual_ou
     }
 
 def analyze_intersectional(data: List[Dict], protected_attributes: List[str], outcome_variable: str, min_group_size: int, previous_hash: str = None):
+    size_error = validate_data_size(data)
+    if size_error:
+        return size_error
+
     df = pd.DataFrame(data)
 
     for attr in protected_attributes:
@@ -207,6 +226,10 @@ def analyze_intersectional(data: List[Dict], protected_attributes: List[str], ou
     }
 
 def analyze_statistical_significance(data: List[Dict], protected_attribute: str, outcome_variable: str):
+    size_error = validate_data_size(data)
+    if size_error:
+        return size_error
+
     df = pd.DataFrame(data)
 
     contingency = pd.crosstab(df[protected_attribute], df[outcome_variable])
@@ -892,6 +915,10 @@ def analyze_differential_fairness(data: List[Dict], protected_attributes: List[s
     The system is fair if for any two intersectional groups s_i, s_j:
     exp(-epsilon) <= P(y=1 | s_i) / P(y=1 | s_j) <= exp(epsilon)
     """
+    size_error = validate_data_size(data)
+    if size_error:
+        return size_error
+
     df = pd.DataFrame(data)
     
     # Create intersectional groups
@@ -933,6 +960,10 @@ def analyze_atkinson_index(data: List[Dict], protected_attribute: str, outcome_v
     Calculates the Atkinson Index for outcome inequality.
     A = 1 - [1/n * sum( (y_i / mean_y)^(1-epsilon) )]^(1/(1-epsilon))
     """
+    size_error = validate_data_size(data)
+    if size_error:
+        return size_error
+
     df = pd.DataFrame(data)
     group_rates = df.groupby(protected_attribute)[outcome_variable].mean()
     y = group_rates.values
@@ -973,6 +1004,10 @@ def analyze_theil_index(data: List[Dict], protected_attribute: str, outcome_vari
     Calculates the Theil Index (Generalized Entropy GE(1)).
     T = 1/n * sum( (y_i / mean_y) * ln(y_i / mean_y) )
     """
+    size_error = validate_data_size(data)
+    if size_error:
+        return size_error
+
     df = pd.DataFrame(data)
     group_rates = df.groupby(protected_attribute)[outcome_variable].mean()
     y = group_rates.values

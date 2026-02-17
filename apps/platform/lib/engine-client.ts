@@ -1,16 +1,17 @@
+import { 
+  EngineAnalysisResult, 
+  DisparateImpactResult, 
+  EqualizedOddsResult, 
+  IntersectionalResult,
+  ExplanationResult,
+  EngineErrorResult
+} from '@aic/types';
+
 /**
  * AIC Engine Client
  * Server-side client for interacting with the Python Bias Audit Engine.
  * Handles authentication, retries, and type-safe communication.
  */
-
-export interface EngineAnalysisResult {
-  audit_hash: string;
-  signature: string;
-  status: string;
-  metrics: any;
-  metadata: any;
-}
 
 export class EngineClient {
   private baseUrl: string;
@@ -44,8 +45,8 @@ export class EngineClient {
         }
 
         return await response.json() as T;
-      } catch (error: any) {
-        lastError = error;
+      } catch (error: unknown) {
+        lastError = error instanceof Error ? error : new Error(String(error));
         // Exponential backoff
         if (attempt < maxRetries - 1) {
           await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
@@ -59,8 +60,8 @@ export class EngineClient {
   /**
    * Run a standard bias analysis (Disparate Impact / 4/5ths Rule)
    */
-  async analyzeDisparateImpact(data: any[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<EngineAnalysisResult> {
-    return this.request<EngineAnalysisResult>('/api/v1/analyze', {
+  async analyzeDisparateImpact(data: Record<string, any>[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<DisparateImpactResult> {
+    return this.request<DisparateImpactResult>('/api/v1/analyze', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -74,8 +75,8 @@ export class EngineClient {
   /**
    * Run Equalized Odds analysis
    */
-  async analyzeEqualizedOdds(data: any[], protectedAttribute: string, actualOutcome: string, predictedOutcome: string, threshold: number = 0.1, previousHash?: string): Promise<EngineAnalysisResult> {
-    return this.request<EngineAnalysisResult>('/api/v1/analyze/equalized-odds', {
+  async analyzeEqualizedOdds(data: Record<string, any>[], protectedAttribute: string, actualOutcome: string, predictedOutcome: string, threshold: number = 0.1, previousHash?: string): Promise<EqualizedOddsResult> {
+    return this.request<EqualizedOddsResult>('/api/v1/analyze/equalized-odds', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -91,8 +92,8 @@ export class EngineClient {
   /**
    * Calculate live Integrity Score breakdown
    */
-  async calculateIntegrityScore(params: any): Promise<any> {
-    return this.request<any>('/api/v1/integrity/calculate', {
+  async calculateIntegrityScore(params: Record<string, any>): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/integrity/calculate', {
       method: 'POST',
       body: JSON.stringify(params),
     });
@@ -101,8 +102,8 @@ export class EngineClient {
   /**
    * Run intersectional bias analysis across multiple protected attributes
    */
-  async analyzeIntersectional(data: any[], protectedAttributes: string[], outcomeVariable: string, minGroupSize: number = 30, previousHash?: string): Promise<EngineAnalysisResult> {
-    return this.request<EngineAnalysisResult>('/api/v1/analyze/intersectional', {
+  async analyzeIntersectional(data: Record<string, any>[], protectedAttributes: string[], outcomeVariable: string, minGroupSize: number = 30, previousHash?: string): Promise<IntersectionalResult> {
+    return this.request<IntersectionalResult>('/api/v1/analyze/intersectional', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -117,8 +118,8 @@ export class EngineClient {
   /**
    * Calculate Theil index (inequality metric)
    */
-  async analyzeTheilIndex(data: any[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<EngineAnalysisResult> {
-    return this.request<EngineAnalysisResult>('/api/v1/analyze/theil-index', {
+  async analyzeTheilIndex(data: Record<string, any>[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<DisparateImpactResult> {
+    return this.request<DisparateImpactResult>('/api/v1/analyze/theil-index', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -132,8 +133,8 @@ export class EngineClient {
   /**
    * Calculate Atkinson index (inequality metric)
    */
-  async analyzeAtkinsonIndex(data: any[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<EngineAnalysisResult> {
-    return this.request<EngineAnalysisResult>('/api/v1/analyze/atkinson-index', {
+  async analyzeAtkinsonIndex(data: Record<string, any>[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<DisparateImpactResult> {
+    return this.request<DisparateImpactResult>('/api/v1/analyze/atkinson-index', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -147,8 +148,8 @@ export class EngineClient {
   /**
    * Statistical parity difference analysis
    */
-  async analyzeStatisticalParity(data: any[], protectedAttribute: string, outcomeVariable: string): Promise<EngineAnalysisResult> {
-    return this.request<EngineAnalysisResult>('/api/v1/analyze/statistical-parity', {
+  async analyzeStatisticalParity(data: Record<string, any>[], protectedAttribute: string, outcomeVariable: string): Promise<DisparateImpactResult> {
+    return this.request<DisparateImpactResult>('/api/v1/analyze/statistical-parity', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -161,8 +162,8 @@ export class EngineClient {
   /**
    * Epsilon-differential fairness analysis
    */
-  async analyzeEpsilonFairness(data: any[], protectedAttributes: string[], outcomeVariable: string, epsilon: number = 0.8, minGroupSize: number = 10): Promise<EngineAnalysisResult> {
-    return this.request<EngineAnalysisResult>('/api/v1/analyze/epsilon-fairness', {
+  async analyzeEpsilonFairness(data: Record<string, any>[], protectedAttributes: string[], outcomeVariable: string, epsilon: number = 0.8, minGroupSize: number = 10): Promise<IntersectionalResult> {
+    return this.request<IntersectionalResult>('/api/v1/analyze/epsilon-fairness', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -177,8 +178,8 @@ export class EngineClient {
   /**
    * Monitor data drift between baseline and current distributions
    */
-  async analyzeDrift(baselineData: number[], currentData: number[], featureName: string, nBins: number = 10): Promise<any> {
-    return this.request<any>('/api/v1/analyze/drift', {
+  async analyzeDrift(baselineData: number[], currentData: number[], featureName: string, nBins: number = 10): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/analyze/drift', {
       method: 'POST',
       body: JSON.stringify({
         baseline_data: baselineData,
@@ -192,8 +193,8 @@ export class EngineClient {
   /**
    * Analyze empathy/tone of communications (Right to Empathy)
    */
-  async analyzeEmpathy(text: string, context: string = 'rejection'): Promise<any> {
-    return this.request<any>('/api/v1/analyze/empathy', {
+  async analyzeEmpathy(text: string, context: string = 'rejection'): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/analyze/empathy', {
       method: 'POST',
       body: JSON.stringify({ text, context }),
     });
@@ -202,8 +203,8 @@ export class EngineClient {
   /**
    * Generate SHAP-based feature importance explanations
    */
-  async explainShap(data: any[], targetColumn: string, instance: Record<string, any>, numFeatures: number = 10): Promise<any> {
-    return this.request<any>('/api/v1/explain/shap', {
+  async explainShap(data: Record<string, any>[], targetColumn: string, instance: Record<string, any>, numFeatures: number = 10): Promise<ExplanationResult> {
+    return this.request<ExplanationResult>('/api/v1/explain/shap', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -218,8 +219,8 @@ export class EngineClient {
   /**
    * Generate LIME-based explanations
    */
-  async explainLime(data: any[], targetColumn: string, instance: Record<string, any>, numFeatures: number = 10): Promise<any> {
-    return this.request<any>('/api/v1/explain/lime', {
+  async explainLime(data: Record<string, any>[], targetColumn: string, instance: Record<string, any>, numFeatures: number = 10): Promise<ExplanationResult> {
+    return this.request<ExplanationResult>('/api/v1/explain/lime', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -234,8 +235,8 @@ export class EngineClient {
   /**
    * Generate a plain-language decision explanation (Right to Explanation)
    */
-  async explainDecision(modelType: string, inputFeatures: Record<string, any>, decision: string, featureWeights?: Record<string, number>, confidence?: number): Promise<any> {
-    return this.request<any>('/api/v1/explain', {
+  async explainDecision(modelType: string, inputFeatures: Record<string, any>, decision: string, featureWeights?: Record<string, number>, confidence?: number): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/explain', {
       method: 'POST',
       body: JSON.stringify({
         model_type: modelType,
@@ -250,8 +251,8 @@ export class EngineClient {
   /**
    * Validate correction/appeal process compliance (Right to Correction)
    */
-  async validateCorrectionProcess(params: { hasAppealMechanism: boolean; responseTimeHours: number; humanReviewerAssigned: boolean; clearInstructions: boolean; accessibleFormat: boolean }): Promise<any> {
-    return this.request<any>('/api/v1/validate/correction-process', {
+  async validateCorrectionProcess(params: { hasAppealMechanism: boolean; responseTimeHours: number; humanReviewerAssigned: boolean; clearInstructions: boolean; accessibleFormat: boolean }): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/validate/correction-process', {
       method: 'POST',
       body: JSON.stringify({
         has_appeal_mechanism: params.hasAppealMechanism,
@@ -266,8 +267,8 @@ export class EngineClient {
   /**
    * Submit a correction request
    */
-  async submitCorrection(decisionId: string, originalDecision: string, requestedOutcome: string, reason: string, supportingEvidence?: Record<string, any>): Promise<any> {
-    return this.request<any>('/api/v1/correction/submit', {
+  async submitCorrection(decisionId: string, originalDecision: string, requestedOutcome: string, reason: string, supportingEvidence?: Record<string, any>): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/correction/submit', {
       method: 'POST',
       body: JSON.stringify({
         decision_id: decisionId,
@@ -282,8 +283,8 @@ export class EngineClient {
   /**
    * Run privacy schema audit (POPIA compliance)
    */
-  async auditPrivacy(columns: string[]): Promise<any> {
-    return this.request<any>('/api/v1/audit/privacy', {
+  async auditPrivacy(columns: string[]): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/audit/privacy', {
       method: 'POST',
       body: JSON.stringify({ columns }),
     });
@@ -292,8 +293,8 @@ export class EngineClient {
   /**
    * Run labor/human agency audit
    */
-  async auditLabor(totalDecisions: number, humanInterventions: number, humanOverrides: number): Promise<any> {
-    return this.request<any>('/api/v1/audit/labor', {
+  async auditLabor(totalDecisions: number, humanInterventions: number, humanOverrides: number): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/audit/labor', {
       method: 'POST',
       body: JSON.stringify({
         total_decisions: totalDecisions,
@@ -306,8 +307,8 @@ export class EngineClient {
   /**
    * Run adversarial red team audit
    */
-  async auditRedTeam(data: any[], protectedAttribute: string, otherColumns: string[]): Promise<any> {
-    return this.request<any>('/api/v1/audit/red-team', {
+  async auditRedTeam(data: Record<string, any>[], protectedAttribute: string, otherColumns: string[]): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/audit/red-team', {
       method: 'POST',
       body: JSON.stringify({
         data,
@@ -320,8 +321,8 @@ export class EngineClient {
   /**
    * Scan and verify evidence documents
    */
-  async verifyDocument(text: string): Promise<any> {
-    return this.request<any>('/api/v1/audit/verify-document', {
+  async verifyDocument(text: string): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/audit/verify-document', {
       method: 'POST',
       body: JSON.stringify({ text }),
     });
@@ -330,8 +331,8 @@ export class EngineClient {
   /**
    * Run comprehensive audit across all five algorithmic rights
    */
-  async auditComprehensive(organizationName: string, aiSystems: any[], framework: string = 'popia'): Promise<any> {
-    return this.request<any>('/api/v1/audit/comprehensive', {
+  async auditComprehensive(organizationName: string, aiSystems: any[], framework: string = 'popia'): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/audit/comprehensive', {
       method: 'POST',
       body: JSON.stringify({
         organization_name: organizationName,
@@ -344,8 +345,8 @@ export class EngineClient {
   /**
    * Analyze AI disclosure compliance (Right to Truth)
    */
-  async analyzeDisclosure(interfaceText: string, interactionType: string = 'chatbot'): Promise<any> {
-    return this.request<any>('/api/v1/analyze/disclosure', {
+  async analyzeDisclosure(interfaceText: string, interactionType: string = 'chatbot'): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/analyze/disclosure', {
       method: 'POST',
       body: JSON.stringify({
         interface_text: interfaceText,
@@ -357,8 +358,8 @@ export class EngineClient {
   /**
    * Verify hash chain integrity for audit trail
    */
-  async verifyAuditTrail(records: any[]): Promise<any> {
-    return this.request<any>('/api/v1/audit-trail/verify', {
+  async verifyAuditTrail(records: any[]): Promise<Record<string, any>> {
+    return this.request<Record<string, any>>('/api/v1/audit-trail/verify', {
       method: 'POST',
       body: JSON.stringify({ records }),
     });
@@ -367,8 +368,8 @@ export class EngineClient {
   /**
    * Get the engine's public signing key
    */
-  async getPublicKey(): Promise<any> {
-    return this.request<any>('/api/v1/audit-trail/public-key', {
+  async getPublicKey(): Promise<{ public_key: string }> {
+    return this.request<{ public_key: string }>('/api/v1/audit-trail/public-key', {
       method: 'GET',
     });
   }
@@ -378,8 +379,8 @@ export class EngineClient {
    */
   async checkHealth(): Promise<boolean> {
     try {
-      const result = await this.request<any>('/health', { method: 'GET' });
-      return result.status === 'healthy';
+      const result = await this.request<{ status: string }>('/health', { method: 'GET' });
+      return result.status === 'healthy' || result.status === 'AIC Audit Engine Operational';
     } catch {
       return false;
     }

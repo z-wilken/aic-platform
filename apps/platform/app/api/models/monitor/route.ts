@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, models, decisionRecords, notifications, eq, and, desc } from '@aic/db';
+import { getTenantDb, models, decisionRecords, notifications, organizations, eq, and, desc } from '@aic/db';
 import { getSession } from '../../../../lib/auth';
+import { NotificationService } from '@aic/notifications';
 import type { Session } from 'next-auth';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
@@ -16,7 +17,14 @@ export async function POST() {
     const db = getTenantDb(orgId);
 
     return await db.query(async (tx) => {
-      // 1. Fetch registered models for this org
+      // 1. Fetch organization details for context
+      const [org] = await tx
+          .select({ name: organizations.name, contactEmail: organizations.contactEmail })
+          .from(organizations)
+          .where(eq(organizations.id, orgId))
+          .limit(1);
+
+      // 2. Fetch registered models for this org
       const registeredModels = await tx
           .select()
           .from(models)
@@ -25,7 +33,7 @@ export async function POST() {
       const results = [];
 
       for (const model of registeredModels) {
-          // 2. Fetch latest decisions for this model to analyze drift
+          // 3. Fetch latest decisions for this model to analyze drift
           const recentDecisions = await tx
               .select({ inputParams: decisionRecords.inputParams, outcome: decisionRecords.outcome })
               .from(decisionRecords)
@@ -38,13 +46,13 @@ export async function POST() {
               continue;
           }
 
-          // 3. Prepare data for Engine
+          // 4. Prepare data for Engine
           const rows = recentDecisions.map(d => ({
               ...(d.inputParams as Record<string, unknown>),
               outcome: (d.outcome as Record<string, unknown>).result === 'APPROVED' ? 1 : 0
           }));
 
-          // 4. Call Engine for Drift/Bias Analysis
+          // 5. Call Engine for Drift/Bias Analysis
           try {
               const headers: Record<string, string> = { 'Content-Type': 'application/json' };
               if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
@@ -62,7 +70,7 @@ export async function POST() {
               if (engineRes.ok) {
                   const analysis = await engineRes.json();
                   
-                  // 5. Alert if bias is significant
+                  // 6. Alert if bias is significant (Task M35: Email Integration)
                   if (analysis.is_significant) {
                       await tx.insert(notifications).values({
                           orgId,
@@ -70,6 +78,10 @@ export async function POST() {
                           message: `Model "${model.name}" has drifted beyond acceptable fairness bounds. Statistical significance: ${analysis.p_value}.`,
                           type: 'ALERT'
                       });
+
+                      if (org?.contactEmail) {
+                          await NotificationService.notifyBiasAlert(org.contactEmail, org.name, model.name);
+                      }
                   }
 
                   results.push({ model: model.name, status: 'SUCCESS', analysis });
