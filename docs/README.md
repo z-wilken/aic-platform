@@ -92,7 +92,7 @@ Start with **[FOUNDERS_VISION.md](./FOUNDERS_VISION.md)** — the moral foundati
 
 ---
 
-## February 15, 2026 Status Update
+## February 17, 2026 Status Update
 
 ### Technical Platform Status
 
@@ -100,9 +100,19 @@ Start with **[FOUNDERS_VISION.md](./FOUNDERS_VISION.md)** — the moral foundati
 |-----------|--------|-------|
 | apps/web (Marketing) | ✅ MVP Complete | 51 tests |
 | apps/platform (Dashboard) | ✅ Live Data | 76 tests |
-| apps/admin (Operations) | ✅ Live Data | — |
+| apps/internal (Operations) | ✅ Live Data | — |
 | apps/engine (Audit) | ✅ Complete | 141 tests |
 | **Total Tests** | — | **268 passing** |
+
+### Architecture
+
+| Metric | Value |
+|--------|-------|
+| Next.js Apps | 5 (web, platform, internal, admin, hq) |
+| Shared Packages | 11 (@aic/ui, auth, db, types, api-client, reports, events, legal, sockets, middleware, notifications) |
+| CI/CD Workflows | 3 (foundation-checks, engine-ci, platform-ci) |
+| TypeScript Tests | 127 (Vitest) |
+| Python Tests | 141 (pytest) |
 
 ### Key Technical Achievements
 
@@ -111,18 +121,27 @@ Start with **[FOUNDERS_VISION.md](./FOUNDERS_VISION.md)** — the moral foundati
 | Automated Testing | ✅ 268 tests (127 TS + 141 Python) |
 | CI/CD Pipeline | ✅ 3 GitHub Actions workflows |
 | Shared Packages | ✅ 11 packages (@aic/db, auth, types, etc.) |
-| Tenant Isolation | ✅ Database-level RLS |
 | Engine Integration | ✅ Circuit breaker + SSE events |
 | Real-Time Dashboard | ✅ Live data + 5 Rights scoring |
+| Turborepo Build System | ✅ Unified build, test, lint pipeline |
 
-### Production Readiness: 70-80%
+### Production Readiness: ~40-50%
+
+A comprehensive technical audit (Feb 17) identified critical gaps. See [ENGINEERING_ROADMAP.md](./ENGINEERING_ROADMAP.md) and [TECHNICAL_AUDIT_2026-02-17.md](./TECHNICAL_AUDIT_2026-02-17.md).
 
 **Complete:**
 - ✅ Automated testing infrastructure
-- ✅ CI/CD enforcement
+- ✅ CI/CD enforcement (3 workflows)
 - ✅ Engine integration with circuit breaker
-- ✅ Multi-tenant data isolation
 - ✅ Real-time dashboard with live data
+- ✅ Shared package infrastructure
+
+**Critical Issues (P0):**
+- ❌ Credentials committed to git (must purge history)
+- ❌ 9 API endpoints bypass row-level security
+- ❌ MFA not implemented
+- ❌ Token revocation broken (JTI not generated)
+- ❌ No account lockout
 
 **In Progress:**
 - 🟡 Type hardening (51 `any` types remaining)
@@ -134,26 +153,18 @@ Start with **[FOUNDERS_VISION.md](./FOUNDERS_VISION.md)** — the moral foundati
 - ⬜ SANAS consultation
 - ⬜ Alpha participant outreach
 
-### Current Blockers
+### Remediation Timeline
 
-| Blocker | Impact | Resolution |
-|---------|--------|------------|
-| `@aic/db` lint errors | CI fails | Fix 4 `any` types in schema.ts |
-| Legal/regulatory | Business launch | Company registration, SANAS |
-| Alpha participants | Revenue | Outreach campaign |
+12–16 weeks to Series A readiness. See [ENGINEERING_ROADMAP.md](./ENGINEERING_ROADMAP.md) for full backlog.
 
-### Document Updates
-
-The following documents have been updated with current status:
-- [CAPABILITY_REVIEW.md](./CAPABILITY_REVIEW.md)
-- [CURRENT_GAPS.md](./CURRENT_GAPS.md)
-- [ENGINEERING_ROADMAP.md](./ENGINEERING_ROADMAP.md)
-- [AIC_Launch_Checklist.md](./AIC_Launch_Checklist.md)
-- [ROADMAP.md](./ROADMAP.md)
-- [MASTER_PLAN.md](./MASTER_PLAN.md)
-- [OPERATIONAL_ROADMAP.md](./OPERATIONAL_ROADMAP.md)
-- [roadmap-foundation-stabilization.md](./roadmap-foundation-stabilization.md)
+| Phase | Weeks | Focus |
+|-------|-------|-------|
+| P0 Emergency | 1 | Purge credentials, fix incidents endpoint, account lockout |
+| P0 Security Foundation | 2–4 | MFA, RLS audit, secrets vault, key rotation |
+| P1 Engine Stabilization | 5–8 | Async endpoints, Celery, cache bounds |
+| P1 Architecture Cleanup | 9–12 | Dead packages, consolidated auth, ESLint boundaries |
+| P2 Production Hardening | 13–16 | Load testing, external security audit, staging |
 
 ---
 
-*Updated: February 15, 2026*
+*Updated: February 17, 2026*

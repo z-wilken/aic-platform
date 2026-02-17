@@ -8,30 +8,38 @@ AIC is a POPIA Section 71 compliant accountability framework for South African A
 
 ## Architecture
 
-This is a **monorepo** using npm workspaces with 4 Next.js applications, 1 Python microservice, and 5 shared packages.
+This is a **monorepo** using npm workspaces + Turborepo with 5 Next.js applications, 1 Python microservice, and 11 shared packages.
 
 ```
 aic-platform/
 ├── apps/
-│   ├── web/           # Marketing site (port 3000)
-│   ├── platform/      # AIC Pulse SaaS dashboard (port 3001)
-│   ├── admin/         # Internal operations panel (port 3002)
-│   ├── hq/            # Institutional governance & CMS (port 3004)
-│   └── engine/        # Python audit engine microservice (port 8000)
+│   ├── web/              # Marketing site (port 3000)
+│   ├── platform/         # AIC Pulse SaaS dashboard (port 3001)
+│   ├── internal/         # Internal operations portal (port 3002)
+│   ├── admin/            # Auditor review portal (port 3003)
+│   ├── hq/               # Institutional governance & CMS (port 3004)
+│   ├── engine/           # Python audit engine microservice (port 8000)
+│   └── governance-agent/ # Governance automation agent
 ├── packages/
-│   ├── ui/            # Shared React components (@aic/ui)
-│   ├── auth/          # Shared auth utilities
-│   ├── events/        # Event system
-│   ├── legal/         # Legal/compliance utilities
-│   └── sockets/       # WebSocket utilities
-├── docs/              # Strategic & business documentation
-└── docker-compose.yml # PostgreSQL + PgAdmin
+│   ├── ui/               # Shared React components (@aic/ui)
+│   ├── auth/             # Shared auth utilities (@aic/auth)
+│   ├── db/               # Drizzle ORM, RLS, encryption (@aic/db)
+│   ├── types/            # Zod schemas, TypeScript types (@aic/types)
+│   ├── api-client/       # Engine API client (@aic/api-client)
+│   ├── reports/          # PDF generation (@aic/reports)
+│   ├── events/           # Event system (@aic/events)
+│   ├── legal/            # Legal/compliance utilities (@aic/legal)
+│   ├── sockets/          # WebSocket utilities (@aic/sockets)
+│   ├── middleware/       # Shared middleware (@aic/middleware)
+│   └── notifications/    # Alert system (@aic/notifications)
+├── docs/                 # Strategic & business documentation
+└── docker-compose.yml    # Full infrastructure stack
 ```
 
 ## Tech Stack
 
-### Frontend (apps/web, platform, admin, hq)
-- **Framework:** Next.js 16 (App Router)
+### Frontend (apps/web, platform, internal, admin, hq)
+- **Framework:** Next.js 15 (App Router)
 - **Runtime:** React 19
 - **Styling:** Tailwind CSS 4 (PostCSS)
 - **Animations:** Framer Motion 12
@@ -40,9 +48,11 @@ aic-platform/
 
 ### Backend
 - **API Routes:** Next.js Route Handlers
-- **Database:** PostgreSQL 15 (via `pg` driver)
-- **Auth:** NextAuth.js (v5-beta on platform, v4 on admin/hq)
+- **Database:** PostgreSQL 15 (Drizzle ORM + raw `pg` driver)
+- **Auth:** NextAuth.js v5-beta (platform, internal) / v4 (admin, hq)
 - **Password Hashing:** bcryptjs
+- **Build System:** Turborepo
+- **Task Queue:** BullMQ + Redis (platform)
 
 ### Audit Engine (apps/engine)
 - **Framework:** FastAPI with slowapi rate limiting
@@ -55,24 +65,31 @@ aic-platform/
 ## Development Commands
 
 ```bash
-# Start all apps concurrently
+# Start all apps (Turborepo)
 npm run dev
 
 # Start individual apps
-npm run dev:web        # Marketing site on :3000
-npm run dev:platform   # Platform dashboard on :3001
-npm run dev:admin      # Admin panel on :3002
-npm run dev:hq         # HQ governance on :3004
+cd apps/web && npm run dev        # Marketing site on :3000
+cd apps/platform && npm run dev   # Platform dashboard on :3001
+cd apps/internal && npm run dev   # Internal operations on :3002
+cd apps/hq && npm run dev         # HQ governance on :3004
 
-# Start database
+# Start database and infrastructure
 docker-compose up -d
 
 # Build all apps
 npm run build
 
 # Run all tests
-npm test               # TypeScript tests (Vitest)
-cd apps/engine && python -m pytest  # Python tests
+npm test                          # TypeScript tests (Vitest, via Turborepo)
+npm run test:engine               # Python tests (pytest)
+npm run test:e2e                  # End-to-end tests (Playwright)
+npm run test:coverage             # TypeScript tests with coverage
+
+# Database
+npm run db:generate               # Generate Drizzle migrations
+npm run db:push                   # Push schema to database
+npm run db:migrate                # Run migrations (@aic/db workspace)
 ```
 
 ### Engine (Python)
@@ -86,9 +103,9 @@ uvicorn app.main:app --reload --port 8000
 
 ### TypeScript (Vitest)
 - Config: `vitest.config.ts` at repo root
-- Tests: `apps/*/\_\_tests\_\_/**/*.test.ts`
+- Tests: `apps/*/__tests__/**/*.test.ts`
 - Run: `npm test`
-- 90 tests across web (scoring, report generation) and platform (auth, roles, permissions)
+- 127 tests across web (scoring, report generation) and platform (auth, roles, permissions)
 
 ### Python (pytest)
 - Config: `apps/engine/pytest.ini`
@@ -286,29 +303,40 @@ AUDIT_VERIFY_KEY         # PEM-encoded RSA public key (optional in dev)
 |---------|------|-------------|
 | Web (Marketing) | 3000 | Lead generation, self-assessment |
 | Platform (Pulse) | 3001 | Client SaaS dashboard |
-| Admin | 3002 | Internal operations |
+| Internal | 3002 | Internal operations portal |
 | HQ | 3004 | Governance & CMS |
 | Engine | 8000 | Python audit microservice |
 | PostgreSQL | 5432 | Database |
+| Redis | 6379 | Queue broker & caching |
 | PgAdmin | 5050 | Database admin UI |
 
 ## Shared Packages
 
 | Package | Path | Purpose |
 |---------|------|---------|
-| `@aic/ui` | `packages/ui/` | TrustBadge, AlphaSeal components |
-| `@aic/auth` | `packages/auth/` | Shared auth utilities |
-| `@aic/events` | `packages/events/` | Event system |
+| `@aic/ui` | `packages/ui/` | TrustBadge, AlphaSeal shared components |
+| `@aic/auth` | `packages/auth/` | Shared NextAuth config and utilities |
+| `@aic/db` | `packages/db/` | Drizzle ORM schema, RLS, encryption |
+| `@aic/types` | `packages/types/` | Zod schemas, shared TypeScript types |
+| `@aic/api-client` | `packages/api-client/` | Engine API client |
+| `@aic/reports` | `packages/reports/` | PDF report generation |
+| `@aic/events` | `packages/events/` | Cross-app event system |
 | `@aic/legal` | `packages/legal/` | Legal/compliance utilities |
 | `@aic/sockets` | `packages/sockets/` | WebSocket utilities |
+| `@aic/middleware` | `packages/middleware/` | Shared Next.js middleware |
+| `@aic/notifications` | `packages/notifications/` | Alert system |
 
 Import via: `import { TrustBadge } from '@aic/ui'`
 
 ## CI/CD
 
-GitHub Actions workflow (`.github/workflows/platform-ci.yml`):
-1. **Test job:** Runs `npm test` (Vitest) on push/PR to main/develop
-2. **Build job:** Matrix build of all 4 Next.js apps (depends on test passing)
+Three GitHub Actions workflows:
+
+| Workflow | File | Trigger | Jobs |
+|----------|------|---------|------|
+| **Foundation Checks** | `foundation-checks.yml` | Push/PR to main | Hygiene (lint, type-check), Test (Vitest), Build (matrix: web, platform, admin, hq) |
+| **Engine CI** | `engine-ci.yml` | Push/PR to main/develop on `apps/engine/**` | Lint & test (pytest), Security scan (Bandit, pip-audit), Docker build |
+| **Platform CI** | `platform-ci.yml` | Push/PR to main | Tests + multi-app build matrix |
 
 ## Security Considerations
 

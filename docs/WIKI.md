@@ -109,24 +109,30 @@ Each control is scored 0–4:
 
 ## 5. Architecture Overview
 
-AIC is a **monorepo** using npm workspaces with Turborepo, containing 4 Next.js applications, 1 Python microservice, and 5 shared packages.
+AIC is a **monorepo** using npm workspaces + Turborepo, containing 5 Next.js applications, 1 Python microservice, and 11 shared packages.
 
 ```
 aic-platform/
 ├── apps/
 │   ├── web/              # Marketing site (port 3000)
 │   ├── platform/         # AIC Pulse SaaS dashboard (port 3001)
-│   ├── admin/            # Auditor review portal (port 3002)
+│   ├── internal/         # Internal operations portal (port 3002)
+│   ├── admin/            # Auditor review portal (port 3003)
 │   ├── hq/               # Governance & CMS (port 3004)
-│   ├── internal/         # Internal operations portal (port 3005)
 │   ├── engine/           # Python audit engine (port 8000)
 │   └── governance-agent/ # Governance automation agent
 ├── packages/
 │   ├── ui/               # Shared React components (@aic/ui)
 │   ├── auth/             # Shared auth utilities (@aic/auth)
+│   ├── db/               # Drizzle ORM, RLS, encryption (@aic/db)
+│   ├── types/            # Zod schemas, TypeScript types (@aic/types)
+│   ├── api-client/       # Engine API client (@aic/api-client)
+│   ├── reports/          # PDF generation (@aic/reports)
 │   ├── events/           # Event system (@aic/events)
 │   ├── legal/            # Legal/compliance utilities (@aic/legal)
-│   └── sockets/          # WebSocket utilities (@aic/sockets)
+│   ├── sockets/          # WebSocket utilities (@aic/sockets)
+│   ├── middleware/        # Shared Next.js middleware (@aic/middleware)
+│   └── notifications/    # Alert system (@aic/notifications)
 ├── docs/                 # Strategic & business documentation
 └── docker-compose.yml    # Full infrastructure stack
 ```
@@ -177,17 +183,17 @@ The client-facing SaaS dashboard where certified organizations manage their comp
 - Certificate display and download
 - API key management
 
-### Admin — Auditor Review Portal (port 3002)
+### Internal — Operations Portal (port 3002)
 
-Internal portal for auditors to review and manage certifications. *(Transitioning to Internal app)*
+Internal operations portal for the AIC team. Manages leads, certification pipeline, billing, and internal workflows. Replaced the earlier Admin portal as the primary internal tool.
+
+### Admin — Auditor Review Portal (port 3003)
+
+Portal for auditors to review evidence and make certification decisions.
 
 ### HQ — Governance & CMS (port 3004)
 
 Institutional governance portal with built-in CMS for content management, newsletter management, and internal strategic tooling.
-
-### Internal — Operations Portal (port 3005)
-
-New internal operations portal replacing Admin, providing expanded operational capabilities.
 
 ### Engine — Python Audit Microservice (port 8000)
 
@@ -245,10 +251,16 @@ def endpoint_name(body: PydanticModel, request: Request):
 | Package | Import | Purpose |
 |---------|--------|---------|
 | **@aic/ui** | `import { TrustBadge } from '@aic/ui'` | TrustBadge, AlphaSeal shared components |
-| **@aic/auth** | `import { ... } from '@aic/auth'` | Shared authentication utilities |
+| **@aic/auth** | `import { ... } from '@aic/auth'` | Shared NextAuth config and auth utilities |
+| **@aic/db** | `import { db } from '@aic/db'` | Drizzle ORM schema, RLS, encryption |
+| **@aic/types** | `import { ... } from '@aic/types'` | Zod schemas, shared TypeScript types |
+| **@aic/api-client** | `import { ... } from '@aic/api-client'` | Engine API client |
+| **@aic/reports** | `import { ... } from '@aic/reports'` | PDF report generation |
 | **@aic/events** | `import { ... } from '@aic/events'` | Cross-app event system |
 | **@aic/legal** | `import { ... } from '@aic/legal'` | Legal and compliance utilities |
 | **@aic/sockets** | `import { ... } from '@aic/sockets'` | WebSocket utilities |
+| **@aic/middleware** | `import { ... } from '@aic/middleware'` | Shared Next.js middleware |
+| **@aic/notifications** | `import { ... } from '@aic/notifications'` | Alert and notification system |
 
 ---
 
@@ -333,9 +345,8 @@ Source of truth: `apps/platform/db/schema.sql`
 |---------|------|-------------|
 | Web (Marketing) | 3000 | Lead generation, self-assessment |
 | Platform (Pulse) | 3001 | Client SaaS dashboard |
-| Admin | 3002 | Auditor review portal |
+| Internal | 3002 | Internal operations portal |
 | HQ | 3004 | Governance & CMS |
-| Internal | 3005 | Internal operations |
 | Engine | 8000 | Python audit microservice |
 | PostgreSQL | 5432 | Primary database |
 | Redis | 6379 | Queue broker & caching |
@@ -489,10 +500,10 @@ npm run dev
 ### Individual App Development
 
 ```bash
-npm run dev:web        # Marketing site on :3000
-npm run dev:platform   # Platform dashboard on :3001
-npm run dev:admin      # Admin panel on :3002
-npm run dev:hq         # HQ governance on :3004
+cd apps/web && npm run dev        # Marketing site on :3000
+cd apps/platform && npm run dev   # Platform dashboard on :3001
+cd apps/internal && npm run dev   # Internal operations on :3002
+cd apps/hq && npm run dev         # HQ governance on :3004
 ```
 
 ### Engine Development
@@ -567,7 +578,7 @@ export async function GET(request: NextRequest) {
 - **Run**: `npm test`
 - **Coverage**: `npm run test:coverage`
 - **Watch mode**: `npm run test:watch`
-- **Scope**: 90+ tests covering scoring, report generation, auth, roles, permissions
+- **Scope**: 127 tests covering scoring, report generation, auth, roles, permissions
 
 ### Python Tests (pytest)
 
@@ -613,12 +624,13 @@ See `.env.example` for all variables. Key configuration:
 
 ## 17. CI/CD
 
-GitHub Actions workflow: `.github/workflows/platform-ci.yml`
+Three GitHub Actions workflows:
 
-| Job | Trigger | What It Does |
-|-----|---------|-------------|
-| **Test** | Push/PR to `main`/`develop` | Runs `npm test` (Vitest) |
-| **Build** | After tests pass | Matrix build of all Next.js apps |
+| Workflow | File | Trigger | What It Does |
+|----------|------|---------|-------------|
+| **Foundation Checks** | `foundation-checks.yml` | Push/PR to `main` | Hygiene (lint, type-check on shared packages), Test (Vitest), Build (matrix: web, platform, admin, hq) |
+| **Engine CI** | `engine-ci.yml` | Push/PR to `main`/`develop` on `apps/engine/**` | Lint & test (pytest, Python 3.12), Security scan (Bandit, pip-audit), Docker build |
+| **Platform CI** | `platform-ci.yml` | Push/PR to `main` | Tests + multi-app build matrix |
 
 ---
 
