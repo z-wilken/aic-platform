@@ -1,8 +1,8 @@
 # AIC Platform Wiki
 
-> **"When systems make decisions that affect human dignity, humans must remain accountable."**
+> **"We certify that human empathy and accountability remain in the loop — for every consequential automated decision, everywhere."**
 
-This is the comprehensive project wiki for the **AI Integrity Certification (AIC) Platform** — a POPIA Section 71 compliant accountability framework for South African AI deployments. AIC certifies that organizations maintain genuine human oversight over algorithmic decisions using a risk-based three-tier certification model.
+This is the comprehensive project wiki for the **AI Integrity Certification (AIC) Platform** — the global standard for human accountability in automated decision systems. AIC certifies that organizations maintain genuine human oversight over algorithmic decisions using a universal rights-based framework, starting in South Africa with POPIA Section 71 alignment as the regulatory market entry point.
 
 ---
 
@@ -33,24 +33,44 @@ This is the comprehensive project wiki for the **AI Integrity Certification (AIC
 
 ## 1. Vision & Mission
 
-### The Problem
+### The Universal Problem
 
 > "Who is accountable when systems make decisions about human beings?"
 
-Algorithms increasingly make decisions about credit, employment, healthcare, and criminal justice — yet no standardized framework exists in South Africa to certify that humans remain accountable for these decisions.
+Algorithms increasingly make decisions about credit, employment, healthcare, and criminal justice — everywhere, in every country, across every industry. When these systems fail — when they discriminate, exclude, or dehumanize — there is no one to answer for it. This is the accountability gap AIC exists to close.
 
-### The Solution
+The problem is not unique to South Africa. It is not unique to AI. Any consequential automated decision system — regardless of the technology underneath it — raises the same question: is there a human accountable for what this system does to people?
 
-AIC does **not** regulate AI. It certifies that humans remain accountable. Drawing on South Africa's constitutional principles (Section 10 — dignity) and POPIA Section 71 (human oversight requirement), AIC provides an independently verifiable certification that organizations can demonstrate to regulators, customers, and the public.
+### The Mission
+
+AIC is the global benchmark for ensuring no final decision about a human being is made solely by a machine. We certify that **human empathy, emotion, and accountability remain in the loop** — for every consequential automated system, not just AI.
+
+AIC does **not** regulate AI. It certifies that humans remain accountable. The framework is built on the 5 Algorithmic Rights — universal principles that apply regardless of jurisdiction, industry, or technology.
+
+### The South African Beachhead
+
+South Africa's constitutional principles (Section 10 — dignity) and POPIA Section 71 (human oversight requirement) make it the ideal proving ground for AIC's framework. POPIA Section 71 is one of the most progressive automated decision-making laws in the world, creating immediate legal demand for what AIC provides.
+
+South Africa is where we prove the framework. The framework itself is built for everywhere.
+
+### The AIC Framework Architecture
+
+```
+Layer 1: The 5 Algorithmic Rights (universal, jurisdiction-agnostic)
+            ↓
+Layer 2: The 3-Tier Accountability Framework (maps rights to decision stakes)
+            ↓
+Layer 3: Regulatory Mappings (POPIA Sec 71, EU AI Act, Title VII, LGPD, etc.)
+```
 
 ### 30-Year Trajectory
 
 | Horizon | Goal |
 |---------|------|
-| **2030** | South African standard for algorithmic accountability |
-| **2035** | Africa-wide framework adoption |
-| **2045** | Integration with international AI governance frameworks |
-| **2055** | Embedded principle in global technology governance |
+| **2030** | Recognised standard for algorithmic accountability in South Africa |
+| **2035** | Global framework expansion — jurisdiction-agnostic, internationally recognised |
+| **2045** | The 5 Algorithmic Rights adopted as the international standard for human accountability in automated systems |
+| **2055** | "Human-Accountable" is the universal baseline for any consequential automated decision system, globally |
 
 ---
 
@@ -91,7 +111,7 @@ The Integrity Score is a weighted average (0–100) across four categories:
 | **Usage Context** | **20%** | Decision criticality, data sensitivity |
 | **Infrastructure** | **20%** | Audit logging, bias monitoring, data residency |
 
-> Human Oversight is intentionally the heaviest-weighted category — this is the POPIA Section 71 focus.
+> Human Oversight is intentionally the heaviest-weighted category — it directly enforces the Right to Human Agency and the Right to Empathy, AIC's two most distinctive contributions to the global governance discourse. This weighting reflects a universal philosophical commitment, not merely a POPIA Section 71 requirement.
 
 ### Control Scoring Scale
 

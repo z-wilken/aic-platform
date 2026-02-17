@@ -7,7 +7,16 @@
 
 ## Core Principle
 
-> "When systems make decisions that affect human dignity, humans must remain accountable."
+> "We certify that human empathy and accountability remain in the loop — for every consequential automated decision, everywhere."
+
+**The AIC Framework:**
+```
+Layer 1: The 5 Algorithmic Rights (universal, jurisdiction-agnostic)
+            ↓
+Layer 2: The 3-Tier Accountability Framework (maps rights to decision stakes)
+            ↓
+Layer 3: Regulatory Mappings (POPIA Sec 71, EU AI Act, Title VII, LGPD, etc.)
+```
 
 ---
 

@@ -64,6 +64,10 @@ const db = getTenantDb(session.user.orgId); // Sets RLS context
 ### Weighted Formula
 `Score = (DOCUMENTATION * 0.20) + (OVERSIGHT * 0.35) + (REPORTS * 0.25) + (TECHNICAL * 0.20)`
 
+> **Rights Mapping:** The weighted formula directly maps to the 5 Algorithmic Rights. Human Oversight (35%) enforces the Right to Human Agency and the Right to Empathy. Transparency (25%) enforces the Right to Explanation and the Right to Truth. Usage Context (20%) maps to the severity of Rights violations if oversight fails. Infrastructure (20%) ensures the technical foundation for Rights enforcement is auditable and immutable.
+>
+> **Framework Note:** This scoring formula is designed to support multiple regulatory framework mappings — not only POPIA Section 71. The weights reflect universal accountability principles. Regulatory-specific adjustments (e.g., EU AI Act thresholds) are applied at the audit configuration level, not in the core formula.
+
 *   **Implementation:** Centralized in `apps/platform/api/stats/route.ts`.
 *   **Verification:** Unit tests established in `apps/platform/tests/scoring.test.ts`.
 

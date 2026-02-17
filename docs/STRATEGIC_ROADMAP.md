@@ -10,6 +10,8 @@
 
 This strategic roadmap consolidates AIC's planning documents, validates alignment with the Founder's Vision, and provides a unified execution plan. The review confirms **strong alignment** between the vision and operational planning, with recommendations for strengthening the connection between daily execution and the 30-year mission.
 
+**Strategic framing:** AIC is a global accountability framework. South Africa is the beachhead market — chosen because POPIA Section 71 is the most progressive automated decision-making law in the world, and because South Africa's constitutional history gives this mission authentic moral weight. The 5 Algorithmic Rights are designed to be adopted as an international standard — like ISO but values-led. Phase 0–3 validate the framework in SA. Phase 4+ expand it globally.
+
 ### Vision Alignment Assessment
 
 The Founder's Vision establishes a clear moral imperative: **when systems make decisions that affect human dignity, humans must remain accountable.**
@@ -63,6 +65,10 @@ The Founder's Vision establishes a clear moral imperative: **when systems make d
 ---
 
 ## Part 2: Unified Strategic Roadmap
+
+### South African Beachhead (Phases 0–3)
+
+*These phases prove the AIC framework in the South African market, using POPIA Section 71 as the regulatory anchor. South Africa is the proving ground — not the destination.*
 
 ### PHASE 0: Foundation (Immediate – Week 4)
 
@@ -145,18 +151,20 @@ The Founder's Vision establishes a clear moral imperative: **when systems make d
 
 ---
 
-### PHASE 5: Regional Expansion (Year 2-3)
+### PHASE 5: Global Framework Expansion (Year 2-3)
 
-**Objective:** Expand across SADC region and establish AIC as continental standard.
+**Objective:** Expand beyond South Africa and establish AIC as the international standard for human accountability in automated decisions. The 5 Algorithmic Rights framework is designed to be adopted as an international standard — values-led, jurisdiction-agnostic, applicable wherever automated systems affect human lives.
 
-- [ ] SADC expansion via SADCAS — Mutual recognition agreement, country-specific regulatory mapping
+- [ ] SADC expansion via SADCAS — Mutual recognition agreement, country-specific regulatory mapping for first-ring expansion
+- [ ] EU AI Act regulatory mapping — Position AIC certification as alignment evidence for European organizations
 - [ ] Multi-language support — English, Afrikaans, Zulu, Portuguese (Mozambique), French (DRC)
-- [ ] Launch Lead Auditor Training Programme — ZAR 35K per trainee, target 50+ certified auditors
+- [ ] Launch Lead Auditor Training Programme — ZAR 35K per trainee, target 50+ certified auditors globally
 - [ ] Government tender integration — Work with National Treasury to include AI certification in RFP requirements
 - [ ] Full AIC Pulse platform — Real-time monitoring, third-party integrations (Credo AI, Fiddler), enterprise features
 - [ ] 210+ cumulative certifications — ZAR 45M revenue, 56% EBITDA margin
+- [ ] Submit to ISO for consideration as the basis for a global standard in human accountability for automated decision systems
 
-**Success Metrics:** Operating in 3+ SADC countries. First government tender requirement. Training programme launched.
+**Success Metrics:** Operating in 3+ countries (including non-SA). EU AI Act mapping published. First government tender requirement. Training programme launched internationally.
 
 ---
 
@@ -166,10 +174,10 @@ The Founder's Vision establishes a 30-year trajectory:
 
 | Horizon | Founder's Vision Goal | Operational Milestone |
 |---------|----------------------|----------------------|
-| **2030** | Recognised standard for AI accountability in South Africa | 500+ active certifications; Information Regulator references AIC methodology; First court judgment cites framework |
-| **2035** | Operating across Africa; trained a generation of auditors | Recognition in all 15 SADC countries; 200+ certified lead auditors; AIC-certified requirement in major regional tenders |
-| **2045** | Principle embedded in international governance frameworks | Global ISO standard based on AIC methodology; Representation in AI governance bodies; African voice in global AI policy |
-| **2055** | Methodology expanded beyond AI to all automated decision systems | "Human-Accountable" certification applicable to any consequential automated system—credit scoring, benefits eligibility, predictive policing |
+| **2030** | Recognised standard for algorithmic accountability in South Africa | 500+ active certifications; Information Regulator references AIC methodology; First court judgment cites framework |
+| **2035** | Global framework expansion — jurisdiction-agnostic and internationally recognised | Recognition in 15+ countries (SADC and beyond); 200+ certified lead auditors; AIC-certified requirement in major international tenders; EU AI Act mapping published |
+| **2045** | Principle embedded in international governance frameworks as a universal standard | Global ISO standard based on AIC methodology; Representation in AI governance bodies worldwide; The 5 Algorithmic Rights recognised as the international framework for human accountability in automated systems |
+| **2055** | Universal principle — "Human-Accountable" is the global baseline | "Human-Accountable" certification applicable to any consequential automated decision system globally — credit scoring, benefits eligibility, predictive policing, medical triage, and any technology yet to emerge |
 
 ### Recommendations for Strengthening Vision Alignment
 
