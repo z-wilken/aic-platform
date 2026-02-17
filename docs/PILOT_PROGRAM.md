@@ -2,6 +2,26 @@
 
 Alpha Program Framework: Prove Demand Before Raising ZAR 10M
 
+---
+
+> **⚠️ CRITICAL UPDATE (February 17, 2026)**
+>
+> A comprehensive technical audit identified critical security gaps that must be resolved BEFORE Alpha participant onboarding. The platform requires 12-16 weeks of remediation.
+>
+> **Revised Timeline:**
+> - Original: January - June 2026
+> - Revised: March - September 2026 (shift by ~8 weeks)
+>
+> **Prerequisites for Alpha Pilots:**
+> - ✅ MFA implementation (completed Feb 17)
+> - ✅ Account lockout (completed Feb 17)
+> - 🔴 Credential purging from git (pending)
+> - 🔴 RLS bypass fixes (8 remaining)
+>
+> See [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md) for full fix plan.
+
+---
+
 **THE PROBLEM WITH YOUR CURRENT PITCH**
 
 **Investors will ask:** \"You are asking for ZAR 10M to build something

@@ -2,6 +2,22 @@
 
 INVESTOR MEMORANDUM --- Evidence-Based Business Plan
 
+---
+
+> **⚠️ TIMELINE NOTICE (February 17, 2026)**
+>
+> A comprehensive technical audit identified critical platform gaps requiring 12-16 weeks of security remediation. All financial projections in this document should be shifted by 2-3 months.
+>
+> **Key Impacts:**
+> - Series A discussions: Q3 2026 (was Q1 2026)
+> - Alpha certifications: Start Month 4-5 (was Month 1-2)
+> - Break-even: Month 20-22 (was Month 18)
+>
+> See [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md) for technical fix plan.
+> See [STAKEHOLDER_BRIEFING_2026-02-17.md](./STAKEHOLDER_BRIEFING_2026-02-17.md) for investor communication.
+
+---
+
 **EXECUTIVE SUMMARY**
 
 **The Problem (Validated):**

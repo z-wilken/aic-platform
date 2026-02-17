@@ -176,52 +176,53 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 
 ---
 
-### February 15, 2026 Progress Update
+### ~~February 15, 2026 Progress Update~~ SUPERSEDED
 
-#### Platform Status Revised
+> **⚠️ WARNING:** The Feb 15 assessment below was overly optimistic. A comprehensive audit on Feb 17, 2026 revealed critical security and architecture gaps. See corrected status below.
 
-| Application | Previous Status | Current Status |
-|-------------|-----------------|----------------|
-| **apps/web** | ✅ MVP Complete | ✅ MVP Complete |
-| **apps/platform** | 🟡 50% Complete | 🟡 **60% Complete** |
-| **apps/admin** | 🟡 40% Complete | 🟡 **50% Complete** |
-| **apps/engine** | ✅ Functional | ✅ Functional (13 services, 141 tests) |
+#### Platform Status (Corrected Feb 17, 2026)
 
-#### Sprint 3 Phase 1 Deliverables
+| Application | Feb 15 Claim | Feb 17 Actual | Key Issues |
+|-------------|--------------|---------------|------------|
+| **apps/web** | ✅ MVP Complete | ✅ MVP Complete | No issues |
+| **apps/platform** | 🟡 60% Complete | ⚠️ **40% Complete** | 9 RLS bypasses, no MFA (fixed) |
+| **apps/admin** | 🟡 50% Complete | ⚠️ **35% Complete** | Incomplete, security gaps |
+| **apps/engine** | ✅ Functional | ⚠️ **OOM Risk** | Sync endpoints, unbounded cache |
 
-| Item | Status |
-|------|--------|
-| Real-Time Platform Dashboard | ✅ Live data via tenant-isolated queries |
-| 5 Algorithmic Rights Calculation | ✅ Human Agency, Explanation, Empathy, Correction, Truth |
-| Admin Verification Queue | ✅ Pending items with integrity velocity |
-| Shared @aic/db Package | ✅ Drizzle ORM, RLS, encryption |
-| Engine Circuit Breaker | ✅ Opossum integration |
-| Celery Async Tasks | ✅ Explainability task queue |
+#### Sprint 3 Deliverables (Status Corrected)
 
-#### What's Now Built (Since Last Update)
+| Item | Feb 15 | Feb 17 Corrected |
+|------|--------|------------------|
+| Real-Time Platform Dashboard | ✅ | ⚠️ UI exists, depends on RLS fixes |
+| 5 Algorithmic Rights Calculation | ✅ | ⚠️ Formula exists, data integrity requires RLS |
+| Admin Verification Queue | ✅ | ⚠️ Functional but admin app incomplete |
+| Shared @aic/db Package | ✅ | ⚠️ Works but has lint errors |
+| Engine Circuit Breaker | ✅ | ✅ Confirmed working |
+| Celery Async Tasks | ✅ | ⚠️ Only 4 of 40+ endpoints use Celery |
 
-| Feature | Status |
-|---------|--------|
-| **268 automated tests** | ✅ 127 TypeScript + 141 Python |
-| **CI/CD Pipeline** | ✅ 3 GitHub Actions workflows |
-| **11 shared packages** | ✅ @aic/db, auth, types, ui, api-client, etc. |
-| **Tenant isolation** | ✅ `getTenantDb(orgId)` with RLS |
-| **Field-level encryption** | ✅ AES-256-GCM for PII |
-| **Engine integration** | ✅ Circuit breaker, SSE events |
-| **Real-time dashboard** | ✅ Live stats + rights compliance |
+#### What's Actually Built (Corrected)
 
-#### Revised "What's Not Built Yet"
+| Feature | Status | Caveat |
+|---------|--------|--------|
+| **268 automated tests** | ✅ | Tests exist but don't catch RLS issues |
+| **CI/CD Pipeline** | ✅ | 3 workflows active |
+| **11 shared packages** | ⚠️ | 5 are dead code (events, sockets, middleware, reports, api-client) |
+| **Tenant isolation** | ❌ | 9 endpoints bypass RLS |
+| **Field-level encryption** | ✅ | Working |
+| **Engine integration** | ⚠️ | Circuit breaker works, but sync endpoints block |
+| **Real-time dashboard** | ⚠️ | UI works, data isolation incomplete |
 
-- [x] ~~Automated testing~~ → **268 tests passing**
-- [x] ~~CI/CD pipeline~~ → **3 workflows active**
-- [x] ~~Engine integration~~ → **Complete with circuit breaker**
-- [x] ~~Real-time monitoring~~ → **SSE event bus implemented**
-- [ ] Full certification workflow (application → audit → approval → certificate)
-- [ ] PDF certificate generation with QR verification
-- [ ] Batch processing for large datasets
-- [ ] Multi-language support (Afrikaans, Zulu, Portuguese)
-- [ ] Insurance partnership API integration
-- [ ] Lead Auditor training platform
+#### Critical Items NOT Built (Feb 17 Findings)
+
+- [ ] **MFA** → ✅ Implemented Feb 17
+- [ ] **Account lockout** → ✅ Implemented Feb 17
+- [ ] **JTI token generation** → ✅ Implemented Feb 17
+- [ ] Credential purging from git history
+- [ ] RLS enforcement on 9 bypass endpoints
+- [ ] Async engine endpoints (40+ still sync)
+- [ ] Model cache TTL/LRU → ✅ Implemented Feb 17
+- [ ] Full certification workflow
+- [ ] PDF certificate generation
 - [ ] Staging/production environments
 - [ ] Sentry error tracking
 
@@ -443,15 +444,31 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 | `@aic/db` lint errors | CI fails | Fix 4 `any` types in schema.ts |
 | 51 remaining `any` types | Type-check warnings | Gradual removal |
 
-### Production Readiness: 70-80%
+### Production Readiness: 35-40%
 
-The platform has progressed from MVP to near-production readiness. Primary gaps are:
-1. Type hardening (lint/type-check passing)
-2. Staging environment deployment
-3. Error tracking (Sentry)
-4. Legal/regulatory foundation
-5. Alpha participant recruitment
+> **CRITICAL UPDATE (February 17, 2026):** A comprehensive 360-degree technical audit revealed significant gaps in the previous assessment. The platform requires 12-16 weeks of remediation before Series A readiness.
+
+**Current Grades (Feb 17 Audit):**
+| Pillar | Grade | Key Issue |
+|--------|-------|-----------|
+| Security/Auth | F | No MFA (now implemented), credentials in git |
+| Data Sovereignty | F | 9 RLS bypass endpoints identified |
+| Performance | F | Engine OOM risk under load |
+| Architecture | D | 5 dead packages, no import boundaries |
+| Type Safety | C- | 55 violations remaining |
+
+**Primary Remediation Items:**
+1. ~~MFA implementation~~ ✅ Completed Feb 17
+2. ~~Account lockout~~ ✅ Completed Feb 17
+3. Purge credentials from git history (P0)
+4. Fix remaining 8 RLS bypass endpoints (P0)
+5. Convert engine to async (P1)
+6. Staging environment deployment
+7. Error tracking (Sentry)
+
+**See:** [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md) for detailed 16-week fix plan.
+**See:** [POST_REMEDIATION_ROADMAP.md](./POST_REMEDIATION_ROADMAP.md) for Series A and beyond.
 
 ---
 
-*Updated: February 15, 2026*
+*Updated: February 17, 2026*

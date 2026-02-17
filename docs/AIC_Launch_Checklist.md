@@ -85,16 +85,18 @@
 
 ---
 
-## February 15, 2026 Progress Update
+## ~~February 15, 2026 Progress Update~~ SUPERSEDED
 
-### Sprint 3 Phase 1 Completed
+> **⚠️ Feb 17 Audit Correction:** Several items below were marked complete but have critical issues identified in the security audit.
 
-- [x] **Real-Time Dashboard**: Platform dashboard fetches live data via tenant-isolated queries
-- [x] **Admin Dashboard**: Real stats with verification queue and integrity velocity
-- [x] **5 Algorithmic Rights Calculation**: Dynamic scoring for Human Agency, Explanation, Empathy, Correction, Truth
-- [x] **Shared Database Package**: `@aic/db` with Drizzle ORM, tenant isolation, encryption
-- [x] **Circuit Breaker**: Opossum integration for resilient Engine calls
-- [x] **Celery Task Queue**: Async explainability tasks in Engine
+### Sprint 3 Phase 1 (Corrected Status)
+
+- [⚠️] **Real-Time Dashboard**: UI exists but RLS has 9 bypass points
+- [⚠️] **Admin Dashboard**: Stats display works, but app is only 35% complete
+- [⚠️] **5 Algorithmic Rights Calculation**: Formula exists, data integrity depends on RLS fixes
+- [⚠️] **Shared Database Package**: `@aic/db` works but has lint errors
+- [x] **Circuit Breaker**: Opossum integration confirmed working
+- [⚠️] **Celery Task Queue**: Only 4 of 40+ endpoints use Celery
 
 ### Revised Test Counts
 
@@ -113,21 +115,20 @@
 | engine-ci.yml | Push/PR to main | pytest with coverage |
 | platform-ci.yml | Push/PR to main | Legacy (merged) |
 
-### Shared Packages Expanded
+### Shared Packages (Corrected Feb 17)
 
-| Package | Status |
-|---------|--------|
-| @aic/db | ✅ Active - Drizzle, RLS, encryption |
-| @aic/auth | ✅ Active - Shared NextAuth config |
-| @aic/types | ✅ Active - Zod schemas, interfaces |
-| @aic/ui | ✅ Active - TrustBadge, AlphaSeal |
-| @aic/api-client | ✅ Active - Engine client |
-| @aic/reports | ✅ Active - PDF generation |
-| @aic/events | ✅ Active - Event system |
-| @aic/sockets | ✅ Active - WebSocket utilities |
-| @aic/legal | ✅ Active - Compliance utilities |
-| @aic/middleware | 🟡 New - Shared middleware |
-| @aic/notifications | 🟡 New - Alert system |
+| Package | Status | Notes |
+|---------|--------|-------|
+| @aic/db | ✅ Active | Drizzle, RLS policies defined (but 9 bypasses in code) |
+| @aic/auth | ✅ Active | NextAuth + MFA (added Feb 17) |
+| @aic/types | ✅ Active | Zod schemas, interfaces |
+| @aic/ui | ✅ Active | TrustBadge, AlphaSeal |
+| @aic/legal | ✅ Active | Compliance utilities |
+| @aic/api-client | ❌ **DELETED** | Was dead code - use platform engine-client |
+| @aic/reports | ❌ **DELETED** | Was dead code - never imported |
+| @aic/events | ❌ **DELETED** | Was dead code - 7 lines, never used |
+| @aic/sockets | ❌ **DELETED** | Was dead code - never imported |
+| @aic/middleware | ❌ **DELETED** | Was dead code - duplicate logic in apps |
 
 ### Current Blockers
 

@@ -16,10 +16,9 @@ This roadmap has been **completely revised** following a comprehensive 360-degre
 | Document | Purpose | Priority |
 |----------|---------|----------|
 | **TECHNICAL_AUDIT_2026-02-17.md** | Complete audit findings | READ FIRST |
-| **REMEDIATION_ROADMAP.md** | Step-by-step fix plan | PRIMARY |
-| **CURRENT_GAPS.md** | Gap analysis | REFERENCE |
-| **SERIES_A_ROADMAP.md** | Investment timeline | PLANNING |
-| **ENGINEERING_ROADMAP.md** | Technical backlog | EXECUTION |
+| **REMEDIATION_ROADMAP.md** | 16-week fix plan (Phases 0-4) | PRIMARY |
+| **POST_REMEDIATION_ROADMAP.md** | Series A & growth (Phases 5-10) | PLANNING |
+| **STAKEHOLDER_BRIEFING_2026-02-17.md** | Investor communication | REFERENCE |
 
 ---
 
@@ -39,15 +38,17 @@ This roadmap has been **completely revised** following a comprehensive 360-degre
 
 ## Critical Issues Requiring Immediate Attention
 
-### Blockers (Must Fix Before Any Deployment)
+### Blockers (Status as of Feb 17, 2026)
 
-| # | Issue | Severity | Effort |
+| # | Issue | Severity | Status |
 |---|-------|----------|--------|
-| 1 | Credentials in git history | CRITICAL | 4h |
-| 2 | No MFA implementation | CRITICAL | 16h |
-| 3 | 9 RLS bypass endpoints | CRITICAL | 8h |
-| 4 | Token revocation broken | HIGH | 2h |
-| 5 | No account lockout | HIGH | 4h |
+| 1 | Credentials in git history | CRITICAL | 🔴 Needs BFG purge |
+| 2 | ~~No MFA implementation~~ | ~~CRITICAL~~ | ✅ **Fixed Feb 17** |
+| 3 | 9 RLS bypass endpoints | CRITICAL | 🟡 1 fixed, 8 remaining |
+| 4 | ~~Token revocation broken~~ | ~~HIGH~~ | ✅ **Fixed Feb 17 (JTI)** |
+| 5 | ~~No account lockout~~ | ~~HIGH~~ | ✅ **Fixed Feb 17** |
+| 6 | Engine OOM risk | HIGH | 🟡 Cache TTL added |
+| 7 | 40+ sync endpoints | MEDIUM | 🔴 Async conversion needed |
 | 6 | Engine OOM risk | HIGH | 48h |
 
 ### Architecture Issues
