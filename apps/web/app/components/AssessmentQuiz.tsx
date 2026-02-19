@@ -140,7 +140,10 @@ export default function AssessmentQuiz() {
                         ← Back
                     </button>
                 )}
-                <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-[0.3em]">
+                <span 
+                    id="question-counter"
+                    className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-[0.3em]"
+                >
                 Question {currentStep + 1} / {questions.length}
                 </span>
             </div>

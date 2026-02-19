@@ -21,6 +21,7 @@ export const InstitutionalFooter = () => {
                     <h4 className="text-aic-gold font-bold">Institutional</h4>
                     <nav className="flex flex-col gap-4 text-gray-400">
                         <a href="/about" className="hover:text-white transition-colors">Founder's Vision</a>
+                        <a href="/rights" className="hover:text-white transition-colors">The Declaration of Algorithmic Rights</a>
                         <a href="/business/pricing" className="hover:text-white transition-colors">Institutional Pricing</a>
                         <a href="/governance" className="hover:text-white transition-colors">Regulatory Stack</a>
                         <a href="/registry" className="hover:text-white transition-colors">Certified Registry</a>
