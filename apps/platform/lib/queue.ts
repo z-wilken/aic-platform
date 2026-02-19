@@ -1,6 +1,6 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getTenantDb, auditLogs, notifications, eq } from '@aic/db';
-import { EngineClient } from '@aic/api-client';
+import { EngineClient } from './engine-client';
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 

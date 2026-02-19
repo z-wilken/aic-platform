@@ -12,12 +12,12 @@ export default [
       "no-restricted-imports": ["error", {
         "patterns": [
           {
-            "group": ["apps/*/*", "!@/*"],
+            "group": ["../apps/*/", "apps/*/", "**/apps/*/**"],
             "message": "Apps must not import from other apps. Use shared packages instead."
           },
           {
-            "group": ["**/apps/*/**"],
-            "message": "Direct imports from apps directory are forbidden."
+            "group": ["@aic/**/internal"],
+            "message": "No internal package access allowed from this boundary."
           }
         ]
       }]

@@ -22,9 +22,11 @@ export async function GET(
     }
 
     const isSuperAdmin = session.user.isSuperAdmin;
+    // [SECURITY] getSystemDb() used for SuperAdmin to access organization data.
+    // getTenantDb() used for regular users to enforce tenant isolation.
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, any>) => {
+    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, Record<string, unknown>>) => {
       const [org] = await tx.select().from(organizations).where(eq(organizations.id, id)).limit(1);
 
       if (!org) {
@@ -48,9 +50,9 @@ export async function GET(
     };
 
     if (isSuperAdmin && 'transaction' in db) {
-        return await db.transaction(execute as any);
+        return await db.transaction(execute);
     } else if ('query' in db) {
-        return await db.query(execute as any);
+        return await db.query(execute);
     }
     
     throw new Error('Database instance configuration error');
@@ -89,9 +91,11 @@ export async function PUT(
     }
 
     const isSuperAdmin = session.user.isSuperAdmin;
+    // [SECURITY] getSystemDb() used for SuperAdmin to access organization data.
+    // getTenantDb() used for regular users to enforce tenant isolation.
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, any>) => {
+    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, Record<string, unknown>>) => {
       const [updatedOrg] = await tx
         .update(organizations)
         .set({ 
@@ -112,9 +116,9 @@ export async function PUT(
     };
 
     if (isSuperAdmin && 'transaction' in db) {
-        return await db.transaction(execute as any);
+        return await db.transaction(execute);
     } else if ('query' in db) {
-        return await db.query(execute as any);
+        return await db.query(execute);
     }
 
     throw new Error('Database instance configuration error');

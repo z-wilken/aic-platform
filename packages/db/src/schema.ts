@@ -45,6 +45,7 @@ export const users = pgTable('users', {
   lockoutUntil: timestamp('lockout_until', { withTimezone: true }),
   twoFactorSecret: text('two_factor_secret'),
   twoFactorEnabled: boolean('two_factor_enabled').default(false),
+  backupCodes: jsonb('backup_codes'),
   lastLogin: timestamp('last_login', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),

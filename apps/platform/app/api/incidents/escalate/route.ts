@@ -10,6 +10,8 @@ export async function POST() {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
+    // [SECURITY] getSystemDb() used for cross-tenant regulatory escalation. 
+    // SuperAdmin privileges are verified before access.
     const db = getSystemDb();
     const seventyTwoHoursAgo = new Date(Date.now() - 72 * 60 * 60 * 1000);
 

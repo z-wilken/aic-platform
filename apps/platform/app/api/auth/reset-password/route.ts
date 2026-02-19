@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, users, passwordResetTokens, eq, and, sql, gte } from '@aic/db';
+import { getSystemDb, users, passwordResetTokens, eq, and, gte } from '@aic/db';
 import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Sovereign-Grade security requires at least 12 characters' }, { status: 400 });
         }
 
+        // [SECURITY] getSystemDb() used for unauthenticated password reset via token.
         const db = getSystemDb();
 
         // Atomic Transaction: Verify, Update, and Invalidate in one go

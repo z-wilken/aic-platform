@@ -13,18 +13,25 @@ export async function PATCH(
 
   try {
     const { id } = await params;
-    const { role, is_active, name } = await request.json();
+    const { role, is_active, name, unlock } = await request.json();
 
     const db = getSystemDb();
 
+    const updateData: Record<string, unknown> = { 
+      role, 
+      isActive: is_active, 
+      name,
+      updatedAt: new Date() 
+    };
+
+    if (unlock === true) {
+      updateData.failedLoginAttempts = 0;
+      updateData.lockoutUntil = null;
+    }
+
     const [updatedUser] = await db
       .update(users)
-      .set({ 
-        role, 
-        isActive: is_active, 
-        name,
-        updatedAt: new Date() 
-      })
+      .set(updateData)
       .where(eq(users.id, id))
       .returning({ 
         id: users.id, 
@@ -41,7 +48,7 @@ export async function PATCH(
     // Record to Institutional Ledger
     await LedgerService.append('USER_UPDATED', session.user.id, {
         targetUserId: id,
-        updates: { role, is_active, name }
+        updates: { role, is_active, name, unlocked: !!unlock }
     });
 
     return NextResponse.json({ success: true, user: updatedUser });

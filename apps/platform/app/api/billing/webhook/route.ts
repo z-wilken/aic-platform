@@ -33,6 +33,8 @@ export async function POST(request: NextRequest) {
 
       // Task M36: Institutional Billing - Update organization tier/status
       if (orgId && tier) {
+          // [SECURITY] getSystemDb() used for asynchronous billing updates.
+          // The orgId is verified against the system database.
           const db = getSystemDb();
           
           // Verify org exists before update to prevent orphan records/logic errors

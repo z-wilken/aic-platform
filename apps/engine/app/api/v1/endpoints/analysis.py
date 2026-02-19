@@ -106,32 +106,43 @@ class BatchAnalysisRequest(BaseModel):
 
 from app.tasks.explainability import compute_explanation_task
 from app.tasks.analysis import (
-    task_disparate_impact, task_equalized_odds, task_intersectional
+    task_disparate_impact, task_equalized_odds, task_intersectional, task_drift
 )
 from celery.result import AsyncResult
 
 @router.get("/tasks/{task_id}")
-def get_task_status(task_id: str):
+async def get_task_status(task_id: str):
     """Check status and retrieve results for any async task."""
-    result = AsyncResult(task_id)
+    result = await run_in_threadpool(AsyncResult, task_id)
     return {
         "task_id": task_id,
         "status": result.status,
         "result": result.result if result.ready() else None
     }
 
+@router.post("/analyze/drift/async")
+@limiter.limit("20/minute")
+async def drift_analysis_async(body: DriftRequest, request: Request):
+    task = await run_in_threadpool(
+        task_drift.delay,
+        body.baseline_data, body.current_data, body.feature_name, body.n_bins
+    )
+    return {"task_id": task.id, "status": "PENDING"}
+
 @router.post("/analyze/async")
 @limiter.limit("30/minute")
-def disparate_impact_async(body: BiasAuditRequest, request: Request):
-    task = task_disparate_impact.delay(
+async def disparate_impact_async(body: BiasAuditRequest, request: Request):
+    task = await run_in_threadpool(
+        task_disparate_impact.delay,
         body.data, body.protected_attribute, body.outcome_variable, body.previous_hash
     )
     return {"task_id": task.id, "status": "PENDING"}
 
 @router.post("/analyze/equalized-odds/async")
 @limiter.limit("30/minute")
-def equalized_odds_async(body: EqualizedOddsRequest, request: Request):
-    task = task_equalized_odds.delay(
+async def equalized_odds_async(body: EqualizedOddsRequest, request: Request):
+    task = await run_in_threadpool(
+        task_equalized_odds.delay,
         body.data, body.protected_attribute, body.actual_outcome, 
         body.predicted_outcome, body.threshold, body.previous_hash
     )
@@ -139,8 +150,9 @@ def equalized_odds_async(body: EqualizedOddsRequest, request: Request):
 
 @router.post("/analyze/intersectional/async")
 @limiter.limit("20/minute")
-def intersectional_analysis_async(body: IntersectionalRequest, request: Request):
-    task = task_intersectional.delay(
+async def intersectional_analysis_async(body: IntersectionalRequest, request: Request):
+    task = await run_in_threadpool(
+        task_intersectional.delay,
         body.data, body.protected_attributes, body.outcome_variable, 
         body.min_group_size, body.previous_hash
     )
@@ -148,9 +160,10 @@ def intersectional_analysis_async(body: IntersectionalRequest, request: Request)
 
 @router.post("/explain/async")
 @limiter.limit("20/minute")
-def explain_async(body: ExplainabilityRequest, request: Request):
+async def explain_async(body: ExplainabilityRequest, request: Request):
     """Asynchronous explanation request (SHAP or LIME)."""
-    task = compute_explanation_task.delay(
+    task = await run_in_threadpool(
+        compute_explanation_task.delay,
         body.data, body.target_column, body.instance,
         body.method, body.num_features
     )
@@ -161,34 +174,34 @@ def explain_async(body: ExplainabilityRequest, request: Request):
 
 @router.post("/audit/privacy")
 @limiter.limit("30/minute")
-def get_privacy_audit(body: PrivacyRequest, request: Request):
-    return audit_privacy(body.columns)
+async def get_privacy_audit(body: PrivacyRequest, request: Request):
+    return await run_in_threadpool(audit_privacy, body.columns)
 
 @router.post("/audit/labor")
 @limiter.limit("30/minute")
-def get_labor_audit(body: LaborRequest, request: Request):
-    return audit_labor(body.total_decisions, body.human_interventions, body.human_overrides)
+async def get_labor_audit(body: LaborRequest, request: Request):
+    return await run_in_threadpool(audit_labor, body.total_decisions, body.human_interventions, body.human_overrides)
 
 @router.post("/audit/verify-document")
 @limiter.limit("20/minute")
-def get_evidence_verification(body: EvidenceRequest, request: Request):
-    return scan_evidence(body.text)
+async def get_evidence_verification(body: EvidenceRequest, request: Request):
+    return await run_in_threadpool(scan_evidence, body.text)
 
 @router.post("/audit/red-team")
 @limiter.limit("10/minute")
-def get_red_team_audit(body: RedTeamRequest, request: Request):
-    return red_team_audit(body.data, body.protected_attribute, body.other_columns)
+async def get_red_team_audit(body: RedTeamRequest, request: Request):
+    return await run_in_threadpool(red_team_audit, body.data, body.protected_attribute, body.other_columns)
 
 @router.post("/audit-trail/verify")
 @limiter.limit("10/minute")
-def verify_audit_chain(body: HashChainVerifyRequest, request: Request):
+async def verify_audit_chain(body: HashChainVerifyRequest, request: Request):
     """Verify integrity of a hash chain of audit records."""
-    return HashChain.verify_chain(body.records)
+    return await run_in_threadpool(HashChain.verify_chain, body.records)
 
 @router.post("/integrity/calculate", response_model=IntegrityScoreResponse)
 @limiter.limit("30/minute")
-def get_integrity_score(body: IntegrityScoreRequest, request: Request):
-    return calculate_integrity_score(body)
+async def get_integrity_score(body: IntegrityScoreRequest, request: Request):
+    return await run_in_threadpool(calculate_integrity_score, body)
 
 
 # --- Bias analysis endpoints ---
@@ -222,95 +235,96 @@ async def intersectional_analysis(body: IntersectionalRequest, request: Request)
 
 @router.post("/analyze/statistical")
 @limiter.limit("30/minute")
-def statistical_significance(body: BiasAuditRequest, request: Request):
-    result = analyze_statistical_significance(body.data, body.protected_attribute, body.outcome_variable)
+async def statistical_significance(body: BiasAuditRequest, request: Request):
+    result = await run_in_threadpool(analyze_statistical_significance, body.data, body.protected_attribute, body.outcome_variable)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
 
 @router.post("/analyze/theil-index")
 @limiter.limit("30/minute")
-def theil_index(body: BiasAuditRequest, request: Request):
-    return get_theil_index(body.data, body.protected_attribute, body.outcome_variable)
+async def theil_index(body: BiasAuditRequest, request: Request):
+    return await run_in_threadpool(get_theil_index, body.data, body.protected_attribute, body.outcome_variable)
 
 @router.post("/analyze/atkinson-index")
 @limiter.limit("30/minute")
-def atkinson_index(body: BiasAuditRequest, request: Request):
-    return get_atkinson_index(body.data, body.protected_attribute, body.outcome_variable)
+async def atkinson_index(body: BiasAuditRequest, request: Request):
+    return await run_in_threadpool(get_atkinson_index, body.data, body.protected_attribute, body.outcome_variable)
 
 @router.post("/analyze/differential-fairness")
 @limiter.limit("20/minute")
-def differential_fairness(body: IntersectionalRequest, request: Request):
-    return get_differential_fairness(body.data, body.protected_attributes, body.outcome_variable)
+async def differential_fairness(body: IntersectionalRequest, request: Request):
+    return await run_in_threadpool(get_differential_fairness, body.data, body.protected_attributes, body.outcome_variable)
 
 
 # --- Rights enforcement endpoints ---
 
 @router.post("/explain")
 @limiter.limit("30/minute")
-def decision_explanation(body: ExplainRequest, request: Request):
-    return explain_decision(body.model_type, body.input_features, body.decision, body.feature_weights, body.confidence)
+async def decision_explanation(body: ExplainRequest, request: Request):
+    return await run_in_threadpool(explain_decision, body.model_type, body.input_features, body.decision, body.feature_weights, body.confidence)
 
 @router.post("/analyze/empathy")
 @limiter.limit("30/minute")
-def empathy_analysis(body: EmpathyRequest, request: Request):
-    return analyze_empathy(body.text, body.context)
+async def empathy_analysis(body: EmpathyRequest, request: Request):
+    return await run_in_threadpool(analyze_empathy, body.text, body.context)
 
 @router.post("/validate/correction-process")
 @limiter.limit("20/minute")
-def correction_process_validation(body: CorrectionValidationRequest, request: Request):
-    return validate_correction_process(body.has_appeal_mechanism, body.response_time_hours, body.human_reviewer_assigned, body.clear_instructions, body.accessible_format)
+async def correction_process_validation(body: CorrectionValidationRequest, request: Request):
+    return await run_in_threadpool(validate_correction_process, body.has_appeal_mechanism, body.response_time_hours, body.human_reviewer_assigned, body.clear_instructions, body.accessible_format)
 
 @router.post("/correction/submit")
 @limiter.limit("10/minute")
-def correction_submission(body: CorrectionRequest, request: Request):
-    return submit_correction_request(body.decision_id, body.original_decision, body.requested_outcome, body.reason, body.supporting_evidence)
+async def correction_submission(body: CorrectionRequest, request: Request):
+    return await run_in_threadpool(submit_correction_request, body.decision_id, body.original_decision, body.requested_outcome, body.reason, body.supporting_evidence)
 
 @router.post("/analyze/disclosure")
 @limiter.limit("30/minute")
-def ai_disclosure_analysis(body: DisclosureRequest, request: Request):
-    return analyze_ai_disclosure(body.interface_text, body.interaction_type)
+async def ai_disclosure_analysis(body: DisclosureRequest, request: Request):
+    return await run_in_threadpool(analyze_ai_disclosure, body.interface_text, body.interaction_type)
 
 @router.post("/audit/comprehensive")
 @limiter.limit("5/minute")
-def comprehensive_auditing(body: ComprehensiveAuditRequest, request: Request):
-    return comprehensive_audit(body.organization_name, body.ai_systems, body.framework)
+async def comprehensive_auditing(body: ComprehensiveAuditRequest, request: Request):
+    return await run_in_threadpool(comprehensive_audit, body.organization_name, body.ai_systems, body.framework)
 
 
 # --- Assessment endpoints ---
 
 @router.post("/assess")
 @limiter.limit("30/minute")
-def organization_assessment(body: AssessmentRequest, request: Request):
-    return assess_organization(body.answers)
+async def organization_assessment(body: AssessmentRequest, request: Request):
+    return await run_in_threadpool(assess_organization, body.answers)
 
 @router.post("/assess/tier")
 @limiter.limit("30/minute")
-def tier_assessment(body: TierAssessmentRequest, request: Request):
-    return assess_tier(body.ai_affects_rights, body.special_personal_info, body.human_oversight)
+async def tier_assessment(body: TierAssessmentRequest, request: Request):
+    return await run_in_threadpool(assess_tier, body.ai_affects_rights, body.special_personal_info, body.human_oversight)
 
 @router.get("/frameworks")
 @limiter.limit("60/minute")
-def frameworks_listing(request: Request):
-    return list_frameworks()
+async def frameworks_listing(request: Request):
+    return await run_in_threadpool(list_frameworks)
 
 
 # --- Fairness metrics endpoints ---
 
 @router.post("/analyze/statistical-parity")
 @limiter.limit("30/minute")
-def spd_analysis(body: SPDRequest, request: Request):
+async def spd_analysis(body: SPDRequest, request: Request):
     """Statistical Parity Difference analysis across groups."""
-    result = statistical_parity_difference(body.data, body.protected_attribute, body.outcome_variable)
+    result = await run_in_threadpool(statistical_parity_difference, body.data, body.protected_attribute, body.outcome_variable)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
 
 @router.post("/analyze/epsilon-fairness")
 @limiter.limit("20/minute")
-def epsilon_fairness_analysis(body: EpsilonFairnessRequest, request: Request):
+async def epsilon_fairness_analysis(body: EpsilonFairnessRequest, request: Request):
     """epsilon-Differential Fairness for intersectional subgroups."""
-    result = epsilon_differential_fairness(
+    result = await run_in_threadpool(
+        epsilon_differential_fairness,
         body.data, body.protected_attributes, body.outcome_variable,
         body.epsilon, body.min_group_size
     )
@@ -323,9 +337,9 @@ def epsilon_fairness_analysis(body: EpsilonFairnessRequest, request: Request):
 
 @router.post("/analyze/drift")
 @limiter.limit("20/minute")
-def drift_analysis(body: DriftRequest, request: Request):
+async def drift_analysis(body: DriftRequest, request: Request):
     """Distribution drift monitoring (PSI + Jensen-Shannon + KS test)."""
-    result = analyze_drift(body.baseline_data, body.current_data, body.feature_name, body.n_bins)
+    result = await run_in_threadpool(analyze_drift, body.baseline_data, body.current_data, body.feature_name, body.n_bins)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
@@ -335,9 +349,10 @@ def drift_analysis(body: DriftRequest, request: Request):
 
 @router.post("/audit-trail/create")
 @limiter.limit("60/minute")
-def create_audit_record(body: HashChainCreateRequest, request: Request):
+async def create_audit_record(body: HashChainCreateRequest, request: Request):
     """Create a chain-linked audit record."""
-    return HashChain.create_audit_record(
+    return await run_in_threadpool(
+        HashChain.create_audit_record,
         body.entry_data, body.previous_hash, body.sequence_number
     )
 
@@ -387,24 +402,24 @@ async def explain_streaming(body: ExplainStreamingRequest, request: Request):
 
 @router.post("/audit-trail/verify-signature")
 @limiter.limit("30/minute")
-def verify_audit_signature(body: SignatureVerifyRequest, request: Request):
+async def verify_audit_signature(body: SignatureVerifyRequest, request: Request):
     """Verify the cryptographic signature of an audit record."""
-    return verify_signature(body.data, body.signature)
+    return await run_in_threadpool(verify_signature, body.data, body.signature)
 
 @router.get("/audit-trail/public-key")
 @limiter.limit("60/minute")
-def get_signing_public_key(request: Request):
+async def get_signing_public_key(request: Request):
     """Retrieve the public key for external signature verification."""
-    pem = get_public_key_pem()
+    pem = await run_in_threadpool(get_public_key_pem)
     if pem is None:
         raise HTTPException(status_code=503, detail="Signing not available")
     return {"public_key_pem": pem, "algorithm": "RSA-3072 with PSS padding (SHA-256)"}
 
 @router.get("/audit-trail/signing-status")
 @limiter.limit("60/minute")
-def signing_status(request: Request):
+async def signing_status(request: Request):
     """Check whether cryptographic signing is available."""
-    return {"signing_available": is_signing_available()}
+    return {"signing_available": await run_in_threadpool(is_signing_available)}
 
 
 # --- Batch processing endpoint ---

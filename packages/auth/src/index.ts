@@ -68,6 +68,7 @@ export const authConfig: NextAuthConfig = {
               lockoutUntil: users.lockoutUntil,
               twoFactorSecret: users.twoFactorSecret,
               twoFactorEnabled: users.twoFactorEnabled,
+              backupCodes: users.backupCodes,
               orgName: organizations.name,
               tier: organizations.tier,
             })
@@ -97,8 +98,16 @@ export const authConfig: NextAuthConfig = {
               const updateData: { failedLoginAttempts: number; lockoutUntil?: Date } = { failedLoginAttempts: newAttempts };
               
               if (newAttempts >= 5) {
-                updateData.lockoutUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minute lockout
-                await logAuthEvent('ACCOUNT_LOCKED', { email: credentials.email, attempts: newAttempts }, user.orgId);
+                const backoffs = [30_000, 120_000, 300_000, 900_000, 3_600_000]; // 30s, 2m, 5m, 15m, 1h
+                const backoffIndex = Math.min(newAttempts - 5, backoffs.length - 1);
+                const lockoutDurationMs = backoffs[backoffIndex];
+                
+                updateData.lockoutUntil = new Date(Date.now() + lockoutDurationMs);
+                await logAuthEvent('ACCOUNT_LOCKED', { 
+                  email: credentials.email, 
+                  attempts: newAttempts, 
+                  lockoutDurationMs 
+                }, user.orgId);
               }
 
               await db.update(users).set(updateData).where(eq(users.id, user.id));
@@ -107,6 +116,8 @@ export const authConfig: NextAuthConfig = {
             }
 
             // Institutional Hardening: MFA Check
+            const isMfaMandatory = user.role === 'ADMIN' || user.role === 'COMPLIANCE_OFFICER';
+
             if (user.twoFactorEnabled && user.twoFactorSecret) {
               if (!credentials.mfaToken) {
                 // Signal to UI that MFA is required
@@ -114,10 +125,22 @@ export const authConfig: NextAuthConfig = {
               }
 
               const isMFAValid = MFAService.verifyToken(user.twoFactorSecret, credentials.mfaToken.toString());
+              
               if (!isMFAValid) {
-                await logAuthEvent('MFA_FAILURE', { email: user.email, userId: user.id }, user.orgId);
-                throw new Error("Invalid MFA token")
+                // Check backup codes (Phase 1-1)
+                const backupCodes = user.backupCodes as string[] | null;
+                if (backupCodes && backupCodes.includes(credentials.mfaToken.toString())) {
+                  const newBackupCodes = backupCodes.filter(c => c !== credentials.mfaToken.toString());
+                  await db.update(users).set({ backupCodes: newBackupCodes }).where(eq(users.id, user.id));
+                  await logAuthEvent('BACKUP_CODE_USED', { email: user.email, userId: user.id }, user.orgId);
+                } else {
+                  await logAuthEvent('MFA_FAILURE', { email: user.email, userId: user.id }, user.orgId);
+                  throw new Error("Invalid MFA token")
+                }
               }
+            } else if (isMfaMandatory) {
+              // Forced redirection to MFA setup for privileged roles
+              throw new Error("MFA_SETUP_REQUIRED")
             }
 
             // Update last login and reset failed attempts
@@ -172,6 +195,13 @@ export const authConfig: NextAuthConfig = {
   jwt: {
     async encode({ token, secret: _secret }) {
         if (!PRIVATE_KEY) return ""; // Fail closed if no key in production-intent mode
+        
+        // Ensure JTI is present (Phase 0-4)
+        if (token && !token.jti) {
+          const crypto = await import("crypto");
+          token.jti = crypto.randomUUID();
+        }
+        
         return jwt.sign(token!, PRIVATE_KEY, { algorithm: 'RS256' });
     },
     async decode({ token, secret: _secret }) {

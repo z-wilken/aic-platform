@@ -33,6 +33,8 @@ except ImportError:
 
 from app.core.config import MAX_FEATURES, MAX_DATA_ROWS, MAX_BATCH_SIZE, MAX_CACHE_ENTRIES, CACHE_TTL_SECONDS
 
+from cachetools import TTLCache
+
 logger = logging.getLogger("aic.engine.explainability")
 
 # Maximum model/data sizes to prevent resource exhaustion
@@ -40,31 +42,8 @@ logger = logging.getLogger("aic.engine.explainability")
 MAX_SAMPLES = MAX_DATA_ROWS
 MAX_EXPLANATION_INSTANCES = MAX_BATCH_SIZE
 
-# Task 6: SHAP/LIME Surrogate Model Cache
-_MODEL_CACHE = {}
-
-def _cleanup_cache():
-    """Remove expired entries and enforce size limit."""
-    global _MODEL_CACHE
-    now = datetime.utcnow()
-    
-    # 1. Remove expired entries
-    expired_keys = [
-        k for k, v in _MODEL_CACHE.items() 
-        if (now - v["timestamp"]).total_seconds() > CACHE_TTL_SECONDS
-    ]
-    for k in expired_keys:
-        del _MODEL_CACHE[k]
-    if expired_keys:
-        logger.info(f"Cleared {len(expired_keys)} expired entries from model cache.")
-
-    # 2. Enforce size limit (LRU)
-    if len(_MODEL_CACHE) > MAX_CACHE_ENTRIES:
-        sorted_keys = sorted(_MODEL_CACHE.keys(), key=lambda k: _MODEL_CACHE[k]["timestamp"])
-        num_to_remove = len(_MODEL_CACHE) - MAX_CACHE_ENTRIES + 5 # Remove extra to avoid immediate thrashing
-        for i in range(min(num_to_remove, len(sorted_keys))):
-            del _MODEL_CACHE[sorted_keys[i]]
-        logger.info(f"Model cache exceeded limit. Removed {num_to_remove} oldest entries.")
+# Task 6: SHAP/LIME Surrogate Model Cache (LRU with TTL)
+_MODEL_CACHE = TTLCache(maxsize=MAX_CACHE_ENTRIES, ttl=CACHE_TTL_SECONDS)
 
 def _generate_hash(data: Any) -> str:
     """Generate SHA-256 hash for audit trail and caching."""
@@ -308,7 +287,6 @@ def explain_from_data(
         return {"error": f"Target column '{target_column}' not found in data"}
 
     # Task 6: Implement Model Caching
-    _cleanup_cache()
     data_hash = _generate_hash({"data": data, "target": target_column})
     
     # Always compute X_array and feature names from current data to avoid fatal memory growth
@@ -411,7 +389,6 @@ def explain_from_data_stream(
         return
 
     # 1. Prepare / Train model (cached)
-    _cleanup_cache()
     data_hash = _generate_hash({"data": data, "target": target_column})
     
     df = pd.DataFrame(data)

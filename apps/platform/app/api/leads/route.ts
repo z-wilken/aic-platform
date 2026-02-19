@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
     const source = searchParams.get('source');
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
 
+    // [SECURITY] getSystemDb() used for SuperAdmin to view leads across all tenants.
+    // getTenantDb() used for regular users to ensure RLS isolation.
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(userOrgId as string);
 
     const execute = async (tx: typeof db) => {
@@ -93,6 +95,8 @@ export async function POST(request: NextRequest) {
     // Resolve orgId: prefer session, then provided (if superadmin), else null
     const resolvedOrgId: string | null = (session?.user?.orgId as string) || providedOrgId || null;
 
+    // [SECURITY] getSystemDb() used for public lead creation.
+    // Leads are global entities until they are associated with an organization.
     const db = getSystemDb();
 
     const result = await db.transaction(async (tx) => {

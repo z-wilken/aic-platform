@@ -11,6 +11,8 @@ export async function POST(request: NextRequest) {
         }
 
         const email = body.email;
+        // [SECURITY] getSystemDb() used for unauthenticated password recovery.
+        // User must be looked up by email across the entire system.
         const db = getSystemDb();
 
         const [user] = await db

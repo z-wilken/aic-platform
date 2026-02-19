@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Verification token is required' }, { status: 400 });
         }
 
+        // [SECURITY] getSystemDb() used for unauthenticated email verification via token.
         const db = getSystemDb();
 
         const result = await db.transaction(async (tx) => {
