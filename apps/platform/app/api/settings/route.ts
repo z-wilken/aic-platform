@@ -1,49 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, organizations, users, eq } from '@aic/db';
+import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
 export async function GET() {
     try {
-        const session: any = await getSession();
+        const session = await getSession() as Session | null;
         if (!session || !session.user?.orgId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         const orgId = session.user.orgId;
+        const db = getTenantDb(orgId);
 
-        const result = await query(
-            `SELECT o.id, o.name, o.tier, o.integrity_score, o.is_alpha, o.created_at,
-                    u.email as contact_email, u.name as contact_name
-             FROM organizations o
-             LEFT JOIN users u ON u.org_id = o.id AND u.role = 'ADMIN'
-             WHERE o.id = $1
-             LIMIT 1`,
-            [orgId]
-        );
+        return await db.query(async (tx) => {
+          const [result] = await tx
+              .select({ 
+                id: organizations.id, 
+                name: organizations.name, 
+                tier: organizations.tier, 
+                integrityScore: organizations.integrityScore, 
+                isAlpha: organizations.isAlpha, 
+                createdAt: organizations.createdAt,
+                contactEmail: users.email,
+                contactName: users.name,
+                twoFactorEnabled: users.twoFactorEnabled
+              })
+              .from(organizations)
+              .leftJoin(users, eq(users.id, session.user?.id as string))
+              .where(eq(organizations.id, orgId))
+              .limit(1);
 
-        if (result.rows.length === 0) {
-            return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
-        }
+          if (!result) {
+              return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+          }
 
-        const org = result.rows[0];
-        return NextResponse.json({
-            id: org.id,
-            name: org.name,
-            tier: org.tier,
-            integrityScore: org.integrity_score,
-            isAlpha: org.is_alpha,
-            contactEmail: org.contact_email || '',
-            contactName: org.contact_name || '',
-            createdAt: org.created_at
+          return NextResponse.json(result);
         });
     } catch (error) {
-        console.error('Settings GET Error:', error);
+        console.error('[SECURITY] Settings GET Error:', error);
         return NextResponse.json({ error: 'Failed to retrieve settings' }, { status: 500 });
     }
 }
 
 export async function PATCH(request: NextRequest) {
     try {
-        const session: any = await getSession();
+        const session = await getSession() as Session | null;
         if (!session || !session.user?.orgId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -57,41 +58,42 @@ export async function PATCH(request: NextRequest) {
         const body = await request.json();
         const { name } = body;
 
-        if (name !== undefined) {
-            if (typeof name !== 'string' || name.trim().length === 0 || name.length > 255) {
-                return NextResponse.json({ error: 'Invalid organization name' }, { status: 400 });
-            }
+        const db = getTenantDb(orgId);
 
-            await query(
-                'UPDATE organizations SET name = $1 WHERE id = $2',
-                [name.trim(), orgId]
-            );
-        }
+        return await db.query(async (tx) => {
+          if (name !== undefined) {
+              if (typeof name !== 'string' || name.trim().length === 0 || name.length > 255) {
+                  return NextResponse.json({ error: 'Invalid organization name' }, { status: 400 });
+              }
 
-        // Return updated settings
-        const result = await query(
-            `SELECT o.id, o.name, o.tier, o.integrity_score, o.is_alpha, o.created_at,
-                    u.email as contact_email, u.name as contact_name
-             FROM organizations o
-             LEFT JOIN users u ON u.org_id = o.id AND u.role = 'ADMIN'
-             WHERE o.id = $1
-             LIMIT 1`,
-            [orgId]
-        );
+              await tx
+                  .update(organizations)
+                  .set({ name: name.trim() })
+                  .where(eq(organizations.id, orgId));
+          }
 
-        const org = result.rows[0];
-        return NextResponse.json({
-            id: org.id,
-            name: org.name,
-            tier: org.tier,
-            integrityScore: org.integrity_score,
-            isAlpha: org.is_alpha,
-            contactEmail: org.contact_email || '',
-            contactName: org.contact_name || '',
-            createdAt: org.created_at
+          // Return updated settings
+          const [result] = await tx
+              .select({ 
+                id: organizations.id, 
+                name: organizations.name, 
+                tier: organizations.tier, 
+                integrityScore: organizations.integrityScore, 
+                isAlpha: organizations.isAlpha, 
+                createdAt: organizations.createdAt,
+                contactEmail: users.email,
+                contactName: users.name,
+                twoFactorEnabled: users.twoFactorEnabled
+              })
+              .from(organizations)
+              .leftJoin(users, eq(users.id, session.user?.id as string))
+              .where(eq(organizations.id, orgId))
+              .limit(1);
+
+          return NextResponse.json(result);
         });
     } catch (error) {
-        console.error('Settings PATCH Error:', error);
+        console.error('[SECURITY] Settings PATCH Error:', error);
         return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
     }
 }

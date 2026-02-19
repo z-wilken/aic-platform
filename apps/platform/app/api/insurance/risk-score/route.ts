@@ -1,48 +1,55 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { NextResponse } from 'next/server';
+import { getTenantDb, organizations, eq } from '@aic/db';
+import { getSession } from '../../../../lib/auth';
+import type { Session } from 'next-auth';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const orgId = searchParams.get('org_id');
-
-    if (!orgId) {
-        return NextResponse.json({ error: 'org_id is required' }, { status: 400 });
+    const session = await getSession() as Session | null;
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    // 1. Fetch current integrity score
-    const result = await query(
-        'SELECT name, integrity_score, tier FROM organizations WHERE id = $1',
-        [orgId]
-    );
+    return await db.query(async (tx) => {
+      // 1. Fetch current integrity score
+      const [org] = await tx
+          .select({ 
+            name: organizations.name, 
+            integrityScore: organizations.integrityScore, 
+            tier: organizations.tier 
+          })
+          .from(organizations)
+          .where(eq(organizations.id, orgId))
+          .limit(1);
 
-    if (result.rows.length === 0) {
-        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
-    }
+      if (!org) {
+          return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+      }
 
-    const org = result.rows[0];
-    
-    // 2. Map Integrity Score to Insurance Risk Rating
-    // High Integrity = Low Risk
-    const riskRating = org.integrity_score > 90 ? 'AAA' : 
-                       org.integrity_score > 80 ? 'AA' :
-                       org.integrity_score > 70 ? 'A' :
-                       org.integrity_score > 50 ? 'BBB' : 'C (UNINSURABLE)';
+      // 2. Map Integrity Score to Insurance Risk Rating
+      const score = org.integrityScore || 0;
+      const riskRating = score > 90 ? 'AAA' : 
+                         score > 80 ? 'AA' :
+                         score > 70 ? 'A' :
+                         score > 50 ? 'BBB' : 'C (UNINSURABLE)';
 
-    return NextResponse.json({
-        success: true,
-        organization: org.name,
-        timestamp: new Date().toISOString(),
-        assessment: {
-            integrity_score: org.integrity_score,
-            tier: org.tier,
-            insurance_risk_rating: riskRating,
-            recommendation: org.integrity_score > 80 ? 'APPROVED_FOR_DISCOUNT' : 'REQUIRE_REMEDIATION'
-        }
+      return NextResponse.json({
+          success: true,
+          organization: org.name,
+          timestamp: new Date().toISOString(),
+          assessment: {
+              integrity_score: score,
+              tier: org.tier,
+              insurance_risk_rating: riskRating,
+              recommendation: score > 80 ? 'APPROVED_FOR_DISCOUNT' : 'REQUIRE_REMEDIATION'
+          }
+      });
     });
 
   } catch (error) {
-    console.error('Insurance API Error:', error);
+    console.error('[SECURITY] Insurance API Error:', error);
     return NextResponse.json({ error: 'Failed to retrieve risk profile' }, { status: 500 });
   }
 }

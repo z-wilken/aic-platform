@@ -3,6 +3,7 @@ import pandas as pd
 from typing import List, Dict, Any
 from scipy.spatial import distance
 from scipy import stats
+from app.core.config import MAX_DATA_ROWS
 
 class DriftMonitor:
     """Calculates distributional drift metrics like PSI, Jensen-Shannon, and KS Test."""
@@ -40,6 +41,9 @@ class DriftMonitor:
         return {"metric": "JS Divergence", "value": round(float(js_div), 4), "status": "STABLE" if js_div < 0.1 else "SHIFTED"}
 
 def analyze_drift(baseline: List[float], current: List[float], feature_name: str, n_bins: int = 10):
+    if len(baseline) > MAX_DATA_ROWS or len(current) > MAX_DATA_ROWS:
+        return {"error": f"Data too large. Maximum is {MAX_DATA_ROWS} rows."}
+        
     monitor = DriftMonitor()
     e = np.array(baseline)
     a = np.array(current)

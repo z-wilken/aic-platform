@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, auditLogs, eq, desc, sql } from '@aic/db';
+import { getTenantDb, auditLogs, eq, desc, sql, LedgerService } from '@aic/db';
 import { getSession } from '../../../lib/auth';
 import { enqueueEngineTask } from '@/lib/queue';
 import { z } from 'zod';
@@ -35,6 +35,12 @@ export async function POST(request: NextRequest) {
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Task M13: Institutional RBAC Enforcement
+    if (session.user.role !== 'ADMIN' && session.user.role !== 'COMPLIANCE_OFFICER') {
+        return NextResponse.json({ error: 'Elevated privileges required to execute audits' }, { status: 403 });
+    }
+
     const orgId = session.user.orgId;
     
     const body = await request.json();
@@ -76,6 +82,14 @@ export async function POST(request: NextRequest) {
         previous_hash: previousHash
       }, newLog.id, orgId);
 
+      // 4. Record to Institutional Ledger
+      await LedgerService.append('AUDIT_LOG_CREATED', session.user.id, {
+        auditId: newLog.id,
+        orgId,
+        systemName,
+        eventType: 'BIAS_AUDIT'
+      });
+
       return NextResponse.json({ 
         success: true, 
         auditId: newLog.id,
@@ -100,6 +114,11 @@ export async function PATCH(request: NextRequest) {
       if (!session || !session.user?.orgId) {
           return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
+
+      if (session.user.role !== 'ADMIN' && session.user.role !== 'COMPLIANCE_OFFICER') {
+          return NextResponse.json({ error: 'Elevated privileges required to execute audits' }, { status: 403 });
+      }
+
       const orgId = session.user.orgId;
       
       const body = await request.json();
@@ -148,10 +167,18 @@ export async function PATCH(request: NextRequest) {
 
         const jobId = await enqueueEngineTask(taskType, payload, newLog.id, orgId);
 
+        // 4. Record to Institutional Ledger
+        await LedgerService.append('AUDIT_LOG_CREATED', session.user.id, {
+            auditId: newLog.id,
+            orgId,
+            systemName,
+            eventType
+        });
+
         return NextResponse.json({ success: true, auditId: newLog.id, jobId });
       });
   
-    } catch (error: unknown) {
+    } catch {
       return NextResponse.json({ error: 'Advanced validation failed' }, { status: 500 });
     }
 }

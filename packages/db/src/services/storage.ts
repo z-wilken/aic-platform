@@ -9,8 +9,8 @@ const minioClient = new Minio.Client({
   endPoint: process.env.MINIO_ENDPOINT || 'localhost',
   port: parseInt(process.env.MINIO_PORT || '9000'),
   useSSL: process.env.MINIO_USE_SSL === 'true',
-  accessKey: process.env.MINIO_ROOT_USER || 'aic_storage_admin',
-  secretKey: process.env.MINIO_ROOT_PASSWORD || 'aic_storage_secure_2026',
+  accessKey: process.env.MINIO_ROOT_USER!,
+  secretKey: process.env.MINIO_ROOT_PASSWORD!,
 });
 
 const BUCKET_NAME = 'aic-evidence';

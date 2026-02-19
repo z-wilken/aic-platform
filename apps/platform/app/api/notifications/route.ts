@@ -1,30 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, notifications, eq, and, desc } from '@aic/db';
+import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
 export async function GET() {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    const result = await query(
-      'SELECT * FROM notifications WHERE org_id = $1 ORDER BY created_at DESC LIMIT 20',
-      [orgId]
-    );
+    return await db.query(async (tx) => {
+      const result = await tx
+        .select()
+        .from(notifications)
+        .where(eq(notifications.orgId, orgId))
+        .orderBy(desc(notifications.createdAt))
+        .limit(20);
 
-    return NextResponse.json({ notifications: result.rows });
+      return NextResponse.json({ notifications: result });
+    });
   } catch (error) {
-    console.error('Notifications API Error:', error);
+    console.error('[SECURITY] Notifications GET Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function PATCH(request: NextRequest) {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -35,19 +41,24 @@ export async function PATCH(request: NextRequest) {
 
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
 
-    // Multi-tenant check: ensure notification belongs to user's org
-    const result = await query(
-      "UPDATE notifications SET status = 'READ' WHERE id = $1 AND org_id = $2 RETURNING id",
-      [id, orgId]
-    );
+    const db = getTenantDb(orgId);
 
-    if (result.rows.length === 0) {
-        return NextResponse.json({ error: 'Notification not found or access denied' }, { status: 404 });
-    }
+    return await db.query(async (tx) => {
+      // Multi-tenant check: ensure notification belongs to user's org
+      const [updatedNotification] = await tx
+        .update(notifications)
+        .set({ status: 'READ' })
+        .where(and(eq(notifications.id, id), eq(notifications.orgId, orgId)))
+        .returning({ id: notifications.id });
 
-    return NextResponse.json({ success: true });
+      if (!updatedNotification) {
+          return NextResponse.json({ error: 'Notification not found or access denied' }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true });
+    });
   } catch (error) {
-    console.error('Notifications Update Error:', error);
+    console.error('[SECURITY] Notifications Update Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

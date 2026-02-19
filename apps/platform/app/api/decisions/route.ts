@@ -1,31 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, decisionRecords, eq, desc, LedgerService } from '@aic/db';
+import { getSession } from '../../../lib/auth';
 import crypto from 'crypto';
+import type { Session } from 'next-auth';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    const result = await query(
-      'SELECT * FROM decision_records WHERE org_id = $1 ORDER BY created_at DESC LIMIT 50',
-      [orgId]
-    );
+    return await db.query(async (tx) => {
+      const result = await tx
+        .select()
+        .from(decisionRecords)
+        .where(eq(decisionRecords.orgId, orgId))
+        .orderBy(desc(decisionRecords.createdAt))
+        .limit(50);
 
-    return NextResponse.json({ decisions: result.rows });
+      return NextResponse.json({ decisions: result });
+    });
   } catch (error) {
-    console.error('Decisions GET Error:', error);
+    console.error('[SECURITY] Decisions GET Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -42,16 +48,30 @@ export async function POST(request: NextRequest) {
     const hashPayload = JSON.stringify({ orgId, system_name, input_params, outcome });
     const integrity_hash = crypto.createHash('sha256').update(hashPayload).digest('hex');
 
-    const result = await query(
-      `INSERT INTO decision_records (org_id, system_name, input_params, outcome, explanation, integrity_hash)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [orgId, system_name, JSON.stringify(input_params), JSON.stringify(outcome), explanation, integrity_hash]
-    );
+    const db = getTenantDb(orgId);
 
-    return NextResponse.json({ success: true, decision: result.rows[0] });
+    return await db.query(async (tx) => {
+      const [newDecision] = await tx.insert(decisionRecords).values({
+        orgId,
+        systemName: system_name,
+        inputParams: input_params,
+        outcome,
+        explanation,
+        integrityHash: integrity_hash
+      }).returning();
+
+      // Record to Institutional Ledger
+      await LedgerService.append('DECISION_RECORDED', session.user.id, {
+        decisionId: newDecision.id,
+        orgId,
+        systemName: system_name,
+        integrityHash: integrity_hash
+      });
+
+      return NextResponse.json({ success: true, decision: newDecision });
+    });
   } catch (error) {
-    console.error('Decisions POST Error:', error);
+    console.error('[SECURITY] Decisions POST Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

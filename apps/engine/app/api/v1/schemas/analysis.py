@@ -28,13 +28,13 @@ class EmpathyLevel(str, Enum):
     EMPATHETIC = "EMPATHETIC"
 
 class BiasAuditRequest(BaseModel):
-    data: List[Dict]
+    data: List[Dict] = Field(..., max_length=50000)
     protected_attribute: str
     outcome_variable: str
     previous_hash: Optional[str] = None
 
 class EqualizedOddsRequest(BaseModel):
-    data: List[Dict]
+    data: List[Dict] = Field(..., max_length=50000)
     protected_attribute: str
     actual_outcome: str
     predicted_outcome: str
@@ -42,7 +42,7 @@ class EqualizedOddsRequest(BaseModel):
     previous_hash: Optional[str] = None
 
 class IntersectionalRequest(BaseModel):
-    data: List[Dict]
+    data: List[Dict] = Field(..., max_length=50000)
     protected_attributes: List[str]
     outcome_variable: str
     min_group_size: int = Field(default=30)

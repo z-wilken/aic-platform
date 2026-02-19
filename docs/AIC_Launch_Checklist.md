@@ -82,3 +82,93 @@
 > **Note:** The platform has shifted from "Feature Development" to "Stabilization" following the External Critical Review.
 
 *"Build it right, then build it fast."*
+
+---
+
+## ~~February 15, 2026 Progress Update~~ SUPERSEDED
+
+> **⚠️ Feb 17 Audit Correction:** Several items below were marked complete but have critical issues identified in the security audit.
+
+### Sprint 3 Phase 1 (Corrected Status)
+
+- [⚠️] **Real-Time Dashboard**: UI exists but RLS has 9 bypass points
+- [⚠️] **Admin Dashboard**: Stats display works, but app is only 35% complete
+- [⚠️] **5 Algorithmic Rights Calculation**: Formula exists, data integrity depends on RLS fixes
+- [⚠️] **Shared Database Package**: `@aic/db` works but has lint errors
+- [x] **Circuit Breaker**: Opossum integration confirmed working
+- [⚠️] **Celery Task Queue**: Only 4 of 40+ endpoints use Celery
+
+### Revised Test Counts
+
+| Component | Tests | Status |
+|-----------|-------|--------|
+| apps/web | 51 | ✅ Passing |
+| apps/platform | 76 | ✅ Passing |
+| apps/engine | 141 | ✅ Passing (92% coverage) |
+| **Total** | **268** | ✅ All passing |
+
+### CI/CD Workflows Active
+
+| Workflow | Trigger | Jobs |
+|----------|---------|------|
+| foundation-checks.yml | Push/PR to main | hygiene → test → build matrix |
+| engine-ci.yml | Push/PR to main | pytest with coverage |
+| platform-ci.yml | Push/PR to main | Legacy (merged) |
+
+### Shared Packages (Corrected Feb 17)
+
+| Package | Status | Notes |
+|---------|--------|-------|
+| @aic/db | ✅ Active | Drizzle, RLS policies defined (but 9 bypasses in code) |
+| @aic/auth | ✅ Active | NextAuth + MFA (added Feb 17) |
+| @aic/types | ✅ Active | Zod schemas, interfaces |
+| @aic/ui | ✅ Active | TrustBadge, AlphaSeal |
+| @aic/legal | ✅ Active | Compliance utilities |
+| @aic/api-client | ❌ **DELETED** | Was dead code - use platform engine-client |
+| @aic/reports | ❌ **DELETED** | Was dead code - never imported |
+| @aic/events | ❌ **DELETED** | Was dead code - 7 lines, never used |
+| @aic/sockets | ❌ **DELETED** | Was dead code - never imported |
+| @aic/middleware | ❌ **DELETED** | Was dead code - duplicate logic in apps |
+
+### Current Blockers
+
+| Issue | Impact | Resolution |
+|-------|--------|------------|
+| `@aic/db` lint errors | CI fails on lint | Fix 4 `any` types in schema.ts |
+| 51 remaining `any` types | Type-check warnings | Gradual hardening |
+| pytest not in local PATH | Can't run engine tests locally | Use venv or install globally |
+
+### Revised Success Metrics
+
+| Metric | Target | Actual |
+|--------|--------|--------|
+| Website deployed | ✅ | ✅ Build OK |
+| Test coverage (Engine) | 80%+ | ✅ 92% |
+| Test coverage (TypeScript) | 70%+ | 🟡 127 tests (no coverage metric yet) |
+| Critical Review fixes | 100% | 🟡 70% (up from 40%) |
+| Shared packages | 5+ | ✅ 11 packages |
+| CI/CD workflows | 1+ | ✅ 3 workflows |
+| Alpha participants | 5+ | ⬜ 0/5 |
+| Information Regulator meeting | ✅ | ⬜ Pending |
+
+### Revised Technical Health Status
+
+| Area | Previous | Current |
+|------|----------|---------|
+| Linting | 🟡 Partial | 🟡 @aic/db blocking |
+| Type-Check | 🔴 Failing | 🟡 51 `any` remaining |
+| Testing | ✅ Passing | ✅ 268 tests passing |
+| Security | 🟡 Improving | 🟡 Hardcoded secrets audit ongoing |
+| Engine Integration | ⬜ Not started | ✅ Complete |
+| Dashboard Data | ⬜ Not started | ✅ Live data |
+
+### Next Immediate Actions
+
+1. **Fix `@aic/db` lint errors** - Unblock CI
+2. **Remove remaining `any` types** - Enable strict mode
+3. **Configure staging environment** - Vercel preview
+4. **Begin Alpha outreach** - 5 participants needed
+
+---
+
+*Updated: February 15, 2026*

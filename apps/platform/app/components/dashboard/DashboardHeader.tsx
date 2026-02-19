@@ -13,10 +13,10 @@ interface DashboardHeaderProps {
     id: string;
     title: string;
     message: string;
-    status: string;
+    status: 'UNREAD' | 'READ';
     created_at: string;
   }>;
-  markAsRead: (id: string) => void;
+  markAsRead: (id: string) => Promise<void> | void;
 }
 
 export function DashboardHeader({ 

@@ -9,6 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isMfaRequired, setIsMfaRequired] = useState(false);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,21 +19,30 @@ export default function LoginPage() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
+    const mfaToken = formData.get('mfaToken') as string;
 
     try {
         const result = await signIn('credentials', {
             email,
             password,
+            mfaToken,
             redirect: false,
         });
 
         if (result?.error) {
-            setError('Invalid credentials or insufficient permissions.');
+            if (result.error.includes('MFA_REQUIRED')) {
+                setIsMfaRequired(true);
+                setError('MFA Token Required');
+            } else if (result.error.includes('locked')) {
+                setError(result.error);
+            } else {
+                setError('Invalid credentials or insufficient permissions.');
+            }
             setIsLoading(false);
         } else {
             router.push('/');
         }
-    } catch (err) {
+    } catch {
         setError('A system error occurred. Please try again later.');
         setIsLoading(false);
     }
@@ -132,6 +142,35 @@ export default function LoginPage() {
                             placeholder="••••••••"
                         />
                     </div>
+
+                    <AnimatePresence>
+                        {isMfaRequired && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="space-y-3"
+                            >
+                                <label htmlFor="mfaToken" className="block text-[10px] font-bold text-aic-gold font-mono uppercase tracking-widest">
+                                    MFA Verification Token
+                                </label>
+                                <input 
+                                    id="mfaToken" 
+                                    name="mfaToken" 
+                                    type="text" 
+                                    required={isMfaRequired}
+                                    className="w-full bg-aic-gold/5 border-b border-aic-gold/30 py-3 text-white focus:border-aic-gold outline-none font-mono text-lg tracking-[0.5em] text-center transition-all"
+                                    placeholder="000000"
+                                    maxLength={6}
+                                    pattern="\d{6}"
+                                    autoComplete="one-time-code"
+                                />
+                                <p className="text-[9px] text-gray-500 font-mono uppercase text-center">
+                                    Enter the 6-digit code from your authenticator app
+                                </p>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     <button 
                         type="submit" 

@@ -1,10 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
-import { verifyOrganizationChain } from '@/lib/immutability';
+import { NextResponse } from 'next/server';
+import { getSession } from '../../../../lib/auth';
+import { verifyOrganizationChain } from '../../../../lib/immutability';
+import type { Session } from 'next-auth';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Verification API Error:', error);
+    console.error('[SECURITY] Verification API Error:', error);
     return NextResponse.json({ error: 'Failed to verify institutional integrity' }, { status: 500 });
   }
 }

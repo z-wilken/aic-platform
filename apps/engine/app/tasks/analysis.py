@@ -7,7 +7,23 @@ from app.core.signing import sign_data
 from app.core.telemetry import track_resource_usage
 import logging
 
+from app.services.drift_monitoring import analyze_drift
+
 logger = logging.getLogger("aic.tasks")
+
+@celery_app.task(name="analysis.drift", bind=True, max_retries=3)
+def task_drift(self, baseline_data, current_data, feature_name, n_bins=10):
+    try:
+        with track_resource_usage() as usage:
+            result = analyze_drift(baseline_data, current_data, feature_name, n_bins)
+            if "error" in result:
+                return {"status": "error", "message": result["error"]}
+            
+            result["resource_usage"] = usage
+            return {"status": "success", "data": result}
+    except Exception as e:
+        logger.error(f"Drift task failed: {str(e)}")
+        raise self.retry(exc=e, countdown=5)
 
 @celery_app.task(name="analysis.disparate_impact", bind=True, max_retries=3)
 def task_disparate_impact(self, data, protected_attribute, outcome_variable, previous_hash=None):

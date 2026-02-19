@@ -99,7 +99,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         .from(auditRequirements)
         .where(eq(auditRequirements.orgId, orgId));
 
-      const text = reqs.map(r => `[${r.status}] ${r.title}: ${r.description}`).join("\n");
+      const text = reqs.map((r) => `[${r.status}] ${r.title}: ${r.description}`).join("\n");
       
       return {
         content: [{ type: "text", text: text || "No requirements found." }],

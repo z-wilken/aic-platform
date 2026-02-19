@@ -10,6 +10,7 @@ ALTER TABLE "notifications" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "compliance_reports" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "decision_records" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "correction_requests" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "api_keys" ENABLE ROW LEVEL SECURITY;
 
 -- 1. Organizations Policy: Can only see your own organization
 DO $$ 
@@ -58,5 +59,8 @@ BEGIN
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_policy WHERE polname = 'correction_requests_isolation_policy') THEN
         CREATE POLICY correction_requests_isolation_policy ON "correction_requests" USING (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policy WHERE polname = 'api_keys_isolation_policy') THEN
+        CREATE POLICY api_keys_isolation_policy ON "api_keys" USING (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid);
     END IF;
 END $$;

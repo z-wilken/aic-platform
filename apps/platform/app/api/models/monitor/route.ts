@@ -1,87 +1,102 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { NextResponse } from 'next/server';
+import { getTenantDb, models, decisionRecords, notifications, organizations, eq, and, desc } from '@aic/db';
+import { getSession } from '../../../../lib/auth';
+import { NotificationService } from '@aic/notifications';
+import type { Session } from 'next-auth';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
 const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    // 1. Fetch registered models for this org
-    const modelsResult = await query(
-        'SELECT * FROM models WHERE org_id = $1 AND is_active = TRUE',
-        [orgId]
-    );
+    return await db.query(async (tx) => {
+      // 1. Fetch organization details for context
+      const [org] = await tx
+          .select({ name: organizations.name, contactEmail: organizations.contactEmail })
+          .from(organizations)
+          .where(eq(organizations.id, orgId))
+          .limit(1);
 
-    const results = [];
+      // 2. Fetch registered models for this org
+      const registeredModels = await tx
+          .select()
+          .from(models)
+          .where(and(eq(models.orgId, orgId), eq(models.isActive, true)));
 
-    for (const model of modelsResult.rows) {
-        // 2. Fetch latest decisions for this model to analyze drift
-        const decisionsResult = await query(
-            'SELECT input_params, outcome FROM decision_records WHERE org_id = $1 AND system_name = $2 ORDER BY created_at DESC LIMIT 100',
-            [orgId, model.name]
-        );
+      const results = [];
 
-        if (decisionsResult.rows.length < 50) {
-            results.push({ model: model.name, status: 'SKIPPED', reason: 'Insufficient data for drift analysis' });
-            continue;
-        }
+      for (const model of registeredModels) {
+          // 3. Fetch latest decisions for this model to analyze drift
+          const recentDecisions = await tx
+              .select({ inputParams: decisionRecords.inputParams, outcome: decisionRecords.outcome })
+              .from(decisionRecords)
+              .where(and(eq(decisionRecords.orgId, orgId), eq(decisionRecords.systemName, model.name)))
+              .orderBy(desc(decisionRecords.createdAt))
+              .limit(100);
 
-        // 3. Prepare data for Engine
-        const rows = decisionsResult.rows.map(d => ({
-            ...d.input_params,
-            outcome: d.outcome.result === 'APPROVED' ? 1 : 0
-        }));
+          if (recentDecisions.length < 50) {
+              results.push({ model: model.name, status: 'SKIPPED', reason: 'Insufficient data for drift analysis' });
+              continue;
+          }
 
-        // 4. Call Engine for Drift/Bias Analysis
-        try {
-            const headers: any = { 'Content-Type': 'application/json' };
-            if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
+          // 4. Prepare data for Engine
+          const rows = recentDecisions.map(d => ({
+              ...(d.inputParams as Record<string, unknown>),
+              outcome: (d.outcome as Record<string, unknown>).result === 'APPROVED' ? 1 : 0
+          }));
 
-            const engineRes = await fetch(`${ENGINE_URL}/api/v1/analyze/statistical`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({
-                    protected_attribute: model.metadata?.protected_attribute || 'group',
-                    outcome_variable: 'outcome',
-                    data: rows
-                })
-            });
+          // 5. Call Engine for Drift/Bias Analysis
+          try {
+              const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+              if (ENGINE_API_KEY) headers['X-API-Key'] = ENGINE_API_KEY;
 
-            if (engineRes.ok) {
-                const analysis = await engineRes.json();
-                
-                // 5. Alert if bias is significant
-                if (analysis.is_significant) {
-                    await query(
-                        'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4)',
-                        [
-                            orgId,
-                            'AUTOMATED DRIFT ALERT',
-                            `Model "${model.name}" has drifted beyond acceptable fairness bounds. Statistical significance: ${analysis.p_value}.`,
-                            'ALERT'
-                        ]
-                    );
-                }
+              const engineRes = await fetch(`${ENGINE_URL}/api/v1/analyze/statistical`, {
+                  method: 'POST',
+                  headers,
+                  body: JSON.stringify({
+                      protected_attribute: (model.metadata as Record<string, unknown>)?.protected_attribute || 'group',
+                      outcome_variable: 'outcome',
+                      data: rows
+                  })
+              });
 
-                results.push({ model: model.name, status: 'SUCCESS', analysis });
-            }
-        } catch (engineErr) {
-            console.error(`Engine Error for model ${model.name}:`, engineErr);
-            results.push({ model: model.name, status: 'ERROR', detail: 'Audit engine unreachable' });
-        }
-    }
+              if (engineRes.ok) {
+                  const analysis = await engineRes.json();
+                  
+                  // 6. Alert if bias is significant (Task M35: Email Integration)
+                  if (analysis.is_significant) {
+                      await tx.insert(notifications).values({
+                          orgId,
+                          title: 'AUTOMATED DRIFT ALERT',
+                          message: `Model "${model.name}" has drifted beyond acceptable fairness bounds. Statistical significance: ${analysis.p_value}.`,
+                          type: 'ALERT'
+                      });
 
-    return NextResponse.json({ success: true, monitoring_results: results });
+                      if (org?.contactEmail) {
+                          await NotificationService.notifyBiasAlert(org.contactEmail, org.name, model.name);
+                      }
+                  }
+
+                  results.push({ model: model.name, status: 'SUCCESS', analysis });
+              }
+          } catch (engineErr) {
+              console.error(`Engine Error for model ${model.name}:`, engineErr);
+              results.push({ model: model.name, status: 'ERROR', detail: 'Audit engine unreachable' });
+          }
+      }
+
+      return NextResponse.json({ success: true, monitoring_results: results });
+    });
 
   } catch (error) {
-    console.error('Monitoring Job Error:', error);
+    console.error('[SECURITY] Monitoring Job Error:', error);
     return NextResponse.json({ error: 'Failed to execute monitoring' }, { status: 500 });
   }
 }

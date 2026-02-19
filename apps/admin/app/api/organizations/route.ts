@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, organizations, users, auditRequirements, notifications, leads, eq, desc } from '@aic/db';
+import { getSystemDb, organizations, users, auditRequirements, notifications, leads, eq, desc, LedgerService } from '@aic/db';
 import { auth } from '@aic/auth';
 import { z } from 'zod';
 
@@ -74,6 +74,12 @@ export async function PATCH(request: NextRequest) {
     await db.update(organizations)
       .set({ auditorId: auditor_id === 'none' ? null : auditor_id })
       .where(eq(organizations.id, org_id));
+
+    // Record to Institutional Ledger
+    await LedgerService.append('AUDITOR_ASSIGNED', session.user.id, {
+        orgId: org_id,
+        auditorId: auditor_id
+    });
 
     return NextResponse.json({ success: true, message: 'Auditor assigned successfully' });
   } catch (error) {
@@ -154,6 +160,14 @@ export async function POST(request: NextRequest) {
           title: 'Welcome to AIC Alpha',
           message: 'Your certification roadmap has been generated. Please review your initial requirements.',
           type: 'WELCOME'
+      });
+
+      // 5. Record to Institutional Ledger
+      await LedgerService.append('ORG_CREATED', session.user.id, {
+          orgId,
+          name,
+          tier,
+          isAlpha: is_alpha
       });
 
       return NextResponse.json({ success: true, orgId });

@@ -22,13 +22,13 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="font-mono text-aic-gold uppercase tracking-[0.3em] text-xs mb-6"
           >
-            POPIA Section 71 &amp; ISO/IEC 42001 Compliance
+            The Declaration of Algorithmic Rights
           </motion.p>
           
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as any }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
             className="text-6xl md:text-8xl font-serif font-medium tracking-tight text-aic-black leading-[0.95]"
           >
             Accountability <br />

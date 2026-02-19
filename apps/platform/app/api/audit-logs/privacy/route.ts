@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, auditLogs, eq, desc } from '@aic/db';
+import { getSession } from '../../../../lib/auth';
+import type { Session } from 'next-auth';
 
 const ENGINE_URL = process.env.ENGINE_URL || 'http://localhost:8000';
 const ENGINE_API_KEY = process.env.ENGINE_API_KEY || '';
@@ -13,9 +14,16 @@ function engineHeaders(): Record<string, string> {
 
 export async function POST(request: NextRequest) {
     try {
-        const session: any = await getSession();
-        const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+        const session = await getSession() as Session | null;
+        if (!session || !session.user?.orgId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
+        if (session.user.role !== 'ADMIN' && session.user.role !== 'COMPLIANCE_OFFICER') {
+            return NextResponse.json({ error: 'Compliance Officer privileges required' }, { status: 403 });
+        }
+
+        const orgId = session.user.orgId;
         const body = await request.json();
         const { systemName, data } = body;
 
@@ -23,37 +31,49 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'columns array is required' }, { status: 400 });
         }
 
-        // Fetch last hash for chain continuity
-        const lastLog = await query(
-            'SELECT integrity_hash FROM audit_logs WHERE org_id = $1 ORDER BY created_at DESC LIMIT 1',
-            [orgId]
-        );
-        const previousHash = lastLog.rows[0]?.integrity_hash || null;
+        const db = getTenantDb(orgId);
 
-        // Call engine privacy audit
-        const engineResponse = await fetch(`${ENGINE_URL}/api/v1/audit/privacy`, {
-            method: 'POST',
-            headers: engineHeaders(),
-            body: JSON.stringify({ columns: data.columns })
+        return await db.query(async (tx) => {
+          // Fetch last hash for chain continuity
+          const [lastLog] = await tx
+              .select({ integrityHash: auditLogs.integrityHash })
+              .from(auditLogs)
+              .where(eq(auditLogs.orgId, orgId))
+              .orderBy(desc(auditLogs.createdAt))
+              .limit(1);
+          
+          const previousHash = lastLog?.integrityHash || null;
+
+          // Call engine privacy audit
+          const engineResponse = await fetch(`${ENGINE_URL}/api/v1/audit/privacy`, {
+              method: 'POST',
+              headers: engineHeaders(),
+              body: JSON.stringify({ columns: data.columns })
+          });
+
+          if (!engineResponse.ok) {
+              const errorDetail = await engineResponse.text();
+              throw new Error(`Privacy audit failed: ${errorDetail}`);
+          }
+
+          const result = await engineResponse.json();
+
+          // Log to audit trail
+          await tx.insert(auditLogs).values({
+            orgId,
+            systemName: systemName || 'Privacy Audit',
+            eventType: 'PRIVACY_AUDIT',
+            details: result,
+            integrityHash: result.audit_hash,
+            previousHash,
+            status: 'VERIFIED'
+          });
+
+          return NextResponse.json({ success: true, analysis: result });
         });
-
-        if (!engineResponse.ok) {
-            const errorDetail = await engineResponse.text();
-            throw new Error(`Privacy audit failed: ${errorDetail}`);
-        }
-
-        const result = await engineResponse.json();
-
-        // Log to audit trail
-        await query(
-            `INSERT INTO audit_logs (org_id, system_name, event_type, details, integrity_hash, previous_hash)
-             VALUES ($1, $2, $3, $4, $5, $6)`,
-            [orgId, systemName || 'Privacy Audit', 'PRIVACY_AUDIT', JSON.stringify(result), result.audit_hash, previousHash]
-        );
-
-        return NextResponse.json({ success: true, analysis: result });
-    } catch (error: any) {
-        console.error('Privacy Audit Error:', error.message);
-        return NextResponse.json({ error: 'Privacy audit failed', detail: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        console.error('[SECURITY] Privacy Audit Error:', message);
+        return NextResponse.json({ error: 'Privacy audit failed', detail: message }, { status: 500 });
     }
 }

@@ -8,9 +8,13 @@
 
 ## Executive Summary
 
-AIC is a third-party certification body that certifies **human accountability** in AI deployment. Founded with a 30-year mission to solve the "accountability gap" in algorithmic decision-making, AIC starts in South Africa with POPIA Section 71 compliance before expanding across Africa and globally.
+AIC is the global benchmark for ensuring no final decision about a human being is made solely by a machine. We certify that human empathy, emotion, and accountability remain in the loop — everywhere, for every consequential automated system, not just AI.
 
-**Core Principle:** *"When systems make decisions that affect human dignity, humans must remain accountable."*
+**Core Principle:** *"We certify that human empathy and accountability remain in the loop."*
+
+AIC is founded on the belief that the 21st century's defining challenge is not whether AI is powerful — it is whether humans remain accountable when AI affects human lives. Our 30-year mission is to solve this accountability gap globally.
+
+**South Africa is our beachhead.** POPIA Section 71 — one of the most progressive automated decision-making laws in the world — provides the legal foundation for our first market. The framework, however, is designed from day one for global applicability.
 
 ---
 
@@ -32,16 +36,30 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 
 | Horizon | Vision Goal | Operational Milestone |
 |---------|------------|----------------------|
-| **2030** | Recognised SA standard | 500+ certifications; Info Regulator references methodology; court judgments cite framework |
-| **2035** | Pan-African leader | 15 SADC countries; 200+ certified auditors; regional tender requirements |
-| **2045** | Global influence | ISO standard based on AIC; representation in AI governance bodies |
-| **2055** | Universal principle | "Human-Accountable" applies to all automated decision systems |
+| **2030** | Recognised SA standard for algorithmic accountability | 500+ certifications; Info Regulator references methodology; court judgments cite framework |
+| **2035** | Global framework expansion — jurisdiction-agnostic | Recognition in 15+ countries (SADC and beyond); 200+ certified auditors; AIC-certified requirement in major international tenders |
+| **2045** | International standard | Global ISO standard based on AIC; representation in AI governance bodies worldwide; AIC synonymous with human accountability in automated systems |
+| **2055** | Universal principle | "Human-Accountable" certification applicable to any consequential automated decision system globally — credit scoring, benefits eligibility, predictive policing, medical triage, and beyond |
 
 ---
 
 ## Part 2: The Product
 
+### The 5 Algorithmic Rights (Primary Framework)
+
+AIC's product is built on five universal rights derived from the Declaration of Algorithmic Rights. These rights are jurisdiction-agnostic — they apply to any consequential automated decision system, not only AI, and in any country.
+
+1. **Right to Human Agency** — No final decision affecting a person's dignity, freedom, or livelihood shall be made solely by a machine
+2. **Right to Explanation** — Every person has the right to know *why* an algorithmic decision was made
+3. **Right to Empathy** — Automated interactions must preserve human dignity; cold bureaucratic rejection by algorithms is a design failure that must be remediated
+4. **Right to Correction** — Every system must provide a clear, accessible, human-staffed mechanism to appeal unjust decisions
+5. **Right to Truth** — Every person has the right to know if they are interacting with AI
+
+*The Right to Empathy is AIC's unique contribution to the global governance discourse. No other standard — ISO 42001, EU AI Act, Big 4 consulting — certifies the human dignity of automated interactions.*
+
 ### Three-Tier Accountability Framework
+
+The 3-Tier Framework operationalises the 5 Rights by mapping accountability requirements to the stakes of each decision:
 
 | Tier | Name | Human Role | Examples | Audit Frequency |
 |------|------|------------|----------|-----------------|
@@ -51,13 +69,15 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 
 ### Integrity Score Methodology
 
+The Integrity Score quantifies an organisation's adherence to the 5 Algorithmic Rights across four measurable categories:
+
 **Formula:** `Score = (UC × 0.20) + (HO × 0.35) + (TR × 0.25) + (IN × 0.20)`
 
 | Category | Weight | Focus |
 |----------|--------|-------|
 | Usage Context (UC) | 20% | Decision criticality, data sensitivity, scale |
-| Human Oversight (HO) | 35% | Intervention mechanisms, accountability structures |
-| Transparency (TR) | 25% | Explainability, disclosure, recourse |
+| Human Oversight (HO) | 35% | Intervention mechanisms, accountability structures (Right to Human Agency & Right to Empathy) |
+| Transparency (TR) | 25% | Explainability, disclosure, recourse (Right to Explanation & Right to Truth) |
 | Infrastructure (IN) | 20% | Data residency, audit logging, fallback systems |
 
 **Tier Thresholds:**
@@ -65,13 +85,11 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 - Score 50-79 → Tier 2 (Elevated Risk)
 - Score 80+ → Tier 3 (Standard Risk)
 
-### The 5 Algorithmic Rights
+### Market Entry & Regulatory Strategy
 
-1. **Right to Human Agency** — A human can intervene in any decision affecting dignity
-2. **Right to Explanation** — Clear reasons for every automated decision
-3. **Right to Empathy** — Communications acknowledge human impact
-4. **Right to Correction** — Meaningful recourse when decisions are wrong
-5. **Right to Truth** — No deceptive AI (disclosed when AI is involved)
+**South African Beachhead:** AIC's initial market is defined by POPIA Section 71, which explicitly prohibits automated decision-making without human oversight. This creates an immediate, legally-mandated demand for AIC certification. South Africa is among only 15% of African countries with formal AI policy, and the National AI Policy Framework (October 2024) further strengthens the regulatory tailwind.
+
+POPIA Section 71 is one regulatory expression of the universal principles in AIC's Declaration of Algorithmic Rights. It sits at Layer 3 of our framework (Regulatory Mappings), beneath the universal Rights (Layer 1) and the Tier Framework (Layer 2). This architecture means every certification we issue in South Africa today is also compatible with the EU AI Act, Title VII, Brazil's LGPD, and any future jurisdiction that requires human oversight of automated decisions.
 
 ---
 
@@ -123,11 +141,12 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 
 ### AIC Differentiators
 
-1. **POPIA-Native** — Built specifically for Section 71 compliance
-2. **First-Mover** — No SANAS-accredited AI certification body exists
-3. **Human Accountability Focus** — Certifies people, not machines
-4. **Pragmatic Tiering** — Matches accountability to decision stakes
-5. **Regional Positioning** — SADCAS enables SADC expansion
+1. **Right to Empathy** — The only certification body in the world that certifies the human dignity of automated interactions. No competitor (ISO, Big 4, AI startups) does this.
+2. **Human Accountability Focus** — We certify people and processes, not machines. Our competitors audit technology. We audit accountability.
+3. **Universal Framework, Local Entry** — Built on jurisdiction-agnostic principles (the 5 Rights) with regulatory mappings for any market. South Africa first. The world next.
+4. **First-Mover in South Africa** — No SANAS-accredited AI-specific certification body exists today
+5. **Pragmatic Tiering** — Matches accountability requirements to the actual stakes of each decision
+6. **POPIA-Native for SA Market** — Purpose-built for Section 71 compliance as the market entry regulatory anchor
 
 ---
 
@@ -173,6 +192,58 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 - [ ] Multi-language support (Afrikaans, Zulu, Portuguese)
 - [ ] Insurance partnership API integration
 - [ ] Lead Auditor training platform
+
+---
+
+### ~~February 15, 2026 Progress Update~~ SUPERSEDED
+
+> **⚠️ WARNING:** The Feb 15 assessment below was overly optimistic. A comprehensive audit on Feb 17, 2026 revealed critical security and architecture gaps. See corrected status below.
+
+#### Platform Status (Corrected Feb 17, 2026)
+
+| Application | Feb 15 Claim | Feb 17 Actual | Key Issues |
+|-------------|--------------|---------------|------------|
+| **apps/web** | ✅ MVP Complete | ✅ MVP Complete | No issues |
+| **apps/platform** | 🟡 60% Complete | ⚠️ **40% Complete** | 9 RLS bypasses, no MFA (fixed) |
+| **apps/admin** | 🟡 50% Complete | ⚠️ **35% Complete** | Incomplete, security gaps |
+| **apps/engine** | ✅ Functional | ⚠️ **OOM Risk** | Sync endpoints, unbounded cache |
+
+#### Sprint 3 Deliverables (Status Corrected)
+
+| Item | Feb 15 | Feb 17 Corrected |
+|------|--------|------------------|
+| Real-Time Platform Dashboard | ✅ | ⚠️ UI exists, depends on RLS fixes |
+| 5 Algorithmic Rights Calculation | ✅ | ⚠️ Formula exists, data integrity requires RLS |
+| Admin Verification Queue | ✅ | ⚠️ Functional but admin app incomplete |
+| Shared @aic/db Package | ✅ | ⚠️ Works but has lint errors |
+| Engine Circuit Breaker | ✅ | ✅ Confirmed working |
+| Celery Async Tasks | ✅ | ⚠️ Only 4 of 40+ endpoints use Celery |
+
+#### What's Actually Built (Corrected)
+
+| Feature | Status | Caveat |
+|---------|--------|--------|
+| **268 automated tests** | ✅ | Tests exist but don't catch RLS issues |
+| **CI/CD Pipeline** | ✅ | 3 workflows active |
+| **11 shared packages** | ⚠️ | 5 are dead code (events, sockets, middleware, reports, api-client) |
+| **Tenant isolation** | ❌ | 9 endpoints bypass RLS |
+| **Field-level encryption** | ✅ | Working |
+| **Engine integration** | ⚠️ | Circuit breaker works, but sync endpoints block |
+| **Real-time dashboard** | ⚠️ | UI works, data isolation incomplete |
+
+#### Critical Items NOT Built (Feb 17 Findings)
+
+- [ ] **MFA** → ✅ Implemented Feb 17
+- [ ] **Account lockout** → ✅ Implemented Feb 17
+- [ ] **JTI token generation** → ✅ Implemented Feb 17
+- [ ] Credential purging from git history
+- [ ] RLS enforcement on 9 bypass endpoints
+- [ ] Async engine endpoints (40+ still sync)
+- [ ] Model cache TTL/LRU → ✅ Implemented Feb 17
+- [ ] Full certification workflow
+- [ ] PDF certificate generation
+- [ ] Staging/production environments
+- [ ] Sentry error tracking
 
 ---
 
@@ -327,3 +398,96 @@ AIC makes this principle **auditable, certifiable, and enforceable**.
 ---
 
 *AI Integrity Certification | Master Plan v2.0 | February 2026 | CONFIDENTIAL*
+
+---
+
+## February 15, 2026 Appendix: Technical Progress Summary
+
+### Codebase Metrics
+
+| Metric | Value |
+|--------|-------|
+| TypeScript Files | 1,556 |
+| Shared Packages | 11 |
+| TypeScript Tests | 127 passing |
+| Python Tests | 141 passing (92% coverage) |
+| CI/CD Workflows | 3 active |
+| API Routes (Platform) | 34+ endpoints |
+| Engine Services | 13 services |
+
+### Architecture Achievements
+
+| Achievement | Description |
+|-------------|-------------|
+| **Sovereign Multi-Tenancy** | `getTenantDb(orgId)` with Postgres RLS |
+| **Field-Level Encryption** | AES-256-GCM for PII data |
+| **Resilient S2S Communication** | Opossum circuit breaker for Engine calls |
+| **Real-Time Events** | SSE event bus for dashboard updates |
+| **Granular RBAC** | Role hierarchy with scope-based permissions |
+| **5 Rights Calculation** | Dynamic scoring from audit data |
+
+### Shared Package Inventory
+
+| Package | Purpose |
+|---------|---------|
+| `@aic/db` | Drizzle ORM, tenant isolation, encryption |
+| `@aic/auth` | Shared NextAuth configuration |
+| `@aic/types` | Zod schemas, TypeScript interfaces |
+| `@aic/ui` | TrustBadge, AlphaSeal components |
+| `@aic/api-client` | Engine client with circuit breaker |
+| `@aic/reports` | PDF generation utilities |
+| `@aic/events` | Event system |
+| `@aic/sockets` | WebSocket utilities |
+| `@aic/legal` | Legal/compliance utilities |
+| `@aic/middleware` | Shared middleware (new) |
+| `@aic/notifications` | Alert system (new) |
+
+### Engineering Roadmap Progress
+
+| Original Issue | Original Status | Current Status |
+|----------------|-----------------|----------------|
+| No automated testing | Critical | ✅ **Resolved** (268 tests) |
+| Hardcoded secrets | Critical | 🟡 In progress |
+| Fallback demo data | High | ✅ **Resolved** |
+| Engine not integrated | High | ✅ **Resolved** |
+| Database migrations | High | 🟡 Drizzle WIP |
+| TypeScript type safety | Medium | 🟡 51 `any` remaining |
+| API validation | Medium | 🟡 Zod schemas in types |
+| Auth hardening | High | ✅ **Resolved** |
+| Monitoring | Medium | ⬜ Not started |
+
+### Current Blockers
+
+| Blocker | Impact | Resolution |
+|---------|--------|------------|
+| `@aic/db` lint errors | CI fails | Fix 4 `any` types in schema.ts |
+| 51 remaining `any` types | Type-check warnings | Gradual removal |
+
+### Production Readiness: 35-40%
+
+> **CRITICAL UPDATE (February 17, 2026):** A comprehensive 360-degree technical audit revealed significant gaps in the previous assessment. The platform requires 12-16 weeks of remediation before Series A readiness.
+
+**Current Grades (Feb 17 Audit):**
+| Pillar | Grade | Key Issue |
+|--------|-------|-----------|
+| Security/Auth | F | No MFA (now implemented), credentials in git |
+| Data Sovereignty | F | 9 RLS bypass endpoints identified |
+| Performance | F | Engine OOM risk under load |
+| Architecture | D | 5 dead packages, no import boundaries |
+| Type Safety | C- | 55 violations remaining |
+
+**Primary Remediation Items:**
+1. ~~MFA implementation~~ ✅ Completed Feb 17
+2. ~~Account lockout~~ ✅ Completed Feb 17
+3. Purge credentials from git history (P0)
+4. Fix remaining 8 RLS bypass endpoints (P0)
+5. Convert engine to async (P1)
+6. Staging environment deployment
+7. Error tracking (Sentry)
+
+**See:** [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md) for detailed 16-week fix plan.
+**See:** [POST_REMEDIATION_ROADMAP.md](./POST_REMEDIATION_ROADMAP.md) for Series A and beyond.
+
+---
+
+*Updated: February 17, 2026*

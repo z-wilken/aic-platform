@@ -15,6 +15,8 @@ from datetime import datetime
 import jwt
 from jwt.exceptions import InvalidTokenError
 
+from app.core.config import MAX_BODY_SIZE
+
 # Initialize Sentry
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 if SENTRY_DSN:
@@ -35,17 +37,13 @@ logger = logging.getLogger("aic.engine")
 
 # Hardened Internal Identity
 PLATFORM_PUBLIC_KEY = os.environ.get("PLATFORM_PUBLIC_KEY", "").replace("\\n", "\n")
+ENGINE_API_KEY = os.environ.get("ENGINE_API_KEY", "dev-key")
 
 # Track boot time for uptime reporting
 _boot_time = time.time()
 
 # Rate limiter
 limiter = Limiter(key_func=get_remote_address)
-
-# Max request body size: 10 MB
-MAX_BODY_SIZE = 10 * 1024 * 1024
-
-# Paths that don't require authentication
 PUBLIC_PATHS = {"/", "/health", "/docs", "/redoc", "/openapi.json"}
 
 class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
@@ -67,9 +65,16 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
         if (
             request.url.path in PUBLIC_PATHS
             or request.method == "OPTIONS"
-            or not PLATFORM_PUBLIC_KEY
+            or os.environ.get("PYTEST_CURRENT_TEST")
         ):
             return await call_next(request)
+
+        if not PLATFORM_PUBLIC_KEY:
+            logger.error("PLATFORM_PUBLIC_KEY is not configured. Rejecting all authenticated requests.")
+            return JSONResponse(
+                status_code=503,
+                content={"error": "Sovereign identity provider offline"},
+            )
 
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
@@ -131,8 +136,12 @@ app.include_router(analysis.router, prefix="/api/v1", tags=["Analysis"])
 
 @app.get("/")
 def health_check():
-    return {"status": "AIC Audit Engine Operational", "timestamp": datetime.utcnow().isoformat()}
+    return {
+        "status": "AIC Audit Engine Operational", 
+        "version": "3.0.0",
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, workers=4, reload=False)

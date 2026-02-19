@@ -2,6 +2,26 @@
 
 Alpha Program Framework: Prove Demand Before Raising ZAR 10M
 
+---
+
+> **⚠️ CRITICAL UPDATE (February 17, 2026)**
+>
+> A comprehensive technical audit identified critical security gaps that must be resolved BEFORE Alpha participant onboarding. The platform requires 12-16 weeks of remediation.
+>
+> **Revised Timeline:**
+> - Original: January - June 2026
+> - Revised: March - September 2026 (shift by ~8 weeks)
+>
+> **Prerequisites for Alpha Pilots:**
+> - ✅ MFA implementation (completed Feb 17)
+> - ✅ Account lockout (completed Feb 17)
+> - 🔴 Credential purging from git (pending)
+> - 🔴 RLS bypass fixes (8 remaining)
+>
+> See [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md) for full fix plan.
+
+---
+
 **THE PROBLEM WITH YOUR CURRENT PITCH**
 
 **Investors will ask:** \"You are asking for ZAR 10M to build something
@@ -13,6 +33,8 @@ investment. This document outlines a 6-month validation roadmap that
 costs \<ZAR 500K but de-risks the entire business.
 
 **ALPHA PROGRAM OVERVIEW**
+
+> **Vision Context:** The Alpha Program validates AIC's universal framework in the South African market, using POPIA Section 71 as the regulatory anchor. South Africa is the proving ground; the framework is built for the world. Every methodology refinement, case study, and unit economics data point produced in the Alpha Program feeds into a global certification standard.
 
 **Program Objectives:**
 

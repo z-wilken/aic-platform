@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum, index, type AnyPgColumn } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 // Enums
@@ -25,7 +25,7 @@ export const organizations = pgTable('organizations', {
   }),
   contactEmail: varchar('contact_email', { length: 255 }),
   apiKey: varchar('api_key', { length: 255 }),
-  auditorId: uuid('auditor_id'),
+  auditorId: uuid('auditor_id').references(() => users.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
@@ -36,14 +36,23 @@ export const users = pgTable('users', {
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   role: userRoleEnum('role').default('VIEWER'),
-  orgId: uuid('org_id').references(() => organizations.id),
+  orgId: uuid('org_id').references((): AnyPgColumn => organizations.id),
   isActive: boolean('is_active').default(true),
   emailVerified: boolean('email_verified').default(false),
   isSuperAdmin: boolean('is_super_admin').default(false),
   permissions: jsonb('permissions').default({}),
+  failedLoginAttempts: integer('failed_login_attempts').default(0),
+  lockoutUntil: timestamp('lockout_until', { withTimezone: true }),
+  twoFactorSecret: text('two_factor_secret'),
+  twoFactorEnabled: boolean('two_factor_enabled').default(false),
+  backupCodes: jsonb('backup_codes'),
   lastLogin: timestamp('last_login', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => {
+  return {
+    orgIdIdx: index('users_org_id_idx').on(table.orgId),
+  }
 });
 
 // Audit Logs
@@ -65,6 +74,11 @@ export const auditLogs = pgTable('audit_logs', {
   sequenceNumber: integer('sequence_number'),
   signature: text('signature'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table) => {
+  return {
+    orgCreatedAtIdx: index('audit_logs_org_created_at_idx').on(table.orgId, table.createdAt),
+    orgEventTypeIdx: index('audit_logs_org_event_type_idx').on(table.orgId, table.eventType),
+  }
 });
 
 // Incidents
@@ -159,11 +173,25 @@ export const auditSignatures = pgTable('audit_signatures', {
 // Leads
 export const leads = pgTable('leads', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'set null' }),
   email: varchar('email', { length: 255 }).unique().notNull(),
   company: varchar('company', { length: 255 }),
   source: varchar('source', { length: 50 }).default('WEB'),
   score: integer('score'),
   status: varchar('status', { length: 50 }).default('NEW'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// API Keys
+export const apiKeys = pgTable('api_keys', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  keyPrefix: varchar('key_prefix', { length: 16 }).notNull(),
+  keyHash: varchar('key_hash', { length: 255 }).notNull(),
+  isActive: boolean('is_active').default(true),
+  lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+  expiresAt: timestamp('expires_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
@@ -204,4 +232,48 @@ export const systemLedger = pgTable('system_ledger', {
   integrityHash: varchar('integrity_hash', { length: 64 }).notNull(),
   sequenceNumber: integer('sequence_number').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Password Reset Tokens
+export const passwordResetTokens = pgTable('password_reset_tokens', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  token: varchar('token', { length: 255 }).unique().notNull(),
+  used: boolean('used').default(false),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Alpha Applications
+export const alphaApplications = pgTable('alpha_applications', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  company: varchar('company', { length: 255 }),
+  useCase: text('use_case'),
+  status: varchar('status', { length: 50 }).default('PENDING'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Posts (Internal CMS)
+export const posts = pgTable('posts', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).unique().notNull(),
+  content: text('content').notNull(),
+  excerpt: text('excerpt'),
+  category: varchar('category', { length: 50 }).default('General'),
+  status: varchar('status', { length: 50 }).default('DRAFT'),
+  authorId: uuid('author_id').references(() => users.id),
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// Newsletter Subscribers
+export const newsletterSubscribers = pgTable('newsletter_subscribers', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar('email', { length: 255 }).unique().notNull(),
+  status: varchar('status', { length: 50 }).default('ACTIVE'),
+  subscribedAt: timestamp('subscribed_at', { withTimezone: true }).defaultNow(),
 });

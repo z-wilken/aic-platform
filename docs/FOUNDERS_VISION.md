@@ -66,7 +66,7 @@ We are not just helping companies avoid fines. We are ensuring that South Africa
 
 ### The Universal Principle
 
-Today, we certify AI systems. But the principle is larger than AI.
+We certify AI systems. But we were never *only* about AI. This is not a future aspiration — it is the current architectural intent.
 
 Credit scoring algorithms are not always "artificial intelligence" in the machine learning sense — but they make consequential decisions about human beings. Automated benefits eligibility systems. Insurance underwriting models. Content moderation rules. Predictive policing tools. Tenant screening databases.
 
@@ -76,11 +76,13 @@ The technology varies. The principle does not.
 
 This is what AIC certifies. Not the technology. The accountability.
 
+This is why the Declaration of Algorithmic Rights — our foundational document — explicitly applies to "all consequential automated decision systems," not only AI. The five Rights are universal. They do not depend on the presence of machine learning, neural networks, or any particular technology. They depend only on the presence of a human being whose life is affected by an automated decision.
+
 Our three-tier framework — Human-Approved, Human-Supervised, Automated-Permissible — is not about AI. It is about matching the level of human accountability to the stakes of the decision being made.
 
 A cancer diagnosis requires a human being to look another human being in the eye before treatment begins. A product recommendation does not. The framework knows the difference.
 
-This is why AIC will outlast the current wave of AI hype. When the next technology emerges — whatever it is called, however it works — the question will remain the same: Is there a human accountable?
+This is why AIC will outlast the current wave of AI hype. When the next technology emerges — whatever it is called, however it works — the question will remain the same: Is there a human accountable? And AIC will be there to certify the answer.
 
 ---
 

@@ -1,61 +1,95 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, users, passwordResetTokens, eq } from '@aic/db';
+import { auth } from '@aic/auth';
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+
+const InviteSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1),
+  role: z.enum(['ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER'])
+});
 
 export async function POST(request: NextRequest) {
     try {
-        const session: any = await getSession();
-        if (!session || session.user.role !== 'ADMIN') {
-            return NextResponse.json({ error: 'Only administrators can invite users' }, { status: 403 });
+        const session = await auth();
+        if (!session || !session.user?.orgId || session.user.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Only institutional administrators can invite users' }, { status: 403 });
         }
 
         const orgId = session.user.orgId;
-        const { email, name, role } = await request.json();
+        const body = await request.json();
+        const validation = InviteSchema.safeParse(body);
 
-        if (!email || !name || !role) {
-            return NextResponse.json({ error: 'Email, name, and role are required' }, { status: 400 });
+        if (!validation.success) {
+            return NextResponse.json({ error: 'Validation failed', details: validation.error.format() }, { status: 400 });
         }
 
-        // 1. Check if user already exists
-        const existingUser = await query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
-        if (existingUser.rows.length > 0) {
-            return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+        const { email, name, role } = validation.data;
+        const db = getTenantDb(orgId);
+
+        const result = await db.query(async (tx) => {
+            // 1. Check if user already exists
+            const [existingUser] = await tx
+                .select({ id: users.id })
+                .from(users)
+                .where(eq(users.email, email.toLowerCase()))
+                .limit(1);
+
+            if (existingUser) {
+                // Return success to mitigate email enumeration, but don't actually send new invite
+                // in a real system we would send a 'you are already invited' email.
+                return { success: true, alreadyExists: true };
+            }
+
+            // 2. Create user with hashed dummy password and is_active = FALSE
+            // Standardizing on Institutional Cost Factor 12
+            const dummyRaw = crypto.randomBytes(32).toString('hex');
+            const salt = await bcrypt.genSalt(12);
+            const passwordHash = await bcrypt.hash(dummyRaw, salt);
+
+            const [newUser] = await tx.insert(users).values({
+                email: email.toLowerCase(),
+                passwordHash,
+                name,
+                role,
+                orgId,
+                isActive: false,
+                emailVerified: false
+            }).returning({ id: users.id });
+
+            // 3. Generate invite/reset token
+            const token = crypto.randomBytes(32).toString('hex');
+            const expiresAt = new Date(Date.now() + 604800000); // 7 days
+
+            await tx.insert(passwordResetTokens).values({
+                userId: newUser.id,
+                token,
+                expiresAt
+            });
+
+            return { success: true, token };
+        });
+
+        if (result.alreadyExists) {
+            return NextResponse.json({ 
+                success: true, 
+                message: 'Institutional invitation issued successfully.' 
+            });
         }
 
-        // 2. Create user with dummy password and is_active = FALSE
-        // They will "activate" by resetting their password
-        const dummyPassword = crypto.randomBytes(16).toString('hex');
-        const userResult = await query(
-            `INSERT INTO users (email, password_hash, name, role, org_id, is_active)
-             VALUES ($1, $2, $3, $4, $5, FALSE)
-             RETURNING id`,
-            [email.toLowerCase(), dummyPassword, name, role, orgId]
-        );
-
-        const userId = userResult.rows[0].id;
-
-        // 3. Generate token
-        const token = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 604800000); // 7 days
-
-        await query(
-            'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
-            [userId, token, expiresAt]
-        );
-
-        // 4. Return link (in production, send email)
-        const inviteLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
-        console.log(`[AUTH] User invited: ${email}. Link: ${inviteLink}`);
+        const inviteLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${result.token}`;
+        console.log(`[AUTH] User invited to ${orgId}: ${email}. Link: ${inviteLink}`);
 
         return NextResponse.json({ 
             success: true, 
             inviteLink,
-            message: 'User invited successfully.' 
+            message: 'Institutional invitation issued successfully.' 
         });
 
     } catch (error) {
-        console.error('Invite User Error:', error);
-        return NextResponse.json({ error: 'Failed to invite user' }, { status: 500 });
+        console.error('[SECURITY] Invite User Failure:', error);
+        return NextResponse.json({ error: 'Technical validation failed during invitation' }, { status: 500 });
     }
 }

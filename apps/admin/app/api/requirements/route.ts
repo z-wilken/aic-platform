@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, auditRequirements, notifications, eq, asc, calculateOrganizationIntelligence, LedgerService } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function GET(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -17,13 +17,15 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'org_id is required' }, { status: 400 });
     }
 
-    const result = await query(
-      'SELECT * FROM audit_requirements WHERE org_id = $1 ORDER BY created_at ASC',
-      [orgId]
-    );
+    const db = getSystemDb();
+    const result = await db
+      .select()
+      .from(auditRequirements)
+      .where(eq(auditRequirements.orgId, orgId))
+      .orderBy(asc(auditRequirements.createdAt));
 
     return NextResponse.json({
-        requirements: result.rows
+        requirements: result
     });
   } catch (error) {
     console.error('Admin Requirements API Error:', error);
@@ -32,10 +34,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -46,61 +48,49 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'ID, status, and org_id are required' }, { status: 400 });
     }
 
-    // 1. Update the requirement status
-    await query(
-      `UPDATE audit_requirements 
-       SET status = $1, findings = $2, updated_at = NOW() 
-       WHERE id = $3`,
-      [status, findings || '', id]
-    );
+    const db = getSystemDb();
 
-    // 1.5 Send Automated Notification to Client
-    const reqResult = await query('SELECT title FROM audit_requirements WHERE id = $1', [id]);
-    const reqTitle = reqResult.rows[0]?.title;
-    
-    await query(
-        'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4)',
-        [
-            org_id, 
-            status === 'VERIFIED' ? 'Requirement Verified' : 'Action Required',
-            status === 'VERIFIED' 
-                ? `Your submission for "${reqTitle}" has been verified by an auditor.` 
-                : `Your submission for "${reqTitle}" requires further action. Findings: ${findings}`,
-            'AUDIT_UPDATE'
-        ]
-    );
+    return await db.transaction(async (tx) => {
+      // 1. Update the requirement status
+      const [req] = await tx
+        .update(auditRequirements)
+        .set({ 
+          status, 
+          findings: findings || '', 
+          updatedAt: new Date() 
+        })
+        .where(eq(auditRequirements.id, id))
+        .returning({ title: auditRequirements.title });
 
-    // 2. Recalculate Org Integrity Score
-    const countResult = await query(
-        `SELECT 
-            COUNT(*) as total,
-            COUNT(*) FILTER (WHERE status = 'VERIFIED') as verified
-         FROM audit_requirements 
-         WHERE org_id = $1`,
-        [org_id]
-    );
+      if (!req) {
+        return NextResponse.json({ error: 'Requirement not found' }, { status: 404 });
+      }
 
-    const { total, verified } = countResult.rows[0];
-    const newScore = total > 0 ? Math.round((parseInt(verified) / parseInt(total)) * 100) : 0;
+      // 1.5 Send Automated Notification to Client
+      await tx
+          .insert(notifications)
+          .values({
+              orgId: org_id,
+              title: status === 'VERIFIED' ? 'Requirement Verified' : 'Action Required',
+              message: status === 'VERIFIED' 
+                  ? `Your submission for "${req.title}" has been verified by an auditor.` 
+                  : `Your submission for "${req.title}" requires further action. Findings: ${findings}`,
+              type: 'AUDIT_UPDATE'
+          });
 
-    await query(
-        `UPDATE organizations SET integrity_score = $1 WHERE id = $2`,
-        [newScore, org_id]
-    );
+      // 2. Recalculate Org Integrity Score using the Intelligence Service
+      // This ensures business logic consistency across the platform
+      const intel = await calculateOrganizationIntelligence(org_id);
 
-    // 3. Log the administrative action for accountability
-    await query(
-        `INSERT INTO security_logs (actor_id, action, entity_id, details) 
-         VALUES ($1, $2, $3, $4)`,
-        [
-            session.user.id, 
-            status === 'VERIFIED' ? 'VERIFIED_REQUIREMENT' : 'REJECTED_REQUIREMENT',
-            id,
-            JSON.stringify({ org_id, new_score: newScore, findings: findings || 'None' })
-        ]
-    );
+      // 3. Log the administrative action for accountability in the Institutional Ledger
+      await LedgerService.append(
+          status === 'VERIFIED' ? 'VERIFIED_REQUIREMENT' : 'REJECTED_REQUIREMENT',
+          session.user.id,
+          { org_id, requirement_id: id, new_score: intel.score, findings: findings || 'None' }
+      );
 
-    return NextResponse.json({ success: true, newScore });
+      return NextResponse.json({ success: true, newScore: intel.score });
+    });
   } catch (error) {
     console.error('Admin Requirements Update Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

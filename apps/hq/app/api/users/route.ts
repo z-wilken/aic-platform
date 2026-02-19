@@ -1,20 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, users, desc } from '@aic/db';
+import { auth } from '@aic/auth';
 import bcrypt from 'bcryptjs';
 
 export async function GET() {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || !session.user.isSuperAdmin) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
-    const result = await query(
-      'SELECT id, name, email, role, is_active, is_super_admin, permissions, last_login FROM users ORDER BY created_at DESC'
-    );
-    return NextResponse.json({ users: result.rows });
+    const db = getSystemDb();
+    const result = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        isActive: users.isActive,
+        isSuperAdmin: users.isSuperAdmin,
+        permissions: users.permissions,
+        lastLogin: users.lastLogin
+      })
+      .from(users)
+      .orderBy(desc(users.createdAt));
+
+    return NextResponse.json({ users: result });
   } catch (error) {
     console.error('HQ Users API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -22,10 +34,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || !session.user.isSuperAdmin) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -36,16 +48,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const result = await query(
-      `INSERT INTO users (name, email, password_hash, role, permissions) 
-       VALUES ($1, $2, $3, $4, $5) RETURNING id, email`,
-      [name, email.toLowerCase(), passwordHash, role, permissions || {}]
-    );
+    const db = getSystemDb();
+    const [newUser] = await db.insert(users).values({
+      name,
+      email: email.toLowerCase(),
+      passwordHash,
+      role,
+      permissions: permissions || {},
+      isActive: true,
+      emailVerified: true
+    }).returning({ id: users.id, email: users.email });
 
-    return NextResponse.json({ success: true, user: result.rows[0] });
+    return NextResponse.json({ success: true, user: newUser });
   } catch (error) {
     console.error('HQ User Create Error:', error);
     return NextResponse.json({ error: 'Failed to provision user' }, { status: 500 });

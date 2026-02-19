@@ -1,126 +1,185 @@
 # AIC Platform Documentation
 
+> **Last Updated:** February 17, 2026
+> **Platform Status:** Remediation Phase (Week 1 of 16)
+
+---
+
 ## Core Principle
-> "When systems make decisions that affect human dignity, humans must remain accountable."
 
-## Core Strategic Documents
-| Document | Description |
-|----------|-------------|
-| [Founder's Vision](./FOUNDERS_VISION.md) | North star: 30-year vision, constitutional values, accountability principles |
-| [Declaration of Rights](./DECLARATION_OF_RIGHTS.md) | The 5 Algorithmic Rights that AIC certifies and enforces |
-| [Methodology](./METHODOLOGY.md) | Integrity Score calculation formula, scoring matrix, tier thresholds |
+> "We certify that human empathy and accountability remain in the loop — for every consequential automated decision, everywhere."
 
-## Quick Start Guide
+**The AIC Framework:**
+```
+Layer 1: The 5 Algorithmic Rights (universal, jurisdiction-agnostic)
+            ↓
+Layer 2: The 3-Tier Accountability Framework (maps rights to decision stakes)
+            ↓
+Layer 3: Regulatory Mappings (POPIA Sec 71, EU AI Act, Title VII, LGPD, etc.)
+```
 
-### For Understanding the Vision
-Start with **[FOUNDERS_VISION.md](./FOUNDERS_VISION.md)** — the moral foundation and 30-year trajectory.
+---
 
-### For Business Context
-1. **[MASTER_PLAN.md](./MASTER_PLAN.md)** — Complete consolidated overview
-2. **[BUSINESS_PLAN.md](./BUSINESS_PLAN.md)** — Evidence-based investor memorandum
-3. **[STRATEGIC_ROADMAP.md](./STRATEGIC_ROADMAP.md)** — Phased execution plan
-4. **[OPERATIONAL_ROADMAP.md](./OPERATIONAL_ROADMAP.md)** — Path to 10-employee company
+## Quick Navigation
 
-### For Technical Details
-1. **[Technical Specification](./AIC_TECHNICAL_SPEC.md)** — Architecture, APIs, database schema
-2. **[Engine Requirements](./ENGINE_REQUIREMENTS.md)** — Detailed functional requirements for the Python audit engine
-3. **[Engineering Roadmap](./ENGINEERING_ROADMAP.md)** — Technical engineering milestones
-4. **[Methodology](./METHODOLOGY.md)** — Integrity Score calculation
+### "What's the current state of the platform?"
+**Read:** [TECHNICAL_AUDIT_2026-02-17.md](./TECHNICAL_AUDIT_2026-02-17.md)
 
-## Product & Technical
-| Document | Description |
-|----------|-------------|
-| [Product Specification](./product/PRODUCT_SPEC.md) | Authoritative product spec: market, personas, features, architecture, pricing |
-| [Technical Specification](./AIC_TECHNICAL_SPEC.md) | System architecture, database schema, API contracts, engine logic |
-| [Engine Requirements](./ENGINE_REQUIREMENTS.md) | Detailed functional requirements for the Python audit engine |
-| [Roles & Permissions](./ROLES.md) | User role hierarchy and permission definitions |
-| [Engineering Roadmap](./ENGINEERING_ROADMAP.md) | Technical engineering roadmap and milestones |
+### "How do we fix it?"
+**Read:** [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md)
 
-## Business & Investment
-| Document | Description |
-|----------|-------------|
-| [Master Plan](./MASTER_PLAN.md) | Consolidated overview |
-| [Business Plan](./BUSINESS_PLAN.md) | Investor memo: market analysis, unit economics, 3-year projections |
-| [Strategic Roadmap](./STRATEGIC_ROADMAP.md) | Phased execution plan (Phase 0-5) with milestones and timelines |
-| [Operational Roadmap](./OPERATIONAL_ROADMAP.md) | 21-month path to 10 employees |
-| [Risk Analysis](./RISK_ANALYSIS.md) | Competitive landscape and risk mitigation matrix |
-| [One Pager](./ONE_PAGER.md) | Single-page investor summary |
-| [Pitch Templates](./PITCH_TEMPLATES.md) | Sales and pitch materials |
+### "What do we tell investors?"
+**Read:** [STAKEHOLDER_BRIEFING_2026-02-17.md](./STAKEHOLDER_BRIEFING_2026-02-17.md)
 
-## Programs & Partnerships
-| Document | Description |
-|----------|-------------|
-| [Pilot Program](./PILOT_PROGRAM.md) | Pilot program structure and requirements |
-| [Alpha Agreement Template](./ALPHA_AGREEMENT_TEMPLATE.md) | Legal agreement template for alpha participants |
-| [Target Prospects](./TARGET_PROSPECTS.md) | Target prospect list and outreach strategy |
-| [Info Regulator Letter](./INFO_REGULATOR_LETTER.md) | Communication template for regulators |
+### "What happens after remediation?"
+**Read:** [POST_REMEDIATION_ROADMAP.md](./POST_REMEDIATION_ROADMAP.md)
 
-## Current Phase: Institutional Hardening & Alpha Recruitment
-**Status:** Platform foundation stabilized, institutional resilience hardened, preparing for alpha outreach
+### "What do I do TODAY?"
+**Read:** [NEXT_STEPS_CHECKLIST.md](./NEXT_STEPS_CHECKLIST.md) - Daily actionable checklist
 
-**Recent Engineering Milestones:**
-- Turborepo build orchestration and monorepo stabilization
-- Drizzle ORM migration system with centralized `@aic/db` package
-- Multi-tenancy with database proxy pattern
-- Institutional storage service (MinIO integration)
-- PII encryption, RBAC enforcement, circuit breakers
-- Radix UI component library migration for `@aic/ui`
-- ISO/IEC 42001 alignment for global sovereign AI governance
-- SSE event streaming, PDF report generation, OIDC schema
+### "What's the business vision?"
+**Read:** [MASTER_PLAN.md](./MASTER_PLAN.md)
 
-**Immediate Priorities:**
-1. Finalize Alpha Certification Framework
-2. Build target prospect list (20 organizations)
-3. Begin outreach conversations
-4. Schedule Information Regulator meeting
-5. Initial SANAS consultation
+---
 
-## Key Milestones
-| Timeline | Milestone | Status |
-|----------|-----------|--------|
-| Feb 2026 | Marketing website MVP | Completed |
-| Feb 2026 | Documentation consolidated | Completed |
-| Feb 2026 | Foundation stabilization & institutional hardening | Completed |
-| Feb 2026 | Global sovereign governance alignment (ISO/IEC 42001) | Completed |
-| Months 1-2 | Alpha Program recruitment | In Progress |
-| Months 3-4 | First certifications | Planned |
-| Month 6 | SANAS application | Planned |
-| Month 7+ | Investment raise (ZAR 10M) | Planned |
+## Document Hierarchy
 
-## Developer Guides
-| Document | Description |
-|----------|-------------|
-| [Onboarding Guide](./AIC_ONBOARDING_GUIDE.md) | Architecture walkthrough, port mappings, user journeys for developers |
-| [Ecosystem Walkthrough](./AIC_ECOSYSTEM_WALKTHROUGH.md) | Operational flow: lead capture, audit pipeline, certification lifecycle |
-| [Project Explainer](./project-explainer.md) | High-level overview for non-technical stakeholders |
-| [Professional Review](./PROFESSIONAL_REVIEW.md) | Code review findings and architecture assessment |
-| [Foundation Stabilization](./roadmap-foundation-stabilization.md) | Foundation and stabilization roadmap |
-| [Critical Project Review](./critical-project-review.md) | Critical review of project status |
+### Tier 1: Current State & Fix Plan (Read First)
 
-## Operational
-| Document | Description |
-|----------|-------------|
-| [Roadmap](./ROADMAP.md) | Current development roadmap |
-| [Audit Checklist](./AUDIT_CHECKLIST.md) | Certification checklist items |
-| [Launch Checklist](./AIC_Launch_Checklist.md) | Pre-launch milestone tracking |
-| [Operational Tasks](./OPERATIONAL_TASKS.md) | Current operational task tracking |
-| [Workflow](./WORKFLOW.md) | Development workflow reference |
-| [Week 8 Plan](./WEEK_8_PLAN.md) | Week 8 sprint plan |
-| [Business Next Steps](./BUSINESS_NEXT_STEPS.md) | Immediate business action items |
-| [Capability Review](./CAPABILITY_REVIEW.md) | Current capability assessment |
-| [Current Gaps](./CURRENT_GAPS.md) | Gap analysis and remediation |
+| Document | Purpose | Updated |
+|----------|---------|---------|
+| [TECHNICAL_AUDIT_2026-02-17.md](./TECHNICAL_AUDIT_2026-02-17.md) | Honest 360-degree assessment | Feb 17, 2026 |
+| [REMEDIATION_ROADMAP.md](./REMEDIATION_ROADMAP.md) | 16-week technical fix plan | Feb 17, 2026 |
+| [NEXT_STEPS_CHECKLIST.md](./NEXT_STEPS_CHECKLIST.md) | **Daily actionable checklist** | Feb 17, 2026 |
+| [STAKEHOLDER_BRIEFING_2026-02-17.md](./STAKEHOLDER_BRIEFING_2026-02-17.md) | Investor/board communication | Feb 17, 2026 |
+| [POST_REMEDIATION_ROADMAP.md](./POST_REMEDIATION_ROADMAP.md) | What comes after Week 16 | Feb 17, 2026 |
 
-## Archive
-| Document | Description |
-|----------|-------------|
-| [Changelog](./archive/CHANGELOG.md) | Historical development changelog |
-| [Competitive Analysis](./archive/COMPETITIVE_ANALYSIS.md) | Historical competitive landscape analysis |
+### Tier 2: Strategic Vision
 
-## Financial Summary
-| Year | Revenue | Employees | Status |
-|------|---------|-----------|--------|
-| Year 1 (Alpha) | ZAR 1.0M | 1 + contractors | Current |
-| Year 2 | ZAR 19.1M | 10 | Target |
-| Year 3 | ZAR 45.6M | 12 | Projected |
+| Document | Purpose |
+|----------|---------|
+| [MASTER_PLAN.md](./MASTER_PLAN.md) | Complete vision, market, and execution strategy |
+| [FOUNDERS_VISION.md](./FOUNDERS_VISION.md) | 30-year vision, constitutional values |
+| [DECLARATION_OF_RIGHTS.md](./DECLARATION_OF_RIGHTS.md) | The 5 Algorithmic Rights |
+| [STRATEGIC_ROADMAP.md](./STRATEGIC_ROADMAP.md) | Business execution phases |
+| [OPERATIONAL_ROADMAP.md](./OPERATIONAL_ROADMAP.md) | Team scaling (0→10 employees) |
 
-**Investment:** ZAR 10M for 25% equity (post-Alpha validation)
+### Tier 3: Technical Reference
+
+| Document | Purpose |
+|----------|---------|
+| [AIC_TECHNICAL_SPEC.md](./AIC_TECHNICAL_SPEC.md) | Architecture, APIs, database schema |
+| [ENGINE_REQUIREMENTS.md](./ENGINE_REQUIREMENTS.md) | Python audit engine specifications |
+| [METHODOLOGY.md](./METHODOLOGY.md) | Integrity Score calculation formula |
+| [ROLES.md](./ROLES.md) | User role hierarchy and permissions |
+| [WORKFLOW.md](./WORKFLOW.md) | Development workflow |
+
+### Tier 4: Business & Sales
+
+| Document | Purpose |
+|----------|---------|
+| [BUSINESS_PLAN.md](./BUSINESS_PLAN.md) | Investor memorandum, unit economics |
+| [ONE_PAGER.md](./ONE_PAGER.md) | Single-page investor summary |
+| [PITCH_TEMPLATES.md](./PITCH_TEMPLATES.md) | Sales conversation scripts |
+| [TARGET_PROSPECTS.md](./TARGET_PROSPECTS.md) | Alpha program prospect list |
+| [RISK_ANALYSIS.md](./RISK_ANALYSIS.md) | Risk mitigation matrix |
+
+### Tier 5: Operational
+
+| Document | Purpose |
+|----------|---------|
+| [PILOT_PROGRAM.md](./PILOT_PROGRAM.md) | Alpha program structure |
+| [ALPHA_AGREEMENT_TEMPLATE.md](./ALPHA_AGREEMENT_TEMPLATE.md) | Legal template for participants |
+| [AIC_ONBOARDING_GUIDE.md](./AIC_ONBOARDING_GUIDE.md) | Developer onboarding |
+| [AUDIT_CHECKLIST.md](./AUDIT_CHECKLIST.md) | Certification checklist items |
+| [AIC_Launch_Checklist.md](./AIC_Launch_Checklist.md) | Pre-launch milestones |
+
+### Archive (Historical Reference)
+
+| Document | Purpose |
+|----------|---------|
+| [archive/critical-project-review.md](./archive/critical-project-review.md) | Feb 12→17 assessment evolution |
+| [archive/CHANGELOG.md](./archive/CHANGELOG.md) | Historical changelog |
+
+---
+
+## Current Status Summary
+
+### Platform Grades (Feb 17, 2026)
+
+| Pillar | Grade | Target |
+|--------|-------|--------|
+| Security (Auth/MFA) | D+ | A |
+| Data Sovereignty (RLS) | D | A |
+| Performance/Memory | D | B |
+| Architecture | D | B+ |
+| Type Safety | C- | B+ |
+| Documentation | A | A |
+
+### Remediation Progress
+
+| Phase | Focus | Status | Timeline |
+|-------|-------|--------|----------|
+| Phase 0 | Emergency Security | **IN PROGRESS** | Week 1 |
+| Phase 1 | Security Foundation | Pending | Weeks 2-4 |
+| Phase 2 | Stability & Performance | Pending | Weeks 5-8 |
+| Phase 3 | Architecture Enforcement | Pending | Weeks 9-12 |
+| Phase 4 | Production Hardening | Pending | Weeks 13-16 |
+
+### Key Milestones
+
+| Checkpoint | Date | Gate |
+|------------|------|------|
+| Security Foundation Complete | Week 4 (Mar 17) | Can discuss with early investors |
+| Alpha Pilot Ready | Week 8 (Apr 14) | Supervised org onboarding |
+| Series A Due Diligence Ready | Week 16 (Jun 9) | Institutional investor ready |
+
+---
+
+## What's Working
+
+| Component | Status | Tests |
+|-----------|--------|-------|
+| Marketing Website | Production | 51 |
+| Self-Assessment Quiz | Complete | — |
+| Audit Engine Core | Functional | 141 |
+| Test Infrastructure | Operational | 268 total |
+| CI/CD Pipeline | Active | 3 workflows |
+
+---
+
+## Investment Summary
+
+| Metric | Value |
+|--------|-------|
+| **Current Readiness** | ~40% |
+| **Series A Timeline** | Q3 2026 |
+| **Remediation Investment** | ZAR 600K-950K |
+| **Target Raise** | ZAR 10M for 25% equity |
+
+---
+
+## Document Governance
+
+### Versioning
+
+All documents should include YAML frontmatter:
+
+```yaml
+---
+version: 1.0
+date: 2026-02-17
+status: current | superseded | archived
+supersedes: [previous version if applicable]
+---
+```
+
+### Updates
+
+- **Never overwrite** — create new dated versions
+- **Archive old versions** — move to `/archive/`
+- **Update this README** — when adding/removing documents
+
+---
+
+*AI Integrity Certification | Documentation Index | February 17, 2026*

@@ -4,7 +4,13 @@ import { usePathname, useRouter } from 'next/navigation';
 export function useDashboardState() {
   const pathname = usePathname();
   const router = useRouter();
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<Array<{
+    id: string;
+    title: string;
+    message: string;
+    status: 'UNREAD' | 'READ';
+    created_at: string;
+  }>>([]);
   const [showNotifs, setShowNotifs] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -21,8 +27,37 @@ export function useDashboardState() {
 
   useEffect(() => {
     fetchNotifs();
+
+    // Task M34: Institutional Real-Time Connectivity (SSE)
+    const eventSource = new EventSource('/api/events');
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'connected') {
+          console.log('[SSE] Hardened link established');
+          return;
+        }
+        
+        // Refresh notifications on any event (or handle specific types)
+        fetchNotifs();
+      } catch {
+        console.error('[SSE] Failed to parse event block');
+      }
+    };
+
+    eventSource.onerror = () => {
+      console.warn('[SSE] Sovereign link degraded. Reverting to 30s polling fallback.');
+      eventSource.close();
+    };
+
+    // Fallback Polling (Resilience Override)
     const interval = setInterval(fetchNotifs, 30000);
-    return () => clearInterval(interval);
+
+    return () => {
+      eventSource.close();
+      clearInterval(interval);
+    };
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {

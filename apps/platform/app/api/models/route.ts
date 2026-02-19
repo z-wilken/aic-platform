@@ -1,30 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getTenantDb, models, eq, and, desc, LedgerService } from '@aic/db';
+import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    const result = await query(
-      'SELECT * FROM models WHERE org_id = $1 AND is_active = TRUE ORDER BY created_at DESC',
-      [orgId]
-    );
+    return await db.query(async (tx) => {
+      const result = await tx
+        .select()
+        .from(models)
+        .where(and(eq(models.orgId, orgId), eq(models.isActive, true)))
+        .orderBy(desc(models.createdAt));
 
-    return NextResponse.json({ models: result.rows });
+      return NextResponse.json({ models: result });
+    });
   } catch (error) {
-    console.error('Models GET Error:', error);
+    console.error('[SECURITY] Models GET Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const session: any = await getSession();
+    const session = await getSession() as Session | null;
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -37,16 +42,30 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Name and type are required' }, { status: 400 });
     }
 
-    const result = await query(
-      `INSERT INTO models (org_id, name, version, type, description, metadata)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [orgId, name, version || '1.0.0', type, description, JSON.stringify(metadata || {})]
-    );
+    const db = getTenantDb(orgId);
 
-    return NextResponse.json({ success: true, model: result.rows[0] });
+    return await db.query(async (tx) => {
+      const [newModel] = await tx.insert(models).values({
+        orgId,
+        name,
+        version: version || '1.0.0',
+        type,
+        description,
+        metadata: metadata || {}
+      }).returning();
+
+      // Record to Institutional Ledger
+      await LedgerService.append('MODEL_REGISTERED', session.user.id, {
+        modelId: newModel.id,
+        orgId,
+        name,
+        version: version || '1.0.0'
+      });
+
+      return NextResponse.json({ success: true, model: newModel });
+    });
   } catch (error) {
-    console.error('Models POST Error:', error);
+    console.error('[SECURITY] Models POST Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

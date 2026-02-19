@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=web",
+    "dev:platform": "turbo dev --filter=platform",
     "build": "turbo build",
     "test": "turbo test",
     "test:watch": "vitest",
@@ -50,7 +52,7 @@
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "next": "15.1.7",
-    "next-auth": "^4.24.13",
+    "next-auth": "5.0.0-beta.30",
     "pg": "^8.18.0",
     "react": "19.0.0",
     "react-dom": "19.0.0"

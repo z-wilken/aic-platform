@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSystemDb, posts, desc, eq } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function GET() {
-  // Public-facing part of the API (called from apps/web) could be here too,
-  // but for now, we'll keep it internal for HQ management
   try {
-    const result = await query(
-      'SELECT * FROM posts ORDER BY created_at DESC'
-    );
-    return NextResponse.json({ posts: result.rows });
+    const db = getSystemDb();
+    const result = await db.select().from(posts).orderBy(desc(posts.createdAt));
+    return NextResponse.json({ posts: result });
   } catch (error) {
     console.error('HQ Posts API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -17,10 +14,10 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -33,13 +30,19 @@ export async function POST(request: NextRequest) {
 
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
-    const result = await query(
-      `INSERT INTO posts (title, slug, content, excerpt, category, status, author_id, published_at) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [title, slug, content, excerpt || '', category || 'General', status, session.user.id, status === 'PUBLISHED' ? new Date() : null]
-    );
+    const db = getSystemDb();
+    const [newPost] = await db.insert(posts).values({
+      title,
+      slug,
+      content,
+      excerpt: excerpt || '',
+      category: category || 'General',
+      status,
+      authorId: session.user.id,
+      publishedAt: status === 'PUBLISHED' ? new Date() : null
+    }).returning();
 
-    return NextResponse.json({ success: true, post: result.rows[0] });
+    return NextResponse.json({ success: true, post: newPost });
   } catch (error) {
     console.error('HQ Post Create Error:', error);
     return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
@@ -47,10 +50,10 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -59,18 +62,24 @@ export async function PATCH(request: NextRequest) {
 
     if (!id) return NextResponse.json({ error: 'Post ID required' }, { status: 400 });
 
-    const result = await query(
-      `UPDATE posts 
-       SET status = COALESCE($1, status), 
-           title = COALESCE($2, title),
-           content = COALESCE($3, content),
-           published_at = CASE WHEN $1 = 'PUBLISHED' AND published_at IS NULL THEN NOW() ELSE published_at END,
-           updated_at = NOW()
-       WHERE id = $4 RETURNING *`,
-      [status, title, content, id]
-    );
+    const db = getSystemDb();
+    const [updatedPost] = await db
+      .update(posts)
+      .set({ 
+        status, 
+        title, 
+        content,
+        publishedAt: status === 'PUBLISHED' ? new Date() : undefined,
+        updatedAt: new Date()
+      })
+      .where(eq(posts.id, id))
+      .returning();
 
-    return NextResponse.json({ success: true, post: result.rows[0] });
+    if (!updatedPost) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, post: updatedPost });
   } catch (error) {
     console.error('HQ Post Update Error:', error);
     return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
