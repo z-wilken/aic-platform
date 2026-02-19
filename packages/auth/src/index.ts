@@ -51,6 +51,10 @@ export const authConfig: NextAuthConfig = {
           throw new Error("Email and password required")
         }
 
+        const email = credentials.email as string;
+        const password = credentials.password as string;
+        const mfaToken = credentials.mfaToken as string | undefined;
+
         const db = getSystemDb();
         try {
           const [user] = await db
@@ -74,24 +78,24 @@ export const authConfig: NextAuthConfig = {
             })
             .from(users)
             .leftJoin(organizations, eq(users.orgId, organizations.id))
-            .where(eq(users.email, credentials.email.toString().toLowerCase()))
+            .where(eq(users.email, email.toLowerCase()))
             .limit(1);
 
           if (user) {
             if (!user.isActive) {
-              await logAuthEvent('LOGIN_REJECTED', { email: credentials.email, reason: 'Account deactivated' }, user.orgId);
+              await logAuthEvent('LOGIN_REJECTED', { email, reason: 'Account deactivated' }, user.orgId);
               throw new Error("Account is deactivated")
             }
 
             // Check for lockout
             if (user.lockoutUntil && new Date(user.lockoutUntil) > new Date()) {
               const minutesLeft = Math.ceil((new Date(user.lockoutUntil).getTime() - new Date().getTime()) / 60000);
-              await logAuthEvent('LOGIN_REJECTED', { email: credentials.email, reason: 'Account locked' }, user.orgId);
+              await logAuthEvent('LOGIN_REJECTED', { email, reason: 'Account locked' }, user.orgId);
               throw new Error(`Account locked. Try again in ${minutesLeft} minutes.`)
             }
 
             const bcrypt = await import("bcryptjs")
-            const isValid = await bcrypt.default.compare(credentials.password.toString(), user.passwordHash)
+            const isValid = await bcrypt.default.compare(password, user.passwordHash)
 
             if (!isValid) {
               const newAttempts = (user.failedLoginAttempts || 0) + 1;
@@ -104,14 +108,14 @@ export const authConfig: NextAuthConfig = {
                 
                 updateData.lockoutUntil = new Date(Date.now() + lockoutDurationMs);
                 await logAuthEvent('ACCOUNT_LOCKED', { 
-                  email: credentials.email, 
+                  email, 
                   attempts: newAttempts, 
                   lockoutDurationMs 
                 }, user.orgId);
               }
 
               await db.update(users).set(updateData).where(eq(users.id, user.id));
-              await logAuthEvent('LOGIN_FAILURE', { email: credentials.email, reason: 'Invalid credentials', attempts: newAttempts }, user.orgId);
+              await logAuthEvent('LOGIN_FAILURE', { email, reason: 'Invalid credentials', attempts: newAttempts }, user.orgId);
               throw new Error("Invalid credentials")
             }
 
@@ -119,18 +123,18 @@ export const authConfig: NextAuthConfig = {
             const isMfaMandatory = user.role === 'ADMIN' || user.role === 'COMPLIANCE_OFFICER';
 
             if (user.twoFactorEnabled && user.twoFactorSecret) {
-              if (!credentials.mfaToken) {
+              if (!mfaToken) {
                 // Signal to UI that MFA is required
                 throw new Error("MFA_REQUIRED")
               }
 
-              const isMFAValid = MFAService.verifyToken(user.twoFactorSecret, credentials.mfaToken.toString());
+              const isMFAValid = MFAService.verifyToken(user.twoFactorSecret, mfaToken);
               
               if (!isMFAValid) {
                 // Check backup codes (Phase 1-1)
                 const backupCodes = user.backupCodes as string[] | null;
-                if (backupCodes && backupCodes.includes(credentials.mfaToken.toString())) {
-                  const newBackupCodes = backupCodes.filter(c => c !== credentials.mfaToken.toString());
+                if (backupCodes && backupCodes.includes(mfaToken)) {
+                  const newBackupCodes = backupCodes.filter(c => c !== mfaToken);
                   await db.update(users).set({ backupCodes: newBackupCodes }).where(eq(users.id, user.id));
                   await logAuthEvent('BACKUP_CODE_USED', { email: user.email, userId: user.id }, user.orgId);
                 } else {
@@ -164,7 +168,7 @@ export const authConfig: NextAuthConfig = {
               permissions: (user.permissions as unknown as Permissions) || { can_view_audits: true, can_view_incidents: true, can_view_intelligence: true }
             }
           } else {
-            await logAuthEvent('LOGIN_FAILURE', { email: credentials.email, reason: 'User not found' });
+            await logAuthEvent('LOGIN_FAILURE', { email, reason: 'User not found' });
           }
         } catch (dbError) {
           console.warn("[AUTH] Login failed:", dbError)
@@ -184,11 +188,14 @@ export const authConfig: NextAuthConfig = {
     maxAge: 24 * 60 * 60, // 24 hours
   },
   events: {
-    async signOut({ token }) {
-      if (token?.jti && token?.exp) {
-        const { RevocationService } = await import("./services/revocation");
-        await RevocationService.revoke(token.jti as string, token.exp as number);
-        await logAuthEvent('LOGOUT', { userId: token.id, jti: token.jti }, token.orgId as string);
+    async signOut(message) {
+      if ('token' in message && message.token) {
+        const { token } = message;
+        if (token.jti && token.exp) {
+          const { RevocationService } = await import("./services/revocation");
+          await RevocationService.revoke(token.jti as string, token.exp as number);
+          await logAuthEvent('LOGOUT', { userId: token.id, jti: token.jti }, token.orgId as string);
+        }
       }
     }
   },
@@ -225,7 +232,7 @@ export const authConfig: NextAuthConfig = {
             .limit(1);
 
           if (existingUser) {
-            user.orgId = existingUser.orgId || undefined
+            user.orgId = existingUser.orgId || 'INTERNAL'
             user.role = existingUser.role as UserRole
             user.id = existingUser.id
             await logAuthEvent('SSO_LOGIN_SUCCESS', { email: user.email, provider: account.provider }, existingUser.orgId);
@@ -250,7 +257,7 @@ export const authConfig: NextAuthConfig = {
                 passwordHash: 'SSO_ONLY',
                 isActive: true,
                 emailVerified: true
-              }).returning({ id: newUser.id, role: users.role });
+              }).returning({ id: users.id, role: users.role });
               
               user.id = newUser.id
               user.orgId = org.id
@@ -330,6 +337,34 @@ export const handlers = nextAuth.handlers;
 export const auth = nextAuth.auth;
 export const signIn = nextAuth.signIn;
 export const signOut = nextAuth.signOut;
+
+declare module "next-auth" {
+  interface User {
+    id: string;
+    role: UserRole;
+    orgId: string;
+    orgName: string;
+    tier: CertificationTier;
+    isSuperAdmin: boolean;
+    permissions: Permissions;
+  }
+  interface Session {
+    user: User;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: UserRole;
+    orgId: string;
+    orgName: string;
+    tier: CertificationTier;
+    isSuperAdmin: boolean;
+    permissions: Permissions;
+    jti?: string;
+  }
+}
 
 export * from "./services/signing"
 export * from "./services/revocation"

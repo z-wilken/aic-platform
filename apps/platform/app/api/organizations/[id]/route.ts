@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, getSystemDb, organizations, auditLogs, eq, sql, TenantTransaction, PgTransaction, PgQueryResultHKT, schema } from '@aic/db';
+import { getTenantDb, getSystemDb, organizations, auditLogs, eq, sql } from '@aic/db';
 import { getSession } from '../../../../lib/auth';
 import type { Session } from 'next-auth';
 
@@ -26,7 +26,8 @@ export async function GET(
     // getTenantDb() used for regular users to enforce tenant isolation.
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, Record<string, unknown>>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const execute = async (tx: any) => {
       const [org] = await tx.select().from(organizations).where(eq(organizations.id, id)).limit(1);
 
       if (!org) {
@@ -49,10 +50,12 @@ export async function GET(
       });
     };
 
-    if (isSuperAdmin && 'transaction' in db) {
-        return await db.transaction(execute);
-    } else if ('query' in db) {
-        return await db.query(execute);
+    if (isSuperAdmin) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).transaction(execute);
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).query(execute);
     }
     
     throw new Error('Database instance configuration error');
@@ -95,7 +98,8 @@ export async function PUT(
     // getTenantDb() used for regular users to enforce tenant isolation.
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
 
-    const execute = async (tx: TenantTransaction | PgTransaction<PgQueryResultHKT, typeof schema, Record<string, unknown>>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const execute = async (tx: any) => {
       const [updatedOrg] = await tx
         .update(organizations)
         .set({ 
@@ -115,10 +119,12 @@ export async function PUT(
       });
     };
 
-    if (isSuperAdmin && 'transaction' in db) {
-        return await db.transaction(execute);
-    } else if ('query' in db) {
-        return await db.query(execute);
+    if (isSuperAdmin) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).transaction(execute);
+    } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).query(execute);
     }
 
     throw new Error('Database instance configuration error');

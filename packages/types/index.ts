@@ -161,6 +161,9 @@ export const BaseEngineResultSchema = z.object({
   timestamp: z.string(),
   popia_compliance: z.boolean(),
   signature: z.string().optional(),
+  error: z.string().optional(),
+  status: z.string().optional(),
+  fallback: z.boolean().optional(),
 });
 
 export const DisparateImpactResultSchema = BaseEngineResultSchema.extend({
@@ -255,6 +258,9 @@ export interface DecisionExplanation {
   feature_contributions: Array<{ feature: string; impact: string; direction: 'positive' | 'negative' | 'neutral' }>;
   confidence_breakdown?: string;
   signature?: string;
+  error?: string;
+  status?: string;
+  fallback?: boolean;
 }
 
 export interface EmpathyAnalysisResult {
@@ -268,6 +274,9 @@ export interface EmpathyAnalysisResult {
   tone_flags: string[];
   recommendations: string[];
   signature?: string;
+  error?: string;
+  status?: string;
+  fallback?: boolean;
 }
 
 export interface TaskStatusResult {

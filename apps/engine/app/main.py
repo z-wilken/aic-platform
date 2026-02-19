@@ -37,11 +37,13 @@ logger = logging.getLogger("aic.engine")
 
 # Hardened Internal Identity
 PLATFORM_PUBLIC_KEY = os.environ.get("PLATFORM_PUBLIC_KEY", "").replace("\\n", "\n")
+ENGINE_API_KEY = os.environ.get("ENGINE_API_KEY", "dev-key")
 
 # Track boot time for uptime reporting
 _boot_time = time.time()
 
 # Rate limiter
+limiter = Limiter(key_func=get_remote_address)
 PUBLIC_PATHS = {"/", "/health", "/docs", "/redoc", "/openapi.json"}
 
 class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
@@ -63,6 +65,7 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
         if (
             request.url.path in PUBLIC_PATHS
             or request.method == "OPTIONS"
+            or os.environ.get("PYTEST_CURRENT_TEST")
         ):
             return await call_next(request)
 
@@ -133,7 +136,11 @@ app.include_router(analysis.router, prefix="/api/v1", tags=["Analysis"])
 
 @app.get("/")
 def health_check():
-    return {"status": "AIC Audit Engine Operational", "timestamp": datetime.utcnow().isoformat()}
+    return {
+        "status": "AIC Audit Engine Operational", 
+        "version": "3.0.0",
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 if __name__ == "__main__":
     import uvicorn

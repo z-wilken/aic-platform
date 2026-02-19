@@ -53,7 +53,7 @@ export default function InternalDashboard() {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const role = ((session as any)?.user?.role as UserRole) || 'VIEWER';
+  const role = (session?.user as any)?.role as UserRole || 'VIEWER';
 
   return (
     <div className="max-w-7xl mx-auto p-8 lg:p-12 space-y-12">

@@ -23,14 +23,17 @@ export async function GET(request: NextRequest) {
     // getTenantDb() used for regular users to ensure RLS isolation.
     const db = isSuperAdmin ? getSystemDb() : getTenantDb(userOrgId as string);
 
-    const execute = async (tx: typeof db) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const execute = async (tx: any) => {
       const conditions = [];
       
       if (status) {
-        conditions.push(eq(leads.status, status));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        conditions.push(eq(leads.status, status as any));
       }
       if (source) {
-        conditions.push(eq(leads.source, source));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        conditions.push(eq(leads.source, source as any));
       }
 
       const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
@@ -52,7 +55,7 @@ export async function GET(request: NextRequest) {
         from_quiz: sql<number>`count(*) filter (where source = 'QUIZ')`,
         from_alpha: sql<number>`count(*) filter (where source = 'ALPHA_FORM')`
       }).from(leads)
-      .where(isSuperAdmin ? undefined : undefined); // RLS handles this for tenants
+      .where(whereClause); 
 
       return NextResponse.json({
         leads: result,
@@ -60,10 +63,12 @@ export async function GET(request: NextRequest) {
       });
     };
 
-    if (isSuperAdmin && 'transaction' in db) {
-        return await db.transaction(execute);
+    if (isSuperAdmin) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).transaction(execute);
     } else {
-        return await db.query(execute);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return await (db as any).query(execute);
     }
 
   } catch (error) {
