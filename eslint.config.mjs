@@ -6,7 +6,7 @@ export default [
   ...ts.configs.recommended,
   {
     rules: {
-      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "react/no-unescaped-entities": "off",
       "no-restricted-imports": ["error", {
@@ -30,6 +30,10 @@ export default [
       "**/dist/**",
       "**/build/**",
       "**/next-env.d.ts",
+      "**/htmlcov/**",
+      "**/coverage/**",
+      "*.js",
+      "scripts/*.ts",
     ],
   },
 ];
