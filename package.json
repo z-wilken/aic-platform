@@ -2,25 +2,59 @@
   "name": "aic-platform-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@11.6.2",
   "workspaces": [
     "apps/*",
+    "apps/internal",
     "packages/*"
   ],
   "scripts": {
-    "dev": "npx concurrently \"npm run dev:web\" \"npm run dev:platform\" \"npm run dev:admin\" \"npm run dev:hq\"",
-    "dev:web": "cd apps/web && npm run dev",
-    "dev:platform": "cd apps/platform && npm run dev -- -p 3001",
-    "dev:admin": "cd apps/admin && npm run dev -- -p 3002",
-    "dev:hq": "cd apps/hq && npm run dev",
-    "build": "npx concurrently \"cd apps/web && npm run build\" \"cd apps/platform && npm run build\" \"cd apps/admin && npm run build\" \"cd apps/hq && npm run build\"",
-    "start": "npx concurrently \"cd apps/web && npm run start\" \"cd apps/platform && npm run start\" \"cd apps/admin && npm run start\" \"cd apps/hq && npm run start\""
+    "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=web",
+    "dev:platform": "turbo dev --filter=platform",
+    "build": "turbo build",
+    "test": "turbo test",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:engine": "cd apps/engine && pytest tests/ -v --tb=short",
+    "test:e2e": "npx playwright test",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "npm run db:migrate --workspace @aic/db",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.58.2",
+    "@testing-library/jest-dom": "^6.4.0",
+    "@testing-library/react": "^14.2.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/pg": "^8.16.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/coverage-v8": "^1.3.0",
+    "concurrently": "^8.2.0",
+    "husky": "^9.1.7",
+    "jsdom": "^24.0.0",
+    "lint-staged": "^16.2.7",
+    "turbo": "^2.8.7",
+    "vitest": "^1.3.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "vitest related --run"
+    ]
   },
   "dependencies": {
-    "@types/pg": "^8.16.0",
-    "next-auth": "^4.24.13",
-    "pg": "^8.18.0"
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "next": "15.1.7",
+    "next-auth": "5.0.0-beta.30",
+    "pg": "^8.18.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   }
 }

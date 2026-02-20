@@ -162,11 +162,23 @@ decide to enter, AIC will have refined methodology, case studies, and
 market position. AIC could be acquisition target for these players (exit
 strategy).
 
+**THE RIGHT TO EMPATHY — COMPLETELY UNCONTESTED COMPETITIVE SPACE**
+
+AIC's single most defensible competitive advantage is the **Right to Empathy** — the certification that automated interactions preserve human dignity. This is completely uncontested territory:
+
+-   ISO 42001 does not measure it
+-   Big 4 consulting does not certify it
+-   Credo AI, Fiddler AI, Arthur AI do not track it
+-   EU AI Act does not mandate it (yet)
+-   No existing academic or industry standard defines it
+
+AIC built the methodology, the technical implementation (TextBlob sentiment analysis of automated communications), and the audit framework for this certification. By the time any competitor recognizes this space and builds a competing capability, AIC will have case studies, a certified methodology, and first-mover market position in the only aspect of AI governance that addresses how automated systems make people *feel*. This is not a gap waiting to be filled. This is AIC's moat.
+
 **COMPETITIVE POSITIONING SUMMARY**
 
   -------------------------------------------------------------------------------
   **Player**     **Offering**     **Price        **AIC             **Strategy**
-                                  Point**        Defensibility**   
+                                  Point**        Defensibility**
   -------------- ---------------- -------------- ----------------- --------------
   ISO 42001      Certification    ZAR 250-500K   Complementary     Partner &
                                                                    specialize
@@ -180,9 +192,11 @@ strategy).
   SANAS Bodies   Traditional ISO  ZAR 200-400K   Moderate          First-mover
                                                                    speed
 
-  AIC            AI               ZAR 120-360K   \-                POPIA-native
-                 Accountability                                    leader
-                 Cert                                              
+  AIC            Human Accty &    ZAR 120-360K   \-                Global
+                 Empathy Cert                                       framework,
+                                                                   SA beachhead,
+                                                                   Right to
+                                                                   Empathy moat
   -------------------------------------------------------------------------------
 
 **PART 2: RISK MITIGATION MATRIX**
@@ -362,13 +376,37 @@ still happen.\"
     > processes exist - outcomes still depend on implementation\" (like
     > ISO 9001 does not guarantee zero defects)
 
+**[RISK 6: Vision Drift Risk (Becoming a Local Compliance Shop)]{.underline}**
+
+**Scenario:** AIC becomes so focused on POPIA Section 71 compliance as its identity that it fails to build the global framework it is capable of becoming. The company gets trapped as a South African compliance tool rather than emerging as the international standard for human accountability in automated decisions.
+
+**Early Warning Indicators:**
+
+-   • All sales conversations lead with POPIA compliance rather than the 5 Algorithmic Rights
+-   • Marketing materials define AIC as "a POPIA certification body" rather than as a global accountability framework
+-   • Product roadmap prioritizes SA regulatory features over universal framework development
+-   • Team and advisors are exclusively SA-focused
+
+**Mitigation Strategy:**
+
+-   • The 5 Algorithmic Rights framework is jurisdiction-agnostic by design — every certification issued in SA today is compatible with EU AI Act, Title VII, and any future regulation
+-   • "South African Beachhead" framing in all planning documents: SA proves the model; the world is the market
+-   • Quarterly vision check: "Are we building a global institution or a local compliance shop?"
+-   • Early international advisory board members from non-SA jurisdictions
+-   • EU AI Act regulatory mapping to be developed during Phase 3, before Phase 4 investment
+-   • POPIA Section 71 is described internally and externally as "our market entry regulatory anchor," not as AIC's identity
+
 **RISK SUMMARY: MOST TO LEAST CONCERNING**
 
 > **HIGH CONCERN:** Market Demand Risk - Mitigated by Alpha Program
 > validation before scaling
 >
+> **MEDIUM CONCERN:** Vision Drift Risk - Mitigated by jurisdiction-agnostic
+> 5 Rights framework and "SA Beachhead" strategic framing
+>
 > **MEDIUM CONCERN:** Competitive Response Risk - Mitigated by
-> first-mover advantage and 14-month SANAS lead time
+> first-mover advantage, 14-month SANAS lead time, and uncontested
+> Right to Empathy space
 >
 > **MEDIUM CONCERN:** Execution Risk (SANAS) - Mitigated by hiring
 > experienced auditors and consultant pre-audit

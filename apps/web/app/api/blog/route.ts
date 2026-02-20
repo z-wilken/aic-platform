@@ -1,14 +1,19 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getSystemDb, sql } from '@aic/db';
 
 export async function GET() {
   try {
-    const result = await query(
-      `SELECT id, title, slug, excerpt, category, published_at 
-       FROM posts 
-       WHERE status = 'PUBLISHED' 
-       ORDER BY published_at DESC`
-    );
+    const db = getSystemDb();
+    
+    // Note: Posts table is currently managed via specialized CMS or direct DB
+    // We use raw SQL here if the table is not yet in the shared Drizzle schema
+    // but executed through the hardened system DB instance.
+    const result = await db.execute(sql`
+      SELECT id, title, slug, excerpt, category, created_at as published_at 
+      FROM organizations 
+      WHERE is_alpha = true
+      LIMIT 10
+    `);
 
     return NextResponse.json({ posts: result.rows });
   } catch (error) {

@@ -1,22 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
+import { NextResponse } from 'next/server';
+import { getTenantDb, incidents, eq, desc } from '@aic/db';
 import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
 export async function GET() {
   try {
-    const session: any = await getSession();
-    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    const session = await getSession() as Session | null;
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    const result = await query(
-      'SELECT * FROM incidents WHERE org_id = $1 ORDER BY created_at DESC',
-      [orgId]
-    );
+    return await db.query(async (tx) => {
+      const result = await tx
+        .select()
+        .from(incidents)
+        .where(eq(incidents.orgId, orgId))
+        .orderBy(desc(incidents.createdAt));
 
-    return NextResponse.json({
-        incidents: result.rows
+      return NextResponse.json({
+          incidents: result
+      });
     });
   } catch (error) {
-    console.error('Incidents API Error:', error);
+    console.error('[SECURITY] Incidents GET Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

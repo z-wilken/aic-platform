@@ -1,87 +1,106 @@
 import { NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
-import { getSession } from '../../../lib/auth';
+import { organizations, auditRequirements, complianceReports, auditLogs, eq, and, desc, getTenantDb, calculateOrganizationIntelligence } from '@aic/db';
+import { auth } from '@aic/auth';
+import { StatsResponseSchema } from '@aic/types';
+
+type AuditRequirement = typeof auditRequirements.$inferSelect;
 
 export async function GET() {
   try {
-    const session: any = await getSession();
-    const orgId = session?.user?.orgId || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+    const session = await auth();
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
+    const tdb = getTenantDb(orgId);
 
-    // 1. Fetch organization details
-    const orgResult = await query(
-        'SELECT name, tier, integrity_score FROM organizations WHERE id = $1',
-        [orgId]
-    );
+    // 1. Execute Core Business Logic (Decoupled & RLS Enforced)
+    const intel = await calculateOrganizationIntelligence(orgId);
 
-    if (orgResult.rows.length === 0) {
+    // 2. Fetch Additional Telemetry (Using tdb.query to ensure RLS context)
+    const result = await tdb.query(async (tx) => {
+      const [org] = await tx.select().from(organizations).where(eq(organizations.id, orgId)).limit(1);
+      
+      const requirements = await tx.select().from(auditRequirements).where(eq(auditRequirements.orgId, orgId));
+      
+      const velocityResults = await tx
+        .select({
+            month: complianceReports.monthYear,
+            score: complianceReports.integrityScore
+        })
+        .from(complianceReports)
+        .where(eq(complianceReports.orgId, orgId))
+        .orderBy(desc(complianceReports.monthYear))
+        .limit(6);
+
+      const [lastAudit] = await tx
+        .select({ createdAt: auditLogs.createdAt })
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.status, 'VERIFIED')))
+        .orderBy(desc(auditLogs.createdAt))
+        .limit(1);
+
+      return { org, requirements, velocityResults, lastAudit };
+    });
+
+    const { org, requirements, velocityResults, lastAudit } = result;
+
+    if (!org) {
         return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    const org = orgResult.rows[0];
-
-    // 2. Fetch requirement counts for rigorous scoring
-    // UC: User Consent/Documentation (0.20)
-    // HO: Human Oversight (0.35)
-    // TR: Transparency/Reporting (0.25)
-    // IN: Integrity/Technical (0.20)
-    const reqsResult = await query(
-        'SELECT category, status FROM audit_requirements WHERE org_id = $1',
-        [orgId]
-    );
-
-    const requirements = reqsResult.rows;
+    // --- Institutional Data Mapping ---
     
-    // Rigorous Scoring Logic based on PRD Specs
-    const categories = {
-        'DOCUMENTATION': { weight: 0.20, score: 0, total: 0 },
-        'OVERSIGHT': { weight: 0.35, score: 0, total: 0 },
-        'REPORTS': { weight: 0.25, score: 0, total: 0 },
-        'TECHNICAL': { weight: 0.20, score: 0, total: 0 }
-    };
+    // 1. Map Velocity Data (integrity progression)
+    const velocityData = velocityResults.map(v => ({
+      month: v.month,
+      score: v.score
+    })).reverse();
 
-    requirements.forEach(req => {
-        const cat = categories[req.category as keyof typeof categories];
-        if (cat) {
-            cat.total++;
-            if (req.status === 'VERIFIED') cat.score++;
-        }
+    // 2. Map Radar Data (framework distribution)
+    const categoryStats: Record<string, { total: number; verified: number }> = {};
+    requirements.forEach((req) => {
+      const cat = req.category || 'General';
+      if (!categoryStats[cat]) {
+        categoryStats[cat] = { total: 0, verified: 0 };
+      }
+      categoryStats[cat].total++;
+      if (req.status === 'VERIFIED') {
+        categoryStats[cat].verified++;
+      }
     });
 
-    let calculatedScore = 0;
-    Object.values(categories).forEach(cat => {
-        if (cat.total > 0) {
-            calculatedScore += (cat.score / cat.total) * cat.weight * 100;
-        }
-    });
+    const finalRadarData = Object.entries(categoryStats).map(([subject, stats]) => ({
+      subject,
+      A: Math.round((stats.verified / stats.total) * 100) || 0,
+      fullMark: 100
+    }));
 
-    // 3. Apply Penalty for unresolved Citizen Appeals (Incidents)
-    const incidentResult = await query(
-        "SELECT count(*) FROM incidents WHERE org_id = $1 AND status = 'OPEN'",
-        [orgId]
-    );
-    const openIncidents = parseInt(incidentResult.rows[0].count);
-    const penalty = openIncidents * 5; // -5 points per open incident
+    // Calculate Last Audit and Renewal (Task m34-35)
+    const lastAuditAt = lastAudit?.createdAt ? new Date(lastAudit.createdAt).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Pending';
+    const nextRenewalDate = lastAudit?.createdAt 
+        ? new Date(new Date(lastAudit.createdAt).setFullYear(new Date(lastAudit.createdAt).getFullYear() + 1)).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' })
+        : 'TBD';
 
-    const finalScore = Math.max(0, Math.round(calculatedScore) - penalty);
-
-    // Update the organization's score if it differs
-    if (finalScore !== org.integrity_score) {
-        await query('UPDATE organizations SET integrity_score = $1 WHERE id = $2', [finalScore, orgId]);
-    }
-
-    return NextResponse.json({
+    // --- Institutional Integrity Check (Zod Validation) ---
+    const validatedData = StatsResponseSchema.parse({
       orgName: org.name,
       orgId: orgId,
-      tier: org.tier,
-      score: finalScore,
-      openIncidents: openIncidents,
-      totalRequirements: requirements.length,
-      verifiedRequirements: requirements.filter(r => r.status === 'VERIFIED').length,
-      status: finalScore === 100 ? 'CERTIFIED' : 'ACTIVE_AUDIT'
+      tier: org.tier || 'TIER_3',
+      score: intel.score,
+      openIncidents: intel.openIncidents,
+      totalRequirements: intel.totalRequirements,
+      verifiedRequirements: intel.verifiedRequirements,
+      velocityData,
+      radarData: finalRadarData,
+      lastAuditAt,
+      nextRenewalDate,
+      status: 'ACTIVE_AUDIT'
     });
+
+    return NextResponse.json(validatedData);
   } catch (error) {
-    console.error('Stats API Error:', error);
-    // Remove mock fallback to expose real failures
-    return NextResponse.json({ error: 'Failed to retrieve organization intelligence' }, { status: 500 });
+    console.error('[STATS API] Institutional Failure:', error);
+    return NextResponse.json({ error: 'Internal intelligence failure' }, { status: 500 });
   }
 }

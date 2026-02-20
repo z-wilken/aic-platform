@@ -6,15 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@aic/db": "^1.0.0",
+    "@aic/types": "*",
+    "@aic/ui": "*",
     "framer-motion": "^12.31.0",
     "jspdf": "^4.1.0",
-    "next": "16.1.6",
-    "pg": "^8.18.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "pg": "^8.18.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -23,9 +27,11 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^1.6.1"
   }
 }

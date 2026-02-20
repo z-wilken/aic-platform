@@ -17,10 +17,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const token: any = await getToken({
+   
+  const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET
-  })
+  });
 
   // Not authenticated - redirect to login
   if (!token) {
@@ -40,6 +41,8 @@ export async function middleware(request: NextRequest) {
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   response.headers.set('X-XSS-Protection', '1; mode=block')
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
   return response
 }
 

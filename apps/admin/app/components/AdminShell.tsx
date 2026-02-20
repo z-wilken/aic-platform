@@ -4,12 +4,32 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 
+import { toast } from 'sonner'
+
 interface AdminShellProps {
   children: ReactNode
 }
 
 export default function AdminShell({ children }: AdminShellProps) {
   const pathname = usePathname()
+
+  const handleExecuteAudit = async () => {
+    const promise = fetch('/api/audits', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        org_id: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', // Default Alpha Org
+        scheduled_at: new Date().toISOString(),
+        notes: 'Manually triggered audit from Admin Command Center.'
+      })
+    });
+
+    toast.promise(promise, {
+      loading: 'Initializing institutional audit sequence...',
+      success: 'Audit session synchronized and logged.',
+      error: 'Audit initialization failed. Check engine connectivity.'
+    });
+  };
 
   const navItems = [
     { href: '/', label: 'Dashboard', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg> },
@@ -83,7 +103,10 @@ export default function AdminShell({ children }: AdminShellProps) {
                     <span className="text-[8px] text-green-500 font-bold">ENGINE_SYNC_ACTIVE</span>
                 </div>
               </div>
-              <button className="bg-blue-600 text-white px-6 py-2 rounded-md text-[9px] font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20 active:scale-95">
+              <button 
+                onClick={handleExecuteAudit}
+                className="bg-blue-600 text-white px-6 py-2 rounded-md text-[9px] font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20 active:scale-95"
+              >
                 EXECUTE NEW AUDIT
               </button>
             </div>

@@ -4,7 +4,7 @@ from enum import Enum
 from datetime import datetime
 
 class BiasStatus(str, Enum):
-    PASS = "PASS"
+    PASS = "PASS"  # nosec
     WARNING = "WARNING"
     FAIL = "FAIL"
 

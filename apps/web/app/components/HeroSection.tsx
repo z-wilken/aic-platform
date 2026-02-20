@@ -22,7 +22,7 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="font-mono text-aic-gold uppercase tracking-[0.3em] text-xs mb-6"
           >
-            POPIA Section 71 Compliance Framework
+            The Declaration of Algorithmic Rights
           </motion.p>
           
           <motion.h1 

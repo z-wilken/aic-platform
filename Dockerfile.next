@@ -5,12 +5,13 @@ FROM node:20-alpine AS base
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
+ARG APP_NAME
 
 # Copy the specific app's package.json and the root package files for workspaces
 COPY package.json package-lock.json ./
 # We need to copy the shared packages too
 COPY packages ./packages
-COPY apps/$APP_NAME/package.json ./apps/$APP_NAME/
+COPY apps/${APP_NAME}/package.json ./apps/${APP_NAME}/
 
 RUN npm install
 
@@ -26,7 +27,7 @@ COPY . .
 # Environment variables for build
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN npx concurrently "cd apps/$APP_NAME && npm run build"
+RUN cd apps/${APP_NAME} && npm run build
 
 # 3. Production image, copy all the files and run next
 FROM base AS runner
@@ -40,9 +41,9 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/$APP_NAME/public ./public
-COPY --from=builder /app/apps/$APP_NAME/.next/standalone ./
-COPY --from=builder /app/apps/$APP_NAME/.next/static ./.next/static
+COPY --from=builder /app/apps/${APP_NAME}/public ./public
+COPY --from=builder /app/apps/${APP_NAME}/.next/standalone ./
+COPY --from=builder /app/apps/${APP_NAME}/.next/static ./.next/static
 
 USER nextjs
 

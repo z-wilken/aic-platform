@@ -10,3 +10,20 @@ shap==0.46.0
 lime==0.2.0.1
 scikit-learn==1.6.1
 cryptography==44.0.0
+requests==2.31.0
+sentry-sdk[fastapi]==2.20.0
+celery==5.4.0
+redis==5.2.1
+cachetools==5.5.0
+PyJWT==2.10.1
+cryptography==44.0.0
+# Security Tools
+bandit==1.7.7
+pip-audit==2.7.2
+
+# Testing
+pytest>=8.0.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.23.0
+httpx>=0.27.0
+psutil>=7.0.0

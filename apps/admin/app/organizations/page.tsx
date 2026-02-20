@@ -141,10 +141,10 @@ export default function OrganizationsPage() {
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-2">
                         <Link 
-                          href={`/audits/${org.id}`}
-                          className="bg-blue-600/10 text-blue-400 border border-blue-600/20 px-3 py-1 rounded hover:bg-blue-600 hover:text-white transition-all text-[10px] font-bold uppercase tracking-widest"
+                          href={`/organizations/${org.id}`}
+                          className="bg-aic-gold/10 text-aic-gold border border-aic-gold/20 px-3 py-1 rounded hover:bg-aic-gold hover:text-black transition-all text-[10px] font-bold uppercase tracking-widest"
                         >
-                          MANAGE AUDIT
+                          VIEW PROFILE
                         </Link>
                       </div>
                     </td>

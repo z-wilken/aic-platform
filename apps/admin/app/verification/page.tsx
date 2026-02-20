@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import AdminShell from '../components/AdminShell';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface Requirement {
     id: string;
@@ -54,10 +55,16 @@ export default function VerificationPage() {
                 body: JSON.stringify({ id, status, findings, org_id: selectedOrgId })
             });
             if (res.ok) {
+                toast.success(`Requirement marked as ${status.toLowerCase()}.`);
                 // Refresh requirements
                 const data = await fetch(`/api/requirements?org_id=${selectedOrgId}`).then(r => r.json());
                 setRequirements(data.requirements || []);
+            } else {
+                const error = await res.json();
+                toast.error(error.error || 'Failed to verify requirement');
             }
+        } catch (err) {
+            toast.error('Network error during verification');
         } finally {
             setProcessingId(null);
         }

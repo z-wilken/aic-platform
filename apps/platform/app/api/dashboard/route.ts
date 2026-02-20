@@ -1,186 +1,184 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
+import { NextResponse } from 'next/server';
+import { getTenantDb, organizations, auditLogs, models, correctionRequests, eq, and, sql, desc } from '@aic/db';
+import { getSession } from '../../../lib/auth';
+import type { Session } from 'next-auth';
 
 // GET /api/dashboard - Comprehensive dashboard data
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const orgId = searchParams.get('org_id') || 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'; // Demo org
-
-    // 1. Get organization details
-    const orgResult = await query(
-      'SELECT * FROM organizations WHERE id = $1',
-      [orgId]
-    );
-
-    if (orgResult.rows.length === 0) {
-      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    const session = await getSession() as Session | null;
+    if (!session || !session.user?.orgId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
 
-    const org = orgResult.rows[0];
+    return await db.query(async (tx) => {
+      // 1. Get organization details (RLS enforced)
+      const [org] = await tx.select().from(organizations).where(eq(organizations.id, orgId)).limit(1);
 
-    // 2. Get audit statistics
-    const auditStatsResult = await query(`
-      SELECT
-        COUNT(*) as total,
-        COUNT(*) FILTER (WHERE status = 'VERIFIED') as verified,
-        COUNT(*) FILTER (WHERE status = 'FLAGGED') as flagged,
-        COUNT(*) FILTER (WHERE status = 'PENDING') as pending,
-        COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '24 hours') as last_24h,
-        COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '7 days') as last_7d
-      FROM audit_logs
-      WHERE org_id = $1
-    `, [orgId]);
-
-    const auditStats = auditStatsResult.rows[0];
-
-    // 3. Get recent audit logs
-    const recentLogsResult = await query(`
-      SELECT id, action, input_type, outcome, status, created_at
-      FROM audit_logs
-      WHERE org_id = $1
-      ORDER BY created_at DESC
-      LIMIT 10
-    `, [orgId]);
-
-    // 4. Calculate integrity score trend (simplified)
-    // In production, this would query historical data
-    const total = parseInt(auditStats.total) || 1;
-    const verified = parseInt(auditStats.verified) || 0;
-    const flagged = parseInt(auditStats.flagged) || 0;
-
-    // Score calculation: base 70 + (verified ratio * 30) - (flagged penalty)
-    const verifiedRatio = total > 0 ? verified / total : 1;
-    const flaggedPenalty = total > 0 ? (flagged / total) * 20 : 0;
-    const calculatedScore = Math.round(70 + (verifiedRatio * 30) - flaggedPenalty);
-    const integrityScore = Math.max(0, Math.min(100, calculatedScore));
-
-    // 5. Get 5 Rights compliance status
-    const rightsCompliance = {
-      human_agency: {
-        name: 'Right to Human Agency',
-        status: flagged === 0 ? 'COMPLIANT' : 'ATTENTION_NEEDED',
-        score: flagged === 0 ? 100 : Math.max(60, 100 - (flagged * 10))
-      },
-      explanation: {
-        name: 'Right to Explanation',
-        status: 'COMPLIANT',
-        score: 85 // Would check if explanations are generated
-      },
-      empathy: {
-        name: 'Right to Empathy',
-        status: 'COMPLIANT',
-        score: 80 // Would check rejection letter tone scores
-      },
-      correction: {
-        name: 'Right to Correction',
-        status: 'COMPLIANT',
-        score: 90 // Would check appeal process metrics
-      },
-      truth: {
-        name: 'Right to Truth',
-        status: 'COMPLIANT',
-        score: 95 // Would check AI disclosure compliance
+      if (!org) {
+        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
       }
-    };
 
-    // Overall rights score
-    const rightsScores = Object.values(rightsCompliance).map(r => r.score);
-    const overallRightsScore = Math.round(
-      rightsScores.reduce((a, b) => a + b, 0) / rightsScores.length
-    );
+      // 2. Get audit statistics
+      const now = new Date();
+      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    // 6. Action items
-    const actionItems = [];
-    if (parseInt(auditStats.pending) > 0) {
-      actionItems.push({
-        type: 'PENDING_REVIEW',
-        priority: 'high',
-        title: `${auditStats.pending} decisions pending human review`,
-        action: 'Review pending audit logs'
+      const [stats] = await tx.select({
+        total: sql<number>`count(*)`,
+        verified: sql<number>`count(*) filter (where status = 'VERIFIED')`,
+        flagged: sql<number>`count(*) filter (where status = 'FLAGGED')`,
+        pending: sql<number>`count(*) filter (where status = 'PENDING')`,
+        last_24h: sql<number>`count(*) filter (where created_at >= ${yesterday})`,
+        last_7d: sql<number>`count(*) filter (where created_at >= ${lastWeek})`,
+      })
+      .from(auditLogs)
+      .where(eq(auditLogs.orgId, orgId));
+
+      const flagged = Number(stats.flagged) || 0;
+
+      // 3. Get recent audit logs
+      const recentLogs = await tx.select()
+        .from(auditLogs)
+        .where(eq(auditLogs.orgId, orgId))
+        .orderBy(desc(auditLogs.createdAt))
+        .limit(10);
+
+      // Task M37: Institutional Rights Calculation
+      // 1. Human Agency: Based on bias audit status
+      const humanAgencyScore = flagged === 0 ? 100 : Math.max(20, 100 - (flagged * 15));
+      
+      // 2. Explanation: Based on presence of model metadata and XAI usage
+      const modelCount = await tx.select({ count: sql<number>`count(*)` }).from(models).where(eq(models.orgId, orgId));
+      const explanationLogs = await tx.select({ count: sql<number>`count(*)` })
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.eventType, 'TRANSPARENCY_EXPLANATION')));
+      const explanationScore = Number(modelCount[0].count) > 0 
+        ? Math.min(100, 60 + (Number(explanationLogs[0].count) * 10)) 
+        : 50;
+
+      // 3. Empathy: Based on Empathy Audit results
+      const empathyLogs = await tx.select()
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.eventType, 'EMPATHY_CHECK')))
+        .limit(5);
+      const avgEmpathy = empathyLogs.length > 0
+        ? empathyLogs.reduce((acc, log) => acc + (Number((log.details as Record<string, unknown>)?.empathy_score) || 0), 0) / empathyLogs.length
+        : 75; // Default baseline
+      const empathyScore = Math.round(avgEmpathy);
+
+      // 4. Correction: Based on Appeal resolution time and volume
+      const totalAppeals = await tx.select({ count: sql<number>`count(*)` }).from(correctionRequests).where(eq(correctionRequests.orgId, orgId));
+      const resolvedAppeals = await tx.select({ count: sql<number>`count(*)` })
+        .from(correctionRequests)
+        .where(and(eq(correctionRequests.orgId, orgId), eq(correctionRequests.status, 'RESOLVED')));
+      const correctionScore = Number(totalAppeals[0].count) > 0
+        ? Math.round((Number(resolvedAppeals[0].count) / Number(totalAppeals[0].count)) * 100)
+        : 90; // Standard process baseline
+
+      // 5. Truth: Based on AI Disclosure audits
+      const disclosureLogs = await tx.select()
+        .from(auditLogs)
+        .where(and(eq(auditLogs.orgId, orgId), eq(auditLogs.eventType, 'INSURANCE_SYNC'))); // Example proxy
+      const truthScore = disclosureLogs.length > 0 ? 95 : 85;
+
+      const integrityScore = org.integrityScore || 0;
+
+      const rightsCompliance = {
+        human_agency: {
+          name: 'Right to Human Agency',
+          status: humanAgencyScore >= 80 ? 'COMPLIANT' : 'ATTENTION_NEEDED',
+          score: humanAgencyScore
+        },
+        explanation: {
+          name: 'Right to Explanation',
+          status: explanationScore >= 80 ? 'COMPLIANT' : 'PARTIAL',
+          score: explanationScore
+        },
+        empathy: {
+          name: 'Right to Empathy',
+          status: empathyScore >= 70 ? 'COMPLIANT' : 'NEEDS_REWRITE',
+          score: empathyScore
+        },
+        correction: {
+          name: 'Right to Correction',
+          status: correctionScore >= 80 ? 'COMPLIANT' : 'SLUGGISH',
+          score: correctionScore
+        },
+        truth: {
+          name: 'Right to Truth',
+          status: truthScore >= 90 ? 'COMPLIANT' : 'PARTIAL',
+          score: truthScore
+        }
+      };
+
+      // Overall rights score
+      const rightsScores = Object.values(rightsCompliance).map(r => r.score);
+      const overallRightsScore = Math.round(
+        rightsScores.reduce((a, b) => a + b, 0) / rightsScores.length
+      );
+
+      // 6. Action items
+      const actionItems = [];
+      if (Number(stats.pending) > 0) {
+        actionItems.push({
+          type: 'PENDING_REVIEW',
+          priority: 'high',
+          title: `${stats.pending} decisions pending human review`,
+          action: 'Review pending audit logs'
+        });
+      }
+      if (Number(stats.flagged) > 0) {
+        actionItems.push({
+          type: 'FLAGGED_DECISION',
+          priority: 'critical',
+          title: `${stats.flagged} decisions flagged for bias`,
+          action: 'Investigate flagged decisions'
+        });
+      }
+
+      return NextResponse.json({
+        organization: {
+          id: org.id,
+          name: org.name,
+          tier: org.tier,
+          is_alpha: org.isAlpha
+        },
+        integrity: {
+          score: integrityScore,
+          trend: 0,
+          status: integrityScore >= 80 ? 'HEALTHY' : integrityScore >= 60 ? 'ATTENTION' : 'CRITICAL'
+        },
+        audit_summary: {
+          total: Number(stats.total) || 0,
+          verified: Number(stats.verified) || 0,
+          flagged: Number(stats.flagged) || 0,
+          pending: Number(stats.pending) || 0,
+          last_24h: Number(stats.last_24h) || 0,
+          last_7d: Number(stats.last_7d) || 0
+        },
+        rights_compliance: rightsCompliance,
+        overall_rights_score: overallRightsScore,
+        recent_logs: recentLogs.map(log => ({
+          id: log.id,
+          action: log.eventType,
+          input_type: log.systemName,
+          status: log.status,
+          created_at: log.createdAt,
+          outcome: (log.details as Record<string, unknown>)?.outcome
+        })),
+        action_items: actionItems,
+        tier_requirements: getTierRequirements(org.tier || 'TIER_3'),
+        mode: 'LIVE',
+        timestamp: new Date().toISOString()
       });
-    }
-    if (parseInt(auditStats.flagged) > 0) {
-      actionItems.push({
-        type: 'FLAGGED_DECISION',
-        priority: 'critical',
-        title: `${auditStats.flagged} decisions flagged for bias`,
-        action: 'Investigate flagged decisions'
-      });
-    }
-
-    return NextResponse.json({
-      organization: {
-        id: org.id,
-        name: org.name,
-        tier: org.tier,
-        is_alpha: org.is_alpha
-      },
-      integrity: {
-        score: integrityScore,
-        trend: 2, // Would calculate from historical data
-        status: integrityScore >= 80 ? 'HEALTHY' : integrityScore >= 60 ? 'ATTENTION' : 'CRITICAL'
-      },
-      audit_summary: {
-        total: parseInt(auditStats.total) || 0,
-        verified: parseInt(auditStats.verified) || 0,
-        flagged: parseInt(auditStats.flagged) || 0,
-        pending: parseInt(auditStats.pending) || 0,
-        last_24h: parseInt(auditStats.last_24h) || 0,
-        last_7d: parseInt(auditStats.last_7d) || 0
-      },
-      rights_compliance: rightsCompliance,
-      overall_rights_score: overallRightsScore,
-      recent_logs: recentLogsResult.rows,
-      action_items: actionItems,
-      tier_requirements: getTierRequirements(org.tier),
-      mode: 'LIVE',
-      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('Dashboard error:', error);
-
-    // Fallback mock data
-    return NextResponse.json({
-      organization: {
-        id: 'demo',
-        name: 'Demo Organization',
-        tier: 'TIER_1',
-        is_alpha: true
-      },
-      integrity: {
-        score: 94,
-        trend: 2,
-        status: 'HEALTHY'
-      },
-      audit_summary: {
-        total: 1250,
-        verified: 1180,
-        flagged: 12,
-        pending: 58,
-        last_24h: 42,
-        last_7d: 285
-      },
-      rights_compliance: {
-        human_agency: { name: 'Right to Human Agency', status: 'COMPLIANT', score: 92 },
-        explanation: { name: 'Right to Explanation', status: 'COMPLIANT', score: 85 },
-        empathy: { name: 'Right to Empathy', status: 'COMPLIANT', score: 88 },
-        correction: { name: 'Right to Correction', status: 'COMPLIANT', score: 90 },
-        truth: { name: 'Right to Truth', status: 'COMPLIANT', score: 95 }
-      },
-      overall_rights_score: 90,
-      recent_logs: [
-        { id: 'REQ-8392', action: 'CREDIT_DECISION', input_type: 'Credit App', outcome: 'DENIED', status: 'PENDING', created_at: new Date().toISOString() },
-        { id: 'REQ-8391', action: 'CREDIT_DECISION', input_type: 'Credit App', outcome: 'APPROVED', status: 'VERIFIED', created_at: new Date().toISOString() }
-      ],
-      action_items: [
-        { type: 'PENDING_REVIEW', priority: 'high', title: '2 decisions pending review', action: 'Review pending audit logs' }
-      ],
-      tier_requirements: getTierRequirements('TIER_1'),
-      mode: 'MOCK',
-      timestamp: new Date().toISOString()
-    });
+    console.error('[SECURITY] Dashboard API Error:', error);
+    return NextResponse.json({ error: 'Failed to retrieve institutional intelligence' }, { status: 500 });
   }
 }
 

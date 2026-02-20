@@ -5,7 +5,7 @@
 ---
 
 ## 1. Objective
-The objective of this pilot is to validate the [Participant Name]'s [Specific AI System] against the AIC Human Accountability Framework (POPIA Section 71 Alignment) and to refine the AIC certification methodology.
+The objective of this pilot is to validate the [Participant Name]'s [Specific AI System] against the AIC Human Accountability Framework (leveraging POPIA Section 71 as the regulatory anchor) and to refine the AIC certification methodology.
 
 ## 2. Scope of Work
 AIC will perform the following:

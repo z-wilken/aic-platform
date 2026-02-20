@@ -1,26 +1,51 @@
-name: AIC Platform CI
+name: Foundation Stability & CI
 
 on:
   push:
-    branches: [main, develop]
-    paths:
-      - 'apps/web/**'
-      - 'apps/platform/**'
-      - 'apps/admin/**'
-      - 'apps/hq/**'
-      - 'packages/**'
+    branches: [main]
   pull_request:
-    branches: [main, develop]
-    paths:
-      - 'apps/web/**'
-      - 'apps/platform/**'
-      - 'apps/admin/**'
-      - 'apps/hq/**'
-      - 'packages/**'
+    branches: [main]
 
 jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    name: Monorepo Hygiene & Linting
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Lint check
+        run: npm run lint
+      - name: Type check (Shared Packages)
+        run: npm run type-check --workspace=packages/types
+
+  test:
+    runs-on: ubuntu-latest
+    needs: hygiene
+    name: Run Unit Tests
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
   build:
     runs-on: ubuntu-latest
+    needs: test
 
     strategy:
       matrix:

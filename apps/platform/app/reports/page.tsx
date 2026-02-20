@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface ComplianceReport {
     id: string;
@@ -13,36 +14,45 @@ interface ComplianceReport {
     created_at: string;
 }
 
+import { generateIntegritySnapshot } from '../../lib/report-generator';
+
 export default function ReportsPage() {
     const [reports, setReports] = useState<ComplianceReport[]>([]);
+    const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    const fetchReports = () => {
+    const fetchReports = async () => {
         setLoading(true);
-        fetch('/api/reports')
-            .then(res => res.json())
-            .then(data => {
-                setReports(data.reports || []);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
+        try {
+            const res = await fetch('/api/reports');
+            const data = await res.json();
+            setReports(data.reports || []);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         fetchReports();
+        fetch('/api/stats').then(res => res.json()).then(data => setStats(data));
     }, []);
+
+    const handleDownloadCurrent = () => {
+        if (!stats) return;
+        generateIntegritySnapshot({ name: stats.orgName, id: stats.orgId }, stats);
+    };
 
     const handleGenerateReport = async () => {
         setIsGenerating(true);
         try {
             const res = await fetch('/api/reports', { method: 'POST' });
             if (res.ok) {
-                alert("New compliance snapshot generated successfully.");
+                toast.success("New compliance snapshot generated successfully.");
                 fetchReports();
+            } else {
+                const error = await res.json();
+                toast.error(error.error || "Failed to generate report");
             }
         } finally {
             setIsGenerating(false);

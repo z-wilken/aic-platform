@@ -13,7 +13,7 @@ export const InstitutionalFooter = () => {
                 <div className="space-y-8">
                     <div className="text-xl font-serif font-bold tracking-tighter text-white">AIC<span className="text-aic-gold">.</span></div>
                     <p className="text-gray-500 leading-relaxed max-w-xs">
-                        The definitive accountability layer for South African automated systems. POPIA Section 71 Compliance Framework.
+                        The definitive accountability layer for global automated systems. ISO/IEC 42001 & NIST AI RMF.
                     </p>
                 </div>
 
@@ -21,6 +21,8 @@ export const InstitutionalFooter = () => {
                     <h4 className="text-aic-gold font-bold">Institutional</h4>
                     <nav className="flex flex-col gap-4 text-gray-400">
                         <a href="/about" className="hover:text-white transition-colors">Founder's Vision</a>
+                        <a href="/rights" className="hover:text-white transition-colors">The Declaration of Algorithmic Rights</a>
+                        <a href="/business/pricing" className="hover:text-white transition-colors">Institutional Pricing</a>
                         <a href="/governance" className="hover:text-white transition-colors">Regulatory Stack</a>
                         <a href="/registry" className="hover:text-white transition-colors">Certified Registry</a>
                     </nav>
@@ -37,7 +39,7 @@ export const InstitutionalFooter = () => {
 
                 <div className="space-y-6 text-right">
                     <h4 className="text-aic-gold font-bold text-right">Jurisdiction</h4>
-                    <p className="text-gray-500">Johannesburg<br />South Africa</p>
+                    <p className="text-gray-500">Global Operations<br />Distributed Registry</p>
                     <div className="pt-8">
                         <p className="text-white font-bold tracking-widest">© 2026 AI INTEGRITY</p>
                     </div>

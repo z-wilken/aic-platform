@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import EvidenceModal from '../components/EvidenceModal';
 
 interface Requirement {
@@ -55,11 +56,13 @@ export default function RoadmapPage() {
             });
 
             if (response.ok) {
+                toast.success('Institutional evidence submitted for verification.');
                 fetchRequirements();
+            } else {
+                toast.error('Failed to submit evidence.');
             }
         } catch (err) {
-            console.error(err);
-            alert("Submission failed.");
+            toast.error('Network error during submission.');
         }
     };
 

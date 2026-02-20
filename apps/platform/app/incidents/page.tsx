@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardShell from '../components/DashboardShell';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function IncidentsPage() {
     const [incidents, setIncidents] = useState<any[]>([]);
@@ -23,16 +24,30 @@ export default function IncidentsPage() {
         fetchIncidents();
     }, []);
 
-    const handleResolve = async (id: string, status: 'RESOLVED' | 'DISMISSED') => {
-        const res = await fetch(`/api/incidents/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status, resolution_details: resolution })
-        });
-        if (res.ok) {
-            setSelectedIncident(null);
-            setResolution('');
-            fetchIncidents();
+    const handleResolve = async (id: string, status: 'RESOLVED' | 'DISMISSED' | 'INVESTIGATING' | 'CLOSED') => {
+        try {
+            const res = await fetch(`/api/incidents/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status, resolution_details: resolution })
+            });
+            if (res.ok) {
+                if (status === 'RESOLVED' || status === 'DISMISSED' || status === 'CLOSED') {
+                    setSelectedIncident(null);
+                    setResolution('');
+                } else {
+                    // Just update the selected incident state if still investigating
+                    const data = await res.json();
+                    setSelectedIncident(data.incident);
+                }
+                toast.success(`Institutional appeal updated to ${status.toLowerCase()}.`);
+                fetchIncidents();
+            } else {
+                const data = await res.json();
+                toast.error(data.error || 'Failed to update incident');
+            }
+        } catch (err) {
+            toast.error('Connection failure while resolving incident.');
         }
     };
 
@@ -64,7 +79,11 @@ export default function IncidentsPage() {
                             >
                                 <div className="flex justify-between items-start mb-6">
                                     <div className="flex items-center gap-3">
-                                        <span className={`w-2 h-2 rounded-full ${inc.status === 'OPEN' ? 'bg-aic-red animate-pulse' : 'bg-green-500'}`} />
+                                        <span className={`w-2 h-2 rounded-full ${
+                                            inc.status === 'OPEN' ? 'bg-aic-red animate-pulse' : 
+                                            inc.status === 'INVESTIGATING' ? 'bg-aic-gold animate-pulse' :
+                                            inc.status === 'CLOSED' ? 'bg-gray-400' : 'bg-green-500'
+                                        }`} />
                                         <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">{inc.status}</span>
                                     </div>
                                     <span className="text-[10px] font-mono text-gray-400">{new Date(inc.created_at).toLocaleDateString()}</span>
@@ -112,18 +131,40 @@ export default function IncidentsPage() {
                                     />
 
                                     <div className="flex flex-col gap-4">
-                                        <button 
-                                            onClick={() => handleResolve(selectedIncident.id, 'RESOLVED')}
-                                            className="w-full bg-aic-gold text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all"
-                                        >
-                                            MARK AS RESOLVED
-                                        </button>
-                                        <button 
-                                            onClick={() => handleResolve(selectedIncident.id, 'DISMISSED')}
-                                            className="w-full border border-white/20 text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:border-aic-red transition-all"
-                                        >
-                                            DISMISS APPEAL
-                                        </button>
+                                        {selectedIncident.status === 'OPEN' && (
+                                            <button 
+                                                onClick={() => handleResolve(selectedIncident.id, 'INVESTIGATING')}
+                                                className="w-full bg-aic-gold text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all"
+                                            >
+                                                START INVESTIGATION
+                                            </button>
+                                        )}
+                                        
+                                        {(selectedIncident.status === 'OPEN' || selectedIncident.status === 'INVESTIGATING') && (
+                                            <>
+                                                <button 
+                                                    onClick={() => handleResolve(selectedIncident.id, 'RESOLVED')}
+                                                    className="w-full bg-white text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all"
+                                                >
+                                                    MARK AS RESOLVED
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleResolve(selectedIncident.id, 'DISMISSED')}
+                                                    className="w-full border border-white/20 text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all"
+                                                >
+                                                    DISMISS APPEAL
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {selectedIncident.status === 'RESOLVED' && (
+                                            <button 
+                                                onClick={() => handleResolve(selectedIncident.id, 'CLOSED')}
+                                                className="w-full bg-gray-800 text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-gray-700 transition-all"
+                                            >
+                                                ARCHIVE & CLOSE
+                                            </button>
+                                        )}
                                     </div>
                                 </motion.div>
                             ) : (

@@ -2,19 +2,44 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function EnterpriseCRMPage() {
     const [leads, setLeads] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+
+    const fetchLeads = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/leads');
+            const data = await res.json();
+            setLeads(data.leads || []);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        fetch('/api/leads')
-            .then(res => res.json())
-            .then(data => {
-                setLeads(data.leads || []);
-                setLoading(false);
-            });
+        fetchLeads();
     }, []);
+
+    const handleStatusUpdate = async (id: string, status: string) => {
+        try {
+            const res = await fetch(`/api/leads/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            if (res.ok) {
+                toast.success('Institutional lead status updated.');
+                fetchLeads();
+            } else {
+                toast.error('Failed to update lead status.');
+            }
+        } catch (err) {
+            toast.error('Network error during CRM update.');
+        }
+    };
 
     const getStatusStyle = (status: string) => {
         switch (status) {
@@ -75,9 +100,17 @@ export default function EnterpriseCRMPage() {
                                         {lead.score || 0}%
                                     </td>
                                     <td className="p-8">
-                                        <span className={`px-3 py-1 rounded-full border text-[8px] font-mono font-bold uppercase tracking-widest ${getStatusStyle(lead.status)}`}>
-                                            {lead.status}
-                                        </span>
+                                        <select 
+                                            value={lead.status}
+                                            onChange={(e) => handleStatusUpdate(lead.id, e.target.value)}
+                                            className={`bg-transparent border border-white/10 rounded-full px-3 py-1 font-mono text-[8px] font-bold uppercase tracking-widest outline-none focus:border-aic-gold transition-colors ${getStatusStyle(lead.status)}`}
+                                        >
+                                            <option value="PROSPECT">PROSPECT</option>
+                                            <option value="HIGH_INTENT">HIGH_INTENT</option>
+                                            <option value="ALPHA_ENROLLED">ALPHA_ENROLLED</option>
+                                            <option value="CERTIFIED">CERTIFIED</option>
+                                            <option value="LOST">LOST</option>
+                                        </select>
                                     </td>
                                     <td className="p-8 text-right">
                                         <button className="text-[10px] font-mono font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest">

@@ -5,14 +5,48 @@ import AdminShell from './components/AdminShell'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
+interface DashboardData {
+  stats: {
+    pendingApplications: number;
+    activeCertifications: number;
+    totalLeads: number;
+    auditsTotal: number;
+    verificationQueueCount: number;
+    integrityVelocity: string;
+  };
+  activeOrgs: Array<{
+    name: string;
+    integrity_score: number;
+    tier: string;
+  }>;
+  recentApplications: Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    company: string;
+  }>;
+  recentLeads: Array<{
+    id: string;
+    email: string;
+    source: string;
+    score: number;
+  }>;
+  verificationQueueItems: Array<{
+    id: string;
+    title: string;
+    orgName: string;
+    createdAt: string;
+  }>;
+}
+
 export default function AdminDashboard() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/dashboard')
         .then(res => res.json())
-        .then(dashData => {
+        .then((dashData: DashboardData) => {
             setData(dashData);
             setLoading(false);
         });
@@ -32,7 +66,9 @@ export default function AdminDashboard() {
     pendingApplications: 0,
     activeCertifications: 0,
     totalLeads: 0,
-    auditsTotal: 0
+    auditsTotal: 0,
+    verificationQueueCount: 0,
+    integrityVelocity: '+0.0%'
   };
 
   return (
@@ -57,8 +93,8 @@ export default function AdminDashboard() {
             {[
                 { l: 'Alpha Applicants', v: stats.pendingApplications, c: 'text-white' },
                 { l: 'Pilot Participants', v: stats.activeCertifications, c: 'text-aic-gold' },
-                { l: 'Verification Queue', v: '8', c: 'text-blue-400' },
-                { l: 'Integrity Velocity', v: '+4.2%', c: 'text-green-400' }
+                { l: 'Verification Queue', v: stats.verificationQueueCount, c: 'text-blue-400' },
+                { l: 'Integrity Velocity', v: stats.integrityVelocity, c: 'text-green-400' }
             ].map((s, i) => (
                 <motion.div 
                     key={s.l}
@@ -79,15 +115,11 @@ export default function AdminDashboard() {
                 <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Alpha Certification Pipeline</h3>
                 <div className="bg-black/40 border border-white/5 rounded-[2.5rem] p-8">
                     <div className="space-y-8">
-                        {(data?.activeOrgs || [
-                            { name: 'Standard Bank', integrity_score: 94, tier: 'TIER_1' },
-                            { name: 'Investec Health', integrity_score: 82, tier: 'TIER_2' },
-                            { name: 'Discovery Ltd', integrity_score: 100, tier: 'TIER_3' }
-                        ]).map((org: any, i: number) => (
+                        {(data?.activeOrgs || []).map((org, i: number) => (
                             <div key={i} className="space-y-2">
                                 <div className="flex justify-between items-end text-xs font-mono">
                                     <span className="text-white font-bold uppercase tracking-widest">{org.name}</span>
-                                    <span className="text-gray-500">{org.tier} — {org.integrity_score}%</span>
+                                    <span className="text-gray-500">{org.tier?.replace('_', ' ')} — {org.integrity_score}%</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                                     <motion.div 
@@ -108,18 +140,18 @@ export default function AdminDashboard() {
                 <div className="bg-black/40 border border-white/5 rounded-[2rem] p-8 space-y-6">
                     <p className="text-xs text-gray-500 font-serif italic mb-4">Pending evidence submissions requiring lead auditor sign-off.</p>
                     <div className="space-y-4">
-                        {[
-                            { org: 'Standard Bank', req: 'Bias Audit v2', time: '2h ago' },
-                            { org: 'Investec', req: 'POPIA Disclosure', time: '5h ago' }
-                        ].map((item, i) => (
+                        {(data?.verificationQueueItems || []).map((item, i) => (
                             <div key={i} className="p-4 bg-white/5 border border-white/5 rounded-xl hover:border-aic-gold transition-colors cursor-pointer">
-                                <p className="text-xs font-bold text-white">{item.req}</p>
+                                <p className="text-xs font-bold text-white">{item.title}</p>
                                 <div className="flex justify-between mt-1 text-[9px] font-mono text-gray-500">
-                                    <span>{item.org}</span>
-                                    <span>{item.time}</span>
+                                    <span>{item.orgName}</span>
+                                    <span>{new Date(item.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
                         ))}
+                        {(data?.verificationQueueItems || []).length === 0 && (
+                            <p className="text-center text-gray-500 font-mono text-[9px] py-4 uppercase tracking-widest">Queue is currently clear.</p>
+                        )}
                     </div>
                     <Link href="/verification" className="block text-center py-4 border-t border-white/5 font-mono text-[9px] font-bold text-aic-gold hover:text-white uppercase tracking-widest transition-colors mt-4">
                         Enter Verification Portal →
@@ -142,7 +174,7 @@ export default function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5 font-mono text-xs text-white">
-                            {(data?.recentApplications || []).map((app: any) => (
+                            {(data?.recentApplications || []).map((app) => (
                                 <tr key={app.id} className="hover:bg-white/5 transition-colors">
                                     <td className="p-4">{app.first_name} {app.last_name}</td>
                                     <td className="p-4 text-gray-400">{app.company}</td>
@@ -164,7 +196,7 @@ export default function AdminDashboard() {
             <div>
                 <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">CRM Integration Feed</h3>
                 <div className="space-y-4">
-                    {(data?.recentLeads || []).map((lead: any) => (
+                    {(data?.recentLeads || []).map((lead) => (
                         <div key={lead.id} className="flex items-center justify-between p-6 bg-black/40 border border-white/5 rounded-2xl group hover:border-blue-500/30 transition-all">
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">

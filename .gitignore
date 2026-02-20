@@ -5,9 +5,31 @@ node_modules/
 /.pnp
 .pnp.js
 
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
 # Testing
 /coverage
 *.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+*.egg-info/
+.eggs/
+*.egg
+.mypy_cache/
+.ruff_cache/
 
 # Production builds
 /build

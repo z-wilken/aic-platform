@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Crimson_Pro, IBM_Plex_Mono } from "next/font/google";
 import { Providers } from "./providers";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const crimsonPro = Crimson_Pro({
@@ -35,6 +36,7 @@ export default function RootLayout({
       >
         <Providers>
           {children}
+          <Toaster position="bottom-right" richColors />
         </Providers>
       </body>
     </html>

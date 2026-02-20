@@ -1,34 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { getTenantDb, incidents, notifications } from '@aic/db';
+import { isValidEmail, isNonEmptyString, isValidLongText, safeParseJSON } from '@/lib/validation';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { orgId, citizen_email, system_name, description } = body;
-
-    if (!orgId || !citizen_email || !description) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    const ip = getClientIP(request);
+    const { allowed } = checkRateLimit(`appeal:${ip}`, 3, 60_000);
+    if (!allowed) {
+      return NextResponse.json({ error: 'Too many requests. Please try again later.' }, { status: 429 });
     }
 
-    // 1. Log the Incident
-    const result = await query(
-      `INSERT INTO incidents (org_id, citizen_email, system_name, description, status) 
-       VALUES ($1, $2, $3, $4, 'OPEN') RETURNING id`,
-      [orgId, citizen_email, system_name || 'Unknown', description]
-    );
+    const body = await safeParseJSON(request);
+    if (!body) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
 
-    // 2. Notify the Organization
-    await query(
-        `INSERT INTO notifications (org_id, title, message, type) 
-         VALUES ($1, $2, $3, 'ALERT')`,
-        [
-            orgId, 
-            'NEW CITIZEN APPEAL', 
-            `A citizen has contested an automated decision from "${system_name || 'Unknown'}". Action required within 72 hours.`
-        ]
-    );
+    const { orgId, citizen_email, system_name, description } = body;
 
-    return NextResponse.json({ success: true, appealId: result.rows[0].id });
+    if (!isNonEmptyString(orgId)) {
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 });
+    }
+    if (!isValidEmail(citizen_email)) {
+      return NextResponse.json({ error: 'Valid email address is required' }, { status: 400 });
+    }
+    if (!isValidLongText(description)) {
+      return NextResponse.json({ error: 'Description is required (max 5000 characters)' }, { status: 400 });
+    }
+
+    const safeName = isNonEmptyString(system_name) ? system_name : 'Unknown';
+    const db = getTenantDb(orgId);
+
+    return await db.query(async (tx) => {
+      // 1. Log the Incident
+      const [newIncident] = await tx
+        .insert(incidents)
+        .values({
+          orgId,
+          citizenEmail: citizen_email,
+          systemName: safeName,
+          description,
+          status: 'OPEN'
+        })
+        .returning({ id: incidents.id });
+
+      // 2. Notify the Organization
+      await tx
+        .insert(notifications)
+        .values({
+          orgId,
+          title: 'NEW CITIZEN APPEAL',
+          message: `A citizen has contested an automated decision from "${safeName}". Action required within 72 hours.`,
+          type: 'ALERT',
+          status: 'UNREAD'
+        });
+
+      return NextResponse.json({ success: true, appealId: newIncident.id });
+    });
 
   } catch (error) {
     console.error('Public Appeal API Error:', error);

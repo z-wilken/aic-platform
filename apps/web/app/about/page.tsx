@@ -47,10 +47,10 @@ export default function AboutPage() {
                         <h2 className="text-sm font-mono font-bold uppercase tracking-widest text-aic-black">Why AIC Exists</h2>
                         <div className="space-y-6 text-gray-600 font-serif leading-relaxed text-lg">
                             <p>
-                                Most global standards (like ISO 42001) focus on organizational governance. While valuable, they don't solve the specific legal exposure created by South African law.
+                                Most global standards (like ISO 42001) focus on organizational governance. While valuable, they don&apos;t solve the specific legal exposure created by South African law.
                             </p>
                             <p>
-                                AIC was built to be the "Accountability Layer." We don't just audit your code; we validate your <span className="font-bold text-aic-black underline decoration-aic-gold underline-offset-4">Human-in-the-Loop</span> processes.
+                                AIC was built to be the &quot;Accountability Layer.&quot; We don&apos;t just audit your code; we validate your <span className="font-bold text-aic-black underline decoration-aic-gold underline-offset-4">Human-in-the-Loop</span> processes.
                             </p>
                         </div>
                     </motion.section>
@@ -88,7 +88,7 @@ export default function AboutPage() {
                     whileInView={{ opacity: 1 }}
                     className="mt-32 p-12 bg-aic-black text-white text-center"
                 >
-                    <p className="font-serif text-2xl italic mb-8">"We do not regulate AI. We certify that humans remain accountable."</p>
+                    <p className="font-serif text-2xl italic mb-8">&quot;We do not regulate AI. We certify that humans remain accountable.&quot;</p>
                     <a href="/contact" className="font-mono text-xs font-bold uppercase tracking-[0.3em] border-b border-white/20 pb-2 hover:border-white transition-colors">
                         Connect with the Founder
                     </a>

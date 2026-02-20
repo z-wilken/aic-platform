@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '../../../lib/db';
-import { getSession } from '../../../lib/auth';
+import { getSystemDb, notifications } from '@aic/db';
+import { auth } from '@aic/auth';
 
 export async function POST(request: NextRequest) {
-  const session: any = await getSession();
+  const session = await auth();
 
-  if (!session || (session.user.role !== 'ADMIN' && session.user.role !== 'AUDITOR')) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.isSuperAdmin) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
   try {
@@ -17,12 +17,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const result = await query(
-      'INSERT INTO notifications (org_id, title, message, type) VALUES ($1, $2, $3, $4) RETURNING *',
-      [org_id, title, message, type]
-    );
+    const db = getSystemDb();
+    const [newNotification] = await db.insert(notifications).values({
+      orgId: org_id,
+      title,
+      message,
+      type
+    }).returning();
 
-    return NextResponse.json({ success: true, notification: result.rows[0] });
+    return NextResponse.json({ success: true, notification: newNotification });
   } catch (error) {
     console.error('Admin Notification Create Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
