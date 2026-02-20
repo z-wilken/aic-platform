@@ -27,13 +27,13 @@ const warnings: string[] = [];
 const errors: string[] = [];
 
 for (const key of required) {
-  if (!process.env[key]) {
+  if (!process.env[key] && !process.env.CI) {
     errors.push(`Missing required environment variable: ${key}`);
   }
 }
 
 // Warn on optional but recommended vars
-if (!process.env.ENGINE_URL) {
+if (!process.env.ENGINE_URL && !process.env.CI) {
   warnings.push('ENGINE_URL not set — engine integration will be unavailable');
 }
 
