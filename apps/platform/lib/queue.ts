@@ -99,22 +99,26 @@ export const engineWorker = new Worker(
   }
 );
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function processEngineResult(result: any, auditId: string, orgId: string) {
+interface ResourceUsage {
+  compute_ms: number;
+  memory_mb: number;
+  carbon_estimate_g: number;
+}
+
+async function processEngineResult(result: Record<string, unknown>, auditId: string, orgId: string) {
     const db = getTenantDb(orgId);
     await db.query(async (tx) => {
       // Update Audit Log
       await tx.update(auditLogs)
         .set({
           details: result,
-          integrityHash: result.audit_hash as string,
-          signature: result.signature as string,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          resourceUsage: (result.resource_usage || {
+          integrityHash: (result.audit_hash as string) || null,
+          signature: (result.signature as string) || null,
+          resourceUsage: (result.resource_usage as ResourceUsage) || {
             compute_ms: 0,
             memory_mb: 0,
             carbon_estimate_g: 0
-          }) as any,
+          },
           status: 'VERIFIED'
         })
         .where(eq(auditLogs.id, auditId));

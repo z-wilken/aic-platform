@@ -88,7 +88,7 @@ export default function OrganizationalSettings() {
             } else {
                 toast.error(data.error || 'Failed to start MFA setup');
             }
-        } catch (_err) {
+        } catch {
             toast.error('Network error during MFA setup');
         }
     };

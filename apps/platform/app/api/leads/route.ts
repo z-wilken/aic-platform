@@ -21,32 +21,23 @@ export async function GET(request: NextRequest) {
 
     // [SECURITY] getSystemDb() used for SuperAdmin to view leads across all tenants.
     // getTenantDb() used for regular users to ensure RLS isolation.
-    const db = isSuperAdmin ? getSystemDb() : getTenantDb(userOrgId as string);
+    
+    const conditions = [];
+    if (status) {
+      conditions.push(eq(leads.status, status));
+    }
+    if (source) {
+      conditions.push(eq(leads.source, source));
+    }
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const execute = async (tx: any) => {
-      const conditions = [];
-      
-      if (status) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        conditions.push(eq(leads.status, status as any));
-      }
-      if (source) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        conditions.push(eq(leads.source, source as any));
-      }
+    let result;
+    let stats;
 
-      const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-
-      const result = await tx
-        .select()
-        .from(leads)
-        .where(whereClause)
-        .orderBy(desc(leads.createdAt))
-        .limit(limit);
-
-      // Get stats
-      const [stats] = await tx.select({
+    if (isSuperAdmin) {
+      const db = getSystemDb();
+      result = await db.select().from(leads).where(whereClause).orderBy(desc(leads.createdAt)).limit(limit);
+      [stats] = await db.select({
         total: sql<number>`count(*)`,
         new_leads: sql<number>`count(*) filter (where status = 'NEW')`,
         contacted: sql<number>`count(*) filter (where status = 'CONTACTED')`,
@@ -54,22 +45,30 @@ export async function GET(request: NextRequest) {
         converted: sql<number>`count(*) filter (where status = 'CONVERTED')`,
         from_quiz: sql<number>`count(*) filter (where source = 'QUIZ')`,
         from_alpha: sql<number>`count(*) filter (where source = 'ALPHA_FORM')`
-      }).from(leads)
-      .where(whereClause); 
-
-      return NextResponse.json({
-        leads: result,
-        stats
-      });
-    };
-
-    if (isSuperAdmin) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).transaction(execute);
+      }).from(leads);
     } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).query(execute);
+      const db = getTenantDb(userOrgId as string);
+      const data = await db.query(async (tx) => {
+        const r = await tx.select().from(leads).where(whereClause).orderBy(desc(leads.createdAt)).limit(limit);
+        const [s] = await tx.select({
+          total: sql<number>`count(*)`,
+          new_leads: sql<number>`count(*) filter (where status = 'NEW')`,
+          contacted: sql<number>`count(*) filter (where status = 'CONTACTED')`,
+          qualified: sql<number>`count(*) filter (where status = 'QUALIFIED')`,
+          converted: sql<number>`count(*) filter (where status = 'CONVERTED')`,
+          from_quiz: sql<number>`count(*) filter (where source = 'QUIZ')`,
+          from_alpha: sql<number>`count(*) filter (where source = 'ALPHA_FORM')`
+        }).from(leads).where(whereClause);
+        return { r, s };
+      });
+      result = data.r;
+      stats = data.s;
     }
+
+    return NextResponse.json({
+      leads: result,
+      stats
+    });
 
   } catch (error) {
     console.error('[SECURITY] Leads GET Error:', error);

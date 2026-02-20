@@ -3,8 +3,6 @@ import { organizations, auditRequirements, complianceReports, auditLogs, eq, and
 import { auth } from '@aic/auth';
 import { StatsResponseSchema } from '@aic/types';
 
-type AuditRequirement = typeof auditRequirements.$inferSelect;
-
 export async function GET() {
   try {
     const session = await auth();

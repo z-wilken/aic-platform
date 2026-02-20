@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
-import { UserRole } from '@aic/types'
+import { UserRole, AICSessionUser } from '@aic/types'
 
 interface InternalStats {
   pendingApplications: number;
@@ -52,8 +52,7 @@ export default function InternalDashboard() {
     return <div className="flex items-center justify-center h-screen italic text-gray-500">Syncing with institutional registry...</div>;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const role = (session?.user as any)?.role as UserRole || 'VIEWER';
+  const role = (session?.user as unknown as AICSessionUser)?.role || 'VIEWER';
 
   return (
     <div className="max-w-7xl mx-auto p-8 lg:p-12 space-y-12">

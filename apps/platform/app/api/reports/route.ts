@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getTenantDb, complianceReports, organizations, incidents, eq, desc, sql, and } from '@aic/db';
 import { getSession } from '../../../lib/auth';
 import type { Session } from 'next-auth';

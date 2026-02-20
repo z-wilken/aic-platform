@@ -24,41 +24,52 @@ export async function GET(
     const isSuperAdmin = session.user.isSuperAdmin;
     // [SECURITY] getSystemDb() used for SuperAdmin to access organization data.
     // getTenantDb() used for regular users to enforce tenant isolation.
-    const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const execute = async (tx: any) => {
-      const [org] = await tx.select().from(organizations).where(eq(organizations.id, id)).limit(1);
-
-      if (!org) {
-        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
-      }
-
-      // Get recent audit stats (using direct SQL filter for efficiency)
-      const [stats] = await tx.select({
-        total: sql<number>`count(*)`,
-        verified: sql<number>`count(*) filter (where status = 'VERIFIED')`,
-        flagged: sql<number>`count(*) filter (where status = 'FLAGGED')`,
-        pending: sql<number>`count(*) filter (where status = 'PENDING')`
-      })
-      .from(auditLogs)
-      .where(eq(auditLogs.orgId, id));
-
-      return NextResponse.json({
-        organization: org,
-        audit_stats: stats
-      });
-    };
+    
+    let org;
+    let stats;
 
     if (isSuperAdmin) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).transaction(execute);
+      const db = getSystemDb();
+      [org] = await db.select().from(organizations).where(eq(organizations.id, id)).limit(1);
+      if (org) {
+        [stats] = await db.select({
+          total: sql<number>`count(*)`,
+          verified: sql<number>`count(*) filter (where status = 'VERIFIED')`,
+          flagged: sql<number>`count(*) filter (where status = 'FLAGGED')`,
+          pending: sql<number>`count(*) filter (where status = 'PENDING')`
+        })
+        .from(auditLogs)
+        .where(eq(auditLogs.orgId, id));
+      }
     } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).query(execute);
+      const db = getTenantDb(session.user.orgId);
+      const data = await db.query(async (tx) => {
+        const [o] = await tx.select().from(organizations).where(eq(organizations.id, id)).limit(1);
+        let s = null;
+        if (o) {
+          [s] = await tx.select({
+            total: sql<number>`count(*)`,
+            verified: sql<number>`count(*) filter (where status = 'VERIFIED')`,
+            flagged: sql<number>`count(*) filter (where status = 'FLAGGED')`,
+            pending: sql<number>`count(*) filter (where status = 'PENDING')`
+          })
+          .from(auditLogs)
+          .where(eq(auditLogs.orgId, id));
+        }
+        return { o, s };
+      });
+      org = data.o;
+      stats = data.s;
     }
-    
-    throw new Error('Database instance configuration error');
+
+    if (!org) {
+      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      organization: org,
+      audit_stats: stats
+    });
 
   } catch (error) {
     console.error('[SECURITY] Organization GET Error:', error);
@@ -96,11 +107,12 @@ export async function PUT(
     const isSuperAdmin = session.user.isSuperAdmin;
     // [SECURITY] getSystemDb() used for SuperAdmin to access organization data.
     // getTenantDb() used for regular users to enforce tenant isolation.
-    const db = isSuperAdmin ? getSystemDb() : getTenantDb(session.user.orgId);
+    
+    let updatedOrg;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const execute = async (tx: any) => {
-      const [updatedOrg] = await tx
+    if (isSuperAdmin) {
+      const db = getSystemDb();
+      [updatedOrg] = await db
         .update(organizations)
         .set({ 
           name: name,
@@ -108,26 +120,29 @@ export async function PUT(
         })
         .where(eq(organizations.id, id))
         .returning();
-
-      if (!updatedOrg) {
-        return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
-      }
-
-      return NextResponse.json({
-        message: 'Organization updated successfully',
-        organization: updatedOrg
-      });
-    };
-
-    if (isSuperAdmin) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).transaction(execute);
     } else {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return await (db as any).query(execute);
+      const db = getTenantDb(session.user.orgId);
+      updatedOrg = await db.query(async (tx) => {
+        const [o] = await tx
+          .update(organizations)
+          .set({ 
+            name: name,
+            tier: tier
+          })
+          .where(eq(organizations.id, id))
+          .returning();
+        return o;
+      });
     }
 
-    throw new Error('Database instance configuration error');
+    if (!updatedOrg) {
+      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      message: 'Organization updated successfully',
+      organization: updatedOrg
+    });
 
   } catch (error) {
     console.error('[SECURITY] Organization Update Error:', error);

@@ -1,11 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function LoginRedirect() {
-    const router = useRouter();
-
     useEffect(() => {
         // Redirect to the platform dashboard login
         // In production, this would be process.env.NEXT_PUBLIC_PLATFORM_URL

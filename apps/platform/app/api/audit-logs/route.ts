@@ -178,7 +178,7 @@ export async function PATCH(request: NextRequest) {
         return NextResponse.json({ success: true, auditId: newLog.id, jobId });
       });
   
-    } catch (error: unknown) {
+    } catch {
       return NextResponse.json({ error: 'Advanced validation failed' }, { status: 500 });
     }
 }

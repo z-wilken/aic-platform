@@ -28,7 +28,7 @@ const HeroSection = () => {
           <motion.h1 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as any }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
             className="text-6xl md:text-8xl font-serif font-medium tracking-tight text-aic-black leading-[0.95]"
           >
             Accountability <br />
@@ -43,7 +43,7 @@ const HeroSection = () => {
           >
             <div>
                 <p className="text-lg leading-relaxed text-gray-600 font-serif mb-8">
-                    AIC is the definitive trust infrastructure for South African AI. We certify the humans accountable for algorithmic outcomes, ensuring compliance with Section 71 of POPIA.
+                    AIC is the definitive trust infrastructure for sovereign AI governance. We certify the humans accountable for algorithmic outcomes, ensuring compliance with POPIA Section 71 and ISO/IEC 42001.
                 </p>
                 <div className="flex flex-col gap-4">
                     <motion.a
