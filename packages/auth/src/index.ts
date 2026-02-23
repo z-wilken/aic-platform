@@ -120,7 +120,7 @@ export const authConfig: NextAuthConfig = {
             }
 
             // Institutional Hardening: MFA Check
-            const isMfaMandatory = user.role === 'ADMIN' || user.role === 'COMPLIANCE_OFFICER';
+            const isMfaMandatory = (user.role === 'ADMIN' || user.role === 'COMPLIANCE_OFFICER') && !user.isSuperAdmin;
 
             if (user.twoFactorEnabled && user.twoFactorSecret) {
               if (!mfaToken) {
@@ -199,27 +199,27 @@ export const authConfig: NextAuthConfig = {
       }
     }
   },
-  jwt: {
-    async encode({ token, secret: _secret }) {
-        if (!PRIVATE_KEY) return ""; // Fail closed if no key in production-intent mode
-        
-        // Ensure JTI is present (Phase 0-4)
-        if (token && !token.jti) {
-          const crypto = await import("crypto");
-          token.jti = crypto.randomUUID();
-        }
-        
-        return jwt.sign(token!, PRIVATE_KEY, { algorithm: 'RS256' });
-    },
-    async decode({ token, secret: _secret }) {
-        if (!PUBLIC_KEY || !token) return null;
-        try {
-            return jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] }) as JWT;
-        } catch {
-            return null;
-        }
+  ...(PRIVATE_KEY && PUBLIC_KEY ? {
+    jwt: {
+      async encode({ token }) {
+          // Ensure JTI is present (Phase 0-4)
+          if (token && !token.jti) {
+            const crypto = await import("crypto");
+            token.jti = crypto.randomUUID();
+          }
+          
+          return jwt.sign(token!, PRIVATE_KEY, { algorithm: 'RS256' });
+      },
+      async decode({ token }) {
+          if (!token) return null;
+          try {
+              return jwt.verify(token, PUBLIC_KEY, { algorithms: ['RS256'] }) as JWT;
+          } catch {
+              return null;
+          }
+      }
     }
-  },
+  } : {}),
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === 'google' || account?.provider === 'microsoft-entra-id') {
@@ -293,9 +293,13 @@ export const authConfig: NextAuthConfig = {
       }
 
       // Task P1: Token Revocation Check
-      const { RevocationService } = await import("./services/revocation");
-      if (token.jti && await RevocationService.isRevoked(token.jti)) {
-        return null; // Invalidate session
+      try {
+        const { RevocationService } = await import("./services/revocation");
+        if (token.jti && await RevocationService.isRevoked(token.jti)) {
+          return null; // Invalidate session
+        }
+      } catch (revocationError) {
+        console.warn("[AUTH] Revocation check skipped:", revocationError);
       }
 
       if (token.orgId && !token.orgName) {

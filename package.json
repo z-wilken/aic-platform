@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "dev": "turbo dev",
-    "dev:web": "turbo dev --filter=web",
-    "dev:platform": "turbo dev --filter=platform",
+    "dev:web": "turbo dev --filter=web -- --port 3000",
+    "dev:platform": "turbo dev --filter=platform -- --port 3001",
     "build": "turbo build",
     "test": "turbo test",
     "test:watch": "vitest",

@@ -16,17 +16,57 @@ export const organizations = pgTable('organizations', {
   tier: tierEnum('tier').default('TIER_3'),
   integrityScore: integer('integrity_score').default(0),
   isAlpha: boolean('is_alpha').default(false),
-  oidcConfig: jsonb('oidc_config').default({
-    enabled: false,
-    issuer: null,
-    clientId: null,
-    clientSecret: null,
-    allowRegistration: false
-  }),
+  accreditationStatus: varchar('accreditation_status', { length: 50 }).default('PENDING'),
+  iso42001Readiness: integer('iso_42001_readiness_score').default(0),
   contactEmail: varchar('contact_email', { length: 255 }),
   apiKey: varchar('api_key', { length: 255 }),
   auditorId: uuid('auditor_id').references(() => users.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// AI Systems (The primary governance unit for ISO 42001)
+export const aiSystems = pgTable('ai_systems', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  riskTier: integer('risk_tier').notNull().default(1),
+  lifecycleStage: varchar('lifecycle_stage', { length: 50 }).default('DEVELOPMENT'),
+  isSandbox: boolean('is_sandbox').default(true),
+  lastAuditDate: timestamp('last_audit_date', { withTimezone: true }),
+  metadata: jsonb('metadata').default({}),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// Governance Blocks (Block-Based Workspace)
+export const governanceBlocks = pgTable('governance_blocks', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  systemId: uuid('system_id').references(() => aiSystems.id, { onDelete: 'cascade' }),
+  orgId: uuid('org_id').references(() => organizations.id),
+  type: varchar('type', { length: 50 }).notNull(), // text, file, model-card, human-context
+  content: jsonb('json_content').notNull(),
+  createdBy: uuid('created_by').references(() => users.id),
+  sequence: integer('sequence').notNull(),
+  impactMagnitude: integer('impact_magnitude').default(1),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table) => {
+  return {
+    sysSeqIdx: index('gov_blocks_sys_seq_idx').on(table.systemId, table.sequence),
+  }
+});
+
+// Cryptographic Audit Ledger
+export const auditLedger = pgTable('audit_ledger', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  blockId: uuid('block_id').references(() => governanceBlocks.id),
+  orgId: uuid('org_id').references(() => organizations.id),
+  type: varchar('type', { length: 20 }).default('SANDBOX'), // SANDBOX, FORMAL
+  currentHash: varchar('current_hash', { length: 64 }).notNull(),
+  previousHash: varchar('previous_hash', { length: 64 }),
+  timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow(),
+  signature: text('signature'),
 });
 
 // Users
@@ -55,7 +95,7 @@ export const users = pgTable('users', {
   }
 });
 
-// Audit Logs
+// Audit Logs (General activity)
 export const auditLogs = pgTable('audit_logs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   orgId: uuid('org_id').references(() => organizations.id),

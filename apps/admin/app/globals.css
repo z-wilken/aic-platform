@@ -6,18 +6,45 @@
   --font-mono: var(--font-ibm-plex-mono), monospace;
   --font-sans: var(--font-ibm-plex-mono), sans-serif;
 
-  /* Admin Palette */
-  --color-aic-black: #000000;
+  /* Sovereign Palette */
+  --color-aic-obsidian: #050505;
+  --color-aic-cyan: #00F5FF;
+  --color-aic-slate: #64748B;
   --color-aic-gold: #D4AF37;
-  --color-aic-paper: #FAF9F6;
   --color-aic-red: #C41E3A;
   
-  --color-admin-bg: #0F0F0F;
+  --color-admin-bg: var(--color-aic-obsidian);
   --color-admin-card: #1c1c1c;
-  --color-admin-accent: #3b82f6;
+  --color-admin-accent: #ef4444; /* Admin uses Red as primary accent */
 }
 
 body {
-  background-color: var(--color-admin-bg);
+  background-color: var(--color-aic-obsidian);
   color: white;
+  background-image: radial-gradient(at 50% 0%, rgba(239, 68, 68, 0.03) 0px, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Glassmorphism Utilities - Shared with Platform */
+@utility glass-panel {
+  background-color: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.5);
+}
+
+@utility glass-stat {
+  background-color: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+@utility hover-glow {
+  transition: all 0.3s ease;
+  &:hover {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
 }

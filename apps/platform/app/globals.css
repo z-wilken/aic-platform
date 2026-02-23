@@ -6,44 +6,56 @@
   --font-mono: var(--font-ibm-plex-mono), monospace;
   --font-sans: var(--font-ibm-plex-mono), monospace;
 
-  /* Color Palette */
-  --color-aic-black: #1a1a1a;
-  --color-aic-bg: #f5f5f7;
-  --color-aic-red: #c41e3a;
-  --color-aic-orange: #ff8c42;
-  --color-aic-green: #2c5f2d;
-  --color-aic-gold: #d4af37;
+  /* Sovereign Palette */
+  --color-aic-obsidian: #050505;
+  --color-aic-cyan: #00F5FF;
+  --color-aic-slate: #64748B;
+  --color-aic-gold: #D4AF37;
+  --color-aic-red: #C41E3A;
+  
+  /* Legacy/Semantic Mappings */
+  --color-aic-black: #000000;
+  --color-aic-bg: var(--color-aic-obsidian);
 }
 
 /* Base Styles */
 body {
-  background-color: var(--color-aic-bg);
-  color: var(--color-aic-black);
-  /* Darker, more serious gradient for the "Control Room" feel */
-  background-image: radial-gradient(at 0% 0%, rgba(26, 26, 26, 0.05) 0px, transparent 50%),
-                    radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.1) 0px, transparent 50%);
+  background-color: var(--color-aic-obsidian);
+  color: white;
+  /* Deep Space Gradient */
+  background-image: radial-gradient(at 50% 0%, rgba(0, 245, 255, 0.03) 0px, transparent 60%),
+                    radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.02) 0px, transparent 50%);
   background-attachment: fixed;
+  font-feature-settings: "ss01", "ss02", "cv01", "cv02";
 }
 
-/* Glassmorphism Utilities - Dashboard Edition (Slightly more opaque for readability) */
+/* Sovereign Glass Utilities */
 @utility glass-panel {
-  background-color: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  background-color: rgba(5, 5, 5, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.5);
 }
 
 @utility glass-sidebar {
-  background-color: rgba(26, 26, 26, 0.95); /* Dark Glass for Sidebar */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 @utility glass-stat {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@utility hover-glow {
+  transition: box-shadow 0.3s ease;
+  &:hover {
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.15);
+    border-color: rgba(0, 245, 255, 0.3);
+  }
 }
