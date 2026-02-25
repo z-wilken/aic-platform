@@ -51,7 +51,7 @@ const HeroSection = () => {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 1, delay: 1.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
               className="font-serif text-5xl md:text-6xl xl:text-7xl font-medium text-white leading-[1.0] tracking-tight"
             >
               The Human<br />

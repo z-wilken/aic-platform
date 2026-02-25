@@ -1,9 +1,16 @@
 @import "tailwindcss";
 
+/* ─── Font CSS variables set here since we load fonts via <link> ── */
+:root {
+  --font-crimson-pro: "Crimson Pro";
+  --font-ibm-plex-mono: "IBM Plex Mono";
+  --font-space-grotesk: "Space Grotesk";
+}
+
 @theme {
   /* ─── Typography ──────────────────────────────────────────────── */
-  --font-serif: var(--font-crimson-pro), serif;
-  --font-mono: var(--font-ibm-plex-mono), monospace;
+  --font-serif: var(--font-crimson-pro), Georgia, serif;
+  --font-mono: var(--font-ibm-plex-mono), "Courier New", monospace;
   --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
 
   /* ─── AIC Brand Palette — Navy + Copper ──────────────────────── */
@@ -24,6 +31,11 @@
 
   --color-aic-border:     rgba(10, 22, 40, 0.08);
   --color-aic-border-dark: rgba(255, 255, 255, 0.08);
+
+  /* ─── Legacy token aliases (map to copper) ───────────────────── */
+  --color-aic-gold:       #c87941;
+  --color-aic-gold-light: #e09a62;
+  --color-aic-red:        #c87941;
 }
 
 body {

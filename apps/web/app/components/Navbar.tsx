@@ -3,49 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Shield,
-  Menu,
-  X,
-  Globe,
-  Award,
-  BarChart3,
-  BookOpen,
-  FileText,
-} from "lucide-react";
-
-const navItems = [
-  {
-    label: "Governance Hub",
-    href: "/governance-hub",
-    icon: BookOpen,
-    description: "Algorithmic Rights & Global Standards",
-  },
-  {
-    label: "Corporate Portal",
-    href: "/corporate-portal",
-    icon: Shield,
-    description: "ISO/IEC 42001 Certification Services",
-  },
-  {
-    label: "Professional Portal",
-    href: "/professional-portal",
-    icon: Award,
-    description: "ISO/IEC 17024 Personnel Certification",
-  },
-  {
-    label: "AI Governance Index",
-    href: "/ai-governance-index",
-    icon: BarChart3,
-    description: "Fortune 500 AI Maturity Rankings",
-  },
-  {
-    label: "Disclosures",
-    href: "/disclosures",
-    icon: FileText,
-    description: "Impartiality & Accreditation Directory",
-  },
-];
+import { Shield, Menu, X, Globe } from "lucide-react";
+import { navItems } from "@/app/data/nav";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -204,4 +163,3 @@ export default function Navbar() {
   );
 }
 
-export { navItems };

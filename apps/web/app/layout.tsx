@@ -1,30 +1,8 @@
 import type { Metadata } from "next";
-import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./globals.css";
-
-const crimsonPro = Crimson_Pro({
-  variable: "--font-crimson-pro",
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "AIC | AI Certification Institute",
@@ -70,6 +48,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Google Fonts — loaded at runtime, not build time */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -91,9 +76,7 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-white text-aic-navy font-sans`}
-      >
+      <body className="antialiased bg-white text-aic-navy font-sans">
         <div className="min-h-screen flex flex-col">
           <Navbar />
           <main className="flex-1">{children}</main>

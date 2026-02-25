@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
-import { auditLogs, auditLedger, eq, desc, asc } from '../schema';
+import { eq, desc, asc } from 'drizzle-orm';
+import { auditLogs, auditLedger } from '../schema';
 
 export class HashChainService {
   /**

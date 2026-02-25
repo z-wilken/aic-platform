@@ -7,7 +7,7 @@ import {
   Mail,
   MapPin,
 } from "lucide-react";
-import { navItems } from "./Navbar";
+import { navItems } from "@/app/data/nav";
 
 export default function Footer() {
   return (
