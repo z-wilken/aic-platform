@@ -1,277 +1,207 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import * as analytics from '@/lib/analytics';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  Shield,
+  Menu,
+  X,
+  Globe,
+  Award,
+  BarChart3,
+  BookOpen,
+  FileText,
+} from "lucide-react";
 
-const institutionalNav = [
-  { href: '/governance-hub',       label: 'Governance Hub',       desc: 'Algorithmic Rights & Global Standards'     },
-  { href: '/corporate-portal',     label: 'Corporate Portal',     desc: 'ISO/IEC 42001 Certification Services'      },
-  { href: '/professional-portal',  label: 'Professional Portal',  desc: 'ISO/IEC 17024 Personnel Certification'     },
-  { href: '/ai-governance-index',  label: 'AI Governance Index',  desc: 'Maturity Rankings'                         },
-  { href: '/disclosures',          label: 'Disclosures',          desc: 'Impartiality & Accreditation'              },
+const navItems = [
+  {
+    label: "Governance Hub",
+    href: "/governance-hub",
+    icon: BookOpen,
+    description: "Algorithmic Rights & Global Standards",
+  },
+  {
+    label: "Corporate Portal",
+    href: "/corporate-portal",
+    icon: Shield,
+    description: "ISO/IEC 42001 Certification Services",
+  },
+  {
+    label: "Professional Portal",
+    href: "/professional-portal",
+    icon: Award,
+    description: "ISO/IEC 17024 Personnel Certification",
+  },
+  {
+    label: "AI Governance Index",
+    href: "/ai-governance-index",
+    icon: BarChart3,
+    description: "Fortune 500 AI Maturity Rankings",
+  },
+  {
+    label: "Disclosures",
+    href: "/disclosures",
+    icon: FileText,
+    description: "Impartiality & Accreditation Directory",
+  },
 ];
 
-const NavLink = ({
-  href,
-  children,
-  className = '',
-  activeClass = '',
-  onClick,
-}: {
-  href: string;
-  children: React.ReactNode;
-  className?: string;
-  activeClass?: string;
-  onClick?: () => void;
-}) => {
-  const pathname = usePathname();
-  const isActive = pathname === href || pathname.startsWith(href + '/');
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className={`relative font-mono text-[10px] font-bold tracking-widest group transition-colors ${className} ${isActive ? activeClass : ''}`}
-    >
-      {children}
-      <span className={`absolute -bottom-1 left-0 h-px bg-current transition-all ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
-    </Link>
-  );
-};
-
 export default function Navbar() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const [institutionalOpen, setInstitutionalOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isCitizenPath       = pathname.startsWith('/citizens');
-  const isOrgPath           = pathname.startsWith('/business');
-  const isInstitutionalPath = institutionalNav.some((n) => pathname.startsWith(n.href));
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const onDarkHero = pathname === '/';
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
-    <nav className={`sticky top-0 z-50 w-full transition-colors duration-300 ${onDarkHero ? '' : ''}`}>
-
-      {/* ── Top micro-bar ──────────────────────────────────────────── */}
-      <div className="bg-aic-navy text-[9px] font-mono font-bold tracking-[0.3em] uppercase border-b border-white/5">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex items-center justify-between h-9">
-
-            <div className="flex items-center gap-8">
-              <Link
-                href="/citizens"
-                className={`hover:text-white transition-colors ${isCitizenPath ? 'text-aic-copper' : 'text-white/30'}`}
-              >
-                For the Public
-              </Link>
-              <Link
-                href="/business"
-                className={`hover:text-white transition-colors ${isOrgPath || (!isCitizenPath && !isOrgPath && !isInstitutionalPath) ? 'text-aic-copper' : 'text-white/30'}`}
-              >
-                For Organisations
-              </Link>
-
-              {/* Institutional dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setInstitutionalOpen(true)}
-                onMouseLeave={() => setInstitutionalOpen(false)}
-              >
-                <button
-                  onClick={() => setInstitutionalOpen((v) => !v)}
-                  className={`flex items-center gap-1 hover:text-white transition-colors ${isInstitutionalPath ? 'text-aic-copper' : 'text-white/30'}`}
-                >
-                  Institutional
-                  <motion.span
-                    animate={{ rotate: institutionalOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="text-[7px] ml-0.5"
-                  >
-                    ▾
-                  </motion.span>
-                </button>
-
-                <AnimatePresence>
-                  {institutionalOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 mt-2 w-72 bg-aic-navy-mid border border-white/8 shadow-2xl z-50 py-1"
-                    >
-                      {institutionalNav.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="flex flex-col px-5 py-3 hover:bg-white/5 transition-colors group"
-                        >
-                          <span className="font-mono text-[10px] font-bold text-white uppercase tracking-widest group-hover:text-aic-copper transition-colors">
-                            {item.label}
-                          </span>
-                          <span className="font-mono text-[9px] text-white/35 mt-0.5 normal-case tracking-normal">
-                            {item.desc}
-                          </span>
-                        </Link>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </div>
-
-            <div className="hidden lg:flex items-center gap-6 text-white/30">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Certification: Active
-              </span>
-              <Link href="/disclosures" className="hover:text-white transition-colors">
-                Public Disclosures
-              </Link>
-            </div>
+    <>
+      {/* Top bar */}
+      <div className="bg-aic-navy text-white/70 text-xs py-2">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1">
+              <Globe className="w-3 h-3" />
+              IAF MLA Accredited Body
+            </span>
+            <span className="hidden sm:flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+              Certification Status: Active
+            </span>
           </div>
-        </div>
-      </div>
-
-      {/* ── Main navbar ─────────────────────────────────────────────── */}
-      <div className="bg-aic-navy/95 backdrop-blur-md border-b border-white/5">
-        <div className="mx-auto max-w-7xl flex h-20 items-center justify-between px-6 lg:px-8">
-
-          {/* Logo */}
-          <Link
-            href="/"
-            className="font-serif text-2xl font-medium tracking-tight text-white"
-            onClick={() => analytics.trackCTAClick('logo')}
-          >
-            AIC<span className="text-aic-copper">.</span>
-          </Link>
-
-          {/* Context-aware desktop nav */}
-          <div className="hidden lg:flex items-center gap-10">
-            {isInstitutionalPath ? (
-              <>
-                <NavLink href="/governance-hub"      className="text-white/40 hover:text-white" activeClass="text-white">GOVERNANCE HUB</NavLink>
-                <NavLink href="/corporate-portal"    className="text-white/40 hover:text-white" activeClass="text-white">CORPORATE</NavLink>
-                <NavLink href="/professional-portal" className="text-white/40 hover:text-white" activeClass="text-white">PROFESSIONAL</NavLink>
-                <NavLink href="/ai-governance-index" className="text-white/40 hover:text-white" activeClass="text-white">AI INDEX</NavLink>
-                <NavLink href="/disclosures"         className="text-white/40 hover:text-white" activeClass="text-white">DISCLOSURES</NavLink>
-              </>
-            ) : isCitizenPath ? (
-              <>
-                <NavLink href="/citizens/rights"    className="text-white/40 hover:text-white" activeClass="text-white">KNOW YOUR RIGHTS</NavLink>
-                <NavLink href="/citizens/appeal"    className="text-white/40 hover:text-white" activeClass="text-white">APPEAL A DECISION</NavLink>
-                <NavLink href="/registry"           className="text-white/40 hover:text-white" activeClass="text-white">CERTIFIED REGISTRY</NavLink>
-                <NavLink href="/ai-governance-index" className="text-white/40 hover:text-white" activeClass="text-white">AI INDEX</NavLink>
-                <NavLink href="/contact?type=report" className="text-aic-copper hover:text-aic-copper-light" activeClass="text-aic-copper">REPORT A CONCERN</NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink href="/governance-hub"  className="text-white/40 hover:text-white" activeClass="text-white">GOVERNANCE HUB</NavLink>
-                <NavLink href="/tiers"           className="text-white/40 hover:text-white" activeClass="text-white">THE FRAMEWORK</NavLink>
-                <NavLink href="/process"         className="text-white/40 hover:text-white" activeClass="text-white">PROCESS</NavLink>
-                <NavLink href="/corporate-portal" className="text-white/40 hover:text-white" activeClass="text-white">GET CERTIFIED</NavLink>
-                <NavLink href="/ai-governance-index" className="text-white/40 hover:text-white" activeClass="text-white">AI INDEX</NavLink>
-                <NavLink href="/about"           className="text-white/40 hover:text-white" activeClass="text-white">ABOUT</NavLink>
-              </>
-            )}
-          </div>
-
-          {/* Right CTAs */}
-          <div className="flex items-center gap-5">
-            <a
-              href={
-                process.env.NEXT_PUBLIC_PLATFORM_URL
-                  ? `${process.env.NEXT_PUBLIC_PLATFORM_URL}/login`
-                  : '/login'
-              }
-              className="hidden sm:block font-mono text-[10px] font-bold text-white/30 hover:text-white transition-colors tracking-widest"
-              onClick={() => analytics.trackCTAClick('nav_login')}
-            >
-              LOGIN
+          <div className="flex items-center gap-4">
+            <Link href="/disclosures" className="hover:text-white transition-colors">
+              Public Disclosures
+            </Link>
+            <a href="#contact" className="hover:text-white transition-colors">
+              Contact
             </a>
-
-            <button
-              className="lg:hidden font-mono text-[10px] font-bold text-white/40 hover:text-white transition-colors tracking-widest"
-              onClick={() => setMobileOpen((v) => !v)}
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? 'CLOSE' : 'MENU'}
-            </button>
-
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="hidden sm:block">
-              <Link
-                href={isCitizenPath ? '/assessment' : isInstitutionalPath ? '/corporate-portal' : '/alpha'}
-                onClick={() => analytics.trackCTAClick('nav_cta')}
-                className="bg-aic-copper px-6 py-2.5 text-[10px] font-bold text-white font-mono uppercase tracking-widest hover:bg-aic-copper-light transition-colors"
-              >
-                {isCitizenPath ? 'CHECK A SYSTEM' : isInstitutionalPath ? 'GET CERTIFIED' : 'JOIN ALPHA'}
-              </Link>
-            </motion.div>
           </div>
         </div>
       </div>
 
-      {/* ── Mobile menu ─────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="lg:hidden bg-aic-navy-mid border-b border-white/5 overflow-hidden"
-          >
-            <div className="mx-auto max-w-7xl px-6 py-6 space-y-1">
-              {[
-                { href: '/',                     label: 'Home'                 },
-                { href: '/governance-hub',       label: 'Governance Hub'       },
-                { href: '/tiers',                label: 'The Framework'        },
-                { href: '/corporate-portal',     label: 'Corporate Portal'     },
-                { href: '/professional-portal',  label: 'Professional Portal'  },
-                { href: '/ai-governance-index',  label: 'AI Governance Index'  },
-                { href: '/process',              label: 'Process'              },
-                { href: '/registry',             label: 'Certified Registry'   },
-                { href: '/assessment',           label: 'Self-Assessment'      },
-                { href: '/citizens',             label: 'For the Public'       },
-                { href: '/disclosures',          label: 'Disclosures'          },
-                { href: '/about',                label: 'About'                },
-              ].map((item) => (
+      {/* Main navbar */}
+      <nav
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100"
+            : "bg-white shadow-sm"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 bg-aic-navy rounded-lg flex items-center justify-center group-hover:bg-aic-navy-light transition-colors">
+                <Shield className="w-5 h-5 text-aic-copper" />
+              </div>
+              <div>
+                <div className="text-aic-navy font-bold text-lg leading-tight tracking-tight">AIC</div>
+                <div className="text-gray-500 text-[10px] leading-tight tracking-wider uppercase">
+                  AI Certification Institute
+                </div>
+              </div>
+            </Link>
+
+            {/* Desktop nav */}
+            <div className="hidden lg:flex items-center gap-1">
+              {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`block font-mono text-[10px] font-bold uppercase tracking-widest px-4 py-3 transition-colors ${
+                  className={`px-3 py-2 rounded-md text-sm transition-colors relative group ${
                     pathname === item.href
-                      ? 'text-aic-copper bg-white/5'
-                      : 'text-white/40 hover:text-white hover:bg-white/5'
+                      ? "text-aic-navy bg-[#f0f4f8]"
+                      : "text-gray-600 hover:text-aic-navy hover:bg-[#f0f4f8]"
                   }`}
                 >
                   {item.label}
+                  {pathname === item.href && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-aic-copper rounded-full"></span>
+                  )}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-white/5 flex gap-3">
+            </div>
+
+            {/* CTA */}
+            <div className="hidden lg:flex items-center gap-3">
+              <Link
+                href="/professional-portal"
+                className="text-sm text-aic-navy border border-aic-navy px-4 py-2 rounded-md hover:bg-aic-navy hover:text-white transition-all"
+              >
+                Get Certified
+              </Link>
+              <Link
+                href="/ai-governance-index"
+                className="text-sm bg-aic-copper text-white px-4 py-2 rounded-md hover:bg-aic-copper-light transition-colors"
+              >
+                View AI Index
+              </Link>
+            </div>
+
+            {/* Mobile menu button */}
+            <button
+              className="lg:hidden p-2 text-gray-600"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                      pathname === item.href
+                        ? "bg-aic-navy text-white"
+                        : "text-gray-700 hover:bg-[#f0f4f8]"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <div>
+                      <div className="text-sm font-medium">{item.label}</div>
+                      <div className="text-xs opacity-70">{item.description}</div>
+                    </div>
+                  </Link>
+                );
+              })}
+              <div className="pt-3 border-t border-gray-100 flex gap-2">
                 <Link
-                  href="/alpha"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex-1 text-center font-mono text-[10px] font-bold bg-aic-copper text-white px-4 py-3 uppercase tracking-widest hover:bg-aic-copper-light transition-colors"
+                  href="/professional-portal"
+                  className="flex-1 text-center text-sm text-aic-navy border border-aic-navy px-4 py-2 rounded-md"
                 >
-                  Join Alpha
+                  Get Certified
                 </Link>
                 <Link
-                  href="/assessment"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex-1 text-center font-mono text-[10px] font-bold border border-white/20 text-white px-4 py-3 uppercase tracking-widest hover:border-aic-copper hover:text-aic-copper transition-colors"
+                  href="/ai-governance-index"
+                  className="flex-1 text-center text-sm bg-aic-copper text-white px-4 py-2 rounded-md"
                 >
-                  Self-Assessment
+                  View AI Index
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
-    </nav>
+      </nav>
+    </>
   );
 }
+
+export { navItems };

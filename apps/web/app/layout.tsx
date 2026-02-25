@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import "./globals.css";
 
 const crimsonPro = Crimson_Pro({
@@ -25,19 +27,21 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "AIC | AI Integrity Certification",
-  description: "The first POPIA Section 71 compliant accountability certification for South African AI.",
+  title: "AIC | AI Certification Institute",
+  description:
+    "The global standard for certifying the humans accountable for AI systems. ISO/IEC 42001 & ISO/IEC 17024 accredited certification body.",
   openGraph: {
-    title: "AIC | AI Integrity Certification",
-    description: "Validate your AI accountability. POPIA Section 71 Compliant.",
+    title: "AIC | AI Certification Institute",
+    description:
+      "Certifying the human behind the algorithm. IAF MLA accredited.",
     type: "website",
-    locale: "en_ZA",
-    siteName: "AI Integrity Certification",
+    siteName: "AI Certification Institute",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AIC | AI Integrity Certification",
-    description: "Validate your AI accountability.",
+    title: "AIC | AI Certification Institute",
+    description:
+      "Certifying the human behind the algorithm.",
   },
 };
 
@@ -49,44 +53,18 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "AI Integrity Certification (AIC)",
-    "url": "https://aic.co.za",
-    "logo": "https://aic.co.za/logo.png",
-    "description": "The national authority for AI Integrity & Compliance in South Africa, aligning with POPIA Section 71.",
-    "address": {
+    name: "AI Certification Institute (AIC)",
+    url: "https://aic-cert.org",
+    description:
+      "The global standard for certifying the humans accountable for AI systems — ensuring transparency, accountability, and trust.",
+    address: {
       "@type": "PostalAddress",
-      "addressCountry": "ZA"
+      streetAddress: "1225 Eye Street NW, Suite 550",
+      addressLocality: "Washington",
+      addressRegion: "DC",
+      postalCode: "20005",
+      addressCountry: "US",
     },
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "AIC Certification Tiers",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Tier 1: Critical Accountability",
-            "description": "Highest level of certification for AI systems with significant human rights impact."
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Tier 2: Elevated Supervision",
-            "description": "Rigorous monitoring and human-in-the-loop requirements for medium-risk systems."
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Tier 3: Standard Governance",
-            "description": "Base-level certification for standard business AI integrations."
-          }
-        }
-      ]
-    }
   };
 
   return (
@@ -114,9 +92,13 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-paper text-aic-navy font-sans`}
+        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-white text-aic-navy font-sans`}
       >
-        {children}
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
