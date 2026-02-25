@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIC Backend Roadmap — Week of Feb 26, 2026</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --navy: #0a1628;
+      --navy-mid: #0f2040;
+      --navy-light: #1a3055;
+      --copper: #c87941;
+      --copper-light: #e09a62;
+      --copper-dark: #a05e28;
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --text: #1a2030;
+      --text-muted: #5a6480;
+      --border: #e2e8f0;
+
+      --p0: #dc2626;
+      --p1: #ea580c;
+      --p2: #ca8a04;
+      --p3: #16a34a;
+      --b0: #7c3aed;
+
+      --now: #0f766e;
+      --next: #1d4ed8;
+      --later: #6b7280;
+
+      --done: #16a34a;
+      --in-progress: #ea580c;
+      --pending: #6b7280;
+      --blocked: #dc2626;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--navy);
+      color: #fff;
+      padding: 0 24px;
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-badge {
+      background: var(--copper);
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    .header-title { font-size: 18px; font-weight: 700; }
+    .header-sub { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+    .header-meta { font-size: 12px; color: rgba(255,255,255,0.45); text-align: right; }
+
+    /* ── Filters bar ── */
+    .filters-bar {
+      background: var(--navy-mid);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 24px;
+    }
+    .filters-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-label { font-size: 11px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .8px; }
+    .filter-select {
+      padding: 5px 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+    .filter-select option { background: var(--navy); color: #fff; }
+    .filter-reset {
+      margin-left: auto;
+      padding: 5px 14px;
+      background: var(--copper);
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .3px;
+    }
+    .filter-reset:hover { background: var(--copper-light); }
+
+    /* ── Main layout ── */
+    .main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 24px;
+    }
+
+    /* ── KPI row ── */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+      border-left: 4px solid var(--copper);
+    }
+    .kpi-card.kpi-done { border-color: var(--done); }
+    .kpi-card.kpi-now  { border-color: var(--now); }
+    .kpi-card.kpi-next { border-color: var(--next); }
+    .kpi-card.kpi-p0   { border-color: var(--p0); }
+    .kpi-card.kpi-b0   { border-color: var(--b0); }
+    .kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+    .kpi-value { font-size: 30px; font-weight: 800; color: var(--navy); }
+    .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    /* ── Charts row ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .chart-card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    }
+    .chart-card h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 14px;
+    }
+    .chart-card canvas { max-height: 220px; }
+
+    /* ── Table section ── */
+    .table-card {
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-header h2 { font-size: 14px; font-weight: 700; color: var(--navy); }
+    .table-count { font-size: 12px; color: var(--text-muted); }
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    thead th {
+      text-align: left;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 2px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    thead th:hover { background: #f0f4f8; color: var(--navy); }
+    tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #f0f4f8;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #fafbff; }
+
+    /* badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+    .badge-p0   { background: #fef2f2; color: var(--p0); }
+    .badge-p1   { background: #fff7ed; color: var(--p1); }
+    .badge-p2   { background: #fefce8; color: var(--p2); }
+    .badge-p3   { background: #f0fdf4; color: var(--p3); }
+    .badge-b0   { background: #f5f3ff; color: var(--b0); }
+    .badge-now  { background: #f0fdfa; color: var(--now); }
+    .badge-next { background: #eff6ff; color: var(--next); }
+    .badge-later{ background: #f9fafb; color: var(--later); }
+    .badge-done { background: #f0fdf4; color: var(--done); }
+    .badge-in-progress { background: #fff7ed; color: var(--in-progress); }
+    .badge-pending { background: #f9fafb; color: var(--later); }
+    .badge-blocked { background: #fef2f2; color: var(--p0); }
+
+    .layer-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      background: #f0f4f8;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .task-name { font-weight: 600; color: var(--navy); }
+    .task-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Day plan ── */
+    .dayplan {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .day-card {
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07);
+      overflow: hidden;
+    }
+    .day-head {
+      background: var(--navy);
+      color: #fff;
+      padding: 10px 14px;
+    }
+    .day-head .day-label { font-size: 11px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .6px; }
+    .day-head .day-name  { font-size: 13px; font-weight: 700; margin-top: 2px; }
+    .day-head .day-theme { font-size: 11px; color: var(--copper-light); margin-top: 2px; }
+    .day-tasks { padding: 10px 12px; }
+    .day-task {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 5px 0;
+      border-bottom: 1px solid #f0f4f8;
+      font-size: 11.5px;
+    }
+    .day-task:last-child { border-bottom: none; }
+    .day-task-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .dot-p0 { background: var(--p0); }
+    .dot-p1 { background: var(--p1); }
+    .dot-p2 { background: var(--p2); }
+    .dot-b0 { background: var(--b0); }
+    .dot-infra { background: var(--copper); }
+    .day-task-text { color: var(--text); line-height: 1.4; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      .charts-row { grid-template-columns: 1fr 1fr; }
+      .dayplan { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .charts-row { grid-template-columns: 1fr; }
+      .dayplan { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-badge">AIC</div>
+      <div>
+        <div class="header-title">Backend Completion Roadmap</div>
+        <div class="header-sub">Dual-Face Platform — Certification Factory + Client SaaS</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      Week of Feb 26 – Mar 3, 2026<br>
+      Goal: Ship connected backend → begin investor conversations
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ FILTERS ══════════════════════════════════ -->
+<div class="filters-bar">
+  <div class="filters-inner">
+    <span class="filter-label">Filter</span>
+    <select class="filter-select" id="f-phase" onchange="applyFilters()">
+      <option value="">All Phases</option>
+      <option value="NOW">NOW</option>
+      <option value="NEXT">NEXT</option>
+      <option value="LATER">LATER</option>
+    </select>
+    <select class="filter-select" id="f-layer" onchange="applyFilters()">
+      <option value="">All Layers</option>
+      <option value="Database">Database</option>
+      <option value="Security">Security</option>
+      <option value="Certification Factory">Certification Factory</option>
+      <option value="Client Face">Client Face</option>
+      <option value="HQ / BI">HQ / BI</option>
+      <option value="AI Engine">AI Engine</option>
+      <option value="Public / Web">Public / Web</option>
+      <option value="Infrastructure">Infrastructure</option>
+      <option value="Integrations">Integrations</option>
+      <option value="Business Critical">Business Critical</option>
+    </select>
+    <select class="filter-select" id="f-priority" onchange="applyFilters()">
+      <option value="">All Priorities</option>
+      <option value="B0">B0 — Business</option>
+      <option value="P0">P0 — Security Critical</option>
+      <option value="P1">P1 — Must Ship</option>
+      <option value="P2">P2 — Investor Ready</option>
+      <option value="P3">P3 — Polish</option>
+    </select>
+    <select class="filter-select" id="f-status" onchange="applyFilters()">
+      <option value="">All Statuses</option>
+      <option value="Done">Done</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Pending">Pending</option>
+      <option value="Blocked">Blocked</option>
+    </select>
+    <button class="filter-reset" onclick="resetFilters()">Reset</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ MAIN ═════════════════════════════════════ -->
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Tasks</div>
+      <div class="kpi-value" id="kpi-total">—</div>
+      <div class="kpi-sub">Across 10 layers</div>
+    </div>
+    <div class="kpi-card kpi-done">
+      <div class="kpi-label">Completed</div>
+      <div class="kpi-value" id="kpi-done">—</div>
+      <div class="kpi-sub">Built this week</div>
+    </div>
+    <div class="kpi-card kpi-now">
+      <div class="kpi-label">NOW — This Week</div>
+      <div class="kpi-value" id="kpi-now">—</div>
+      <div class="kpi-sub">Feb 26 – Mar 3</div>
+    </div>
+    <div class="kpi-card kpi-next">
+      <div class="kpi-label">NEXT — Mar 4–17</div>
+      <div class="kpi-value" id="kpi-next">—</div>
+      <div class="kpi-sub">Pre-launch</div>
+    </div>
+    <div class="kpi-card kpi-p0">
+      <div class="kpi-label">P0 Security Fixes</div>
+      <div class="kpi-value" id="kpi-p0">—</div>
+      <div class="kpi-sub">Must fix before launch</div>
+    </div>
+    <div class="kpi-card kpi-b0">
+      <div class="kpi-label">B0 — Investor Priority</div>
+      <div class="kpi-value" id="kpi-b0">—</div>
+      <div class="kpi-sub">Revenue-critical</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Tasks by Layer</h3>
+      <canvas id="chart-layer"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Priority Distribution</h3>
+      <canvas id="chart-priority"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Phase Breakdown</h3>
+      <canvas id="chart-phase"></canvas>
+    </div>
+  </div>
+
+  <!-- Day-by-Day Plan -->
+  <div class="table-card" style="margin-bottom:20px">
+    <div class="table-header">
+      <h2>5-Day Sprint Plan</h2>
+      <span class="table-count">Feb 26 – Mar 3, 2026 · Goal: Backend connected end-to-end</span>
+    </div>
+    <div style="padding:16px 20px">
+      <div class="dayplan">
+        <div class="day-card">
+          <div class="day-head">
+            <div class="day-label">Day 1 · Thu Feb 26</div>
+            <div class="day-name">Planning + Docs</div>
+            <div class="day-theme">✅ Complete</div>
+          </div>
+          <div class="day-tasks">
+            <div class="day-task"><div class="day-task-dot dot-infra"></div><div class="day-task-text">Review all recent commits &amp; architecture</div></div>
+            <div class="day-task"><div class="day-task-dot dot-infra"></div><div class="day-task-text">Update Obsidian (02, 05, 06, 07, 18)</div></div>
+            <div class="day-task"><div class="day-task-dot dot-infra"></div><div class="day-task-text">Update Notion with new architecture</div></div>
+            <div class="day-task"><div class="day-task-dot dot-infra"></div><div class="day-task-text">Rewrite README.md (committed bb51a5a)</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">Identify redundant files for deletion</div></div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-head">
+            <div class="day-label">Day 2 · Fri Feb 27</div>
+            <div class="day-name">Database + Gateway</div>
+            <div class="day-theme">🔧 Foundation</div>
+          </div>
+          <div class="day-tasks">
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">Run DB migrations (7 new tables)</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">Seed RBAC capabilities &amp; default roles</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">Wire API gateway with real route dispatch</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p0"></div><div class="day-task-text">P0-5: Remove credentials from git history (BFG)</div></div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-head">
+            <div class="day-label">Day 3 · Sat Feb 28</div>
+            <div class="day-name">Security Hardening</div>
+            <div class="day-theme">🔒 All P0 fixes</div>
+          </div>
+          <div class="day-tasks">
+            <div class="day-task"><div class="day-task-dot dot-p0"></div><div class="day-task-text">P0-1: Fix RLS bypass on incidents &amp; billing webhook</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p0"></div><div class="day-task-text">P0-3: JTI generation + revokedTokens table</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p0"></div><div class="day-task-text">P0-4: Account lockout (5 attempts / 15 min)</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p0"></div><div class="day-task-text">P0-6: Mandatory audit ledger on decisionRecords</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p0"></div><div class="day-task-text">P0-2: MFA stub → real TOTP</div></div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-head">
+            <div class="day-label">Day 4 · Mon Mar 2</div>
+            <div class="day-name">Admin + Cert Factory</div>
+            <div class="day-theme">🏭 Core product</div>
+          </div>
+          <div class="day-tasks">
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">Wire state machine to approval route</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">Build POST /api/v1/hitl HITL log route</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">calculateIntegrityVelocity() (real delta)</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">GET /api/hq-stats — real pipeline data</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">assignCertificationTier() scoring gate</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">Public registry: active + visible filter</div></div>
+          </div>
+        </div>
+        <div class="day-card">
+          <div class="day-head">
+            <div class="day-label">Day 5 · Tue Mar 3</div>
+            <div class="day-name">Client + Investor Ready</div>
+            <div class="day-theme">🚀 Ship it</div>
+          </div>
+          <div class="day-tasks">
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">calculateAIMSReadinessLevel() (Level 1–4)</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p1"></div><div class="day-task-text">getLedgerHealthStatus() (hash-chain verify)</div></div>
+            <div class="day-task"><div class="day-task-dot dot-p2"></div><div class="day-task-text">Leaderboard sector filtering + pagination</div></div>
+            <div class="day-task"><div class="day-task-dot dot-infra"></div><div class="day-task-text">Remove deprecated apps from turbo.json</div></div>
+            <div class="day-task"><div class="day-task-dot dot-b0"></div><div class="day-task-text">End-to-end smoke test: Apply→Triage→Approve→Cert</div></div>
+            <div class="day-task"><div class="day-task-dot dot-b0"></div><div class="day-task-text">Investor checkpoint: real HQ + registry data</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <h2>All Backend Tasks</h2>
+      <span class="table-count" id="shown-count">— tasks shown</span>
+    </div>
+    <div class="table-wrapper">
+      <table id="task-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('id')">ID</th>
+            <th onclick="sortTable('layer')">Layer</th>
+            <th>Task</th>
+            <th onclick="sortTable('priority')">Priority</th>
+            <th onclick="sortTable('phase')">Phase</th>
+            <th onclick="sortTable('status')">Status</th>
+            <th>Owner / Route</th>
+          </tr>
+        </thead>
+        <tbody id="task-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Investor Readiness -->
+  <div class="table-card">
+    <div class="table-header">
+      <h2>Investor Readiness Checklist</h2>
+      <span class="table-count">End-of-week gate</span>
+    </div>
+    <div style="padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div id="inv-checklist"></div>
+      <div style="background:#f8fafc; border-radius:8px; padding:14px; font-size:12px; color:var(--text-muted); line-height:1.7;">
+        <strong style="color:var(--navy); display:block; margin-bottom:6px;">Next Phase (after investor convos begin)</strong>
+        → Empathy Engine (B0-2): Analyse rejection letters for human dignity<br>
+        → AI Governance Index (B0-3): Score JSE Top 40 AI governance publicly<br>
+        → Mock Alpha Report PDF (B0-1): First deliverable to pilot clients<br>
+        → Async engine (P1-6): Celery migration for all blocking endpoints<br>
+        → Model cache bounds (P1-7): Prevent OOM after ~8 hours<br>
+        → SADC expansion (post-investor): Extend beyond South Africa
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  AIC Platform · Backend Roadmap · Generated Feb 26, 2026 · aic.co.za
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════
+const TASKS = [
+
+  // ── LAYER 1: DATABASE ──────────────────────────────
+  { id:'DB-1', layer:'Database', name:'Run DB migrations', desc:'audit_documents, issued_certifications, hitl_logs, roles, capabilities, role_capabilities, user_capabilities', priority:'P1', phase:'NOW', status:'Pending', owner:'npm run db:migrate', day:2 },
+  { id:'DB-2', layer:'Database', name:'Seed default capabilities', desc:'approve_certification, triage_application, view_all_orgs, manage_users, upload_bias_report, view_revenue, manage_roles', priority:'P1', phase:'NOW', status:'Pending', owner:'scripts/seed-capabilities.ts', day:2 },
+  { id:'DB-3', layer:'Database', name:'Seed default roles', desc:'SuperAdmin, Auditor, ComplianceOfficer, Viewer + assign capabilities', priority:'P1', phase:'NOW', status:'Pending', owner:'scripts/seed-roles.ts', day:2 },
+  { id:'DB-4', layer:'Database', name:'Add org_id to leads table', desc:'CRM leads isolation — P0-1 dependency', priority:'P1', phase:'NOW', status:'Pending', owner:'db/migrations/', day:2 },
+  { id:'DB-5', layer:'Database', name:'Create revokedTokens table', desc:'JWT JTI revocation list for token invalidation on logout', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/db/schema.ts', day:3 },
+  { id:'DB-6', layer:'Database', name:'Create loginAttempts table', desc:'Account lockout tracking — 5 failures = 15 min lock', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/db/schema.ts', day:3 },
+  { id:'DB-7', layer:'Database', name:'Add MFA fields to users', desc:'totp_secret, mfa_enabled, backup_codes columns', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/db/schema.ts', day:3 },
+  { id:'DB-8', layer:'Database', name:'RLS policies for new tables', desc:'Row-Level Security on hitl_logs, audit_documents, issued_certifications', priority:'P1', phase:'NEXT', status:'Pending', owner:'packages/db/rls_policies.sql', day:null },
+
+  // ── LAYER 2: SECURITY ─────────────────────────────
+  { id:'SEC-1', layer:'Security', name:'P0-5: Remove credentials from git history', desc:'git filter-branch / BFG to purge secrets from all commits', priority:'P0', phase:'NOW', status:'Pending', owner:'BFG Repo Cleaner', day:2 },
+  { id:'SEC-2', layer:'Security', name:'P0-1: Fix RLS bypass on /incidents/public', desc:'PUBLIC endpoint accepts orgId from body — any org can be targeted', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/incidents/public', day:3 },
+  { id:'SEC-3', layer:'Security', name:'P0-1: Fix RLS bypass on /incidents/escalate', desc:'Reads ALL incidents — no tenant isolation', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/incidents/escalate', day:3 },
+  { id:'SEC-4', layer:'Security', name:'P0-1: Fix billing webhook orgId validation', desc:'Stripe webhook updates org tier without validating orgId', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/billing/webhook', day:3 },
+  { id:'SEC-5', layer:'Security', name:'P0-3: JTI generation + isTokenRevoked()', desc:'JWT replay attack prevention — generate JTI, check revokedTokens on each request', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/auth', day:3 },
+  { id:'SEC-6', layer:'Security', name:'P0-4: Account lockout middleware', desc:'5 failed logins → 15 min lock, track in loginAttempts table', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/auth/lockout.ts', day:3 },
+  { id:'SEC-7', layer:'Security', name:'P0-6: Mandatory audit ledger on decisionRecords', desc:'Wrap decisionRecords INSERT in transaction with auditLogs hash-chain entry', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/decisions', day:3 },
+  { id:'SEC-8', layer:'Security', name:'P0-2: Real TOTP MFA', desc:'Replace MFA stub with real TOTP implementation (users.totp_secret, backup_codes)', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/auth/mfa', day:3 },
+  { id:'SEC-9', layer:'Security', name:'P3-7: Fix email enumeration on forgot-password', desc:'Reveal-resistant responses for forgot-password and verify-email routes', priority:'P3', phase:'NEXT', status:'Pending', owner:'apps/platform/api/auth/', day:null },
+  { id:'SEC-10', layer:'Security', name:'Engine JWT validation hardening', desc:'Verify aud:"aic-engine" and RS256 signature on all engine calls', priority:'P1', phase:'NEXT', status:'Pending', owner:'apps/engine/middleware', day:null },
+
+  // ── LAYER 3: CERTIFICATION FACTORY ────────────────
+  { id:'CERT-1', layer:'Certification Factory', name:'Wire state machine to approval route', desc:'Call isValidTransition() before cert issuance in POST /api/v1/admin/approve', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/admin/approve', day:4 },
+  { id:'CERT-2', layer:'Certification Factory', name:'Build POST /api/v1/hitl', desc:'Record human interventions in hitl_logs when admin reviews, overrides or flags', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/hitl', day:4 },
+  { id:'CERT-3', layer:'Certification Factory', name:'assignCertificationTier()', desc:'Automated scoring gate — assign TIER_1/2/3 based on integrity score thresholds', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/db/scoring.ts', day:4 },
+  { id:'CERT-4', layer:'Certification Factory', name:'Wire API gateway real dispatch', desc:'Replace placeholder JSON in /api/v1/[[...route]] with real route handlers per capability', priority:'P1', phase:'NOW', status:'In Progress', owner:'/api/v1/[[...route]]/route.ts', day:2 },
+  { id:'CERT-5', layer:'Certification Factory', name:'Replace mock storage URL in vault', desc:'POST /api/v1/vault/upload uses mock URL — replace with real S3 / Vercel Blob', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/vault/upload', day:4 },
+  { id:'CERT-6', layer:'Certification Factory', name:'Admin queue wired to real DB data', desc:'/admin/queue UI exists but needs live DB query for pending certification applications', priority:'P1', phase:'NOW', status:'Pending', owner:'/admin/queue', day:4 },
+  { id:'CERT-7', layer:'Certification Factory', name:'Test RBAC capabilities end-to-end', desc:'Test hasCapability() for all 7 default slugs after seeding roles', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/auth/rbac.ts', day:2 },
+  { id:'CERT-8', layer:'Certification Factory', name:'God Mode permissions UI wired', desc:'/admin/permissions real-time RBAC management connected to DB', priority:'P1', phase:'NOW', status:'Pending', owner:'/admin/permissions', day:4 },
+  { id:'CERT-9', layer:'Certification Factory', name:'Cert lifecycle: REVISION_REQUIRED → PENDING loop', desc:'Implement revision request flow with email notification trigger', priority:'P1', phase:'NEXT', status:'Pending', owner:'state-machine.ts + notifications', day:null },
+  { id:'CERT-10', layer:'Certification Factory', name:'Public cert registry filter', desc:'Only show ACTIVE + certified + public_directory_visible:true in /api/public/certifications', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/public/certifications', day:4 },
+  { id:'CERT-11', layer:'Certification Factory', name:'Build POST /api/public/exams stub', desc:'Upcoming certification exam listings', priority:'P3', phase:'LATER', status:'Pending', owner:'/api/public/exams', day:null },
+  { id:'CERT-12', layer:'Certification Factory', name:'Auditor assignment in triage route', desc:'/api/v1/admin/triage — properly assigns auditor user_id to application', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/admin/triage', day:null },
+  { id:'CERT-13', layer:'Certification Factory', name:'Cert number generation (AIC-XXXXXXXX-2026)', desc:'Auto-generate unique cert ID on approval — already coded, needs test', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/admin/approve', day:null },
+  { id:'CERT-14', layer:'Certification Factory', name:'SHA-256 checksum on vault upload', desc:'Document integrity verification — already coded with createHash, needs storage fix', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/vault/upload', day:null },
+  { id:'CERT-15', layer:'Certification Factory', name:'HITL logs immutable write', desc:'hitl_logs table schema exists — needs insert route and UI trigger', priority:'P1', phase:'NOW', status:'Pending', owner:'hitl_logs table', day:4 },
+
+  // ── LAYER 4: CLIENT FACE ──────────────────────────
+  { id:'CLIENT-1', layer:'Client Face', name:'calculateIntegrityVelocity()', desc:'Real month-over-month delta from auditLogs — currently hardcoded placeholder', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/stats', day:4 },
+  { id:'CLIENT-2', layer:'Client Face', name:'calculateAIMSReadinessLevel()', desc:'Level 1–4 based on requirements completed across 5 rights — currently hardcoded', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/db/scoring.ts', day:5 },
+  { id:'CLIENT-3', layer:'Client Face', name:'getLedgerHealthStatus()', desc:'Real hash-chain verification — validate previousHash chain integrity', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/db/audit-ledger.ts', day:5 },
+  { id:'CLIENT-4', layer:'Client Face', name:'Connect vault upload to workspace UI', desc:'POST /api/v1/vault/upload working but not wired to /workspace document upload UI', priority:'P1', phase:'NOW', status:'Pending', owner:'/workspace UI', day:4 },
+  { id:'CLIENT-5', layer:'Client Face', name:'Fix /incidents/public RLS bypass', desc:'See SEC-2 — critical tenant isolation bug', priority:'P0', phase:'NOW', status:'Pending', owner:'/api/incidents/public', day:3 },
+  { id:'CLIENT-6', layer:'Client Face', name:'Test full Stripe checkout → cert tier flow', desc:'End-to-end: payment → webhook → org tier update → cert unlocked', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/billing/', day:5 },
+  { id:'CLIENT-7', layer:'Client Face', name:'Leaderboard sector filtering + pagination', desc:'P2-3: Add sector dropdown and pagination to /api/leaderboard', priority:'P2', phase:'NOW', status:'Pending', owner:'/api/leaderboard', day:5 },
+  { id:'CLIENT-8', layer:'Client Face', name:'GET /api/corrections/analytics', desc:'P2-2: SLA metrics, response rates, correction pipeline analytics', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/corrections/analytics', day:null },
+  { id:'CLIENT-9', layer:'Client Face', name:'GET /api/incidents/analytics', desc:'P2-1: Incident trends, resolution time, escalation rates', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/incidents/analytics', day:null },
+  { id:'CLIENT-10', layer:'Client Face', name:'GET /api/decisions/analytics', desc:'P2-4: Explanation coverage, feature importance distribution', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/decisions/analytics', day:null },
+  { id:'CLIENT-11', layer:'Client Face', name:'Make audit ledger mandatory', desc:'P0-6: Wrap decisionRecords insert in transaction with mandatory ledger entry', priority:'P0', phase:'NOW', status:'Pending', owner:'/api/decisions POST', day:3 },
+  { id:'CLIENT-12', layer:'Client Face', name:'Workspace export route', desc:'GET /api/workspace/export — currently stub, needs PDF/JSON export', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/workspace/export', day:null },
+  { id:'CLIENT-13', layer:'Client Face', name:'Empathy endpoint formalisation', desc:'POST /api/empathy → POST /api/v1/empathy — formalise route and engine forwarding', priority:'P1', phase:'NEXT', status:'Pending', owner:'/api/empathy', day:null },
+  { id:'CLIENT-14', layer:'Client Face', name:'Insurance risk score implementation', desc:'P2-7: POST /api/insurance/risk-score — replace placeholder logic with real scoring', priority:'P2', phase:'LATER', status:'Pending', owner:'/api/insurance/risk-score', day:null },
+
+  // ── LAYER 5: HQ / BI ──────────────────────────────
+  { id:'HQ-1', layer:'HQ / BI', name:'GET /api/hq-stats', desc:'P1-5: Real pipeline value, active auditors, citizen appeals — currently all hardcoded in component', priority:'P1', phase:'NOW', status:'Pending', owner:'apps/platform/api/hq-stats', day:4 },
+  { id:'HQ-2', layer:'HQ / BI', name:'GET /api/hq/revenue/velocity', desc:'P2-5: Monthly revenue tracking with trend data', priority:'P2', phase:'NEXT', status:'Pending', owner:'apps/platform/api/hq/revenue/velocity', day:null },
+  { id:'HQ-3', layer:'HQ / BI', name:'CRM: add org_id to leads', desc:'P0-1: All leads currently visible to all admins — need org isolation', priority:'P1', phase:'NOW', status:'Pending', owner:'apps/platform/api/leads', day:2 },
+  { id:'HQ-4', layer:'HQ / BI', name:'Real-time engine health monitoring', desc:'HQ engine dashboard — CPU, memory, task queue depth, worker status from Celery', priority:'P2', phase:'NEXT', status:'Pending', owner:'/intelligence/engine', day:null },
+  { id:'HQ-5', layer:'HQ / BI', name:'HQ dashboard: replace all hardcoded values', desc:'Pipeline value, active auditor count, appeals count — see 08-HARDCODED-DATA', priority:'P1', phase:'NOW', status:'Pending', owner:'/admin/dashboard', day:4 },
+
+  // ── LAYER 6: AI ENGINE ────────────────────────────
+  { id:'ENG-1', layer:'AI Engine', name:'P1-6: Async migration for blocking endpoints', desc:'Convert 40+ synchronous def endpoints to async + Celery: analyze, equalized-odds, intersectional, explain', priority:'P1', phase:'NEXT', status:'Pending', owner:'apps/engine/routers/', day:null },
+  { id:'ENG-2', layer:'AI Engine', name:'P1-7: Bound model cache', desc:'Prevent OOM — model cache grows unbounded, crashes after ~8 hours of load', priority:'P1', phase:'NEXT', status:'Pending', owner:'apps/engine/cache.py', day:null },
+  { id:'ENG-3', layer:'AI Engine', name:'POST /api/v1/empathy — Empathy Engine v1', desc:'B0-2: Analyse rejection letters and automated comms for human dignity violations (TextBlob + sentiment)', priority:'B0', phase:'NEXT', status:'Pending', owner:'apps/engine/routers/empathy.py', day:null },
+  { id:'ENG-4', layer:'AI Engine', name:'POST /api/v1/ai-disclosure', desc:'Right 5 (Truth): Detect undisclosed AI in customer communications', priority:'P2', phase:'NEXT', status:'Pending', owner:'apps/engine/routers/disclosure.py', day:null },
+  { id:'ENG-5', layer:'AI Engine', name:'Celery task monitoring + dead letter queue', desc:'Track failed tasks, retry logic, DLQ for manual review', priority:'P2', phase:'NEXT', status:'Pending', owner:'apps/engine/celery_config.py', day:null },
+  { id:'ENG-6', layer:'AI Engine', name:'Intersectional fairness async migration', desc:'Most CPU-intensive endpoint — must move to Celery worker', priority:'P1', phase:'NEXT', status:'Pending', owner:'/api/v1/analyze/intersectional', day:null },
+  { id:'ENG-7', layer:'AI Engine', name:'SHAP/LIME async migration', desc:'30-120s blocking — must move to Celery, return task_id for polling', priority:'P1', phase:'NEXT', status:'Pending', owner:'/api/v1/explain', day:null },
+  { id:'ENG-8', layer:'AI Engine', name:'Engine API key rotation policy', desc:'Auto-rotate API keys, log key usage per org, revoke on breach', priority:'P2', phase:'LATER', status:'Pending', owner:'packages/auth + engine middleware', day:null },
+  { id:'ENG-9', layer:'AI Engine', name:'Read replica for engine queries', desc:'Prevent analytics queries from hitting primary DB under load', priority:'P2', phase:'LATER', status:'Pending', owner:'PostgreSQL config', day:null },
+
+  // ── LAYER 7: PUBLIC / WEB ─────────────────────────
+  { id:'WEB-1', layer:'Public / Web', name:'GET /api/registry — published-only filter', desc:'P1-8: Only show ACTIVE + certified + public_directory_visible in public registry', priority:'P1', phase:'NOW', status:'Pending', owner:'apps/web/api/registry', day:4 },
+  { id:'WEB-2', layer:'Public / Web', name:'POST /api/citizens/appeal full integration', desc:'P3-5: Citizens appeal form → correctionRequests table integration', priority:'P3', phase:'NEXT', status:'Pending', owner:'apps/web/api/citizens/appeal', day:null },
+  { id:'WEB-3', layer:'Public / Web', name:'AI Governance Index public scoring', desc:'B0-3: Score JSE Top 40 on AI governance — creates market pressure without regulation', priority:'B0', phase:'NEXT', status:'Pending', owner:'apps/web/ai-governance-index', day:null },
+  { id:'WEB-4', layer:'Public / Web', name:'GET /api/benchmarks — sector benchmarks', desc:'P3-3: Public sector integrity score benchmarks for the registry page', priority:'P3', phase:'LATER', status:'Pending', owner:'apps/web/api/benchmarks', day:null },
+  { id:'WEB-5', layer:'Public / Web', name:'Assessment scoring weights — real data', desc:'Self-assessment quiz weights currently hardcoded — connect to DB-driven config', priority:'P2', phase:'NEXT', status:'Pending', owner:'apps/web/api/assessment/score', day:null },
+  { id:'WEB-6', layer:'Public / Web', name:'Disclosures hub + standards endpoints', desc:'/api/public/resources and /api/public/standards — stub to real content', priority:'P2', phase:'LATER', status:'Pending', owner:'/api/public/', day:null },
+
+  // ── LAYER 8: INFRASTRUCTURE ────────────────────────
+  { id:'INFRA-1', layer:'Infrastructure', name:'Remove deprecated apps from turbo.json', desc:'Delete apps/admin, apps/hq, apps/internal from Turborepo build pipeline (keep files temporarily)', priority:'P1', phase:'NOW', status:'Pending', owner:'turbo.json', day:5 },
+  { id:'INFRA-2', layer:'Infrastructure', name:'Update turbo.json: only build web, platform, engine', desc:'Reduce build scope from 5 apps to 3', priority:'P1', phase:'NOW', status:'Pending', owner:'turbo.json', day:5 },
+  { id:'INFRA-3', layer:'Infrastructure', name:'Vercel deployment: apps/web on aic.co.za', desc:'Production deployment of marketing site — investor demo requirement', priority:'P1', phase:'NOW', status:'Pending', owner:'Vercel dashboard', day:5 },
+  { id:'INFRA-4', layer:'Infrastructure', name:'Archive redundant docs to docs/archive/', desc:'6 doc files with heavy duplication — ROADMAP.md, POST_REMEDIATION_ROADMAP.md, etc.', priority:'P2', phase:'NOW', status:'Pending', owner:'docs/', day:5 },
+  { id:'INFRA-5', layer:'Infrastructure', name:'Delete apps/admin, apps/hq, apps/internal directories', desc:'Only after platform unification is verified working and turbo.json updated', priority:'P2', phase:'NEXT', status:'Pending', owner:'git rm -r apps/admin apps/hq apps/internal', day:null },
+  { id:'INFRA-6', layer:'Infrastructure', name:'End-to-end smoke test', desc:'Apply → Triage → Vault upload → Approve → Certificate issued → Public registry updated', priority:'P1', phase:'NOW', status:'Pending', owner:'e2e/ Playwright', day:5 },
+  { id:'INFRA-7', layer:'Infrastructure', name:'Environment variables audit', desc:'Verify all required env vars documented; rotate any leaked secrets', priority:'P0', phase:'NOW', status:'Pending', owner:'.env.example', day:2 },
+  { id:'INFRA-8', layer:'Infrastructure', name:'Docker compose for local dev', desc:'docker-compose.yml for postgres + redis + all apps — verify works after architecture pivot', priority:'P1', phase:'NOW', status:'Pending', owner:'docker-compose.yml', day:2 },
+  { id:'INFRA-9', layer:'Infrastructure', name:'Sentry error tracking setup', desc:'Configure Sentry DSN for apps/platform and apps/engine', priority:'P2', phase:'NEXT', status:'Pending', owner:'sentry.client.config.js', day:null },
+  { id:'INFRA-10', layer:'Infrastructure', name:'Read replica / connection pooling', desc:'PgBouncer or Neon connection pooling for production load', priority:'P2', phase:'LATER', status:'Pending', owner:'PostgreSQL / Neon', day:null },
+
+  // ── LAYER 9: INTEGRATIONS ─────────────────────────
+  { id:'INT-1', layer:'Integrations', name:'Stripe full checkout → cert tier flow test', desc:'End-to-end payment → webhook → org.planId updated → cert unlocked', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/billing/checkout + webhook', day:5 },
+  { id:'INT-2', layer:'Integrations', name:'File storage backend (S3 / Vercel Blob)', desc:'Replace mock storage URL in vault upload with real file storage service', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/vault/upload', day:4 },
+  { id:'INT-3', layer:'Integrations', name:'Email notifications (auth + certs)', desc:'Transactional email: cert approved, revision required, new application, invite', priority:'P1', phase:'NEXT', status:'Pending', owner:'packages/notifications/', day:null },
+  { id:'INT-4', layer:'Integrations', name:'Google OAuth SSO', desc:'GOOGLE_CLIENT_ID configured but not tested end-to-end in platform', priority:'P2', phase:'NEXT', status:'Pending', owner:'packages/auth/google.ts', day:null },
+
+  // ── LAYER 10: BUSINESS CRITICAL ────────────────────
+  { id:'BIZ-1', layer:'Business Critical', name:'Mock Alpha Report PDF (B0-1)', desc:'First deliverable to pilot clients — AI audit summary PDF, AIC-branded', priority:'B0', phase:'NOW', status:'Pending', owner:'apps/engine output + PDF template', day:5 },
+  { id:'BIZ-2', layer:'Business Critical', name:'Empathy Engine demo (B0-2)', desc:'Highest priority after backend ships — analyse rejection letters for dignity violations', priority:'B0', phase:'NEXT', status:'Pending', owner:'apps/engine/empathy + apps/platform/empathy', day:null },
+  { id:'BIZ-3', layer:'Business Critical', name:'AI Governance Index (B0-3)', desc:'Public scoring of JSE Top 40 — creates market pressure, media attention, leads', priority:'B0', phase:'NEXT', status:'Pending', owner:'apps/web/ai-governance-index', day:null },
+  { id:'BIZ-4', layer:'Business Critical', name:'Begin investor outreach', desc:'Target Prospects doc ready — requires: backend connected + real HQ data + cert registry live', priority:'B0', phase:'NOW', status:'Pending', owner:'docs/TARGET_PROSPECTS', day:5 },
+
+];
+
+// Tasks already built this week
+const DONE_IDS = ['CERT-12','CERT-13','CERT-14'];
+TASKS.forEach(t => { if(DONE_IDS.includes(t.id)) t.status = 'Done'; });
+
+// Also mark some as Done based on 18-BACKEND-WEEKLY-PLAN
+const ALSO_DONE = ['CERT-4']; // gateway is in-progress
+// No changes needed — keep as-is
+
+// ═══════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════
+let filteredTasks = [...TASKS];
+let sortCol = 'id', sortDir = 'asc';
+
+const PRIORITY_ORDER = { 'B0':0,'P0':1,'P1':2,'P2':3,'P3':4 };
+const PHASE_ORDER    = { 'NOW':0,'NEXT':1,'LATER':2 };
+const STATUS_ORDER   = { 'Done':0,'In Progress':1,'Pending':2,'Blocked':3 };
+
+function applyFilters() {
+  const phase    = document.getElementById('f-phase').value;
+  const layer    = document.getElementById('f-layer').value;
+  const priority = document.getElementById('f-priority').value;
+  const status   = document.getElementById('f-status').value;
+
+  filteredTasks = TASKS.filter(t => {
+    if (phase    && t.phase    !== phase)    return false;
+    if (layer    && t.layer    !== layer)    return false;
+    if (priority && t.priority !== priority) return false;
+    if (status   && t.status   !== status)   return false;
+    return true;
+  });
+
+  renderTable();
+  renderKPIs();
+  updateCharts();
+}
+
+function resetFilters() {
+  ['f-phase','f-layer','f-priority','f-status'].forEach(id => document.getElementById(id).value = '');
+  filteredTasks = [...TASKS];
+  renderTable();
+  renderKPIs();
+  updateCharts();
+}
+
+function renderTable() {
+  const sorted = [...filteredTasks].sort((a, b) => {
+    let av, bv;
+    if (sortCol === 'priority') { av = PRIORITY_ORDER[a.priority] ?? 9; bv = PRIORITY_ORDER[b.priority] ?? 9; }
+    else if (sortCol === 'phase') { av = PHASE_ORDER[a.phase] ?? 9; bv = PHASE_ORDER[b.phase] ?? 9; }
+    else if (sortCol === 'status') { av = STATUS_ORDER[a.status] ?? 9; bv = STATUS_ORDER[b.status] ?? 9; }
+    else { av = a[sortCol] || ''; bv = b[sortCol] || ''; }
+    const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+
+  const tbody = document.getElementById('task-tbody');
+  tbody.innerHTML = sorted.map(t => `
+    <tr>
+      <td style="font-family:monospace;font-size:11px;color:var(--text-muted);white-space:nowrap">${t.id}</td>
+      <td><span class="layer-pill">${t.layer}</span></td>
+      <td>
+        <div class="task-name">${t.name}</div>
+        <div class="task-desc">${t.desc}</div>
+      </td>
+      <td><span class="badge badge-${t.priority.toLowerCase()}">${t.priority}</span></td>
+      <td><span class="badge badge-${t.phase.toLowerCase()}">${t.phase}</span></td>
+      <td><span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span></td>
+      <td style="font-size:11px;color:var(--text-muted);font-family:monospace;max-width:200px;word-break:break-all">${t.owner}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('shown-count').textContent = `${sorted.length} of ${TASKS.length} tasks shown`;
+}
+
+function sortTable(col) {
+  if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortCol = col; sortDir = 'asc'; }
+  renderTable();
+}
+
+function renderKPIs() {
+  const all = filteredTasks;
+  document.getElementById('kpi-total').textContent  = TASKS.length;
+  document.getElementById('kpi-done').textContent   = TASKS.filter(t=>t.status==='Done').length;
+  document.getElementById('kpi-now').textContent    = TASKS.filter(t=>t.phase==='NOW').length;
+  document.getElementById('kpi-next').textContent   = TASKS.filter(t=>t.phase==='NEXT').length;
+  document.getElementById('kpi-p0').textContent     = TASKS.filter(t=>t.priority==='P0').length;
+  document.getElementById('kpi-b0').textContent     = TASKS.filter(t=>t.priority==='B0').length;
+}
+
+// ── Charts ──────────────────────────────────────────
+const NAVY = '#0a1628', COPPER = '#c87941';
+const LAYER_COLORS = [
+  '#c87941','#0a1628','#dc2626','#1d4ed8','#0f766e',
+  '#7c3aed','#ea580c','#16a34a','#ca8a04','#6b7280'
+];
+
+let chartLayer, chartPriority, chartPhase;
+
+function buildCharts() {
+  const layers = [...new Set(TASKS.map(t=>t.layer))];
+  const layerCounts = layers.map(l => TASKS.filter(t=>t.layer===l).length);
+
+  const priorities = ['B0','P0','P1','P2','P3'];
+  const priCounts  = priorities.map(p => TASKS.filter(t=>t.priority===p).length);
+  const priColors  = ['#7c3aed','#dc2626','#ea580c','#ca8a04','#16a34a'];
+
+  const phases     = ['NOW','NEXT','LATER'];
+  const phCounts   = phases.map(ph => TASKS.filter(t=>t.phase===ph).length);
+  const phColors   = ['#0f766e','#1d4ed8','#6b7280'];
+
+  chartLayer = new Chart(document.getElementById('chart-layer').getContext('2d'), {
+    type:'bar',
+    data: {
+      labels: layers,
+      datasets:[{ data: layerCounts, backgroundColor: LAYER_COLORS, borderRadius:4, borderWidth:0 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{ beginAtZero:true, grid:{color:'#f0f4f8'}, ticks:{font:{size:11}} },
+        y:{ grid:{display:false}, ticks:{font:{size:10}} }
+      }
+    }
+  });
+
+  chartPriority = new Chart(document.getElementById('chart-priority').getContext('2d'), {
+    type:'doughnut',
+    data:{
+      labels: priorities,
+      datasets:[{ data:priCounts, backgroundColor:priColors, borderWidth:2, borderColor:'#fff' }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'58%',
+      plugins:{
+        legend:{ position:'bottom', labels:{ font:{size:11}, padding:10, usePointStyle:true } }
+      }
+    }
+  });
+
+  chartPhase = new Chart(document.getElementById('chart-phase').getContext('2d'), {
+    type:'doughnut',
+    data:{
+      labels: phases,
+      datasets:[{ data:phCounts, backgroundColor:phColors, borderWidth:2, borderColor:'#fff' }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'58%',
+      plugins:{
+        legend:{ position:'bottom', labels:{ font:{size:11}, padding:10, usePointStyle:true } }
+      }
+    }
+  });
+}
+
+function updateCharts() {
+  const layers = [...new Set(TASKS.map(t=>t.layer))];
+  chartLayer.data.datasets[0].data = layers.map(l=>filteredTasks.filter(t=>t.layer===l).length);
+  chartLayer.update('none');
+
+  const priorities = ['B0','P0','P1','P2','P3'];
+  chartPriority.data.datasets[0].data = priorities.map(p=>filteredTasks.filter(t=>t.priority===p).length);
+  chartPriority.update('none');
+
+  const phases = ['NOW','NEXT','LATER'];
+  chartPhase.data.datasets[0].data = phases.map(ph=>filteredTasks.filter(t=>t.phase===ph).length);
+  chartPhase.update('none');
+}
+
+// ── Investor Checklist ──────────────────────────────
+const INVESTOR_ITEMS = [
+  { done: false, text: 'Backend connected end-to-end (apply → certify flow works)' },
+  { done: false, text: 'Real data in HQ dashboard (no hardcoded values)' },
+  { done: false, text: 'Public registry shows real certified orgs (or demo org)' },
+  { done: false, text: 'Leaderboard functional with sector filtering' },
+  { done: false, text: 'All P0 security issues resolved (6 issues)' },
+  { done: false, text: 'apps/web Vercel deployment live on aic.co.za' },
+  { done: false, text: 'Mock Alpha Report PDF ready (B0-1)' },
+  { done: false, text: 'Begin investor outreach (TARGET_PROSPECTS doc)' },
+];
+
+function renderInvestorChecklist() {
+  const el = document.getElementById('inv-checklist');
+  el.innerHTML = INVESTOR_ITEMS.map((item, i) => `
+    <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f0f4f8;cursor:pointer"
+         onclick="toggleItem(${i})">
+      <div style="width:16px;height:16px;border-radius:4px;border:2px solid ${item.done?'#16a34a':'#d1d5db'};
+                  background:${item.done?'#16a34a':'transparent'};flex-shrink:0;margin-top:1px;
+                  display:flex;align-items:center;justify-content:center">
+        ${item.done ? '<svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>' : ''}
+      </div>
+      <span style="font-size:12px;color:${item.done?'#16a34a':'var(--text)'};text-decoration:${item.done?'line-through':'none'}">${item.text}</span>
+    </div>
+  `).join('');
+}
+
+function toggleItem(i) {
+  INVESTOR_ITEMS[i].done = !INVESTOR_ITEMS[i].done;
+  renderInvestorChecklist();
+}
+
+// ── Init ────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderKPIs();
+  buildCharts();
+  renderTable();
+  renderInvestorChecklist();
+  document.getElementById('shown-count').textContent = `${TASKS.length} of ${TASKS.length} tasks shown`;
+});
+</script>
+</body>
+</html>

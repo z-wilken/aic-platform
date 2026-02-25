@@ -195,7 +195,28 @@ export const permissionAuditLogs = pgTable('permission_audit_logs', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
-// Users
+// Revoked JWT Tokens (for logout/JTI check)
+export const revokedTokens = pgTable('revoked_tokens', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  jti: varchar('jti', { length: 255 }).unique().notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Login Attempts (for account lockout)
+export const loginAttempts = pgTable('login_attempts', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar('email', { length: 255 }).notNull(),
+  ipAddress: varchar('ip_address', { length: 45 }),
+  success: boolean('success').default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table) => {
+  return {
+    emailIdx: index('login_attempts_email_idx').on(table.email),
+  }
+});
+
+// Users (Updated for TOTP MFA)
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).unique().notNull(),
@@ -208,11 +229,16 @@ export const users = pgTable('users', {
   emailVerified: boolean('email_verified').default(false),
   isSuperAdmin: boolean('is_super_admin').default(false),
   permissions: jsonb('permissions').default({}),
+  
+  // Security Hardening
+  mfaEnabled: boolean('mfa_enabled').default(false),
+  totpSecret: text('totp_secret'),
+  backupCodes: jsonb('backup_codes').default([]),
+  
   failedLoginAttempts: integer('failed_login_attempts').default(0),
   lockoutUntil: timestamp('lockout_until', { withTimezone: true }),
   twoFactorSecret: text('two_factor_secret'),
   twoFactorEnabled: boolean('two_factor_enabled').default(false),
-  backupCodes: jsonb('backup_codes'),
   lastLogin: timestamp('last_login', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),

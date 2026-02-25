@@ -4,8 +4,10 @@
   "private": true,
   "packageManager": "npm@11.6.2",
   "workspaces": [
-    "apps/*",
-    "apps/internal",
+    "apps/web",
+    "apps/platform",
+    "apps/engine",
+    "apps/governance-agent",
     "packages/*"
   ],
   "scripts": {

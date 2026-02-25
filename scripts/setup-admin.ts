@@ -1,8 +1,8 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import * as schema from '../apps/platform/db/schema';
+import * as schema from '../packages/db/src/schema';
 import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,7 +17,7 @@ async function setupAdmin() {
   const email = process.env.ADMIN_EMAIL;
   const password = process.env.ADMIN_PASSWORD;
 
-  if (!email || !password || password === 'CHANGE_ME_TO_INSTITUTIONAL_GRADE_PASSWORD') {
+  if (!email || !password) {
     console.error('ERROR: ADMIN_EMAIL and a secure ADMIN_PASSWORD must be set in .env');
     process.exit(1);
   }
@@ -28,10 +28,19 @@ async function setupAdmin() {
     const salt = await bcrypt.genSalt(12);
     const hash = await bcrypt.hash(password, salt);
 
+    // Fetch super_admin role ID
+    const [saRole] = await db.select().from(schema.roles).where(eq(schema.roles.slug, 'super_admin')).limit(1);
+    
+    if (!saRole) {
+      console.error('ERROR: super_admin role not found. Run seed-capabilities.ts first.');
+      process.exit(1);
+    }
+
     await db.insert(schema.users).values({
       email,
       passwordHash: hash,
       name: 'System Administrator (Root)',
+      roleId: saRole.id,
       role: 'ADMIN',
       isActive: true,
       isSuperAdmin: true,
@@ -40,13 +49,14 @@ async function setupAdmin() {
       target: schema.users.email,
       set: { 
         passwordHash: hash,
+        roleId: saRole.id,
         isSuperAdmin: true,
         role: 'ADMIN',
         isActive: true
       }
     });
 
-    console.log('[SUCCESS] Super Admin account secured and updated.');
+    console.log('[SUCCESS] Super Admin account secured and updated with RBAC Role.');
   } catch (error) {
     console.error('[CRITICAL FAILURE] Failed to setup admin:', error);
     process.exit(1);

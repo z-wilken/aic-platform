@@ -10,3 +10,4 @@ export * from './services/audits';
 export * from './services/incidents';
 export * from './services/requirements';
 export * from './services/hash-chain';
+export * from './services/scrutiny';
