@@ -9,18 +9,97 @@ export const incidentStatusEnum = pgEnum('incident_status', ['OPEN', 'INVESTIGAT
 export const auditScheduledStatusEnum = pgEnum('audit_scheduled_status', ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']);
 export const correctionStatusEnum = pgEnum('correction_status', ['SUBMITTED', 'UNDER_REVIEW', 'RESOLVED', 'REJECTED']);
 
-// Organizations
+// Organizations (The Tenant)
 export const organizations = pgTable('organizations', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 100 }).unique(), // for public directory URL
+  logoUrl: text('logo_url'),
   tier: tierEnum('tier').default('TIER_3'),
   integrityScore: integer('integrity_score').default(0),
   isAlpha: boolean('is_alpha').default(false),
   accreditationStatus: varchar('accreditation_status', { length: 50 }).default('PENDING'),
   iso42001Readiness: integer('iso_42001_readiness_score').default(0),
+  certificationStatus: varchar('certification_status', { length: 50 }).default('DRAFT'),
+  
+  // Billing & JIT Provisioning
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+  billingStatus: varchar('billing_status', { length: 50 }).default('TRIAL'), // ACTIVE, PAST_DUE, CANCELLED
+  planId: varchar('plan_id', { length: 50 }),
+  
+  // Contact & Metadata
   contactEmail: varchar('contact_email', { length: 255 }),
+  address: text('address'),
+  primaryAiOfficer: varchar('primary_ai_officer', { length: 255 }),
+  
+  // Settings
+  publicDirectoryVisible: boolean('public_directory_visible').default(false),
+  onPremProxyEnabled: boolean('on_prem_proxy_enabled').default(false),
+  
+  // Ops Tracking
+  renewalDate: timestamp('renewal_date', { withTimezone: true }),
+  laborHoursInvested: integer('labor_hours_invested').default(0), // For Unit Economics
+  
   apiKey: varchar('api_key', { length: 255 }),
   auditorId: uuid('auditor_id').references(() => users.id, { onDelete: 'set null' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Audit Documents (The Vault)
+export const auditDocuments = pgTable('audit_documents', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  slotType: varchar('slot_type', { length: 50 }).notNull(),
+  fileUrl: text('file_url').notNull(),
+  fileSize: varchar('file_size', { length: 50 }),
+  fileChecksum: varchar('file_checksum', { length: 64 }), // SHA-256 for integrity
+  version: integer('version').default(1),
+  status: varchar('status', { length: 50 }).default('UPLOADED'),
+  
+  // AI Factory Logic
+  aiTriageNotes: text('ai_triage_notes'),
+  ocrExtractedData: jsonb('ocr_extracted_data').default({}), // Extracted model names, dates, etc.
+  riskScore: integer('risk_score').default(0),
+  
+  requiredCapability: varchar('required_capability', { length: 100 }).default('view_audit_vault'),
+  uploadedBy: uuid('uploaded_by').references(() => users.id),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Issued Certifications (Auto-Cert Generation)
+export const issuedCertifications = pgTable('issued_certifications', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  certNumber: varchar('cert_number', { length: 100 }).unique().notNull(),
+  standard: varchar('standard', { length: 100 }).default('ISO/IEC 42001:2023'),
+  issueDate: timestamp('issue_date', { withTimezone: true }).defaultNow(),
+  expiryDate: timestamp('expiry_date', { withTimezone: true }).notNull(),
+  pdfUrl: text('pdf_url'), // Link to the watermarked PDF
+  verificationCode: varchar('verification_code', { length: 50 }).unique(), // For public directory check
+  status: varchar('status', { length: 20 }).default('ACTIVE'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Human-in-the-Loop (HITL) Logs (Immutable Accountability)
+export const hitlLogs = pgTable('hitl_logs', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  actorId: uuid('actor_id').references(() => users.id),
+  targetType: varchar('target_type', { length: 50 }), // 'DOCUMENT', 'RISK_SCORE', 'CERT_STATUS'
+  targetId: uuid('target_id'),
+  previousValue: jsonb('previous_value'),
+  newValue: jsonb('new_value'),
+  overrideReason: text('override_reason').notNull(),
+  integrityHash: varchar('integrity_hash', { length: 64 }), // Linked to Sovereign Ledger
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Document Comment Threads
+export const documentComments = pgTable('document_comments', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  documentId: uuid('document_id').references(() => auditDocuments.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').references(() => users.id),
+  content: text('content').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
