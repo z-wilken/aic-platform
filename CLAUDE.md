@@ -18,6 +18,9 @@ aic-platform/
 │   ├── admin/         # Internal operations panel (port 3002)
 │   ├── hq/            # Institutional governance & CMS (port 3004)
 │   └── engine/        # Python audit engine microservice (port 8000)
+├── design/
+│   ├── figma-export.zip  # Original Figma-generated React SPA — design reference
+│   └── README.md         # What's in the ZIP, what was integrated, what's pending
 ├── packages/
 │   ├── ui/            # Shared React components (@aic/ui)
 │   ├── auth/          # Shared auth utilities
@@ -37,6 +40,46 @@ aic-platform/
 - **Animations:** Framer Motion 12
 - **Types:** TypeScript 5.9 (strict mode)
 - **Linting:** ESLint 9 with Next.js config
+
+## Design System (Feb 2026 Pivot)
+
+Full spec: `docs/BRAND_DESIGN_SYSTEM.md` | Design source: `design/figma-export.zip`
+
+### Color Palette
+| Token | Hex | Use |
+|-------|-----|-----|
+| `aic-navy` | `#0a1628` | Primary dark background (all apps) |
+| `aic-navy-mid` | `#0f2044` | Cards, sidebars, panels |
+| `aic-navy-light` | `#1a3060` | Hover states on dark |
+| `aic-copper` | `#c87941` | **Primary accent** — CTAs, active states, highlights |
+| `aic-copper-light` | `#e09a62` | Hover state for copper |
+| `aic-paper` | `#faf8f5` | Light section backgrounds |
+| `aic-muted` | `#6b7895` | Muted text on light bg |
+
+**Do not use:** `#C41E3A` (old crimson), `#D4AF37` (old gold), `#050505` (old obsidian), `#00F5FF` (old cyan).
+Legacy token aliases (`aic-gold`, `aic-red`) map to copper — use `aic-copper` for new code.
+
+### Typography
+- **Body/UI:** Space Grotesk (`--font-space-grotesk`) — clean, institutional
+- **Display headings:** Crimson Pro (`--font-serif`) — editorial, often italic
+- **Labels/monospace:** IBM Plex Mono (`--font-mono`) — nav, badges, eyebrows (uppercase, tracking-[0.3em]+)
+
+### The AIC Character
+`apps/web/app/components/AICCharacter.tsx` | exported from `@aic/ui`
+
+Pixar-inspired SVG human silhouette. Brand visual signature ("the human in the loop").
+- Black/white line art, copper pupils + rotating dashed ring
+- 4 poses: `idle` | `thinking` | `reviewing` | `approving`
+- Framer Motion spring physics: breathing, head sway, pose transitions
+- Usage: `<AICCharacter pose="idle" scheme="dark" size={280} animate />`
+- **scheme="dark"** → white lines (on navy bg) | **scheme="light"** → navy lines (on paper bg)
+
+### Design Source Reference
+`design/figma-export.zip` contains the original Figma React export. Key reference points:
+- `src/app/components/Layout.tsx` — institutional nav IA (already integrated into Navbar.tsx)
+- `src/app/components/ui/` — shadcn/ui components (card, table, separator already ported)
+- Color scheme: `#0f1f3d` navy + `#c9920a` gold (evolved to `#0a1628` + `#c87941` in live code)
+- To inspect: `cd design && unzip figma-export.zip -d figma-source/`
 
 ### Backend
 - **API Routes:** Next.js Route Handlers
