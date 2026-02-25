@@ -12,21 +12,23 @@ AIC is a POPIA Section 71 compliant accountability framework for AI deployments,
 ```
 aic-platform/
 ├── apps/
-│   ├── web/           # Public marketing site (port 3000)
-│   ├── platform/      # AIC Pulse SaaS dashboard (port 3001)
-│   ├── admin/         # Internal operations panel (port 3002)
-│   ├── hq/            # Governance & growth HQ (port 3004)
-│   └── engine/        # Python audit engine (port 8000)
+│   ├── web/                # Public marketing site (port 3000)
+│   ├── platform/           # AIC Pulse SaaS dashboard (port 3001)
+│   ├── admin/              # Internal operations panel (port 3002)
+│   ├── hq/                 # Governance & growth HQ (port 3004)
+│   ├── internal/           # Internal tooling & ops
+│   ├── governance-agent/   # AI governance agent
+│   ├── web-legacy/         # Legacy marketing site (archived)
+│   └── engine/             # Python audit engine (port 8000)
 ├── packages/
-│   ├── api-client/    # Typed API client (@aic/api-client)
 │   ├── auth/          # Shared NextAuth configuration (@aic/auth)
 │   ├── db/            # Drizzle ORM schema & migrations (@aic/db)
-│   ├── events/        # Event system (@aic/events)
 │   ├── legal/         # Legal/compliance utilities (@aic/legal)
-│   ├── reports/       # PDF report generation (@aic/reports)
-│   ├── sockets/       # WebSocket utilities (@aic/sockets)
+│   ├── middleware/    # Shared middleware utilities (@aic/middleware)
+│   ├── notifications/ # Notification system (@aic/notifications)
 │   ├── types/         # Shared TypeScript types (@aic/types)
-│   └── ui/            # Radix UI component library (@aic/ui)
+│   └── ui/            # React component library (@aic/ui)
+├── design/            # Figma export & design reference
 ├── docs/              # Strategic & business documentation
 ├── turbo.json         # Turborepo pipeline configuration
 └── docker-compose.yml # Local development orchestration
@@ -38,6 +40,8 @@ aic-platform/
 | **`apps/platform`** | Next.js, NextAuth v5-beta, Drizzle ORM | Client SaaS dashboard — integrity scores, audit logs, certification |
 | **`apps/admin`** | Next.js, NextAuth v4 | Internal ops — lead management, audit workflow, certifications |
 | **`apps/hq`** | Next.js, NextAuth v4 | Governance, HR, CRM, training curriculum, engine monitoring |
+| **`apps/internal`** | Next.js | Internal tooling and operational dashboards |
+| **`apps/governance-agent`** | Next.js | AI governance agent interface |
 | **`apps/engine`** | FastAPI, pandas, scipy, SHAP | Audit engine — 40+ bias/fairness/XAI endpoints |
 
 ---
