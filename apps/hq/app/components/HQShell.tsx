@@ -89,7 +89,7 @@ export default function HQShell({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex font-mono uppercase tracking-[0.15em] text-[9px]">
+    <div className="min-h-screen bg-aic-navy text-white flex font-mono uppercase tracking-[0.15em] text-[9px]">
       <AnimatePresence>
         {searchOpen && (
             <motion.div
@@ -101,10 +101,10 @@ export default function HQShell({ children }: { children: React.ReactNode }) {
                 <motion.div
                     initial={{ scale: 0.95, y: 20 }}
                     animate={{ scale: 1, y: 0 }}
-                    className="w-full max-w-2xl bg-[#080808] border border-white/10 rounded-[2.5rem] p-12 shadow-[0_0_50px_rgba(212,175,55,0.15)]"
+                    className="w-full max-w-2xl bg-aic-navy-mid border border-white/10 rounded-[2.5rem] p-12 shadow-[0_0_50px_rgba(212,175,55,0.15)]"
                 >
                     <div className="flex items-center gap-6 mb-12">
-                        <svg className="w-6 h-6 text-aic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <svg className="w-6 h-6 text-aic-copper" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                         <input
                             autoFocus
                             placeholder="QUERY REGISTRY..."
@@ -120,7 +120,7 @@ export default function HQShell({ children }: { children: React.ReactNode }) {
                             <p className="text-[8px] text-gray-600 mb-4 tracking-[0.4em]">Suggested Commands</p>
                             <div className="grid grid-cols-2 gap-4">
                                 {['/verify-id', '/audit-queue', '/revenue-report', '/training-log'].map(cmd => (
-                                    <div key={cmd} className="p-4 bg-white/5 border border-white/5 rounded-xl text-gray-400 font-mono text-[9px] hover:border-aic-gold/30 hover:text-white transition-all cursor-pointer">
+                                    <div key={cmd} className="p-4 bg-white/5 border border-white/5 rounded-xl text-gray-400 font-mono text-[9px] hover:border-aic-copper/30 hover:text-white transition-all cursor-pointer">
                                         {cmd}
                                     </div>
                                 ))}
@@ -133,16 +133,16 @@ export default function HQShell({ children }: { children: React.ReactNode }) {
       </AnimatePresence>
 
       {/* Universal HQ Navigation */}
-      <aside className="w-20 bg-[#000] border-r border-white/5 flex flex-col items-center py-8 gap-8 fixed h-full z-30">
-        <div className="h-10 w-10 rounded-xl bg-aic-gold/10 border border-aic-gold/30 flex items-center justify-center text-aic-gold font-serif font-bold text-xl mb-8">A</div>
+      <aside className="w-20 bg-aic-navy border-r border-white/5 flex flex-col items-center py-8 gap-8 fixed h-full z-30">
+        <div className="h-10 w-10 rounded-xl bg-aic-copper/10 border border-aic-copper/30 flex items-center justify-center text-aic-copper font-serif font-bold text-xl mb-8">A</div>
         {departments.map((dept) => (
             <Link
                 key={dept.id}
                 href={dept.routes[0].href}
-                className={`p-4 rounded-2xl transition-all duration-500 hover:bg-white/5 group relative ${pathname.startsWith('/' + dept.id) ? 'bg-aic-gold/10 text-aic-gold border border-aic-gold/20 shadow-[0_0_30px_rgba(212,175,55,0.1)]' : 'text-gray-600'}`}
+                className={`p-4 rounded-2xl transition-all duration-500 hover:bg-white/5 group relative ${pathname.startsWith('/' + dept.id) ? 'bg-aic-copper/10 text-aic-copper border border-aic-copper/20 shadow-none' : 'text-gray-600'}`}
             >
                 {dept.icon}
-                <span className="absolute left-full ml-4 px-3 py-1 bg-aic-gold text-black rounded font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                <span className="absolute left-full ml-4 px-3 py-1 bg-aic-copper text-black rounded font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
                     {dept.label}
                 </span>
             </Link>
@@ -150,7 +150,7 @@ export default function HQShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Department Sidebar */}
-      <aside className="w-64 ml-20 bg-[#080808] border-r border-white/5 p-8 flex flex-col fixed h-full z-20 shadow-2xl">
+      <aside className="w-64 ml-20 bg-aic-navy-mid border-r border-white/5 p-8 flex flex-col fixed h-full z-20 shadow-2xl">
         <div className="mb-12">
             <p className="text-[7px] text-gray-600 uppercase tracking-[0.4em] mb-2">AIC_CORPORATE_OS</p>
             <h2 className="text-xs font-bold text-white tracking-[0.3em]">
@@ -180,10 +180,10 @@ export default function HQShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Content Engine */}
-      <main className="flex-1 ml-[20rem] min-h-screen bg-[#050505]">
-        <header className="sticky top-0 z-10 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5 px-12 py-8 flex justify-between items-center">
+      <main className="flex-1 ml-[20rem] min-h-screen bg-aic-navy">
+        <header className="sticky top-0 z-10 bg-aic-navy/80 backdrop-blur-xl border-b border-white/5 px-12 py-8 flex justify-between items-center">
             <div className="flex items-center gap-4">
-                <div className="h-1.5 w-1.5 rounded-full bg-aic-gold animate-pulse shadow-[0_0_10px_rgba(212,175,55,0.8)]"></div>
+                <div className="h-1.5 w-1.5 rounded-full bg-aic-copper animate-pulse shadow-none"></div>
                 <h3 className="text-[10px] font-bold tracking-[0.4em] text-white">INTER_COMPANY_SYNC_ACTIVE</h3>
             </div>
             <div className="flex items-center gap-8">

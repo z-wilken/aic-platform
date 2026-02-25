@@ -1,36 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  /* Typography */
+  /* ─── Typography ──────────────────────────────────────────────── */
   --font-serif: var(--font-crimson-pro), serif;
   --font-mono: var(--font-ibm-plex-mono), monospace;
-  --font-sans: var(--font-ibm-plex-mono), sans-serif;
+  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
 
-  /* Sovereign Palette */
-  --color-aic-obsidian: #050505;
-  --color-aic-cyan: #00F5FF;
-  --color-aic-slate: #64748B;
-  --color-aic-gold: #D4AF37;
-  --color-aic-red: #C41E3A;
-  
-  --color-admin-bg: var(--color-aic-obsidian);
-  --color-admin-card: #1c1c1c;
-  --color-admin-accent: #ef4444; /* Admin uses Red as primary accent */
+  /* ─── AIC Brand Palette — Admin (Navy + Copper, red tint) ────── */
+  --color-aic-navy:         #0a1628;
+  --color-aic-navy-mid:     #0f2044;
+  --color-aic-navy-light:   #1a3060;
+  --color-aic-copper:       #c87941;
+  --color-aic-copper-light: #e09a62;
+  --color-aic-copper-dim:   rgba(200, 121, 65, 0.15);
+  --color-aic-paper:        #faf8f5;
+  --color-aic-white:        #ffffff;
+  --color-aic-muted:        #6b7895;
+
+  /* Admin-specific: keep a red alert accent for warnings/critical */
+  --color-admin-alert: #e53e3e;
+  --color-admin-bg:    #0a1628;
+  --color-admin-card:  #0f2044;
+
+  /* Legacy */
+  --color-aic-obsidian: #0a1628;
+  --color-aic-cyan:     #c87941;
+  --color-aic-slate:    #6b7895;
+  --color-aic-gold:     #c87941;
+  --color-aic-red:      #e53e3e;   /* Admin keeps true red for alerts */
 }
 
 body {
-  background-color: var(--color-aic-obsidian);
-  color: white;
-  background-image: radial-gradient(at 50% 0%, rgba(239, 68, 68, 0.03) 0px, transparent 60%);
+  background-color: var(--color-aic-navy);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(at 50% 0%, rgba(200, 121, 65, 0.03) 0, transparent 60%),
+    radial-gradient(at 100% 100%, rgba(229, 62, 62, 0.02) 0, transparent 50%);
   background-attachment: fixed;
 }
 
-/* Glassmorphism Utilities - Shared with Platform */
 @utility glass-panel {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(15, 32, 68, 0.55);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.5);
 }
 
@@ -44,7 +59,7 @@ body {
 @utility hover-glow {
   transition: all 0.3s ease;
   &:hover {
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 20px rgba(200, 121, 65, 0.15);
+    border-color: rgba(200, 121, 65, 0.3);
   }
 }

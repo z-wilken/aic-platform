@@ -1,21 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  /* Typography */
+  /* ─── Typography ──────────────────────────────────────────────── */
   --font-serif: var(--font-crimson-pro), serif;
   --font-mono: var(--font-ibm-plex-mono), monospace;
-  --font-sans: var(--font-ibm-plex-mono), sans-serif;
+  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
 
-  /* HQ Specific Palette - Dark Mode Only */
-  --color-aic-black: #000000;
-  --color-aic-gold: #D4AF37;
-  --color-aic-paper: #FAF9F6;
-  --color-aic-red: #C41E3A;
+  /* ─── AIC Brand Palette — HQ (Navy + Copper, institutional) ─── */
+  --color-aic-navy:         #0a1628;
+  --color-aic-navy-mid:     #0f2044;
+  --color-aic-navy-light:   #1a3060;
+  --color-aic-copper:       #c87941;
+  --color-aic-copper-light: #e09a62;
+  --color-aic-copper-dim:   rgba(200, 121, 65, 0.15);
+  --color-aic-paper:        #faf8f5;
+  --color-aic-parchment:    #f0ece4;
+  --color-aic-black:        #0a1628;
+  --color-aic-white:        #ffffff;
+  --color-aic-muted:        #6b7895;
+
+  /* Legacy */
+  --color-aic-gold: #c87941;
+  --color-aic-red:  #c87941;
 }
 
 body {
-  background-color: black;
-  color: white;
+  background-color: var(--color-aic-navy);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 .perspective-1000 {
@@ -24,4 +37,11 @@ body {
 
 .rotate-y-tilt {
   transform: rotateY(-10deg);
+}
+
+@utility glass-panel {
+  background-color: rgba(15, 32, 68, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Crimson_Pro, IBM_Plex_Mono } from "next/font/google";
+import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import HQShell from "./components/HQShell";
@@ -19,6 +19,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "AIC HQ | Corporate Operating System",
   description: "Internal command and control for AI Integrity Certification.",
@@ -32,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} antialiased bg-black text-white font-sans selection:bg-aic-gold selection:text-black`}
+        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-navy text-white font-sans selection:bg-aic-copper selection:text-white`}
       >
         <Providers>
             <HQShell>

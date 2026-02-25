@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Crimson_Pro, IBM_Plex_Mono } from "next/font/google";
+import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -14,6 +14,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -107,7 +114,7 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} antialiased bg-aic-bg text-aic-black font-sans`}
+        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-paper text-aic-navy font-sans`}
       >
         {children}
       </body>

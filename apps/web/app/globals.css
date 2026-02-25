@@ -1,28 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  /* Typography */
+  /* ─── Typography ──────────────────────────────────────────────── */
   --font-serif: var(--font-crimson-pro), serif;
   --font-mono: var(--font-ibm-plex-mono), monospace;
-  --font-sans: var(--font-ibm-plex-mono), sans-serif;
+  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
 
-  /* Color Palette - Refined "Gallery" Aesthetic */
-  --color-aic-black: #121212; /* Deep Charcoal */
-  --color-aic-paper: #FAF9F6; /* Soft Cream/Gallery White */
-  --color-aic-red: #C41E3A;    /* Heritage Red */
-  --color-aic-gold: #D4AF37;   /* Metallic Gold */
-  --color-aic-gray: #6B7280;
-  --color-aic-border: rgba(18, 18, 18, 0.08);
+  /* ─── AIC Brand Palette — Navy + Copper ──────────────────────── */
+  /* Primary backgrounds */
+  --color-aic-navy:       #0a1628;   /* Deep navy — hero / dark sections   */
+  --color-aic-navy-mid:   #0f2044;   /* Mid navy  — cards on dark bg       */
+  --color-aic-navy-light: #1a3060;   /* Light navy — hover / borders       */
+
+  /* Accent */
+  --color-aic-copper:     #c87941;   /* Warm copper — primary accent       */
+  --color-aic-copper-light: #e09a62; /* Light copper — hover state         */
+  --color-aic-copper-dim: rgba(200, 121, 65, 0.15); /* subtle copper glow */
+
+  /* Light surfaces */
+  --color-aic-paper:      #faf8f5;   /* Warm off-white — light bg          */
+  --color-aic-parchment:  #f0ece4;   /* Darker warm — section dividers     */
+
+  /* Text */
+  --color-aic-black:      #0a1628;   /* Same as navy — text on light bg    */
+  --color-aic-white:      #ffffff;
+  --color-aic-muted:      #6b7895;   /* Navy-tinted muted text             */
+
+  /* Utility */
+  --color-aic-border:     rgba(10, 22, 40, 0.08);
+  --color-aic-border-dark: rgba(255, 255, 255, 0.08);
+
+  /* Legacy aliases kept for backwards compat */
+  --color-aic-gold:       #c87941;   /* maps to copper */
+  --color-aic-red:        #c87941;   /* maps to copper (red references use copper now) */
+  --color-aic-gray:       #6b7895;
 }
 
-/* Base Styles */
+/* ─── Base ────────────────────────────────────────────────────────── */
 body {
   background-color: var(--color-aic-paper);
-  color: var(--color-aic-black);
+  color: var(--color-aic-navy);
+  font-family: var(--font-sans);
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* The "Mesh" Overlay - Subtler than film grain */
+/* ─── Subtle warm mesh overlay ───────────────────────────────────── */
 body::before {
   content: "";
   position: fixed;
@@ -31,20 +54,35 @@ body::before {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.03) 0, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(196, 30, 58, 0.02) 0, transparent 50%);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(200, 121, 65, 0.04) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(10, 22, 40, 0.03) 0, transparent 50%);
   z-index: -1;
 }
 
-/* Glass Utilities */
+/* ─── Glass utilities ────────────────────────────────────────────── */
 @utility glass {
-  background-color: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--color-aic-border);
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(10, 22, 40, 0.06);
 }
 
-/* Reveal Animation Utilities */
+@utility glass-dark {
+  background-color: rgba(10, 22, 40, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+@utility glass-copper {
+  background-color: rgba(200, 121, 65, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(200, 121, 65, 0.2);
+}
+
+/* ─── Reveal animations ──────────────────────────────────────────── */
 .mask-fade-up {
   mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
 }
@@ -57,39 +95,13 @@ body::before {
   opacity: 0;
 }
 
-/* Utilities */
-@utility glass {
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-@utility glass-dark {
-  background-color: rgba(10, 10, 10, 0.9);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-/* The "Redacted" Effect */
-.redacted {
-  background-color: black;
-  color: black;
-  transition: all 0.3s ease;
-  cursor: help;
-}
-.redacted:hover {
-  background-color: transparent;
-  color: black;
-}
-
-/* Marquee Animation */
+/* ─── Marquee ────────────────────────────────────────────────────── */
 @keyframes marquee {
-  0% { transform: translateX(0%); }
+  0%   { transform: translateX(0%); }
   100% { transform: translateX(-100%); }
 }
 @keyframes marquee2 {
-  0% { transform: translateX(100%); }
+  0%   { transform: translateX(100%); }
   100% { transform: translateX(0%); }
 }
 .animate-marquee {
@@ -103,6 +115,39 @@ body::before {
   will-change: transform;
 }
 
+/* ─── Copper glow ────────────────────────────────────────────────── */
+@keyframes copperPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 121, 65, 0); }
+  50%       { box-shadow: 0 0 24px 4px rgba(200, 121, 65, 0.25); }
+}
+.copper-glow {
+  animation: copperPulse 3s ease-in-out infinite;
+}
+
+/* ─── Redacted effect ────────────────────────────────────────────── */
+.redacted {
+  background-color: var(--color-aic-navy);
+  color: var(--color-aic-navy);
+  transition: all 0.3s ease;
+  cursor: help;
+}
+.redacted:hover {
+  background-color: transparent;
+  color: var(--color-aic-navy);
+}
+
+/* ─── Character line animation ───────────────────────────────────── */
+@keyframes drawPath {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+.path-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawPath 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pathLength: 1;
+}
+
 .border-b-2 {
-    border-bottom-width: 2px;
+  border-bottom-width: 2px;
 }

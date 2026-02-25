@@ -1,4 +1,5 @@
 export * from './AlphaSeal';
+export { default as AICCharacter } from './AICCharacter';
 export * from './TrustBadge';
 export * from './InstitutionalFooter';
 export * from './Theme';

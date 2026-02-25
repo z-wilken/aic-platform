@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Crimson_Pro, IBM_Plex_Mono } from "next/font/google";
+import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -18,6 +18,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "AIC Pulse | Compliance Dashboard",
   description: "Real-time AI integrity monitoring.",
@@ -32,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} antialiased bg-gray-50 text-gray-900 font-sans`}
+        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-navy text-white font-sans`}
       >
         <Providers>
           {children}

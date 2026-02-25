@@ -21,7 +21,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   } = useDashboardState();
 
   return (
-    <div className="min-h-screen flex bg-aic-paper">
+    <div className="min-h-screen flex bg-aic-navy">
       <DashboardSidebar 
         show={showMobileMenu} 
         onClose={() => setShowMobileMenu(false)} 

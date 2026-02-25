@@ -57,9 +57,9 @@ export default function AdminShell({ children }: AdminShellProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex font-sans">
+    <div className="min-h-screen bg-aic-navy text-white flex font-sans">
       {/* Sidebar */}
-      <aside className="w-72 bg-[#050505] border-r border-white/5 p-6 flex flex-col fixed h-full z-20">
+      <aside className="w-72 bg-aic-navy border-r border-white/5 p-6 flex flex-col fixed h-full z-20">
         <div className="flex justify-between items-center mb-10 px-2">
           <Link href="/" className="flex items-center gap-3 group">
               <div className="h-8 w-8 rounded bg-red-900/20 border border-red-500/30 flex items-center justify-center text-red-500 font-mono font-bold text-lg group-hover:bg-red-900/30 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all">A</div>
@@ -100,7 +100,7 @@ export default function AdminShell({ children }: AdminShellProps) {
         </nav>
 
         <div className="mt-auto pt-6 border-t border-white/5">
-          <div className="p-3 rounded-lg bg-[#0A0A0A] border border-white/5 flex items-center gap-3">
+          <div className="p-3 rounded-lg bg-aic-navy-mid border border-white/5 flex items-center gap-3">
             <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_#EF4444]"></div>
             <div className="flex-1">
               <p className="text-[9px] text-gray-400 font-mono uppercase tracking-widest">System Status</p>
@@ -112,8 +112,8 @@ export default function AdminShell({ children }: AdminShellProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-72 min-h-screen bg-[#050505]">
-        <header className="sticky top-0 z-10 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5 px-8 py-4">
+      <main className="flex-1 ml-72 min-h-screen bg-aic-navy">
+        <header className="sticky top-0 z-10 bg-aic-navy/80 backdrop-blur-xl border-b border-white/5 px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-6">
                 <div className="h-2 w-2 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
