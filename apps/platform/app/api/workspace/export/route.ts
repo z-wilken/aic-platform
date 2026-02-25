@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generatePDF } from '../../../lib/pdf-generator';
-import { getModelCardTemplate } from '../../../lib/artifact-generator';
+import { generatePDF } from '@/lib/pdf-generator';
+import { getModelCardTemplate } from '@/lib/artifact-generator';
 import { auth } from '@aic/auth';
 
 export async function POST(request: NextRequest) {

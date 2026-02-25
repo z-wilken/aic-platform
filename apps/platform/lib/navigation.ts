@@ -1,4 +1,4 @@
-import { hasCapability } from "../lib/rbac";
+import { hasCapability } from "@/lib/rbac";
 import { auth } from "@aic/auth";
 
 export async function getNavigation() {

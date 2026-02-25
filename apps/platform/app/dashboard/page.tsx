@@ -1,15 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { 
   Shield, 
   FileText, 
   UploadCloud, 
   CheckCircle2, 
-  Clock, 
   MessageSquare, 
-  ChevronRight,
-  UserCircle,
   Building,
   AlertCircle
 } from "lucide-react";
@@ -33,8 +29,6 @@ const VAULT_SLOTS = [
 ];
 
 export default function ClientDashboard() {
-  const [activeStep] = useState(1);
-  const uploadedCount = VAULT_SLOTS.filter(s => s.uploaded).length;
   const mandatoryCount = VAULT_SLOTS.filter(s => s.required).length;
   const mandatoryUploaded = VAULT_SLOTS.filter(s => s.required && s.uploaded).length;
   const isComplete = mandatoryUploaded === mandatoryCount;

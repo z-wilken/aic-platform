@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { 
   Search, 
   Filter, 
-  MoreHorizontal, 
   FileText, 
   AlertCircle, 
-  CheckCircle2, 
   Clock, 
   Eye,
-  ArrowUpRight,
   Shield,
   Zap
 } from "lucide-react";

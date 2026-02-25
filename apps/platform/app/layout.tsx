@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
+import { Sidebar } from "./components/Sidebar";
+import { getNavigation } from "@/lib/navigation";
 import "./globals.css";
 
 const crimsonPro = Crimson_Pro({
@@ -28,21 +30,28 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "AIC Pulse | Compliance Dashboard",
   description: "Real-time AI integrity monitoring.",
-  robots: "noindex, nofollow", // Keep the dashboard private from Google
+  robots: "noindex, nofollow",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navItems = await getNavigation();
+
   return (
     <html lang="en">
       <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-navy text-white font-sans`}
+        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-white text-[#0f1f3d] font-sans`}
       >
         <Providers>
-          {children}
+          <div className="flex">
+            <Sidebar navItems={navItems} />
+            <main className="flex-1 ml-64 min-h-screen">
+              {children}
+            </main>
+          </div>
           <Toaster position="bottom-right" richColors />
         </Providers>
       </body>

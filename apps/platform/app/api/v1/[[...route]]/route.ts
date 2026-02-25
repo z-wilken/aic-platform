@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
-import { hasCapability } from '../../../lib/rbac';
+import { hasCapability } from '@/lib/rbac';
 
 /**
  * Unified API Gateway (v1)
  * Single entry point for Governance, Corporate, and Professional portal logic.
  */
-export async function GET(req: NextRequest, { params }: { params: { route: string[] } }) {
-  return handleRequest(req, params.route, 'GET');
+export async function GET(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+  const { route } = await params;
+  return handleRequest(req, route, 'GET');
 }
 
-export async function POST(req: NextRequest, { params }: { params: { route: string[] } }) {
-  return handleRequest(req, params.route, 'POST');
+export async function POST(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+  const { route } = await params;
+  return handleRequest(req, route, 'POST');
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { route: string[] } }) {
-  return handleRequest(req, params.route, 'PUT');
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+  const { route } = await params;
+  return handleRequest(req, route, 'PUT');
 }
 
 async function handleRequest(req: NextRequest, route: string[], method: string) {
