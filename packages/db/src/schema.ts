@@ -69,12 +69,60 @@ export const auditLedger = pgTable('audit_ledger', {
   signature: text('signature'),
 });
 
+// Roles (WordPress style)
+export const roles = pgTable('roles', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 100 }).unique().notNull(), // e.g. 'corporate_lead'
+  description: text('description'),
+  isCustom: boolean('is_custom').default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Capabilities (Granular permissions)
+export const capabilities = pgTable('capabilities', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 100 }).unique().notNull(), // e.g. 'upload_bias_report'
+  category: varchar('category', { length: 100 }), // e.g. 'Audit', 'User Management'
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Role-Capability mapping (Many-to-Many)
+export const roleCapabilities = pgTable('role_capabilities', {
+  roleId: uuid('role_id').references(() => roles.id, { onDelete: 'cascade' }),
+  capabilityId: uuid('capability_id').references(() => capabilities.id, { onDelete: 'cascade' }),
+}, (table) => ({
+  pk: index('role_cap_pk').on(table.roleId, table.capabilityId),
+}));
+
+// User-Capability overrides (Specific permissions for a user)
+export const userCapabilities = pgTable('user_capabilities', {
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  capabilityId: uuid('capability_id').references(() => capabilities.id, { onDelete: 'cascade' }),
+  isGranted: boolean('is_granted').default(true), // true = whitelist, false = explicit deny
+}, (table) => ({
+  pk: index('user_cap_pk').on(table.userId, table.capabilityId),
+}));
+
+// Permission Audit Logs
+export const permissionAuditLogs = pgTable('permission_audit_logs', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  actorId: uuid('actor_id').references(() => users.id), // The Super Admin who made the change
+  targetUserId: uuid('target_user_id').references(() => users.id),
+  targetRoleId: uuid('target_role_id').references(() => roles.id),
+  action: varchar('action', { length: 50 }).notNull(), // 'GRANT', 'REVOKE', 'ROLE_CREATE'
+  details: jsonb('details').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
 // Users
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).unique().notNull(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
+  roleId: uuid('role_id').references(() => roles.id),
   role: userRoleEnum('role').default('VIEWER'),
   orgId: uuid('org_id').references((): AnyPgColumn => organizations.id),
   isActive: boolean('is_active').default(true),
@@ -244,6 +292,10 @@ export const decisionRecords = pgTable('decision_records', {
   outcome: jsonb('outcome').notNull(),
   explanation: text('explanation'),
   integrityHash: varchar('integrity_hash', { length: 64 }).notNull(),
+  isHumanOverride: boolean('is_human_override').default(false),
+  overrideReason: text('override_reason'),
+  overriddenBy: uuid('overridden_by').references(() => users.id),
+  syncStatus: varchar('sync_status', { length: 20 }).default('SYNCED'), // 'LOCAL_ONLY', 'SYNCED'
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
@@ -310,10 +362,59 @@ export const posts = pgTable('posts', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
 
-// Newsletter Subscribers
+// newsletter_subscribers (existing)
 export const newsletterSubscribers = pgTable('newsletter_subscribers', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).unique().notNull(),
   status: varchar('status', { length: 50 }).default('ACTIVE'),
   subscribedAt: timestamp('subscribed_at', { withTimezone: true }).defaultNow(),
+});
+
+// Global Standards (Governance Hub)
+export const globalStandards = pgTable('global_standards', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  region: varchar('region', { length: 255 }).notNull(),
+  framework: varchar('framework', { length: 255 }).notNull(),
+  status: varchar('status', { length: 50 }).notNull(), // Enacted, Active, Pending
+  level: varchar('level', { length: 50 }).notNull(), // High, Moderate, Voluntary
+  year: varchar('year', { length: 4 }).notNull(),
+  alignment: integer('alignment').default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Personnel Certification Levels (Professional Portal)
+export const personnelCertifications = pgTable('personnel_certifications', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  level: varchar('level', { length: 255 }).notNull(),
+  code: varchar('code', { length: 10 }).notNull(),
+  description: text('description').notNull(),
+  requirements: jsonb('requirements').notNull(), // Array of strings
+  duration: varchar('duration', { length: 100 }),
+  examFee: varchar('exam_fee', { length: 50 }),
+  color: varchar('color', { length: 50 }),
+  badge: varchar('badge', { length: 100 }),
+  popular: boolean('popular').default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Upcoming Exams (Professional Portal)
+export const exams = pgTable('exams', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  date: varchar('date', { length: 100 }).notNull(),
+  location: varchar('location', { length: 255 }).notNull(),
+  seats: varchar('seats', { length: 100 }),
+  certCode: varchar('cert_code', { length: 10 }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Public Resources (Professional/Corporate Portal)
+export const resources = pgTable('resources', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar('title', { length: 255 }).notNull(),
+  type: varchar('type', { length: 50 }).notNull(), // PDF, XLSX, etc.
+  size: varchar('size', { length: 50 }),
+  category: varchar('category', { length: 100 }).notNull(), // Study Guide, Template, etc.
+  description: text('description'),
+  downloadUrl: text('download_url'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });

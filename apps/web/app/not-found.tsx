@@ -1,41 +1,32 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
+import Link from "next/link";
+import { Home, ArrowLeft } from "lucide-react";
+import { Button } from "./components/ui/button";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-aic-paper flex flex-col items-center justify-center p-6 text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-md"
-      >
-        <h1 className="text-9xl font-serif font-bold text-aic-black/5 select-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 -z-10">
-          404
+    <div className="min-h-[70vh] flex items-center justify-center bg-[#f8fafc]">
+      <div className="max-w-2xl mx-auto px-4 text-center">
+        <div className="text-8xl font-bold text-[#c9920a] mb-4">404</div>
+        <h1 className="text-4xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+          Page Not Found
         </h1>
-        
-        <div className="h-px w-12 bg-aic-gold mx-auto mb-8" />
-        
-        <h2 className="text-4xl font-serif font-medium text-aic-black mb-6 tracking-tight">
-          Page Not Found.
-        </h2>
-        
-        <p className="text-gray-500 font-serif leading-relaxed mb-12 italic">
-          The accountability layer you are looking for has either been moved or does not exist in our current registry.
+        <p className="text-gray-600 mb-8 text-lg">
+          The page you're looking for doesn't exist or has been moved. Please check the URL or navigate back to explore our portals.
         </p>
-        
-        <Link 
-          href="/"
-          className="inline-block px-10 py-4 bg-aic-black text-white font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all duration-500 shadow-xl"
-        >
-          Return to Registry
-        </Link>
-      </motion.div>
-      
-      <div className="absolute bottom-12 left-12 text-[10px] font-mono text-gray-300 uppercase tracking-widest vertical-text hidden lg:block">
-        AI Integrity Certification
+        <div className="flex gap-4 justify-center">
+          <Link href="/">
+            <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white px-6 py-3">
+              <Home className="w-4 h-4 mr-2" />
+              Return Home
+            </Button>
+          </Link>
+          <Button variant="outline" onClick={() => window.history.back()} className="px-6 py-3">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Go Back
+          </Button>
+        </div>
       </div>
     </div>
   );
