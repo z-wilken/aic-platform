@@ -7,60 +7,32 @@
   --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
 
   /* ─── AIC Brand Palette — Navy + Copper ──────────────────────── */
-  /* Primary backgrounds */
-  --color-aic-navy:       #0a1628;   /* Deep navy — hero / dark sections   */
-  --color-aic-navy-mid:   #0f2044;   /* Mid navy  — cards on dark bg       */
-  --color-aic-navy-light: #1a3060;   /* Light navy — hover / borders       */
+  --color-aic-navy:       #0a1628;
+  --color-aic-navy-mid:   #0f2044;
+  --color-aic-navy-light: #1a3060;
 
-  /* Accent */
-  --color-aic-copper:     #c87941;   /* Warm copper — primary accent       */
-  --color-aic-copper-light: #e09a62; /* Light copper — hover state         */
-  --color-aic-copper-dim: rgba(200, 121, 65, 0.15); /* subtle copper glow */
+  --color-aic-copper:       #c87941;
+  --color-aic-copper-light: #e09a62;
+  --color-aic-copper-dim: rgba(200, 121, 65, 0.15);
 
-  /* Light surfaces */
-  --color-aic-paper:      #faf8f5;   /* Warm off-white — light bg          */
-  --color-aic-parchment:  #f0ece4;   /* Darker warm — section dividers     */
+  --color-aic-paper:      #faf8f5;
+  --color-aic-parchment:  #f0ece4;
 
-  /* Text */
-  --color-aic-black:      #0a1628;   /* Same as navy — text on light bg    */
+  --color-aic-black:      #0a1628;
   --color-aic-white:      #ffffff;
-  --color-aic-muted:      #6b7895;   /* Navy-tinted muted text             */
+  --color-aic-muted:      #6b7895;
 
-  /* Utility */
   --color-aic-border:     rgba(10, 22, 40, 0.08);
   --color-aic-border-dark: rgba(255, 255, 255, 0.08);
-
-  /* Legacy aliases kept for backwards compat */
-  --color-aic-gold:       #c87941;   /* maps to copper */
-  --color-aic-red:        #c87941;   /* maps to copper (red references use copper now) */
-  --color-aic-gray:       #6b7895;
 }
 
-/* ─── Base ────────────────────────────────────────────────────────── */
 body {
-  background-color: var(--color-aic-paper);
   color: var(--color-aic-navy);
   font-family: var(--font-sans);
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Subtle warm mesh overlay ───────────────────────────────────── */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background-image:
-    radial-gradient(at 0% 0%, rgba(200, 121, 65, 0.04) 0, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(10, 22, 40, 0.03) 0, transparent 50%);
-  z-index: -1;
-}
-
-/* ─── Glass utilities ────────────────────────────────────────────── */
 @utility glass {
   background-color: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);
@@ -76,76 +48,12 @@ body::before {
   color: white;
 }
 
-@utility glass-copper {
-  background-color: rgba(200, 121, 65, 0.08);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(200, 121, 65, 0.2);
-}
-
-/* ─── Reveal animations ──────────────────────────────────────────── */
-.mask-fade-up {
-  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-}
-
-.perspective-1000 {
-  perspective: 1000px;
-}
-
-.stagger-child > * {
-  opacity: 0;
-}
-
-/* ─── Marquee ────────────────────────────────────────────────────── */
-@keyframes marquee {
-  0%   { transform: translateX(0%); }
-  100% { transform: translateX(-100%); }
-}
-@keyframes marquee2 {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(0%); }
-}
-.animate-marquee {
-  animation: marquee 45s linear infinite;
-  white-space: nowrap;
-  will-change: transform;
-}
-.animate-marquee2 {
-  animation: marquee2 45s linear infinite;
-  white-space: nowrap;
-  will-change: transform;
-}
-
-/* ─── Copper glow ────────────────────────────────────────────────── */
 @keyframes copperPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(200, 121, 65, 0); }
   50%       { box-shadow: 0 0 24px 4px rgba(200, 121, 65, 0.25); }
 }
 .copper-glow {
   animation: copperPulse 3s ease-in-out infinite;
-}
-
-/* ─── Redacted effect ────────────────────────────────────────────── */
-.redacted {
-  background-color: var(--color-aic-navy);
-  color: var(--color-aic-navy);
-  transition: all 0.3s ease;
-  cursor: help;
-}
-.redacted:hover {
-  background-color: transparent;
-  color: var(--color-aic-navy);
-}
-
-/* ─── Character line animation ───────────────────────────────────── */
-@keyframes drawPath {
-  from { stroke-dashoffset: 1; }
-  to   { stroke-dashoffset: 0; }
-}
-.path-draw {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: drawPath 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  pathLength: 1;
 }
 
 .border-b-2 {
