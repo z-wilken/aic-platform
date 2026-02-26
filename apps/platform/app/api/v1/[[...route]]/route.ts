@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
-import { getSystemDb, sql, roles, capabilities } from '@aic/db';
+import { getSystemDb, sql, roles, capabilities, organizations, permissionAuditLogs } from '@aic/db';
 import { hasCapability } from '@/lib/rbac';
 
 /**
@@ -149,6 +149,159 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
         suggestion: "Ensure neutral, empathetic tone in automated rejections."
       });
     }
+  }
+
+  if (path === 'admin/organizations' && method === 'GET') {
+    const authorized = await hasCapability(userId!, 'view_all_orgs');
+    if (!authorized) return forbidden('view_all_orgs');
+
+    const db = getSystemDb();
+    const allOrgs = await db.select().from(organizations).orderBy(organizations.name);
+    return NextResponse.json(allOrgs);
+  }
+
+  if (path.startsWith('admin/organizations/') && method === 'PATCH') {
+    const authorized = await hasCapability(userId!, 'manage_roles');
+    if (!authorized) return forbidden('manage_roles');
+
+    const orgId = path.split('/')[2];
+    const body = await req.json();
+    const db = getSystemDb();
+
+    await db.update(organizations)
+      .set({ 
+        ...body,
+        updatedAt: new Date()
+      })
+      .where(eq(organizations.id, orgId));
+
+    return NextResponse.json({ success: true });
+  }
+
+  if (path === 'analytics/incidents' && method === 'GET') {
+    const db = getSystemDb();
+    const stats = await db.execute(sql`
+      SELECT 
+        status, 
+        COUNT(*) as count,
+        AVG(EXTRACT(EPOCH FROM (updated_at - created_at))) / 3600 as avg_resolution_hours
+      FROM incidents
+      WHERE org_id = ${session?.user?.orgId}
+      GROUP BY status
+    `);
+    return NextResponse.json(stats.rows);
+  }
+
+  if (path === 'analytics/corrections' && method === 'GET') {
+    const db = getSystemDb();
+    const stats = await db.execute(sql`
+      SELECT 
+        status, 
+        COUNT(*) as count
+      FROM correction_requests
+      WHERE org_id = ${session?.user?.orgId}
+      GROUP BY status
+    `);
+    return NextResponse.json(stats.rows);
+  }
+
+  if (path === 'analytics/decisions' && method === 'GET') {
+    const db = getSystemDb();
+    const stats = await db.execute(sql`
+      SELECT 
+        is_human_override, 
+        COUNT(*) as count
+      FROM decision_records
+      WHERE org_id = ${session?.user?.orgId}
+      GROUP BY is_human_override
+    `);
+    return NextResponse.json(stats.rows);
+  }
+
+  if (path === 'hq/revenue/velocity' && method === 'GET') {
+    const authorized = await hasCapability(userId!, 'view_revenue');
+    if (!authorized) return forbidden('view_revenue');
+
+    const db = getSystemDb();
+    const revenueStats = await db.execute(sql`
+      SELECT 
+        tier, 
+        COUNT(*) as active_clients,
+        CASE 
+          WHEN tier = 'TIER_1' THEN 38000
+          WHEN tier = 'TIER_2' THEN 12400
+          ELSE 0 
+        END as tier_price
+      FROM organizations
+      WHERE billing_status = 'ACTIVE'
+      GROUP BY tier
+    `);
+
+    const totalMRR = revenueStats.rows.reduce((acc: number, row: any) => 
+      acc + (Number(row.active_clients) * Number(row.tier_price)), 0);
+
+    return NextResponse.json({
+      mrr: totalMRR,
+      currency: 'USD',
+      breakdown: revenueStats.rows,
+      trend: '+12%' // Mock trend for prototype
+    });
+  }
+
+  if (path === 'admin/request-revision' && method === 'POST') {
+    const authorized = await hasCapability(userId!, 'triage_application');
+    if (!authorized) return forbidden('triage_application');
+
+    const { orgId, feedback } = await req.json();
+    const db = getSystemDb();
+
+    await db.update(organizations)
+      .set({ 
+        certificationStatus: 'REVISION_REQUIRED',
+        updatedAt: new Date()
+      })
+      .where(eq(organizations.id, orgId));
+
+    // Record interaction in system ledger for auditability
+    await db.insert(permissionAuditLogs).values({
+      actorId: userId!,
+      targetUserId: null,
+      targetRoleId: null,
+      action: 'REVISION_REQUESTED',
+      details: { orgId, feedback }
+    });
+
+    return NextResponse.json({ success: true, status: 'REVISION_REQUIRED' });
+  }
+
+  if (path === 'workspace/export' && method === 'GET') {
+    const db = getSystemDb();
+    const orgId = session?.user?.orgId;
+    if (!orgId) return unauthorized();
+
+    // Fetch workspace context for export
+    const [org] = await db.select().from(organizations).where(eq(organizations.id, orgId)).limit(1);
+    
+    // Use existing PDF generator
+    const { generatePDF, getReportTemplate } = await import('@/lib/pdf-generator');
+    const html = getReportTemplate({
+      id: `EXP-${orgId.substring(0,8)}`,
+      orgName: org.name,
+      orgId: orgId,
+      tier: org.tier || 'Tier 3',
+      auditStatus: org.certificationStatus,
+      integrityScore: org.integrityScore || 0,
+      monthYear: new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
+      findingsCount: 0
+    });
+
+    const pdfBuffer = await generatePDF(html);
+    return new NextResponse(pdfBuffer, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="AIC-Workspace-Export-${org.name.replace(/\s+/g, '-')}.pdf"`,
+      },
+    });
   }
 
   // Placeholder for successful gateway logic

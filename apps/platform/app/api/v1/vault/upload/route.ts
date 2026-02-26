@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
-import { getSystemDb, auditDocuments } from '@aic/db';
-import { createHash } from 'crypto';
+import { getSystemDb, auditDocuments, StorageService } from '@aic/db';
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -18,10 +17,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing file or slot type' }, { status: 400 });
     }
 
-    // 1. Calculate Checksum for Integrity (Autonomous Factory Logic)
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const checksum = createHash('sha256').update(buffer).digest('hex');
+    // 1. Persist to real Storage Backend (Minio/S3)
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const { evidenceId, hash } = await StorageService.saveEvidence(
+      session.user.orgId,
+      file.name,
+      buffer,
+      file.type
+    );
 
     // 2. Register in Database
     const db = getSystemDb();
@@ -29,9 +32,9 @@ export async function POST(req: NextRequest) {
       orgId: session.user.orgId,
       title: file.name,
       slotType,
-      fileUrl: `vault/${session.user.orgId}/${file.name}`, // Mock URL for prototype
+      fileUrl: evidenceId, 
       fileSize: `${(file.size / 1024).toFixed(2)} KB`,
-      fileChecksum: checksum,
+      fileChecksum: hash,
       uploadedBy: session.user.id,
       status: 'UPLOADED'
     }).returning();

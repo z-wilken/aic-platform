@@ -34,6 +34,7 @@ export async function getNavigation() {
       icon: 'ShieldAlert',
       items: [
         { label: 'User Directory', href: '/admin/users' },
+        { label: 'Organizations', href: '/admin/organizations' },
         { label: 'Permissions (God Mode)', href: '/admin/permissions' }
       ]
     });
