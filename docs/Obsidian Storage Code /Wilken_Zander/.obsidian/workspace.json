@@ -1,0 +1,224 @@
+{
+  "main": {
+    "id": "b8f4d893e1f67caf",
+    "type": "split",
+    "children": [
+      {
+        "id": "527aae8f64d4ecea",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "490f3b51cf39bd23",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3de4519439a68c36",
+    "type": "split",
+    "children": [
+      {
+        "id": "b250a2074ce96d33",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a4af32b9dffe8aeb",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": true
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "892126af9bf18a74",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "06bd8795ceb7c5c7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "9e9d5708d15d365e",
+    "type": "split",
+    "children": [
+      {
+        "id": "a8a1272b7e3b18f3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "70bfeae000787411",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Reasons for and against AIC.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Reasons for and against AIC"
+            }
+          },
+          {
+            "id": "5bef062bf62a8901",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Zander - Life/Business.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Business"
+            }
+          },
+          {
+            "id": "b1b988cdde1dcb80",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7d9538f304a0e93b",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "107692face583e57",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Zander - Life/Business.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Business"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "490f3b51cf39bd23",
+  "lastOpenFiles": [
+    "aic-obsidian/Evidence Collection Models.md",
+    "memory/glossary.md",
+    "memory/projects.md",
+    "TASKS.md",
+    "memory",
+    "aic-obsidian/Declaration of Algorithmic Rights.md",
+    "aic-obsidian/Claude-Skills-Overview.md",
+    "aic-obsidian/AIC-Risk-Register.md",
+    "aic-obsidian/AIC-Mock-Alpha-Report-Acme-Financial.pdf",
+    "aic-obsidian/Revenue Architecture.md",
+    "aic-obsidian/Strategy Session AIC Pivot.md",
+    "aic-obsidian/Untitled.base",
+    "aic-obsidian/What to Build Now.md",
+    "aic-obsidian/13-REVIEW-AND-OPINIONS.md",
+    "aic-obsidian/18-BACKEND-WEEKLY-PLAN.md",
+    "aic-obsidian/17-AIC-COMPLIANCE-OBLIGATIONS.md",
+    "aic-obsidian/AIC-Backend-Roadmap.html",
+    "Untitled 2.canvas",
+    "Untitled 1.canvas",
+    "aic-obsidian/AIC-Empathy-Engine-PRD.md",
+    "aic-obsidian/AI Governance Index.md",
+    "aic-obsidian/16-COMPETITIVE-ANALYSIS.md",
+    "aic-obsidian/15-LEGAL-ANALYSIS.md",
+    "aic-obsidian/14-DELIVERABLES-LOG.md",
+    "aic-obsidian/00-INDEX.md",
+    "aic-obsidian/02-ARCHITECTURE.md",
+    "aic-obsidian/01-PLATFORM-OVERVIEW.md",
+    "aic-obsidian/09-NOTION-INTEGRATION.md",
+    "Untitled.canvas",
+    "AIC-Business-Model-Canvas.html",
+    "AIC-Governance-Index-Dashboard.html",
+    "aic-obsidian/12-EVIDENCE-COLLECTION.md",
+    "aic-obsidian/11-REVENUE-MODEL.md",
+    "Declaration of Algorithmic Rights.md",
+    "11-REVENUE-MODEL.md",
+    "aic-obsidian",
+    "aic-obsidian-vault.zip",
+    "Untitled",
+    "Zander - Life"
+  ]
+}

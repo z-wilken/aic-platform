@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIC — Business Model Canvas</title>
+<style>
+  :root {
+    --navy:   #0D1B2A;
+    --teal:   #1DB5A0;
+    --gold:   #E8B84B;
+    --red:    #D94F3D;
+    --purple: #7B5EA7;
+    --blue:   #2D6FA6;
+    --light:  #F4F7FA;
+    --mid:    #E0E8EF;
+    --text:   #1A2A3A;
+    --muted:  #5A7080;
+    --white:  #FFFFFF;
+    --teal-light:   rgba(29,181,160,0.10);
+    --gold-light:   rgba(232,184,75,0.12);
+    --red-light:    rgba(217,79,61,0.10);
+    --navy-light:   rgba(13,27,42,0.07);
+    --purple-light: rgba(123,94,167,0.10);
+    --blue-light:   rgba(45,111,166,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 28px 24px 40px;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; padding: 22px 32px;
+    background: var(--navy); border-radius: 12px; gap: 20px;
+  }
+  .header-left { display: flex; flex-direction: column; gap: 4px; }
+  .brand { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--teal); }
+  .header h1 { font-size: 24px; font-weight: 800; color: var(--white); line-height: 1.15; }
+  .header-sub { font-size: 12.5px; color: rgba(255,255,255,0.48); margin-top: 2px; }
+  .header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .badge-teal  { background: var(--teal);  color: var(--white); }
+  .badge-gold  { background: var(--gold);  color: var(--navy); }
+  .badge-navy  { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); }
+  .header-date { font-size: 10.5px; color: rgba(255,255,255,0.30); }
+
+  /* ─── LEGAL LANDSCAPE BANNER ─── */
+  .legal-banner {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 16px 22px;
+    margin-bottom: 14px;
+    border-left: 5px solid var(--teal);
+  }
+  .legal-banner h3 {
+    font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 12px;
+  }
+  .law-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .law-col { display: flex; flex-direction: column; gap: 6px; }
+  .law-col-title {
+    font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.40); margin-bottom: 2px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+  }
+  .law-tag {
+    display: inline-flex; gap: 6px; align-items: flex-start;
+    font-size: 11px; color: rgba(255,255,255,0.82); line-height: 1.4;
+  }
+  .law-tag .abbr {
+    flex-shrink: 0;
+    font-weight: 800;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+  .sa  { background: rgba(29,181,160,0.25); color: var(--teal); }
+  .eu  { background: rgba(45,111,166,0.30); color: #6EB5E8; }
+  .int { background: rgba(123,94,167,0.30); color: #C0A8E0; }
+  .std { background: rgba(232,184,75,0.20); color: var(--gold); }
+
+  /* ─── CANVAS GRID ─── */
+  .canvas {
+    display: grid;
+    grid-template-columns: 1.1fr 0.95fr 1.25fr 0.95fr 1.1fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+  }
+
+  /* ─── BLOCK BASE ─── */
+  .block {
+    background: var(--white); border-radius: 10px;
+    padding: 16px 16px 13px;
+    display: flex; flex-direction: column; gap: 9px;
+    border: 1.5px solid var(--mid);
+    position: relative; overflow: hidden;
+  }
+  .block::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  }
+  .block.teal::before  { background: var(--teal); }
+  .block.gold::before  { background: var(--gold); }
+  .block.red::before   { background: var(--red);  }
+  .block.navy::before  { background: var(--navy); }
+  .block.purple::before { background: var(--purple); }
+
+  .block-num {
+    position: absolute; top: 9px; right: 11px;
+    font-size: 26px; font-weight: 900; color: var(--navy);
+    opacity: 0.05; line-height: 1;
+  }
+  .block h2 {
+    font-size: 10.5px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--muted); margin-bottom: 2px;
+  }
+  .block h2 .icon { margin-right: 5px; }
+  .block .tagline {
+    font-size: 12.5px; font-weight: 700; color: var(--navy);
+    line-height: 1.35; border-left: 3px solid;
+    padding-left: 9px; margin-bottom: 2px;
+  }
+  .teal .tagline   { border-color: var(--teal); }
+  .gold .tagline   { border-color: var(--gold); }
+  .red  .tagline   { border-color: var(--red);  }
+  .navy .tagline   { border-color: var(--navy); }
+  .purple .tagline { border-color: var(--purple); }
+
+  .items { display: flex; flex-direction: column; gap: 5px; }
+  .item {
+    display: flex; gap: 7px; align-items: flex-start;
+    font-size: 12px; line-height: 1.45; color: var(--text);
+  }
+  .dot {
+    flex-shrink: 0; width: 5px; height: 5px;
+    border-radius: 50%; margin-top: 6px;
+  }
+  .teal .dot   { background: var(--teal); }
+  .gold .dot   { background: var(--gold); }
+  .red  .dot   { background: var(--red);  }
+  .navy .dot   { background: var(--navy); }
+  .purple .dot { background: var(--purple); }
+
+  /* inline law badges inside content */
+  .lbadge {
+    display: inline-block; font-size: 9px; font-weight: 800;
+    padding: 1px 5px; border-radius: 3px; margin-left: 3px;
+    vertical-align: middle; white-space: nowrap;
+  }
+  .lbadge.sa  { background: rgba(29,181,160,0.15); color: #0E7A6E; border: 1px solid rgba(29,181,160,0.30); }
+  .lbadge.eu  { background: rgba(45,111,166,0.12); color: #1A4E79; border: 1px solid rgba(45,111,166,0.25); }
+  .lbadge.int { background: rgba(123,94,167,0.12); color: #5A3A8A; border: 1px solid rgba(123,94,167,0.25); }
+  .lbadge.std { background: rgba(232,184,75,0.15); color: #8A6300; border: 1px solid rgba(232,184,75,0.30); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+  .chip {
+    padding: 2px 9px; border-radius: 20px;
+    font-size: 10px; font-weight: 600; border: 1.5px solid;
+  }
+  .chip-teal   { border-color: var(--teal);   color: var(--teal);   background: var(--teal-light); }
+  .chip-gold   { border-color: var(--gold);   color: #A07A00;       background: var(--gold-light); }
+  .chip-red    { border-color: var(--red);    color: var(--red);    background: var(--red-light); }
+  .chip-navy   { border-color: var(--navy);   color: var(--navy);   background: var(--navy-light); }
+  .chip-purple { border-color: var(--purple); color: var(--purple); background: var(--purple-light); }
+  .chip-blue   { border-color: var(--blue);   color: var(--blue);   background: var(--blue-light); }
+
+  .divider { height: 1px; background: var(--mid); margin: 3px 0; }
+  .sub-h {
+    font-size: 9.5px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--muted); margin-top: 5px; margin-bottom: 2px;
+  }
+
+  .metric-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 4px; }
+  .metric {
+    flex: 1; min-width: 72px; padding: 7px 8px; border-radius: 7px;
+    text-align: center; background: var(--light); border: 1px solid var(--mid);
+  }
+  .metric .val { font-size: 13px; font-weight: 800; color: var(--navy); line-height: 1.1; }
+  .metric .lbl { font-size: 9px; color: var(--muted); font-weight: 600; margin-top: 1px; line-height: 1.2; }
+
+  /* ─── GRID POSITIONS ─── */
+  .b-partners   { grid-column: 1; grid-row: 1 / 3; }
+  .b-activities { grid-column: 2; grid-row: 1; }
+  .b-value      { grid-column: 3; grid-row: 1 / 3; }
+  .b-relations  { grid-column: 4; grid-row: 1; }
+  .b-segments   { grid-column: 5; grid-row: 1 / 3; }
+  .b-resources  { grid-column: 2; grid-row: 2; }
+  .b-channels   { grid-column: 4; grid-row: 2; }
+  .b-costs      { grid-column: 1 / 4; grid-row: 3; }
+  .b-revenue    { grid-column: 4 / 6; grid-row: 3; }
+
+  .b-costs, .b-revenue {
+    flex-direction: row; flex-wrap: wrap;
+    gap: 14px; align-items: flex-start;
+  }
+  .b-costs .col, .b-revenue .col {
+    flex: 1; min-width: 150px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+
+  /* ─── REGULATORY MAP BELOW CANVAS ─── */
+  .reg-map {
+    margin-top: 14px;
+    background: var(--white);
+    border-radius: 10px;
+    border: 1.5px solid var(--mid);
+    padding: 18px 22px;
+  }
+  .reg-map h3 {
+    font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  .reg-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .reg-table th {
+    text-align: left; font-size: 10px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); padding: 5px 10px; background: var(--light);
+    border-bottom: 2px solid var(--mid);
+  }
+  .reg-table td {
+    padding: 7px 10px; border-bottom: 1px solid var(--mid);
+    vertical-align: top; line-height: 1.45;
+  }
+  .reg-table tr:last-child td { border-bottom: none; }
+  .reg-table tr:hover td { background: var(--light); }
+  .reg-table td:first-child { font-weight: 700; color: var(--navy); white-space: nowrap; }
+  .reg-table td:nth-child(2) { color: var(--muted); font-size: 11px; }
+  .jur { font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+  .jur.sa  { background: rgba(29,181,160,0.15); color: #0E7A6E; }
+  .jur.eu  { background: rgba(45,111,166,0.12); color: #1A4E79; }
+  .jur.int { background: rgba(123,94,167,0.12); color: #5A3A8A; }
+  .jur.std { background: rgba(232,184,75,0.15); color: #8A6300; }
+  .aic-cover {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  .aic-right {
+    font-size: 9.5px; font-weight: 700; padding: 1px 6px; border-radius: 10px;
+    background: rgba(29,181,160,0.10); color: var(--teal); border: 1px solid rgba(29,181,160,0.25);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    margin-top: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 11px 20px;
+    background: var(--navy); border-radius: 8px;
+    font-size: 10.5px; color: rgba(255,255,255,0.38);
+    gap: 16px; flex-wrap: wrap;
+  }
+  .footer strong { color: rgba(255,255,255,0.65); }
+
+  .legend {
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    font-size: 10px; color: rgba(255,255,255,0.50);
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <span class="brand">AI Integrity Certification</span>
+    <h1>Business Model Canvas</h1>
+    <span class="header-sub">Certifying human accountability behind algorithmic decision systems · Full Regulatory Landscape Edition</span>
+  </div>
+  <div class="header-meta">
+    <span class="badge badge-teal">Pre-Alpha · Feb 2026</span>
+    <span class="badge badge-gold">South Africa · Africa · EU-linked</span>
+    <span class="badge badge-navy">Founder: Zander Wilken</span>
+    <span class="header-date">AIC Obsidian Knowledge Base · 15-LEGAL-ANALYSIS · 17-AIC-COMPLIANCE-OBLIGATIONS</span>
+  </div>
+</div>
+
+<!-- REGULATORY LANDSCAPE BANNER -->
+<div class="legal-banner">
+  <h3>🏛️ Regulatory &amp; Legal Landscape — Laws Driving Demand for AIC</h3>
+  <div class="law-grid">
+    <div class="law-col">
+      <div class="law-col-title">🇿🇦 South African Law</div>
+      <div class="law-tag"><span class="abbr sa">POPIA §71</span>Prohibits solely-automated decisions — mandates human oversight, explanation &amp; correction rights</div>
+      <div class="law-tag"><span class="abbr sa">PAIA §51</span>PAIA Manual required — categories of info processed, purpose, access procedures</div>
+      <div class="law-tag"><span class="abbr sa">EEA</span>Employment Equity Act — AI hiring/screening tools must not perpetuate unfair discrimination</div>
+      <div class="law-tag"><span class="abbr sa">FAIS</span>Financial Advisory Act — AI-driven financial advice triggers licensing &amp; conduct obligations</div>
+      <div class="law-tag"><span class="abbr sa">NCA</span>National Credit Act — automated credit decisions require explanation &amp; human oversight</div>
+      <div class="law-tag"><span class="abbr sa">FSCA</span>Financial Sector Conduct Authority — AI in financial services = conduct risk under Twin Peaks</div>
+      <div class="law-tag"><span class="abbr sa">FICA</span>Financial Intelligence Centre Act — AI fraud/AML systems must have documented oversight</div>
+      <div class="law-tag"><span class="abbr sa">Companies Act</span>Directors' duties — board accountable for AI decisions causing company harm</div>
+      <div class="law-tag"><span class="abbr sa">B-BBEE</span>AI in scoring/procurement must not discriminate against previously disadvantaged individuals</div>
+    </div>
+    <div class="law-col">
+      <div class="law-col-title">🇪🇺 EU &amp; International Regulation</div>
+      <div class="law-tag"><span class="abbr eu">EU AI Act</span>Regulation 2024/1689 — high-risk AI requires human oversight, documentation, bias testing. Fines up to €30M / 6% turnover. Applies to SA companies with EU operations. Full enforcement Aug 2026.</div>
+      <div class="law-tag"><span class="abbr eu">GDPR Art. 22</span>Right not to be subject to solely automated decisions — mirrors POPIA §71 for EU data subjects</div>
+      <div class="law-tag"><span class="abbr eu">EU CSRD</span>Corporate Sustainability Reporting Directive — ESG reporting now requires AI governance disclosure for large SA exporters</div>
+      <div class="law-tag"><span class="abbr int">ECOA (US)</span>Equal Credit Opportunity Act — SA banks with US operations cannot use AI that discriminates in credit</div>
+      <div class="law-tag"><span class="abbr int">LGPD (Brazil)</span>Brazilian data law's Art. 20 creates POPIA-equivalent automated decision rights for SA companies in Brazil</div>
+      <div class="law-tag"><span class="abbr int">AU Privacy Act</span>Australia's 2024 amendments require AI accountability for AU operations of SA companies</div>
+    </div>
+    <div class="law-col">
+      <div class="law-col-title">📋 Standards &amp; Frameworks</div>
+      <div class="law-tag"><span class="abbr std">ISO/IEC 42001</span>AI Management System standard — AIC's 5 KPIs map directly to its 9 clauses. Purchasing companies increasingly require supplier certification.</div>
+      <div class="law-tag"><span class="abbr std">ISO/IEC 17021</span>Conformity assessment — the standard AIC itself must meet to be a credible certification body. Basis for SANAS application.</div>
+      <div class="law-tag"><span class="abbr std">NIST AI RMF</span>US AI Risk Management Framework — increasingly adopted globally as due-diligence baseline</div>
+      <div class="law-tag"><span class="abbr std">PCI-DSS</span>Payment card AI fraud systems require documented human override and audit trail</div>
+      <div class="law-tag"><span class="abbr std">King IV</span>King IV Report — SA corporate governance code explicitly requires board-level accountability for AI risk</div>
+      <div class="law-tag"><span class="abbr std">JSE Listings</span>JSE Listing Requirements + Sustainability Disclosure — AI governance increasingly material disclosure</div>
+      <div class="law-tag"><span class="abbr std">WCAG 2.1</span>Web accessibility standard — AIC's own platform obligation AND part of Right 5 (Empathy) audit scope</div>
+    </div>
+  </div>
+</div>
+
+<!-- CANVAS GRID -->
+<div class="canvas">
+
+  <!-- 8. KEY PARTNERS -->
+  <div class="block navy b-partners">
+    <div class="block-num">8</div>
+    <h2><span class="icon">🤝</span> Key Partners</h2>
+    <p class="tagline">We lead the standard.<br>Partners refer, regulate, and validate.</p>
+
+    <div class="sub-h">Regulatory Partners</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>SA Information Regulator</strong> — preferred compliance partner when POPIA §71 enforcement activates <span class="lbadge sa">POPIA §71</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>FSCA / SARB</strong> — AI in financial services falls under Twin Peaks; AIC provides independent oversight layer <span class="lbadge sa">FSCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>SANAS</strong> — accreditation body; ISO/IEC 17021 path; Year 2 application <span class="lbadge std">ISO 17021</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>EU AI Office (Brussels)</strong> — SA-bridge certification relationships as SA becomes EU preferred trading partner <span class="lbadge eu">EU AI Act</span></span></div>
+    </div>
+
+    <div class="sub-h">Commercial Referral</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Big 4 (Deloitte, EY, KPMG, PwC)</strong> — refer AI accountability layer; AIC goes where they can't for independence <span class="lbadge sa">POPIA</span><span class="lbadge eu">EU AI Act</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Law firms (employment, data, FSP)</strong> — POPIA, EEA, NCA, FAIS counsel refers clients needing certification evidence <span class="lbadge sa">EEA</span><span class="lbadge sa">NCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Banks / insurers</strong> — refer AIC cert to SME business banking clients <span class="lbadge sa">FICA</span><span class="lbadge sa">NCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>JSE &amp; corporate governance advisors</strong> — King IV AI risk disclosure <span class="lbadge std">King IV</span><span class="lbadge std">JSE Listings</span></span></div>
+    </div>
+
+    <div class="sub-h">Technology &amp; Credibility</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Holistic AI / Credo AI</strong> — complement, not compete; they test algorithms, AIC certifies humans</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Anthropic (Claude API)</strong> — Empathy Engine inference; OpenAI alternative</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Academic institutions</strong> — methodology peer review; ISO 42001 alignment validation <span class="lbadge std">ISO 42001</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Media (M&amp;G, BusinessDay, TechCentral)</strong> — publish the Index; journalism creates regulatory pressure without legislation</span></div>
+    </div>
+
+    <div class="chips">
+      <span class="chip chip-navy">10–20% Referral Fee</span>
+      <span class="chip chip-navy">No COI</span>
+      <span class="chip chip-navy">Regulatory ally</span>
+    </div>
+  </div>
+
+  <!-- 7. KEY ACTIVITIES -->
+  <div class="block teal b-activities">
+    <div class="block-num">7</div>
+    <h2><span class="icon">⚙️</span> Key Activities</h2>
+    <p class="tagline">Year 1: Authority.<br>Year 2: Automate. Year 3: Scale.</p>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Certifying organisations</strong> — auditing against 5 rights, issuing Integrity Scores and Tier certificates <span class="lbadge sa">POPIA §71</span><span class="lbadge eu">EU AI Act Art.14</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Publishing AI Governance Index</strong> — JSE Top 40 public rankings, creating market pressure and regulatory intelligence <span class="lbadge std">King IV</span><span class="lbadge std">JSE Listings</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Running the Empathy Engine</strong> — scoring AI communications against 7-dimension rubric <span class="lbadge sa">NCA</span><span class="lbadge eu">GDPR Art.22</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Content publishing</strong> — weekly authority building; regulatory briefings; SEO compounding</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Methodology refinement</strong> — post-Alpha; expect 30–50% rewrite after first 3 certifications</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Regulator engagement</strong> — POPIA, FSCA, SANAS relationships; contribute to enforcement guidance <span class="lbadge sa">POPIA</span><span class="lbadge sa">FSCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Practitioner training</strong> — building the auditor community that scales delivery capacity</span></div>
+      <div class="item"><span class="dot"></span><span><strong>EU AI Act mapping</strong> — maintaining live AIC ↔ EU AI Act compliance mapping as Act matures <span class="lbadge eu">EU AI Act</span></span></div>
+    </div>
+  </div>
+
+  <!-- 1. VALUE PROPOSITIONS — CENTRE -->
+  <div class="block teal b-value">
+    <div class="block-num">1</div>
+    <h2><span class="icon">💎</span> Value Propositions</h2>
+    <p class="tagline">"Certify humans, not machines.<br>One framework. Every law that matters."</p>
+
+    <div class="divider"></div>
+
+    <div class="sub-h">South African Regulatory Value</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>POPIA §71 readiness before enforcement</strong> — documented human oversight, explanation, correction rights<span class="lbadge sa">POPIA §71</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Credit &amp; financial AI accountability</strong> — NCA and FAIS compliance trail; protection against regulatory action from FSCA<span class="lbadge sa">NCA</span><span class="lbadge sa">FAIS</span><span class="lbadge sa">FSCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Employment AI compliance</strong> — Employment Equity Act non-discrimination evidence for AI hiring, scoring, and screening tools<span class="lbadge sa">EEA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Board-level accountability evidence</strong> — King IV AI risk; JSE sustainability disclosure; director duty protection<span class="lbadge std">King IV</span><span class="lbadge std">JSE Listings</span></span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sub-h">International Regulatory Value</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>EU AI Act bridge certification</strong> — most immediate commercial urgency; €30M fine / 6% turnover from Aug 2026; AIC cert = human oversight evidence<span class="lbadge eu">EU AI Act Art.14</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>GDPR Article 22 compliance</strong> — automated decision rights for EU data subjects; critical for SA companies with EU customers<span class="lbadge eu">GDPR Art.22</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>CSRD ESG disclosure readiness</strong> — EU sustainability reporting now requires AI governance proof for SA exporters<span class="lbadge eu">EU CSRD</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Multi-jurisdictional coverage</strong> — one AIC certification maps to ECOA (US), LGPD (Brazil), AU Privacy Act for SA companies with global operations<span class="lbadge int">ECOA</span><span class="lbadge int">LGPD</span><span class="lbadge int">AU Privacy</span></span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="sub-h">Unique to AIC Only</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Empathy Engine</strong> — only certification scoring <em>how</em> AI communicates with humans; no statute requires it, AIC defines the market<span class="lbadge std">AIC IP</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Third-party verified, not self-assessed</strong> — independent audit vs Credo AI's self-assessment; the difference investors, regulators and the public trust</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Open standard + paid certification</strong> — Declaration free (spreads the standard), certification paid (captures the value); OWASP / PCI-DSS model</span></div>
+      <div class="item"><span class="dot"></span><span><strong>ISO/IEC 42001 aligned</strong> — AIC's 5 KPIs directly map to international AI management standard; built-in international validation<span class="lbadge std">ISO 42001</span></span></div>
+    </div>
+
+    <div class="chips">
+      <span class="chip chip-teal">POPIA §71</span>
+      <span class="chip chip-blue">EU AI Act</span>
+      <span class="chip chip-teal">EEA</span>
+      <span class="chip chip-teal">NCA</span>
+      <span class="chip chip-blue">GDPR Art.22</span>
+      <span class="chip chip-blue">EU CSRD</span>
+      <span class="chip chip-gold">King IV</span>
+      <span class="chip chip-gold">ISO 42001</span>
+      <span class="chip chip-purple">ECOA · LGPD</span>
+    </div>
+  </div>
+
+  <!-- 4. CUSTOMER RELATIONSHIPS -->
+  <div class="block gold b-relations">
+    <div class="block-num">4</div>
+    <h2><span class="icon">🔗</span> Customer Relationships</h2>
+    <p class="tagline">Enterprise: earned trust.<br>SME: zero-friction self-serve.</p>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Founder-led enterprise sales</strong> — Year 1 every deal is personal; founder is the product; regulatory briefings open doors <span class="lbadge eu">EU AI Act</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Annual renewal model</strong> — laws change, AI systems change, governance must follow; sticky recurring relationship</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Regulatory alert service</strong> — AIC keeps clients informed as POPIA §71, EU AI Act, and FSCA guidance evolve; retains relationship between cert cycles <span class="lbadge sa">POPIA</span><span class="lbadge sa">FSCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Content community</strong> — free Substack regulatory briefings → paid assessment leads; trust before transaction</span></div>
+      <div class="item"><span class="dot"></span><span><strong>SME self-serve</strong> — fully automated; no sales call; badge issued on completion <span class="lbadge sa">EEA</span><span class="lbadge sa">NCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Practitioner community</strong> — CPD-certified auditors as ambassadors; professional network effect</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Regulator co-operation</strong> — Information Regulator partner, not adversary; co-develop enforcement guidance <span class="lbadge sa">POPIA</span></span></div>
+    </div>
+    <div class="chips">
+      <span class="chip chip-gold">Regulatory briefings</span>
+      <span class="chip chip-gold">Annual renewal</span>
+      <span class="chip chip-gold">Self-serve SME</span>
+    </div>
+  </div>
+
+  <!-- 2. CUSTOMER SEGMENTS -->
+  <div class="block gold b-segments">
+    <div class="block-num">2</div>
+    <h2><span class="icon">👥</span> Customer Segments</h2>
+    <p class="tagline">Anyone making AI decisions<br>about human lives.</p>
+
+    <div class="sub-h">Enterprise — by Regulatory Driver</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Banks &amp; credit providers</strong> — automated credit, loan approvals, fraud detection <span class="lbadge sa">NCA</span><span class="lbadge sa">POPIA §71</span><span class="lbadge sa">FSCA</span><span class="lbadge eu">EU AI Act</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Insurers</strong> — risk scoring, underwriting AI <span class="lbadge sa">FAIS</span><span class="lbadge sa">FSCA</span><span class="lbadge eu">EU AI Act</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>HR &amp; recruitment firms</strong> — AI hiring, screening, performance scoring <span class="lbadge sa">EEA</span><span class="lbadge sa">POPIA §71</span><span class="lbadge eu">EU AI Act</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>JSE Top 40 (all sectors)</strong> — board-level AI accountability disclosure <span class="lbadge std">King IV</span><span class="lbadge std">JSE Listings</span><span class="lbadge eu">EU CSRD</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>SA companies with EU operations</strong> — Standard Bank, Naspers/Prosus, MTN, Anglo, Investec, Old Mutual <span class="lbadge eu">EU AI Act</span><span class="lbadge eu">GDPR</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Healthcare providers</strong> — triage, diagnostic, treatment AI <span class="lbadge sa">POPIA §71</span><span class="lbadge eu">EU AI Act (high-risk)</span></span></div>
+    </div>
+
+    <div class="sub-h">SME — by Tool Type</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Dealerships / estate agents</strong> — automated finance scoring, valuations <span class="lbadge sa">NCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Recruitment agencies</strong> — AI CV screening <span class="lbadge sa">EEA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>E-commerce</strong> — fraud detection, pricing, personalisation <span class="lbadge sa">POPIA</span><span class="lbadge sa">FICA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Any company with a customer-facing chatbot</strong> — automated communication quality <span class="lbadge sa">NCA</span><span class="lbadge eu">GDPR</span></span></div>
+    </div>
+
+    <div class="sub-h">Emerging Segments</div>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Individual practitioners</strong> — CPD professional credential</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Solopreneurs using AI at scale</strong> — new accountability gap; no statute yet, but POPIA §71 still applies <span class="lbadge sa">POPIA §71</span></span></div>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric"><div class="val">~150</div><div class="lbl">Large SA enterprises</div></div>
+      <div class="metric"><div class="val">50K+</div><div class="lbl">SA SMEs using AI</div></div>
+      <div class="metric"><div class="val">ZAR 2B+</div><div class="lbl">African TAM</div></div>
+    </div>
+  </div>
+
+  <!-- 6. KEY RESOURCES -->
+  <div class="block teal b-resources">
+    <div class="block-num">6</div>
+    <h2><span class="icon">🏗️</span> Key Resources</h2>
+    <p class="tagline">The IP compounds.<br>The regulatory knowledge is the moat.</p>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>Methodology IP</strong> — Declaration of Algorithmic Rights + 5 Rights rubric + 7-dimension Empathy rubric; proprietary but open standard (CC BY 4.0)</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Multi-law compliance mapping</strong> — AIC's unique ability to map one certification across POPIA, EU AI Act, EEA, NCA, GDPR, ISO 42001 simultaneously <span class="lbadge sa">POPIA</span><span class="lbadge eu">EU AI Act</span><span class="lbadge std">ISO 42001</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Empathy Engine</strong> — first-mover tool; zero system access; proprietary 7-dimension rubric</span></div>
+      <div class="item"><span class="dot"></span><span><strong>AI Governance Index data asset</strong> — compounding annual comparison data; harder to replicate each year</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Regulator relationships</strong> — Information Regulator, FSCA access = preferred partner on enforcement <span class="lbadge sa">POPIA</span><span class="lbadge sa">FSCA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Platform</strong> — Turborepo monorepo, 5 apps; audit ledger (cryptographic hash-chain, immutable)</span></div>
+      <div class="item"><span class="dot"></span><span><strong>PI Insurance</strong> — ZAR 10M per claim / ZAR 20M aggregate; enables credible enterprise engagement</span></div>
+    </div>
+    <div class="chips">
+      <span class="chip chip-teal">Methodology IP</span>
+      <span class="chip chip-teal">Multi-law mapping</span>
+      <span class="chip chip-teal">Empathy Engine</span>
+    </div>
+  </div>
+
+  <!-- 3. CHANNELS -->
+  <div class="block gold b-channels">
+    <div class="block-num">3</div>
+    <h2><span class="icon">📡</span> Channels</h2>
+    <p class="tagline">The Index creates the market.<br>Regulation creates the urgency.</p>
+    <div class="items">
+      <div class="item"><span class="dot"></span><span><strong>AI Governance Index (flagship)</strong> — public JSE rankings create reputational pressure; low-ranked companies become warm inbound leads <span class="lbadge std">King IV</span><span class="lbadge std">JSE</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>EU AI Act countdown</strong> — Aug 2026 high-risk enforcement deadline = natural urgency for JSE-listed clients with EU operations <span class="lbadge eu">EU AI Act</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Weekly content / Substack</strong> — regulatory briefings, SEO, authority; free → paid pipeline</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Direct outreach</strong> — 20 targeted conversations: CROs, CCOs, legal heads, CFOs at risk-exposed firms</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Big 4 / law firm referral</strong> — POPIA, FAIS, EEA counsel passes clients needing certification evidence <span class="lbadge sa">FAIS</span><span class="lbadge sa">EEA</span></span></div>
+      <div class="item"><span class="dot"></span><span><strong>Self-serve platform</strong> — SME acquisition; sign-up → assessment → badge, no human required</span></div>
+      <div class="item"><span class="dot"></span><span><strong>Empathy Engine demo</strong> — free public tool; paste a rejection letter; lead magnet for both segments</span></div>
+    </div>
+    <div class="chips">
+      <span class="chip chip-gold">Index (inbound)</span>
+      <span class="chip chip-gold">EU deadline (urgency)</span>
+      <span class="chip chip-gold">Partner (referral)</span>
+    </div>
+  </div>
+
+  <!-- 9. COST STRUCTURE -->
+  <div class="block red b-costs">
+    <div class="block-num">9</div>
+    <h2><span class="icon">💸</span> Cost Structure — Value-Driven</h2>
+    <p class="tagline" style="border-color:var(--red)">Year 1 total: ~ZAR 1.116M. Break-even: 3 enterprise certs at ZAR 175K.</p>
+
+    <div class="col">
+      <div class="sub-h">Fixed (Year 1)</div>
+      <div class="items">
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Founder salary</strong> — ZAR 600K/yr</span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Legal counsel</strong> — ZAR 180K/yr (Alpha agreements, POPIA, EEA, FAIS, FSCA opinions, PI insurance review) <span class="lbadge sa">POPIA</span><span class="lbadge sa">EEA</span><span class="lbadge sa">FAIS</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>PI Insurance</strong> — ZAR 48K/yr (ZAR 10M per claim; required before first cert)</span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Accounting &amp; tax</strong> — ZAR 36K/yr <span class="lbadge sa">Companies Act</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Compliance setup</strong> — POPIA registration, PAIA Manual, DPAs, domain names, trademark search <span class="lbadge sa">POPIA §51</span></span></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="sub-h">Variable (Year 1)</div>
+      <div class="items">
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Platform hosting</strong> — ZAR 36K/yr (Vercel, DB, APIs; DPAs required for client data) <span class="lbadge sa">POPIA Cond.8</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Claude / OpenAI API</strong> — ZAR 24K/yr (Empathy Engine; no client data retained; DPA in place) <span class="lbadge sa">POPIA §72</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Content production</strong> — ZAR 36K/yr</span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Travel (client meetings)</strong> — ZAR 60K/yr</span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Notion, SaaS tools</strong> — ZAR 6K/yr</span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span><strong>Contingency</strong> — ZAR 60K/yr</span></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="sub-h">Compliance Obligations as Costs</div>
+      <div class="items">
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span>POPIA Information Officer registration — zero cost <span class="lbadge sa">POPIA §55</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span>PAIA Manual drafting (legal) — included in legal counsel budget <span class="lbadge sa">PAIA §51</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span>EU AI Act mapping maintenance — 10 hrs/yr research time <span class="lbadge eu">EU AI Act</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span>FAIS/EEA legal opinion — ~ZAR 15K once-off <span class="lbadge sa">FAIS</span><span class="lbadge sa">EEA</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span>SANAS accreditation journey (Year 2–3) — ~ZAR 80–150K <span class="lbadge std">ISO 17021</span></span></div>
+        <div class="item"><span class="dot" style="background:var(--red)"></span><span>B-BBEE certificate — ZAR 10–20K when first enterprise client requires it <span class="lbadge sa">B-BBEE</span></span></div>
+      </div>
+      <div class="metric-row" style="margin-top:8px">
+        <div class="metric"><div class="val">ZAR 1.1M</div><div class="lbl">Year 1 total</div></div>
+        <div class="metric"><div class="val">3 certs</div><div class="lbl">Break-even</div></div>
+        <div class="metric"><div class="val">~75%</div><div class="lbl">Gross margin</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. REVENUE STREAMS -->
+  <div class="block teal b-revenue">
+    <div class="block-num">5</div>
+    <h2><span class="icon">💰</span> Revenue Streams</h2>
+    <p class="tagline" style="border-color:var(--teal)">Track 1 creates demand.<br>Track 2 captures it. Laws multiply urgency.</p>
+
+    <div class="col">
+      <div class="sub-h">Certification Revenue</div>
+      <div class="items">
+        <div class="item"><span class="dot"></span><span><strong>Enterprise certification</strong> — ZAR 75K–500K (avg ZAR 175K); urgency from <span class="lbadge sa">POPIA</span><span class="lbadge eu">EU AI Act</span><span class="lbadge sa">FSCA</span><span class="lbadge std">King IV</span></span></div>
+        <div class="item"><span class="dot"></span><span><strong>Alpha programme</strong> — ZAR 75K–100K (Year 1 R&amp;D pricing)</span></div>
+        <div class="item"><span class="dot"></span><span><strong>Annual renewals</strong> — 60% of initial fee; ~80% gross margin; regulations evolve so AI governance must be re-certified</span></div>
+        <div class="item"><span class="dot"></span><span><strong>SME self-serve</strong> — ZAR 5K–15K; ~89% margin; <span class="lbadge sa">EEA</span><span class="lbadge sa">NCA</span><span class="lbadge sa">POPIA</span> as demand drivers</span></div>
+        <div class="item"><span class="dot"></span><span><strong>Multi-jurisdiction add-on</strong> — premium for EU AI Act mapping report; ECOA / LGPD mapping for SA companies with US / Brazil operations <span class="lbadge eu">EU AI Act</span><span class="lbadge int">ECOA</span><span class="lbadge int">LGPD</span></span></div>
+      </div>
+      <div class="sub-h" style="margin-top:6px">Ancillary Revenue</div>
+      <div class="items">
+        <div class="item"><span class="dot"></span><span><strong>Practitioner training</strong> — ZAR 35K/trainee; ~70% margin; <span class="lbadge std">ISO 42001</span> auditor certification</span></div>
+        <div class="item"><span class="dot"></span><span><strong>Partner referral fees</strong> — 10–20%; 100% margin; Big 4, law firms, banks</span></div>
+        <div class="item"><span class="dot"></span><span><strong>Insurance risk scoring API</strong> — licence fee (Year 2+); ~90% margin; actuarial AI risk data <span class="lbadge sa">FSCA</span></span></div>
+        <div class="item"><span class="dot"></span><span><strong>Regulatory mapping subscriptions</strong> — annual feed of POPIA, EU AI Act, EEA, FSCA, King IV changes mapped to certification implications</span></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="sub-h">5-Year Trajectory (Conservative ZAR)</div>
+      <div class="metric-row">
+        <div class="metric"><div class="val">500K</div><div class="lbl">Year 1</div></div>
+        <div class="metric"><div class="val">4.5M</div><div class="lbl">Year 2</div></div>
+        <div class="metric"><div class="val">14.4M</div><div class="lbl">Year 3</div></div>
+        <div class="metric"><div class="val">59.9M</div><div class="lbl">Year 5</div></div>
+      </div>
+      <div class="sub-h" style="margin-top:8px">EU AI Act Revenue Upside</div>
+      <div class="items">
+        <div class="item"><span class="dot"></span><span>JSE-listed SA cos. with EU ops: ~15 potential high-urgency enterprise clients at ZAR 250K–500K each = ZAR 3.75M–7.5M additional pipeline from EU AI Act alone <span class="lbadge eu">EU AI Act</span></span></div>
+      </div>
+      <div class="chips" style="margin-top:8px">
+        <span class="chip chip-teal">ARR ZAR 4.4M by Y3</span>
+        <span class="chip chip-teal">ZAR 10M EBITDA Y3</span>
+        <span class="chip chip-blue">EU premium tier</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- REGULATORY COVERAGE MAP -->
+<div class="reg-map">
+  <h3>📐 AIC Framework — Full Legal Coverage Map</h3>
+  <table class="reg-table">
+    <thead>
+      <tr>
+        <th>Law / Standard</th>
+        <th>Jurisdiction</th>
+        <th>Who It Affects</th>
+        <th>AIC Rights that Cover It</th>
+        <th>Commercial Urgency</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>POPIA Section 71</td>
+        <td><span class="jur sa">SA</span></td>
+        <td>All SA organisations using automated decisions affecting individuals</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R2 Explanation</span><span class="aic-right">R4 Correction</span></div></td>
+        <td>Enforcement coming — now medium; will spike to critical within 2–3 years</td>
+      </tr>
+      <tr>
+        <td>EU AI Act (Reg. 2024/1689)</td>
+        <td><span class="jur eu">EU</span></td>
+        <td>SA companies with EU operations, EU customers, or EU-based AI system providers</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R2 Explanation</span><span class="aic-right">R3 Non-Discrimination</span><span class="aic-right">All Rights — Audit Ledger</span></div></td>
+        <td><strong>HIGHEST — €30M fines active from Aug 2026. Immediate commercial lever.</strong></td>
+      </tr>
+      <tr>
+        <td>GDPR Article 22</td>
+        <td><span class="jur eu">EU</span></td>
+        <td>SA companies processing EU personal data in automated decisions</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R2 Explanation</span><span class="aic-right">R4 Correction</span></div></td>
+        <td>High — mirrors POPIA §71 for EU data subjects; same clients, same coverage</td>
+      </tr>
+      <tr>
+        <td>Employment Equity Act</td>
+        <td><span class="jur sa">SA</span></td>
+        <td>Any SA employer using AI in recruitment, promotion, or performance scoring</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R3 Non-Discrimination</span><span class="aic-right">R2 Explanation</span></div></td>
+        <td>Medium-high — CCMA cases involving AI bias increasing; Director liability exposure</td>
+      </tr>
+      <tr>
+        <td>National Credit Act</td>
+        <td><span class="jur sa">SA</span></td>
+        <td>Credit providers, banks, retail credit — automated credit decisions</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R2 Explanation</span><span class="aic-right">R4 Correction</span><span class="aic-right">R5 Empathy</span></div></td>
+        <td>High — court precedent cases accumulating; NCR actively monitoring AI credit models</td>
+      </tr>
+      <tr>
+        <td>FAIS Act / FSCA Twin Peaks</td>
+        <td><span class="jur sa">SA</span></td>
+        <td>FSPs, banks, insurers — AI in financial advice, risk scoring, underwriting</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R2 Explanation</span><span class="aic-right">R3 Non-Discrimination</span></div></td>
+        <td>High — FSCA issued AI conduct guidance in 2025; enforcement ramping</td>
+      </tr>
+      <tr>
+        <td>EU Corporate Sustainability Reporting Directive</td>
+        <td><span class="jur eu">EU</span></td>
+        <td>Large SA companies exporting to EU or listed on EU exchanges</td>
+        <td><div class="aic-cover"><span class="aic-right">All Rights — documented governance</span></div></td>
+        <td>High — AI governance is now a material ESG disclosure; AIC cert = verifiable evidence</td>
+      </tr>
+      <tr>
+        <td>King IV &amp; JSE Listing Requirements</td>
+        <td><span class="jur std">SA Standard</span></td>
+        <td>JSE-listed companies — board accountability for AI risk</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">All Rights — Board oversight KPI</span></div></td>
+        <td>Medium-high — King IV §26 AI provisions; JSE sustainability disclosure increasingly material</td>
+      </tr>
+      <tr>
+        <td>ISO/IEC 42001</td>
+        <td><span class="jur std">International</span></td>
+        <td>SA companies supplying to EU/US corporates requiring supplier AI governance standards</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 §5.1 Leadership</span><span class="aic-right">R1 §6.1 Risk</span><span class="aic-right">R3 §8.4 Controls</span><span class="aic-right">R1 §8.5 Oversight</span><span class="aic-right">All §9.1 Monitoring</span></div></td>
+        <td>Growing — procurement requirements now referencing ISO 42001; AIC mapping gives SA access to global supply chains</td>
+      </tr>
+      <tr>
+        <td>ECOA (US) / LGPD (Brazil) / AU Privacy Act</td>
+        <td><span class="jur int">International</span></td>
+        <td>SA companies with US, Brazil, or Australia operations or customers</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R2 Explanation</span><span class="aic-right">R3 Non-Discrimination</span><span class="aic-right">R4 Correction</span></div></td>
+        <td>Medium — premium add-on service; relevant for Naspers/Prosus, JSE-listed multinationals</td>
+      </tr>
+      <tr>
+        <td>FICA &amp; AML Regulations</td>
+        <td><span class="jur sa">SA</span></td>
+        <td>SA banks and financial institutions — AI fraud detection and AML systems</td>
+        <td><div class="aic-cover"><span class="aic-right">R1 Human Agency</span><span class="aic-right">R2 Explanation</span></div></td>
+        <td>Medium — FATF grey list pressure; AI-driven AML oversight is a supervisory focus</td>
+      </tr>
+      <tr>
+        <td>AIC's own POPIA obligations</td>
+        <td><span class="jur sa">SA</span></td>
+        <td>AIC itself as a responsible party processing client data</td>
+        <td><div class="aic-cover"><span class="aic-right">Internal compliance — credibility imperative</span></div></td>
+        <td>Critical internal — "we cannot certify others while failing to comply ourselves"</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span><strong>AIC — AI Integrity Certification</strong> · South Africa 🇿🇦 · Africa · EU-linked</span>
+  <div class="legend">
+    <span>Legend:</span>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(29,181,160,0.5)"></div><span>SA Law</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(45,111,166,0.5)"></div><span>EU Law</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(123,94,167,0.5)"></div><span>International</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(232,184,75,0.5)"></div><span>Standards</span></div>
+  </div>
+  <span>Sources: <strong>15-LEGAL-ANALYSIS.md</strong> · <strong>17-AIC-COMPLIANCE-OBLIGATIONS.md</strong> · <strong>10-STRATEGY.md</strong> · <strong>11-REVENUE-MODEL.md</strong></span>
+</div>
+
+</body>
+</html>

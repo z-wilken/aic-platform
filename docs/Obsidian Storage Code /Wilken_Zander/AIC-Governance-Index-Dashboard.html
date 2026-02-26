@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIC AI Governance Index — JSE Top 40</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #0D1B2A; --teal: #1DB5A0; --gold: #E8B84B;
+    --red: #D94F3D; --light: #F4F7F9; --grey: #6B7280;
+    --mid: #E2E8F0; --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+         background: var(--light); color: var(--navy); }
+
+  /* ── Header ── */
+  header {
+    background: var(--navy); color: var(--white);
+    padding: 0; border-bottom: 3px solid var(--teal);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 24px 24px 20px; display: flex;
+    justify-content: space-between; align-items: flex-end;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-dot {
+    width: 44px; height: 44px; border-radius: 8px;
+    background: var(--teal); display: flex; align-items: center;
+    justify-content: center; font-weight: 900; font-size: 18px; color: var(--navy);
+  }
+  .brand-text h1 { font-size: 20px; font-weight: 700; letter-spacing: .5px; }
+  .brand-text p { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+  .header-meta { text-align: right; font-size: 12px; color: #94A3B8; }
+  .header-meta strong { color: var(--gold); font-size: 14px; display: block; }
+
+  /* ── Nav bar ── */
+  nav {
+    background: #162435; border-bottom: 1px solid #1E3448;
+    padding: 0 24px;
+  }
+  nav ul {
+    max-width: 1200px; margin: 0 auto; list-style: none;
+    display: flex; gap: 4px;
+  }
+  nav ul li a {
+    display: block; padding: 12px 16px; color: #94A3B8;
+    text-decoration: none; font-size: 13px; border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+  nav ul li a:hover, nav ul li a.active {
+    color: var(--teal); border-bottom-color: var(--teal);
+  }
+
+  /* ── Main ── */
+  main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+  /* ── Summary cards ── */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 24px;
+  }
+  .summary-card {
+    background: var(--white); border-radius: 10px; padding: 18px 16px;
+    border: 1px solid var(--mid); border-top: 3px solid var(--teal);
+  }
+  .summary-card .val {
+    font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1;
+  }
+  .summary-card .lbl { font-size: 11px; color: var(--grey); margin-top: 6px; }
+  .summary-card .sub { font-size: 11px; margin-top: 4px; }
+  .up { color: var(--teal); } .down { color: var(--red); }
+
+  /* ── Filters ── */
+  .filters {
+    background: var(--white); border-radius: 10px; padding: 16px 20px;
+    border: 1px solid var(--mid); margin-bottom: 20px;
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  }
+  .filters label { font-size: 12px; font-weight: 600; color: var(--grey); }
+  .filters select, .filters input {
+    padding: 7px 12px; border-radius: 6px; border: 1px solid var(--mid);
+    font-size: 13px; color: var(--navy); background: var(--light);
+    outline: none; cursor: pointer;
+  }
+  .filters select:focus, .filters input:focus { border-color: var(--teal); }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .btn-reset {
+    padding: 7px 16px; background: var(--navy); color: var(--white);
+    border: none; border-radius: 6px; font-size: 12px; cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-reset:hover { background: var(--teal); }
+
+  /* ── Charts row ── */
+  .charts-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
+  }
+  .chart-card {
+    background: var(--white); border-radius: 10px; padding: 20px;
+    border: 1px solid var(--mid);
+  }
+  .chart-card h3 {
+    font-size: 13px; font-weight: 600; color: var(--grey);
+    text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px;
+  }
+  .chart-wrap { position: relative; height: 220px; }
+
+  /* ── Table ── */
+  .table-card {
+    background: var(--white); border-radius: 10px;
+    border: 1px solid var(--mid); overflow: hidden;
+  }
+  .table-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--mid);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .table-header h3 { font-size: 15px; font-weight: 700; }
+  .table-header span { font-size: 12px; color: var(--grey); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    padding: 10px 14px; background: var(--navy); color: var(--white);
+    font-size: 11px; text-align: left; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .4px; cursor: pointer;
+  }
+  thead th:hover { background: #1E3448; }
+  tbody tr { border-bottom: 1px solid var(--mid); transition: background .15s; }
+  tbody tr:hover { background: #F8FAFC; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 11px 14px; font-size: 13px; vertical-align: middle; }
+
+  .rank { font-weight: 700; color: var(--grey); font-size: 12px; }
+  .co-name { font-weight: 600; }
+  .co-sector { font-size: 11px; color: var(--grey); }
+
+  /* Score badge */
+  .score-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 28px; border-radius: 6px;
+    font-weight: 700; font-size: 13px;
+  }
+  .score-high { background: #D1FAE5; color: #065F46; }
+  .score-mid  { background: #FEF3C7; color: #92400E; }
+  .score-low  { background: #FEE2E2; color: #991B1B; }
+
+  /* KPI mini-bars */
+  .kpi-bar { display: flex; gap: 3px; align-items: center; }
+  .kpi-seg {
+    height: 8px; border-radius: 2px; transition: width .3s;
+  }
+  .kpi-val { font-size: 11px; color: var(--grey); margin-left: 4px; }
+
+  /* Tier pill */
+  .tier {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .tier-1 { background: #D1FAE5; color: #065F46; }
+  .tier-2 { background: #DBEAFE; color: #1E40AF; }
+  .tier-3 { background: #FEF3C7; color: #92400E; }
+  .tier-none { background: var(--mid); color: var(--grey); }
+
+  /* Delta */
+  .delta-up { color: var(--teal); font-size: 11px; }
+  .delta-down { color: var(--red); font-size: 11px; }
+  .delta-flat { color: var(--grey); font-size: 11px; }
+
+  /* Expandable row detail */
+  .detail-row { display: none; background: #F8FAFC; }
+  .detail-row.open { display: table-row; }
+  .detail-inner {
+    padding: 16px 20px; display: grid;
+    grid-template-columns: repeat(5, 1fr); gap: 12px;
+  }
+  .detail-kpi { text-align: center; }
+  .detail-kpi .dk-val { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .detail-kpi .dk-lbl { font-size: 10px; color: var(--grey); margin-top: 2px; }
+  .detail-kpi .dk-bar {
+    height: 4px; border-radius: 2px; margin: 6px auto 0;
+    max-width: 60px;
+  }
+  .row-clickable { cursor: pointer; }
+
+  /* Footer */
+  footer {
+    max-width: 1200px; margin: 24px auto; padding: 0 24px;
+    font-size: 11px; color: var(--grey); line-height: 1.6;
+    border-top: 1px solid var(--mid); padding-top: 16px;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-dot">AIC</div>
+      <div class="brand-text">
+        <h1>AI Governance Index</h1>
+        <p>JSE Top 40 · AI Accountability Benchmark · South Africa</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <strong>February 2026 Edition</strong>
+      Last updated: 24 February 2026 · Quarterly release
+    </div>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#" class="active">Index</a></li>
+    <li><a href="#">Methodology</a></li>
+    <li><a href="#">Sector Analysis</a></li>
+    <li><a href="#">Certification</a></li>
+    <li><a href="#">Get Assessed</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- Summary cards -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="val" id="avg-score">—</div>
+      <div class="lbl">Average Governance Score</div>
+      <div class="sub up" id="avg-delta">▲ vs Q3 2025</div>
+    </div>
+    <div class="summary-card" style="border-top-color: var(--gold)">
+      <div class="val" id="certified-count">—</div>
+      <div class="lbl">AIC Certified Companies</div>
+      <div class="sub" style="color:var(--grey)" id="cert-pct">of 40 assessed</div>
+    </div>
+    <div class="summary-card" style="border-top-color: var(--red)">
+      <div class="val" id="critical-count">—</div>
+      <div class="lbl">Critical Gaps</div>
+      <div class="sub down">No correction pathway</div>
+    </div>
+    <div class="summary-card" style="border-top-color: #8B5CF6">
+      <div class="val" id="top-sector">—</div>
+      <div class="lbl">Top Performing Sector</div>
+      <div class="sub up" id="top-sector-score"></div>
+    </div>
+    <div class="summary-card" style="border-top-color: var(--grey)">
+      <div class="val" id="bottom-co">—</div>
+      <div class="lbl">Lowest Score</div>
+      <div class="sub down" id="bottom-score"></div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-group">
+      <label>SECTOR</label>
+      <select id="filter-sector">
+        <option value="">All sectors</option>
+        <option value="Financial Services">Financial Services</option>
+        <option value="Mining">Mining</option>
+        <option value="Retail">Retail</option>
+        <option value="Telecoms">Telecoms</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Technology">Technology</option>
+        <option value="Energy">Energy</option>
+        <option value="Industrial">Industrial</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>SCORE RANGE</label>
+      <select id="filter-score">
+        <option value="">All scores</option>
+        <option value="high">High (70+)</option>
+        <option value="mid">Medium (45–69)</option>
+        <option value="low">Low (&lt;45)</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>CERTIFICATION</label>
+      <select id="filter-cert">
+        <option value="">All</option>
+        <option value="certified">AIC Certified</option>
+        <option value="uncertified">Not Certified</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>SEARCH</label>
+      <input type="text" id="filter-search" placeholder="Company name…">
+    </div>
+    <button class="btn-reset" onclick="resetFilters()">Reset</button>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>Score Distribution — JSE Top 40</h3>
+      <div class="chart-wrap"><canvas id="distChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Average Score by Sector</h3>
+      <div class="chart-wrap"><canvas id="sectorChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <h3>Full Rankings</h3>
+      <span id="showing-count"></span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('rank')">#</th>
+          <th onclick="sortBy('name')">Company</th>
+          <th onclick="sortBy('score')">Score ↕</th>
+          <th>KPI Breakdown</th>
+          <th onclick="sortBy('tier')">Tier</th>
+          <th onclick="sortBy('delta')">Δ vs Q3</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-body"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <p><strong>Methodology:</strong> Companies are scored across five KPIs derived from publicly available data: Inventory &amp; Classification, Policy Hit Rates, Human Override Rate, Audit Readiness, and Board Oversight. Each KPI maps to a clause in ISO/IEC 42001. Scores are updated quarterly. No company has paid to be included or excluded. AIC may receive certification fees from companies that subsequently pursue AIC certification — this commercial relationship is disclosed and does not influence Index scores.</p>
+  <p style="margin-top:8px">© 2026 AI Integrity Certification · <a href="#">aic.co.za</a> · Questions: <a href="#">index@aic.co.za</a> · <a href="#">Methodology PDF</a> · <a href="#">Data Download (CSV)</a></p>
+</footer>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const companies = [
+  { rank:1,  name:"Standard Bank",       sector:"Financial Services", score:78, tier:"Tier 1", delta:+5,  certified:true,  kpi:[85,80,75,78,72] },
+  { rank:2,  name:"Naspers / Prosus",    sector:"Technology",         score:76, tier:"Tier 1", delta:+8,  certified:true,  kpi:[80,78,72,80,70] },
+  { rank:3,  name:"FirstRand",           sector:"Financial Services", score:74, tier:"Tier 1", delta:+3,  certified:true,  kpi:[78,75,70,76,71] },
+  { rank:4,  name:"Nedbank",             sector:"Financial Services", score:71, tier:"Tier 1", delta:+6,  certified:true,  kpi:[76,72,68,74,65] },
+  { rank:5,  name:"Discovery",           sector:"Healthcare",         score:69, tier:"Tier 2", delta:+4,  certified:true,  kpi:[72,70,65,72,66] },
+  { rank:6,  name:"Vodacom",             sector:"Telecoms",           score:67, tier:"Tier 2", delta:+2,  certified:false, kpi:[70,68,64,70,63] },
+  { rank:7,  name:"MTN Group",           sector:"Telecoms",           score:65, tier:"Tier 2", delta:-1,  certified:false, kpi:[68,65,62,68,62] },
+  { rank:8,  name:"Absa Group",          sector:"Financial Services", score:64, tier:"Tier 2", delta:+7,  certified:true,  kpi:[68,64,60,68,60] },
+  { rank:9,  name:"Capitec Bank",        sector:"Financial Services", score:62, tier:"Tier 2", delta:+9,  certified:false, kpi:[66,62,58,66,58] },
+  { rank:10, name:"Shoprite Holdings",   sector:"Retail",             score:60, tier:"Tier 2", delta:+3,  certified:false, kpi:[64,60,56,64,56] },
+  { rank:11, name:"Momentum Metropolitan", sector:"Financial Services", score:58, tier:"Tier 2", delta:-2, certified:false, kpi:[62,58,54,62,54] },
+  { rank:12, name:"Sanlam",              sector:"Financial Services", score:57, tier:"Tier 2", delta:+1,  certified:false, kpi:[60,57,53,62,53] },
+  { rank:13, name:"Anglo American",      sector:"Mining",             score:55, tier:"Tier 2", delta:+4,  certified:false, kpi:[58,54,52,60,51] },
+  { rank:14, name:"BHP Billiton",        sector:"Mining",             score:53, tier:"Tier 2", delta:+2,  certified:false, kpi:[56,52,50,58,49] },
+  { rank:15, name:"Pick n Pay",          sector:"Retail",             score:52, tier:"Tier 2", delta:-3,  certified:false, kpi:[54,52,48,58,48] },
+  { rank:16, name:"Woolworths Holdings", sector:"Retail",             score:51, tier:"Tier 2", delta:0,   certified:false, kpi:[54,50,47,56,48] },
+  { rank:17, name:"Sasol",               sector:"Energy",             score:49, tier:"None",   delta:-1,  certified:false, kpi:[52,48,45,54,46] },
+  { rank:18, name:"Old Mutual",          sector:"Financial Services", score:48, tier:"None",   delta:+5,  certified:false, kpi:[52,47,44,54,43] },
+  { rank:19, name:"Remgro",              sector:"Industrial",         score:47, tier:"None",   delta:+2,  certified:false, kpi:[50,46,43,52,44] },
+  { rank:20, name:"Bidvest Group",       sector:"Industrial",         score:46, tier:"None",   delta:-2,  certified:false, kpi:[50,45,42,52,41] },
+  { rank:21, name:"Eskom (listed entity)", sector:"Energy",           score:45, tier:"None",   delta:-4,  certified:false, kpi:[48,44,42,50,41] },
+  { rank:22, name:"Imperial Logistics",  sector:"Industrial",         score:44, tier:"None",   delta:+1,  certified:false, kpi:[46,44,40,50,40] },
+  { rank:23, name:"Life Healthcare",     sector:"Healthcare",         score:43, tier:"None",   delta:0,   certified:false, kpi:[46,42,40,48,39] },
+  { rank:24, name:"Aspen Pharmacare",    sector:"Healthcare",         score:42, tier:"None",   delta:+3,  certified:false, kpi:[44,42,39,48,37] },
+  { rank:25, name:"Clicks Group",        sector:"Retail",             score:41, tier:"None",   delta:-1,  certified:false, kpi:[44,40,38,46,37] },
+  { rank:26, name:"Netcare",             sector:"Healthcare",         score:40, tier:"None",   delta:+2,  certified:false, kpi:[42,40,37,46,35] },
+  { rank:27, name:"Foschini Group",      sector:"Retail",             score:39, tier:"None",   delta:-3,  certified:false, kpi:[42,38,36,44,35] },
+  { rank:28, name:"Investec",            sector:"Financial Services", score:38, tier:"None",   delta:+4,  certified:false, kpi:[40,38,35,42,35] },
+  { rank:29, name:"Mr Price Group",      sector:"Retail",             score:37, tier:"None",   delta:0,   certified:false, kpi:[40,36,34,42,33] },
+  { rank:30, name:"Pepkor Holdings",     sector:"Retail",             score:36, tier:"None",   delta:-2,  certified:false, kpi:[38,35,33,40,34] },
+  { rank:31, name:"Sibanye-Stillwater",  sector:"Mining",             score:34, tier:"None",   delta:+1,  certified:false, kpi:[36,34,31,38,31] },
+  { rank:32, name:"Impala Platinum",     sector:"Mining",             score:33, tier:"None",   delta:-1,  certified:false, kpi:[35,32,30,38,30] },
+  { rank:33, name:"Gold Fields",         sector:"Mining",             score:32, tier:"None",   delta:+2,  certified:false, kpi:[34,32,29,36,29] },
+  { rank:34, name:"Harmony Gold",        sector:"Mining",             score:30, tier:"None",   delta:0,   certified:false, kpi:[32,30,28,34,26] },
+  { rank:35, name:"Kumba Iron Ore",      sector:"Mining",             score:29, tier:"None",   delta:-2,  certified:false, kpi:[30,29,27,34,25] },
+  { rank:36, name:"Transnet (listed)",   sector:"Industrial",         score:28, tier:"None",   delta:-3,  certified:false, kpi:[30,27,25,32,26] },
+  { rank:37, name:"Netcare Holdings",    sector:"Healthcare",         score:27, tier:"None",   delta:0,   certified:false, kpi:[28,27,24,32,24] },
+  { rank:38, name:"Sun International",   sector:"Industrial",         score:25, tier:"None",   delta:-4,  certified:false, kpi:[26,25,22,30,22] },
+  { rank:39, name:"Distell Group",       sector:"Industrial",         score:23, tier:"None",   delta:-1,  certified:false, kpi:[24,23,20,28,20] },
+  { rank:40, name:"City Lodge Hotels",   sector:"Industrial",         score:19, tier:"None",   delta:-5,  certified:false, kpi:[20,18,16,24,17] },
+];
+
+const KPI_LABELS = ["Inventory", "Policy Rates", "Human Override", "Audit Readiness", "Board Oversight"];
+let filtered = [...companies];
+let sortKey = "rank", sortDir = 1;
+
+// ── Colours ───────────────────────────────────────────────────────────────────
+function scoreClass(s) {
+  return s >= 70 ? "score-high" : s >= 45 ? "score-mid" : "score-low";
+}
+function kpiColor(v) {
+  return v >= 70 ? "#1DB5A0" : v >= 45 ? "#E8B84B" : "#D94F3D";
+}
+function tierClass(t) {
+  return t === "Tier 1" ? "tier-1" : t === "Tier 2" ? "tier-2" : t === "Tier 3" ? "tier-3" : "tier-none";
+}
+
+// ── Summary cards ─────────────────────────────────────────────────────────────
+function updateSummary(data) {
+  const avg = Math.round(data.reduce((s, c) => s + c.score, 0) / data.length);
+  const certified = data.filter(c => c.certified).length;
+  const critical = data.filter(c => c.score < 35).length;
+
+  const sectorAvg = {};
+  data.forEach(c => {
+    if (!sectorAvg[c.sector]) sectorAvg[c.sector] = [];
+    sectorAvg[c.sector].push(c.score);
+  });
+  let topSec = "", topVal = 0;
+  Object.entries(sectorAvg).forEach(([sec, scores]) => {
+    const a = scores.reduce((s, v) => s + v, 0) / scores.length;
+    if (a > topVal) { topVal = a; topSec = sec; }
+  });
+
+  const sorted = [...data].sort((a, b) => a.score - b.score);
+  const avgDelta = Math.round(data.reduce((s, c) => s + c.delta, 0) / data.length);
+
+  document.getElementById("avg-score").textContent = avg;
+  document.getElementById("avg-delta").textContent =
+    (avgDelta >= 0 ? "▲ +" : "▼ ") + avgDelta + " vs Q3 2025";
+  document.getElementById("avg-delta").className = "sub " + (avgDelta >= 0 ? "up" : "down");
+  document.getElementById("certified-count").textContent = certified;
+  document.getElementById("cert-pct").textContent = `of ${data.length} assessed`;
+  document.getElementById("critical-count").textContent = critical;
+  document.getElementById("top-sector").textContent = topSec.split(" ")[0];
+  document.getElementById("top-sector-score").textContent = "avg " + Math.round(topVal) + "/100";
+  document.getElementById("bottom-co").textContent = sorted[0]?.name.split(" ")[0] || "—";
+  document.getElementById("bottom-score").textContent = sorted[0]?.score + "/100";
+}
+
+// ── Table ─────────────────────────────────────────────────────────────────────
+function renderTable(data) {
+  document.getElementById("showing-count").textContent =
+    `Showing ${data.length} of ${companies.length} companies`;
+
+  const tbody = document.getElementById("tbl-body");
+  tbody.innerHTML = "";
+
+  data.forEach((c, i) => {
+    const deltaHtml = c.delta > 0
+      ? `<span class="delta-up">▲ +${c.delta}</span>`
+      : c.delta < 0
+      ? `<span class="delta-down">▼ ${c.delta}</span>`
+      : `<span class="delta-flat">—</span>`;
+
+    // KPI mini-bars
+    const kpiHtml = c.kpi.map((v, ki) =>
+      `<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">
+        <div style="width:${Math.max(4, v * 0.8)}px;height:6px;border-radius:2px;background:${kpiColor(v)}"></div>
+        <span style="font-size:10px;color:#6B7280;min-width:22px">${v}</span>
+        <span style="font-size:10px;color:#94A3B8">${KPI_LABELS[ki]}</span>
+      </div>`
+    ).join("");
+
+    // Main row
+    const tr = document.createElement("tr");
+    tr.className = "row-clickable";
+    tr.dataset.idx = i;
+    tr.innerHTML = `
+      <td><span class="rank">${c.rank}</span></td>
+      <td>
+        <div class="co-name">${c.name}</div>
+        <div class="co-sector">${c.sector}</div>
+      </td>
+      <td><span class="score-badge ${scoreClass(c.score)}">${c.score}</span></td>
+      <td><div style="font-size:11px">${c.kpi.map((v,ki)=>
+        `<span style="color:${kpiColor(v)};margin-right:8px"><b>${v}</b> <span style="color:#94A3B8">${KPI_LABELS[ki].split(" ")[0]}</span></span>`
+      ).join("")}</div></td>
+      <td><span class="tier ${tierClass(c.tier)}">${c.tier}</span></td>
+      <td>${deltaHtml}</td>
+    `;
+    tr.addEventListener("click", () => toggleDetail(i, c, detailTr));
+    tbody.appendChild(tr);
+
+    // Detail row
+    const detailTr = document.createElement("tr");
+    detailTr.className = "detail-row";
+    detailTr.dataset.detail = i;
+    const kpiDetail = c.kpi.map((v, ki) => `
+      <div class="detail-kpi">
+        <div class="dk-val" style="color:${kpiColor(v)}">${v}</div>
+        <div class="dk-lbl">${KPI_LABELS[ki]}</div>
+        <div class="dk-bar" style="background:${kpiColor(v)};width:${v * 0.6}%"></div>
+      </div>`).join("");
+    detailTr.innerHTML = `<td colspan="6">
+      <div class="detail-inner">${kpiDetail}</div>
+    </td>`;
+    tbody.appendChild(detailTr);
+  });
+}
+
+function toggleDetail(i, c, detailTr) {
+  detailTr.classList.toggle("open");
+}
+
+// ── Charts ────────────────────────────────────────────────────────────────────
+let distChart, sectorChart;
+
+function buildCharts(data) {
+  // Distribution histogram
+  const bins = [
+    {label:"0–19", min:0,  max:20},
+    {label:"20–34",min:20, max:35},
+    {label:"35–49",min:35, max:50},
+    {label:"50–64",min:50, max:65},
+    {label:"65–79",min:65, max:80},
+    {label:"80+",  min:80, max:101},
+  ];
+  const counts = bins.map(b => data.filter(c => c.score >= b.min && c.score < b.max).length);
+  const binColors = ["#D94F3D","#D94F3D","#E8B84B","#E8B84B","#1DB5A0","#0FA584"];
+
+  if (distChart) distChart.destroy();
+  distChart = new Chart(document.getElementById("distChart"), {
+    type: "bar",
+    data: {
+      labels: bins.map(b => b.label),
+      datasets: [{
+        data: counts,
+        backgroundColor: binColors,
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: "#E2E8F0" }, ticks: { stepSize: 1 } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // Sector averages
+  const secMap = {};
+  data.forEach(c => {
+    if (!secMap[c.sector]) secMap[c.sector] = [];
+    secMap[c.sector].push(c.score);
+  });
+  const secLabels = Object.keys(secMap).sort((a, b) => {
+    const avgA = secMap[a].reduce((s, v) => s + v, 0) / secMap[a].length;
+    const avgB = secMap[b].reduce((s, v) => s + v, 0) / secMap[b].length;
+    return avgB - avgA;
+  });
+  const secAvgs = secLabels.map(s =>
+    Math.round(secMap[s].reduce((a, v) => a + v, 0) / secMap[s].length));
+  const secColors = secAvgs.map(v => v >= 65 ? "#1DB5A0" : v >= 45 ? "#E8B84B" : "#D94F3D");
+
+  if (sectorChart) sectorChart.destroy();
+  sectorChart = new Chart(document.getElementById("sectorChart"), {
+    type: "bar",
+    data: {
+      labels: secLabels,
+      datasets: [{
+        data: secAvgs,
+        backgroundColor: secColors,
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { max: 100, grid: { color: "#E2E8F0" } },
+        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+// ── Filtering & sorting ───────────────────────────────────────────────────────
+function applyFilters() {
+  const sector = document.getElementById("filter-sector").value;
+  const scoreRange = document.getElementById("filter-score").value;
+  const cert = document.getElementById("filter-cert").value;
+  const search = document.getElementById("filter-search").value.toLowerCase();
+
+  filtered = companies.filter(c => {
+    if (sector && c.sector !== sector) return false;
+    if (scoreRange === "high" && c.score < 70) return false;
+    if (scoreRange === "mid" && (c.score < 45 || c.score >= 70)) return false;
+    if (scoreRange === "low" && c.score >= 45) return false;
+    if (cert === "certified" && !c.certified) return false;
+    if (cert === "uncertified" && c.certified) return false;
+    if (search && !c.name.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  renderTable(filtered);
+  updateSummary(filtered);
+  buildCharts(filtered);
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
+  filtered.sort((a, b) => {
+    const va = a[key] ?? 0, vb = b[key] ?? 0;
+    if (typeof va === "string") return va.localeCompare(vb) * sortDir;
+    return (va - vb) * sortDir;
+  });
+  renderTable(filtered);
+}
+
+function resetFilters() {
+  document.getElementById("filter-sector").value = "";
+  document.getElementById("filter-score").value = "";
+  document.getElementById("filter-cert").value = "";
+  document.getElementById("filter-search").value = "";
+  filtered = [...companies];
+  renderTable(filtered);
+  updateSummary(filtered);
+  buildCharts(filtered);
+}
+
+// ── Event listeners ───────────────────────────────────────────────────────────
+["filter-sector","filter-score","filter-cert"].forEach(id =>
+  document.getElementById(id).addEventListener("change", applyFilters));
+document.getElementById("filter-search").addEventListener("input", applyFilters);
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+updateSummary(companies);
+renderTable(companies);
+buildCharts(companies);
+</script>
+</body>
+</html>
