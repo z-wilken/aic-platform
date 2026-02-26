@@ -11,7 +11,8 @@ import {
   LogOut,
   Shield,
   Zap,
-  Briefcase
+  Briefcase,
+  Heart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +24,8 @@ const ICON_MAP: Record<string, any> = {
   Settings,
   Shield,
   Zap,
-  Briefcase
+  Briefcase,
+  Heart
 };
 
 interface SidebarProps {

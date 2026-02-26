@@ -4,29 +4,34 @@ import { getSystemDb, sql } from '@aic/db';
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const sector = searchParams.get('sector');
+    const industry = searchParams.get('industry');
     const limit = parseInt(searchParams.get('limit') || '100');
     const offset = parseInt(searchParams.get('offset') || '0');
 
     const db = getSystemDb();
 
+    // Fetch from public_index_rankings (B0-3)
     let query = sql`
       SELECT 
         id, 
-        name, 
-        tier,
-        integrity_score as "baseScore",
-        iso_42001_readiness_score as "maturityScore",
-        accreditation_status as "status"
-      FROM organizations
-      WHERE public_directory_visible = true
+        company_name as "company", 
+        industry,
+        ticker,
+        maturity_score as "maturityScore",
+        board_oversight_score as "boardOversight",
+        rights_compliance_score as "rightsCompliance",
+        transparency_score as "transparency",
+        risk_management_score as "riskManagement",
+        trend,
+        is_client as "hasAICertification"
+      FROM public_index_rankings
     `;
 
-    if (sector && sector !== 'all') {
-      query = sql`${query} AND tier = ${sector}`; // Using tier as proxy for sector in prototype
+    if (industry && industry !== 'all') {
+      query = sql`${query} WHERE industry = ${industry}`;
     }
 
-    query = sql`${query} ORDER BY iso_42001_readiness_score DESC LIMIT ${limit} OFFSET ${offset}`;
+    query = sql`${query} ORDER BY maturity_score DESC LIMIT ${limit} OFFSET ${offset}`;
 
     const leaderboard = await db.execute(query);
 

@@ -3,11 +3,58 @@ import { sql } from 'drizzle-orm';
 
 // Enums
 export const tierEnum = pgEnum('tier_enum', ['TIER_1', 'TIER_2', 'TIER_3']);
-export const auditStatusEnum = pgEnum('audit_status', ['PENDING', 'VERIFIED', 'FLAGGED']);
-export const userRoleEnum = pgEnum('user_role', ['ADMIN', 'COMPLIANCE_OFFICER', 'AUDITOR', 'VIEWER']);
-export const incidentStatusEnum = pgEnum('incident_status', ['OPEN', 'INVESTIGATING', 'RESOLVED', 'DISMISSED', 'CLOSED']);
-export const auditScheduledStatusEnum = pgEnum('audit_scheduled_status', ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']);
-export const correctionStatusEnum = pgEnum('correction_status', ['SUBMITTED', 'UNDER_REVIEW', 'RESOLVED', 'REJECTED']);
+export const userRoleEnum = pgEnum('user_role_enum', ['ADMIN', 'AUDITOR', 'COMPLIANCE_OFFICER', 'VIEWER']);
+export const auditStatusEnum = pgEnum('audit_status_enum', ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FLAGGED']);
+export const incidentStatusEnum = pgEnum('incident_status_enum', ['OPEN', 'UNDER_REVIEW', 'RESOLVED', 'ESCALATED']);
+export const auditScheduledStatusEnum = pgEnum('audit_scheduled_status_enum', ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']);
+export const correctionStatusEnum = pgEnum('correction_status_enum', ['SUBMITTED', 'UNDER_REVIEW', 'IMPLEMENTED', 'VERIFIED', 'REJECTED']);
+
+// Roles (WordPress style)
+export const roles = pgTable('roles', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 100 }).unique().notNull(), // e.g. 'corporate_lead'
+  description: text('description'),
+  isCustom: boolean('is_custom').default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Capabilities (Granular permissions)
+export const capabilities = pgTable('capabilities', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 100 }).unique().notNull(), // e.g. 'upload_bias_report'
+  category: varchar('category', { length: 100 }), // e.g. 'Audit', 'User Management'
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Role-Capability mapping (Many-to-Many)
+export const roleCapabilities = pgTable('role_capabilities', {
+  roleId: uuid('role_id').references(() => roles.id, { onDelete: 'cascade' }),
+  capabilityId: uuid('capability_id').references(() => capabilities.id, { onDelete: 'cascade' }),
+}, (table) => ({
+  pk: index('role_cap_pk').on(table.roleId, table.capabilityId),
+}));
+
+// User-Capability overrides (Specific permissions for a user)
+export const userCapabilities = pgTable('user_capabilities', {
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  capabilityId: uuid('capability_id').references(() => capabilities.id, { onDelete: 'cascade' }),
+  isGranted: boolean('is_granted').default(true), // true = whitelist, false = explicit deny
+}, (table) => ({
+  pk: index('user_cap_pk').on(table.userId, table.capabilityId),
+}));
+
+// Permission Audit Logs
+export const permissionAuditLogs = pgTable('permission_audit_logs', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  actorId: uuid('actor_id').references(() => users.id), // The Super Admin who made the change
+  targetUserId: uuid('target_user_id').references(() => users.id),
+  targetRoleId: uuid('target_role_id').references(() => roles.id),
+  action: varchar('action', { length: 50 }).notNull(), // 'GRANT', 'REVOKE', 'ROLE_CREATE'
+  details: jsonb('details').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
 
 // Organizations (The Tenant)
 export const organizations = pgTable('organizations', {
@@ -67,6 +114,15 @@ export const auditDocuments = pgTable('audit_documents', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
+// Document Comment Threads
+export const documentComments = pgTable('document_comments', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  documentId: uuid('document_id').references(() => auditDocuments.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').references(() => users.id),
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
 // Issued Certifications (Auto-Cert Generation)
 export const issuedCertifications = pgTable('issued_certifications', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -94,107 +150,6 @@ export const hitlLogs = pgTable('hitl_logs', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
-// Document Comment Threads
-export const documentComments = pgTable('document_comments', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  documentId: uuid('document_id').references(() => auditDocuments.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').references(() => users.id),
-  content: text('content').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
-
-// AI Systems (The primary governance unit for ISO 42001)
-export const aiSystems = pgTable('ai_systems', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
-  name: varchar('name', { length: 255 }).notNull(),
-  riskTier: integer('risk_tier').notNull().default(1),
-  lifecycleStage: varchar('lifecycle_stage', { length: 50 }).default('DEVELOPMENT'),
-  isSandbox: boolean('is_sandbox').default(true),
-  lastAuditDate: timestamp('last_audit_date', { withTimezone: true }),
-  metadata: jsonb('metadata').default({}),
-  isActive: boolean('is_active').default(true),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-});
-
-// Governance Blocks (Block-Based Workspace)
-export const governanceBlocks = pgTable('governance_blocks', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  systemId: uuid('system_id').references(() => aiSystems.id, { onDelete: 'cascade' }),
-  orgId: uuid('org_id').references(() => organizations.id),
-  type: varchar('type', { length: 50 }).notNull(), // text, file, model-card, human-context
-  content: jsonb('json_content').notNull(),
-  createdBy: uuid('created_by').references(() => users.id),
-  sequence: integer('sequence').notNull(),
-  impactMagnitude: integer('impact_magnitude').default(1),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-}, (table) => {
-  return {
-    sysSeqIdx: index('gov_blocks_sys_seq_idx').on(table.systemId, table.sequence),
-  }
-});
-
-// Cryptographic Audit Ledger
-export const auditLedger = pgTable('audit_ledger', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  blockId: uuid('block_id').references(() => governanceBlocks.id),
-  orgId: uuid('org_id').references(() => organizations.id),
-  type: varchar('type', { length: 20 }).default('SANDBOX'), // SANDBOX, FORMAL
-  currentHash: varchar('current_hash', { length: 64 }).notNull(),
-  previousHash: varchar('previous_hash', { length: 64 }),
-  timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow(),
-  signature: text('signature'),
-});
-
-// Roles (WordPress style)
-export const roles = pgTable('roles', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  name: varchar('name', { length: 255 }).notNull(),
-  slug: varchar('slug', { length: 100 }).unique().notNull(), // e.g. 'corporate_lead'
-  description: text('description'),
-  isCustom: boolean('is_custom').default(false),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
-
-// Capabilities (Granular permissions)
-export const capabilities = pgTable('capabilities', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  name: varchar('name', { length: 255 }).notNull(),
-  slug: varchar('slug', { length: 100 }).unique().notNull(), // e.g. 'upload_bias_report'
-  category: varchar('category', { length: 100 }), // e.g. 'Audit', 'User Management'
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
-
-// Role-Capability mapping (Many-to-Many)
-export const roleCapabilities = pgTable('role_capabilities', {
-  roleId: uuid('role_id').references(() => roles.id, { onDelete: 'cascade' }),
-  capabilityId: uuid('capability_id').references(() => capabilities.id, { onDelete: 'cascade' }),
-}, (table) => ({
-  pk: index('role_cap_pk').on(table.roleId, table.capabilityId),
-}));
-
-// User-Capability overrides (Specific permissions for a user)
-export const userCapabilities = pgTable('user_capabilities', {
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
-  capabilityId: uuid('capability_id').references(() => capabilities.id, { onDelete: 'cascade' }),
-  isGranted: boolean('is_granted').default(true), // true = whitelist, false = explicit deny
-}, (table) => ({
-  pk: index('user_cap_pk').on(table.userId, table.capabilityId),
-}));
-
-// Permission Audit Logs
-export const permissionAuditLogs = pgTable('permission_audit_logs', {
-  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  actorId: uuid('actor_id').references(() => users.id), // The Super Admin who made the change
-  targetUserId: uuid('target_user_id').references(() => users.id),
-  targetRoleId: uuid('target_role_id').references(() => roles.id),
-  action: varchar('action', { length: 50 }).notNull(), // 'GRANT', 'REVOKE', 'ROLE_CREATE'
-  details: jsonb('details').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-});
-
 // Revoked JWT Tokens (for logout/JTI check)
 export const revokedTokens = pgTable('revoked_tokens', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -216,7 +171,7 @@ export const loginAttempts = pgTable('login_attempts', {
   }
 });
 
-// Users (Updated for TOTP MFA)
+// Users
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).unique().notNull(),
@@ -246,6 +201,17 @@ export const users = pgTable('users', {
   return {
     orgIdIdx: index('users_org_id_idx').on(table.orgId),
   }
+});
+
+// Audit Ledger (Immutable Linked-List of hashes)
+export const auditLedger = pgTable('audit_ledger', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id),
+  type: varchar('type', { length: 50 }).notNull(), // 'EMERGENCY', 'FORMAL', 'SYSTEM'
+  actorId: uuid('actor_id').references(() => users.id),
+  currentHash: varchar('current_hash', { length: 64 }).notNull(),
+  previousHash: varchar('previous_hash', { length: 64 }),
+  timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow(),
 });
 
 // Audit Logs (General activity)
@@ -521,5 +487,24 @@ export const resources = pgTable('resources', {
   category: varchar('category', { length: 100 }).notNull(), // Study Guide, Template, etc.
   description: text('description'),
   downloadUrl: text('download_url'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Public AI Governance Index (B0-3)
+// Tracks public companies (e.g. JSE Top 40) even before they become AIC clients.
+export const publicIndexRankings = pgTable('public_index_rankings', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  companyName: varchar('company_name', { length: 255 }).notNull(),
+  industry: varchar('industry', { length: 100 }),
+  ticker: varchar('ticker', { length: 20 }), // e.g. 'MSFT', 'SOL'
+  maturityScore: integer('maturity_score').default(0),
+  boardOversightScore: integer('board_oversight_score').default(0),
+  rightsComplianceScore: integer('rights_compliance_score').default(0),
+  transparencyScore: integer('transparency_score').default(0),
+  riskManagementScore: integer('risk_management_score').default(0),
+  trend: varchar('trend', { length: 10 }).default('stable'), // 'up', 'down', 'stable'
+  isClient: boolean('is_client').default(false), // True if they have a linked orgId
+  linkedOrgId: uuid('linked_org_id').references(() => organizations.id, { onDelete: 'set null' }),
+  lastAssessedAt: timestamp('last_assessed_at', { withTimezone: true }).defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });

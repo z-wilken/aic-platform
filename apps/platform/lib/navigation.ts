@@ -18,6 +18,12 @@ export async function getNavigation() {
       icon: 'Building2',
       badge: 'Metrics'
     });
+    nav.push({
+      label: 'Empathy Engine',
+      href: '/empathy',
+      icon: 'Heart',
+      badge: 'B0-2'
+    });
   }
 
   // Admin Module

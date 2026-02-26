@@ -65,25 +65,24 @@ export default function AIGovernanceIndex() {
   useEffect(() => {
     async function fetchLeaderboard() {
       try {
-        const res = await fetch('http://localhost:3001/api/public/leaderboard');
+        const res = await fetch(`http://localhost:3001/api/public/leaderboard${selectedIndustry !== 'all' ? `?industry=${selectedIndustry}` : ''}`);
         if (res.ok) {
           const rawData = await res.json();
-          // Map database rows to UI structure
           const mapped: CompanyData[] = rawData.map((row: any, i: number) => ({
             id: row.id,
             rank: i + 1,
-            company: row.name,
-            industry: row.tier === 'TIER_1' ? 'Enterprise' : row.tier === 'TIER_2' ? 'Professional' : 'Technology', // Dummy mapping
+            company: row.company,
+            industry: row.industry,
             maturityScore: row.maturityScore || 0,
-            maturityLevel: row.maturityScore >= 90 ? 'Leading' : row.maturityScore >= 80 ? 'Established' : row.maturityScore >= 60 ? 'Developing' : 'Emerging',
-            boardOversight: Math.round(row.maturityScore * 0.95),
-            rightsCompliance: Math.round(row.maturityScore * 0.9),
-            transparency: Math.round(row.maturityScore * 0.85),
-            riskManagement: Math.round(row.maturityScore * 0.92),
-            trend: 'stable',
+            maturityLevel: row.maturityScore >= 85 ? 'Leading' : row.maturityScore >= 75 ? 'Established' : row.maturityScore >= 60 ? 'Developing' : 'Emerging',
+            boardOversight: row.boardOversight,
+            rightsCompliance: row.rightsCompliance,
+            transparency: row.transparency,
+            riskManagement: row.riskManagement,
+            trend: row.trend || 'stable',
             rankChange: 0,
-            certifiedProfessionals: row.baseScore > 50 ? 5 : 2,
-            hasAICertification: row.status === 'VERIFIED'
+            certifiedProfessionals: row.maturityScore > 80 ? 8 : 3,
+            hasAICertification: row.hasAICertification
           }));
           setCompanies(mapped);
         }
@@ -94,7 +93,7 @@ export default function AIGovernanceIndex() {
       }
     }
     fetchLeaderboard();
-  }, []);
+  }, [selectedIndustry]);
 
   const industries = ["all", ...Array.from(new Set(companies.map((c) => c.industry)))];
 
@@ -132,7 +131,7 @@ export default function AIGovernanceIndex() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#0f1f3d] via-[#1a3160] to-[#0a1628] text-white py-20">
+      <section className="bg-[#0f1f3d] text-white py-20">
         <div className="max-w-[1600px] mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">

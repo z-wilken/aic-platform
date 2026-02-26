@@ -75,7 +75,7 @@ export default function ProfessionalPortal() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#0f1f3d] via-[#1a3160] to-[#0a1628] text-white py-20">
+      <section className="bg-[#0f1f3d] text-white py-20">
         <div className="max-w-[1600px] mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -135,7 +135,7 @@ export default function CorporatePortal() {
       {/* ... (Hero remains the same) ... */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/70 to-[#0f1f3d]/40" />
+        <div className="absolute inset-0 bg-transparent" />
         <div className="relative max-w-[1600px] mx-auto px-4">
           <div className="flex items-center gap-2 mb-4">
             <Shield className="w-4 h-4 text-[#c9920a]" />

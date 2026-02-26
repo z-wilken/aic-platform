@@ -123,7 +123,7 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628]/70 via-[#0f1f3d]/60 to-[#1a3160]/40" />
+        <div className="absolute inset-0 bg-transparent" />
 
         {/* Subtle grid overlay */}
         <div

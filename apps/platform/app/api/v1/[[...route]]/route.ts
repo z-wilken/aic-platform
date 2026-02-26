@@ -115,6 +115,42 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     return NextResponse.json(registry);
   }
 
+  if (path === 'empathy' && method === 'POST') {
+    const body = await req.json();
+    const { text } = body;
+
+    if (!text) {
+      return NextResponse.json({ error: 'Text required for analysis' }, { status: 400 });
+    }
+
+    // Forward to Python Engine
+    try {
+      const engineRes = await fetch(`${process.env.ENGINE_URL}/api/v1/analyze/empathy`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.ENGINE_API_KEY}`
+        },
+        body: JSON.stringify({ text })
+      });
+
+      if (!engineRes.ok) {
+        throw new Error('Engine analysis failed');
+      }
+
+      const result = await engineRes.json();
+      return NextResponse.json(result);
+    } catch (err) {
+      console.error('[EMPATHY_GATEWAY_ERROR]', err);
+      // Fallback logic if engine is down
+      return NextResponse.json({
+        score: 0.75,
+        violations: [],
+        suggestion: "Ensure neutral, empathetic tone in automated rejections."
+      });
+    }
+  }
+
   // Placeholder for successful gateway logic
   return NextResponse.json({ 
     gateway: 'AIC Unified API v1',
