@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
+import { getSystemDb, sql, roles, capabilities } from '@aic/db';
 import { hasCapability } from '@/lib/rbac';
 
 /**
@@ -46,6 +47,72 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     if (!userId) return unauthorized();
     const authorized = await hasCapability(userId, 'approve_certification');
     if (!authorized) return forbidden('approve_certification');
+  }
+
+  if (path === 'admin/queue' && method === 'GET') {
+    const authorized = await hasCapability(userId!, 'access_admin_tools');
+    if (!authorized) return forbidden('access_admin_tools');
+
+    const db = getSystemDb();
+    const queue = await db.execute(sql`
+      SELECT 
+        d.id, 
+        o.name as org, 
+        d.title as doc, 
+        d.status, 
+        d.risk_score as risk,
+        d.created_at as date
+      FROM audit_documents d
+      JOIN organizations o ON d.org_id = o.id
+      ORDER BY d.created_at DESC
+      LIMIT 100
+    `);
+    return NextResponse.json(queue.rows);
+  }
+
+  if (path === 'admin/rbac/roles' && method === 'GET') {
+    const authorized = await hasCapability(userId!, 'manage_roles');
+    if (!authorized) return forbidden('manage_roles');
+
+    const db = getSystemDb();
+    const allRoles = await db.select().from(roles).orderBy(roles.name);
+    
+    // Enrich with capabilities
+    const rolesWithCaps = await Promise.all(allRoles.map(async (r) => {
+      const caps = await db.execute(sql`
+        SELECT c.slug FROM capabilities c
+        JOIN role_capabilities rc ON c.id = rc.capability_id
+        WHERE rc.role_id = ${r.id}
+      `);
+      return { ...r, capabilities: caps.rows.map((c: any) => c.slug) };
+    }));
+
+    return NextResponse.json(rolesWithCaps);
+  }
+
+  if (path === 'admin/rbac/capabilities' && method === 'GET') {
+    const authorized = await hasCapability(userId!, 'manage_roles');
+    if (!authorized) return forbidden('manage_roles');
+
+    const db = getSystemDb();
+    const allCaps = await db.select().from(capabilities).orderBy(capabilities.category, capabilities.name);
+    return NextResponse.json(allCaps);
+  }
+
+  if (path === 'public/registry' && method === 'GET') {
+    const db = getSystemDb();
+    const registry = await db.select({
+      name: organizations.name,
+      tier: organizations.tier,
+      status: organizations.accreditationStatus,
+      certifiedAt: organizations.createdAt, // Fallback for prototype
+      slug: organizations.slug
+    })
+    .from(organizations)
+    .where(eq(organizations.publicDirectoryVisible, true))
+    .orderBy(organizations.name);
+    
+    return NextResponse.json(registry);
   }
 
   // Placeholder for successful gateway logic

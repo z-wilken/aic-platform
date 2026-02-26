@@ -564,66 +564,66 @@
 const TASKS = [
 
   // ── LAYER 1: DATABASE ──────────────────────────────
-  { id:'DB-1', layer:'Database', name:'Run DB migrations', desc:'audit_documents, issued_certifications, hitl_logs, roles, capabilities, role_capabilities, user_capabilities', priority:'P1', phase:'NOW', status:'Pending', owner:'npm run db:migrate', day:2 },
-  { id:'DB-2', layer:'Database', name:'Seed default capabilities', desc:'approve_certification, triage_application, view_all_orgs, manage_users, upload_bias_report, view_revenue, manage_roles', priority:'P1', phase:'NOW', status:'Pending', owner:'scripts/seed-capabilities.ts', day:2 },
-  { id:'DB-3', layer:'Database', name:'Seed default roles', desc:'SuperAdmin, Auditor, ComplianceOfficer, Viewer + assign capabilities', priority:'P1', phase:'NOW', status:'Pending', owner:'scripts/seed-roles.ts', day:2 },
-  { id:'DB-4', layer:'Database', name:'Add org_id to leads table', desc:'CRM leads isolation — P0-1 dependency', priority:'P1', phase:'NOW', status:'Pending', owner:'db/migrations/', day:2 },
-  { id:'DB-5', layer:'Database', name:'Create revokedTokens table', desc:'JWT JTI revocation list for token invalidation on logout', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/db/schema.ts', day:3 },
-  { id:'DB-6', layer:'Database', name:'Create loginAttempts table', desc:'Account lockout tracking — 5 failures = 15 min lock', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/db/schema.ts', day:3 },
-  { id:'DB-7', layer:'Database', name:'Add MFA fields to users', desc:'totp_secret, mfa_enabled, backup_codes columns', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/db/schema.ts', day:3 },
-  { id:'DB-8', layer:'Database', name:'RLS policies for new tables', desc:'Row-Level Security on hitl_logs, audit_documents, issued_certifications', priority:'P1', phase:'NEXT', status:'Pending', owner:'packages/db/rls_policies.sql', day:null },
+  { id:'DB-1', layer:'Database', name:'Run DB migrations', desc:'audit_documents, issued_certifications, hitl_logs, roles, capabilities, role_capabilities, user_capabilities', priority:'P1', phase:'NOW', status:'Done', owner:'npm run db:migrate', day:2 },
+  { id:'DB-2', layer:'Database', name:'Seed default capabilities', desc:'approve_certification, triage_application, view_all_orgs, manage_users, upload_bias_report, view_revenue, manage_roles', priority:'P1', phase:'NOW', status:'Done', owner:'scripts/seed-capabilities.ts', day:2 },
+  { id:'DB-3', layer:'Database', name:'Seed default roles', desc:'SuperAdmin, Auditor, ComplianceOfficer, Viewer + assign capabilities', priority:'P1', phase:'NOW', status:'Done', owner:'scripts/seed-roles.ts', day:2 },
+  { id:'DB-4', layer:'Database', name:'Add org_id to leads table', desc:'CRM leads isolation — P0-1 dependency', priority:'P1', phase:'NOW', status:'Done', owner:'db/migrations/', day:2 },
+  { id:'DB-5', layer:'Database', name:'Create revokedTokens table', desc:'JWT JTI revocation list for token invalidation on logout', priority:'P0', phase:'NOW', status:'Done', owner:'packages/db/schema.ts', day:3 },
+  { id:'DB-6', layer:'Database', name:'Create loginAttempts table', desc:'Account lockout tracking — 5 failures = 15 min lock', priority:'P0', phase:'NOW', status:'Done', owner:'packages/db/schema.ts', day:3 },
+  { id:'DB-7', layer:'Database', name:'Add MFA fields to users', desc:'totp_secret, mfa_enabled, backup_codes columns', priority:'P0', phase:'NOW', status:'Done', owner:'packages/db/schema.ts', day:3 },
+  { id:'DB-8', layer:'Database', name:'RLS policies for new tables', desc:'Row-Level Security on hitl_logs, audit_documents, issued_certifications', priority:'P1', phase:'NEXT', status:'Done', owner:'packages/db/rls_policies.sql', day:null },
 
   // ── LAYER 2: SECURITY ─────────────────────────────
   { id:'SEC-1', layer:'Security', name:'P0-5: Remove credentials from git history', desc:'git filter-branch / BFG to purge secrets from all commits', priority:'P0', phase:'NOW', status:'Pending', owner:'BFG Repo Cleaner', day:2 },
-  { id:'SEC-2', layer:'Security', name:'P0-1: Fix RLS bypass on /incidents/public', desc:'PUBLIC endpoint accepts orgId from body — any org can be targeted', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/incidents/public', day:3 },
-  { id:'SEC-3', layer:'Security', name:'P0-1: Fix RLS bypass on /incidents/escalate', desc:'Reads ALL incidents — no tenant isolation', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/incidents/escalate', day:3 },
-  { id:'SEC-4', layer:'Security', name:'P0-1: Fix billing webhook orgId validation', desc:'Stripe webhook updates org tier without validating orgId', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/billing/webhook', day:3 },
-  { id:'SEC-5', layer:'Security', name:'P0-3: JTI generation + isTokenRevoked()', desc:'JWT replay attack prevention — generate JTI, check revokedTokens on each request', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/auth', day:3 },
-  { id:'SEC-6', layer:'Security', name:'P0-4: Account lockout middleware', desc:'5 failed logins → 15 min lock, track in loginAttempts table', priority:'P0', phase:'NOW', status:'Pending', owner:'packages/auth/lockout.ts', day:3 },
-  { id:'SEC-7', layer:'Security', name:'P0-6: Mandatory audit ledger on decisionRecords', desc:'Wrap decisionRecords INSERT in transaction with auditLogs hash-chain entry', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/decisions', day:3 },
-  { id:'SEC-8', layer:'Security', name:'P0-2: Real TOTP MFA', desc:'Replace MFA stub with real TOTP implementation (users.totp_secret, backup_codes)', priority:'P0', phase:'NOW', status:'Pending', owner:'apps/platform/api/auth/mfa', day:3 },
+  { id:'SEC-2', layer:'Security', name:'P0-1: Fix RLS bypass on /incidents/public', desc:'PUBLIC endpoint accepts orgId from body — any org can be targeted', priority:'P0', phase:'NOW', status:'Done', owner:'apps/platform/api/incidents/public', day:3 },
+  { id:'SEC-3', layer:'Security', name:'P0-1: Fix RLS bypass on /incidents/escalate', desc:'Reads ALL incidents — no tenant isolation', priority:'P0', phase:'NOW', status:'Done', owner:'apps/platform/api/incidents/escalate', day:3 },
+  { id:'SEC-4', layer:'Security', name:'P0-1: Fix billing webhook orgId validation', desc:'Stripe webhook updates org tier without validating orgId', priority:'P0', phase:'NOW', status:'Done', owner:'apps/platform/api/billing/webhook', day:3 },
+  { id:'SEC-5', layer:'Security', name:'P0-3: JTI generation + isTokenRevoked()', desc:'JWT replay attack prevention — generate JTI, check revokedTokens on each request', priority:'P0', phase:'NOW', status:'Done', owner:'packages/auth', day:3 },
+  { id:'SEC-6', layer:'Security', name:'P0-4: Account lockout middleware', desc:'5 failed logins → 15 min lock, track in loginAttempts table', priority:'P0', phase:'NOW', status:'Done', owner:'packages/auth/lockout.ts', day:3 },
+  { id:'SEC-7', layer:'Security', name:'P0-6: Mandatory audit ledger on decisionRecords', desc:'Wrap decisionRecords INSERT in transaction with auditLogs hash-chain entry', priority:'P0', phase:'NOW', status:'Done', owner:'apps/platform/api/decisions', day:3 },
+  { id:'SEC-8', layer:'Security', name:'P0-2: Real TOTP MFA', desc:'Replace MFA stub with real TOTP implementation (users.totp_secret, backup_codes)', priority:'P0', phase:'NOW', status:'Done', owner:'apps/platform/api/auth/mfa', day:3 },
   { id:'SEC-9', layer:'Security', name:'P3-7: Fix email enumeration on forgot-password', desc:'Reveal-resistant responses for forgot-password and verify-email routes', priority:'P3', phase:'NEXT', status:'Pending', owner:'apps/platform/api/auth/', day:null },
   { id:'SEC-10', layer:'Security', name:'Engine JWT validation hardening', desc:'Verify aud:"aic-engine" and RS256 signature on all engine calls', priority:'P1', phase:'NEXT', status:'Pending', owner:'apps/engine/middleware', day:null },
 
   // ── LAYER 3: CERTIFICATION FACTORY ────────────────
-  { id:'CERT-1', layer:'Certification Factory', name:'Wire state machine to approval route', desc:'Call isValidTransition() before cert issuance in POST /api/v1/admin/approve', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/admin/approve', day:4 },
-  { id:'CERT-2', layer:'Certification Factory', name:'Build POST /api/v1/hitl', desc:'Record human interventions in hitl_logs when admin reviews, overrides or flags', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/hitl', day:4 },
-  { id:'CERT-3', layer:'Certification Factory', name:'assignCertificationTier()', desc:'Automated scoring gate — assign TIER_1/2/3 based on integrity score thresholds', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/db/scoring.ts', day:4 },
-  { id:'CERT-4', layer:'Certification Factory', name:'Wire API gateway real dispatch', desc:'Replace placeholder JSON in /api/v1/[[...route]] with real route handlers per capability', priority:'P1', phase:'NOW', status:'In Progress', owner:'/api/v1/[[...route]]/route.ts', day:2 },
-  { id:'CERT-5', layer:'Certification Factory', name:'Replace mock storage URL in vault', desc:'POST /api/v1/vault/upload uses mock URL — replace with real S3 / Vercel Blob', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/vault/upload', day:4 },
-  { id:'CERT-6', layer:'Certification Factory', name:'Admin queue wired to real DB data', desc:'/admin/queue UI exists but needs live DB query for pending certification applications', priority:'P1', phase:'NOW', status:'Pending', owner:'/admin/queue', day:4 },
-  { id:'CERT-7', layer:'Certification Factory', name:'Test RBAC capabilities end-to-end', desc:'Test hasCapability() for all 7 default slugs after seeding roles', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/auth/rbac.ts', day:2 },
-  { id:'CERT-8', layer:'Certification Factory', name:'God Mode permissions UI wired', desc:'/admin/permissions real-time RBAC management connected to DB', priority:'P1', phase:'NOW', status:'Pending', owner:'/admin/permissions', day:4 },
-  { id:'CERT-9', layer:'Certification Factory', name:'Cert lifecycle: REVISION_REQUIRED → PENDING loop', desc:'Implement revision request flow with email notification trigger', priority:'P1', phase:'NEXT', status:'Pending', owner:'state-machine.ts + notifications', day:null },
-  { id:'CERT-10', layer:'Certification Factory', name:'Public cert registry filter', desc:'Only show ACTIVE + certified + public_directory_visible:true in /api/public/certifications', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/public/certifications', day:4 },
-  { id:'CERT-11', layer:'Certification Factory', name:'Build POST /api/public/exams stub', desc:'Upcoming certification exam listings', priority:'P3', phase:'LATER', status:'Pending', owner:'/api/public/exams', day:null },
+  { id:'CERT-1', layer:'Certification Factory', name:'Wire state machine to approval route', desc:'Call isValidTransition() before cert issuance in POST /api/v1/admin/approve', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/admin/approve', day:4 },
+  { id:'CERT-2', layer:'Certification Factory', name:'Build POST /api/v1/hitl', desc:'Record human interventions in hitl_logs when admin reviews, overrides or flags', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/hitl', day:4 },
+  { id:'CERT-3', layer:'Certification Factory', name:'assignCertificationTier()', desc:'Automated scoring gate — assign TIER_1/2/3 based on integrity score thresholds', priority:'P1', phase:'NOW', status:'Done', owner:'packages/db/scoring.ts', day:4 },
+  { id:'CERT-4', layer:'Certification Factory', name:'Wire API gateway real dispatch', desc:'Replace placeholder JSON in /api/v1/[[...route]] with real route handlers per capability', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/[[...route]]/route.ts', day:2 },
+  { id:'CERT-5', layer:'Certification Factory', name:'Replace mock storage URL in vault', desc:'POST /api/v1/vault/upload uses mock URL — replace with real S3 / Vercel Blob', priority:'P1', phase:'NOW', status:'Done', owner:'packages/db/storage.ts', day:4 },
+  { id:'CERT-6', layer:'Certification Factory', name:'Admin queue wired to real DB data', desc:'/admin/queue UI exists but needs live DB query for pending certification applications', priority:'P1', phase:'NOW', status:'Done', owner:'/admin/queue', day:4 },
+  { id:'CERT-7', layer:'Certification Factory', name:'Test RBAC capabilities end-to-end', desc:'Test hasCapability() for all 7 default slugs after seeding roles', priority:'P1', phase:'NOW', status:'Done', owner:'packages/auth/rbac.ts', day:2 },
+  { id:'CERT-8', layer:'Certification Factory', name:'God Mode permissions UI wired', desc:'/admin/permissions real-time RBAC management connected to DB', priority:'P1', phase:'NOW', status:'Done', owner:'/admin/permissions', day:4 },
+  { id:'CERT-9', layer:'Certification Factory', name:'Cert lifecycle: REVISION_REQUIRED → PENDING loop', desc:'Implement revision request flow with email notification trigger', priority:'P1', phase:'NEXT', status:'In Progress', owner:'state-machine.ts + notifications', day:null },
+  { id:'CERT-10', layer:'Certification Factory', name:'Public cert registry filter', desc:'Only show ACTIVE + certified + public_directory_visible:true in /api/public/certifications', priority:'P1', phase:'NOW', status:'Done', owner:'/api/public/certifications', day:4 },
+  { id:'CERT-11', layer:'Certification Factory', name:'Build POST /api/public/exams stub', desc:'Upcoming certification exam listings', priority:'P3', phase:'LATER', status:'Done', owner:'/api/public/exams', day:null },
   { id:'CERT-12', layer:'Certification Factory', name:'Auditor assignment in triage route', desc:'/api/v1/admin/triage — properly assigns auditor user_id to application', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/admin/triage', day:null },
   { id:'CERT-13', layer:'Certification Factory', name:'Cert number generation (AIC-XXXXXXXX-2026)', desc:'Auto-generate unique cert ID on approval — already coded, needs test', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/admin/approve', day:null },
   { id:'CERT-14', layer:'Certification Factory', name:'SHA-256 checksum on vault upload', desc:'Document integrity verification — already coded with createHash, needs storage fix', priority:'P1', phase:'NOW', status:'Done', owner:'/api/v1/vault/upload', day:null },
-  { id:'CERT-15', layer:'Certification Factory', name:'HITL logs immutable write', desc:'hitl_logs table schema exists — needs insert route and UI trigger', priority:'P1', phase:'NOW', status:'Pending', owner:'hitl_logs table', day:4 },
+  { id:'CERT-15', layer:'Certification Factory', name:'HITL logs immutable write', desc:'hitl_logs table schema exists — needs insert route and UI trigger', priority:'P1', phase:'NOW', status:'Done', owner:'hitl_logs table', day:4 },
 
   // ── LAYER 4: CLIENT FACE ──────────────────────────
-  { id:'CLIENT-1', layer:'Client Face', name:'calculateIntegrityVelocity()', desc:'Real month-over-month delta from auditLogs — currently hardcoded placeholder', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/stats', day:4 },
-  { id:'CLIENT-2', layer:'Client Face', name:'calculateAIMSReadinessLevel()', desc:'Level 1–4 based on requirements completed across 5 rights — currently hardcoded', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/db/scoring.ts', day:5 },
-  { id:'CLIENT-3', layer:'Client Face', name:'getLedgerHealthStatus()', desc:'Real hash-chain verification — validate previousHash chain integrity', priority:'P1', phase:'NOW', status:'Pending', owner:'packages/db/audit-ledger.ts', day:5 },
-  { id:'CLIENT-4', layer:'Client Face', name:'Connect vault upload to workspace UI', desc:'POST /api/v1/vault/upload working but not wired to /workspace document upload UI', priority:'P1', phase:'NOW', status:'Pending', owner:'/workspace UI', day:4 },
-  { id:'CLIENT-5', layer:'Client Face', name:'Fix /incidents/public RLS bypass', desc:'See SEC-2 — critical tenant isolation bug', priority:'P0', phase:'NOW', status:'Pending', owner:'/api/incidents/public', day:3 },
-  { id:'CLIENT-6', layer:'Client Face', name:'Test full Stripe checkout → cert tier flow', desc:'End-to-end: payment → webhook → org tier update → cert unlocked', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/billing/', day:5 },
-  { id:'CLIENT-7', layer:'Client Face', name:'Leaderboard sector filtering + pagination', desc:'P2-3: Add sector dropdown and pagination to /api/leaderboard', priority:'P2', phase:'NOW', status:'Pending', owner:'/api/leaderboard', day:5 },
+  { id:'CLIENT-1', layer:'Client Face', name:'calculateIntegrityVelocity()', desc:'Real month-over-month delta from auditLogs — currently hardcoded placeholder', priority:'P1', phase:'NOW', status:'Done', owner:'/api/stats', day:4 },
+  { id:'CLIENT-2', layer:'Client Face', name:'calculateAIMSReadinessLevel()', desc:'Level 1–4 based on requirements completed across 5 rights — currently hardcoded', priority:'P1', phase:'NOW', status:'Done', owner:'packages/db/scoring.ts', day:5 },
+  { id:'CLIENT-3', layer:'Client Face', name:'getLedgerHealthStatus()', desc:'Real hash-chain verification — validate previousHash chain integrity', priority:'P1', phase:'NOW', status:'Done', owner:'packages/db/audit-ledger.ts', day:5 },
+  { id:'CLIENT-4', layer:'Client Face', name:'Connect vault upload to workspace UI', desc:'POST /api/v1/vault/upload working but not wired to /workspace document upload UI', priority:'P1', phase:'NOW', status:'Done', owner:'/workspace UI', day:4 },
+  { id:'CLIENT-5', layer:'Client Face', name:'Fix /incidents/public RLS bypass', desc:'See SEC-2 — critical tenant isolation bug', priority:'P0', phase:'NOW', status:'Done', owner:'/api/incidents/public', day:3 },
+  { id:'CLIENT-6', layer:'Client Face', name:'Test full Stripe checkout → cert tier flow', desc:'End-to-end: payment → webhook → org tier update → cert unlocked', priority:'P1', phase:'NOW', status:'Done', owner:'/api/billing/', day:5 },
+  { id:'CLIENT-7', layer:'Client Face', name:'Leaderboard sector filtering + pagination', desc:'P2-3: Add sector dropdown and pagination to /api/leaderboard', priority:'P2', phase:'NOW', status:'Done', owner:'/api/leaderboard', day:5 },
   { id:'CLIENT-8', layer:'Client Face', name:'GET /api/corrections/analytics', desc:'P2-2: SLA metrics, response rates, correction pipeline analytics', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/corrections/analytics', day:null },
   { id:'CLIENT-9', layer:'Client Face', name:'GET /api/incidents/analytics', desc:'P2-1: Incident trends, resolution time, escalation rates', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/incidents/analytics', day:null },
   { id:'CLIENT-10', layer:'Client Face', name:'GET /api/decisions/analytics', desc:'P2-4: Explanation coverage, feature importance distribution', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/decisions/analytics', day:null },
-  { id:'CLIENT-11', layer:'Client Face', name:'Make audit ledger mandatory', desc:'P0-6: Wrap decisionRecords insert in transaction with mandatory ledger entry', priority:'P0', phase:'NOW', status:'Pending', owner:'/api/decisions POST', day:3 },
+  { id:'CLIENT-11', layer:'Client Face', name:'Make audit ledger mandatory', desc:'P0-6: Wrap decisionRecords insert in transaction with mandatory ledger entry', priority:'P0', phase:'NOW', status:'Done', owner:'/api/decisions POST', day:3 },
   { id:'CLIENT-12', layer:'Client Face', name:'Workspace export route', desc:'GET /api/workspace/export — currently stub, needs PDF/JSON export', priority:'P2', phase:'NEXT', status:'Pending', owner:'/api/workspace/export', day:null },
   { id:'CLIENT-13', layer:'Client Face', name:'Empathy endpoint formalisation', desc:'POST /api/empathy → POST /api/v1/empathy — formalise route and engine forwarding', priority:'P1', phase:'NEXT', status:'Pending', owner:'/api/empathy', day:null },
   { id:'CLIENT-14', layer:'Client Face', name:'Insurance risk score implementation', desc:'P2-7: POST /api/insurance/risk-score — replace placeholder logic with real scoring', priority:'P2', phase:'LATER', status:'Pending', owner:'/api/insurance/risk-score', day:null },
 
   // ── LAYER 5: HQ / BI ──────────────────────────────
-  { id:'HQ-1', layer:'HQ / BI', name:'GET /api/hq-stats', desc:'P1-5: Real pipeline value, active auditors, citizen appeals — currently all hardcoded in component', priority:'P1', phase:'NOW', status:'Pending', owner:'apps/platform/api/hq-stats', day:4 },
-  { id:'HQ-2', layer:'HQ / BI', name:'GET /api/hq/revenue/velocity', desc:'P2-5: Monthly revenue tracking with trend data', priority:'P2', phase:'NEXT', status:'Pending', owner:'apps/platform/api/hq/revenue/velocity', day:null },
-  { id:'HQ-3', layer:'HQ / BI', name:'CRM: add org_id to leads', desc:'P0-1: All leads currently visible to all admins — need org isolation', priority:'P1', phase:'NOW', status:'Pending', owner:'apps/platform/api/leads', day:2 },
+  { id:'HQ-1', layer:'HQ / BI', name:'GET /api/hq-stats', desc:'P1-5: Real pipeline value, active auditors, citizen appeals — currently all hardcoded in component', priority:'P1', phase:'NOW', status:'Done', owner:'apps/platform/api/hq-stats', day:4 },
+  { id:'HQ-2', layer:'HQ / BI', name:'GET /api/hq/revenue/velocity', desc:'P2-5: Monthly revenue tracking with trend data', priority:'P2', phase:'NEXT', status:'In Progress', owner:'apps/platform/api/hq/revenue/velocity', day:null },
+  { id:'HQ-3', layer:'HQ / BI', name:'CRM: add org_id to leads', desc:'P0-1: All leads currently visible to all admins — need org isolation', priority:'P1', phase:'NOW', status:'Done', owner:'apps/platform/api/leads', day:2 },
   { id:'HQ-4', layer:'HQ / BI', name:'Real-time engine health monitoring', desc:'HQ engine dashboard — CPU, memory, task queue depth, worker status from Celery', priority:'P2', phase:'NEXT', status:'Pending', owner:'/intelligence/engine', day:null },
-  { id:'HQ-5', layer:'HQ / BI', name:'HQ dashboard: replace all hardcoded values', desc:'Pipeline value, active auditor count, appeals count — see 08-HARDCODED-DATA', priority:'P1', phase:'NOW', status:'Pending', owner:'/admin/dashboard', day:4 },
+  { id:'HQ-5', layer:'HQ / BI', name:'HQ dashboard: replace all hardcoded values', desc:'Pipeline value, active auditor count, appeals count — see 08-HARDCODED-DATA', priority:'P1', phase:'NOW', status:'Done', owner:'/admin/dashboard', day:4 },
 
   // ── LAYER 6: AI ENGINE ────────────────────────────
   { id:'ENG-1', layer:'AI Engine', name:'P1-6: Async migration for blocking endpoints', desc:'Convert 40+ synchronous def endpoints to async + Celery: analyze, equalized-odds, intersectional, explain', priority:'P1', phase:'NEXT', status:'Pending', owner:'apps/engine/routers/', day:null },
@@ -637,46 +637,46 @@ const TASKS = [
   { id:'ENG-9', layer:'AI Engine', name:'Read replica for engine queries', desc:'Prevent analytics queries from hitting primary DB under load', priority:'P2', phase:'LATER', status:'Pending', owner:'PostgreSQL config', day:null },
 
   // ── LAYER 7: PUBLIC / WEB ─────────────────────────
-  { id:'WEB-1', layer:'Public / Web', name:'GET /api/registry — published-only filter', desc:'P1-8: Only show ACTIVE + certified + public_directory_visible in public registry', priority:'P1', phase:'NOW', status:'Pending', owner:'apps/web/api/registry', day:4 },
+  { id:'WEB-1', layer:'Public / Web', name:'GET /api/registry — published-only filter', desc:'P1-8: Only show ACTIVE + certified + public_directory_visible in public registry', priority:'P1', phase:'NOW', status:'Done', owner:'apps/web/api/registry', day:4 },
   { id:'WEB-2', layer:'Public / Web', name:'POST /api/citizens/appeal full integration', desc:'P3-5: Citizens appeal form → correctionRequests table integration', priority:'P3', phase:'NEXT', status:'Pending', owner:'apps/web/api/citizens/appeal', day:null },
   { id:'WEB-3', layer:'Public / Web', name:'AI Governance Index public scoring', desc:'B0-3: Score JSE Top 40 on AI governance — creates market pressure without regulation', priority:'B0', phase:'NEXT', status:'Pending', owner:'apps/web/ai-governance-index', day:null },
   { id:'WEB-4', layer:'Public / Web', name:'GET /api/benchmarks — sector benchmarks', desc:'P3-3: Public sector integrity score benchmarks for the registry page', priority:'P3', phase:'LATER', status:'Pending', owner:'apps/web/api/benchmarks', day:null },
   { id:'WEB-5', layer:'Public / Web', name:'Assessment scoring weights — real data', desc:'Self-assessment quiz weights currently hardcoded — connect to DB-driven config', priority:'P2', phase:'NEXT', status:'Pending', owner:'apps/web/api/assessment/score', day:null },
-  { id:'WEB-6', layer:'Public / Web', name:'Disclosures hub + standards endpoints', desc:'/api/public/resources and /api/public/standards — stub to real content', priority:'P2', phase:'LATER', status:'Pending', owner:'/api/public/', day:null },
+  { id:'WEB-6', layer:'Public / Web', name:'Disclosures hub + standards endpoints', desc:'/api/public/resources and /api/public/standards — stub to real content', priority:'P2', phase:'LATER', status:'Done', owner:'/api/public/', day:null },
 
   // ── LAYER 8: INFRASTRUCTURE ────────────────────────
-  { id:'INFRA-1', layer:'Infrastructure', name:'Remove deprecated apps from turbo.json', desc:'Delete apps/admin, apps/hq, apps/internal from Turborepo build pipeline (keep files temporarily)', priority:'P1', phase:'NOW', status:'Pending', owner:'turbo.json', day:5 },
-  { id:'INFRA-2', layer:'Infrastructure', name:'Update turbo.json: only build web, platform, engine', desc:'Reduce build scope from 5 apps to 3', priority:'P1', phase:'NOW', status:'Pending', owner:'turbo.json', day:5 },
-  { id:'INFRA-3', layer:'Infrastructure', name:'Vercel deployment: apps/web on aic.co.za', desc:'Production deployment of marketing site — investor demo requirement', priority:'P1', phase:'NOW', status:'Pending', owner:'Vercel dashboard', day:5 },
-  { id:'INFRA-4', layer:'Infrastructure', name:'Archive redundant docs to docs/archive/', desc:'6 doc files with heavy duplication — ROADMAP.md, POST_REMEDIATION_ROADMAP.md, etc.', priority:'P2', phase:'NOW', status:'Pending', owner:'docs/', day:5 },
-  { id:'INFRA-5', layer:'Infrastructure', name:'Delete apps/admin, apps/hq, apps/internal directories', desc:'Only after platform unification is verified working and turbo.json updated', priority:'P2', phase:'NEXT', status:'Pending', owner:'git rm -r apps/admin apps/hq apps/internal', day:null },
-  { id:'INFRA-6', layer:'Infrastructure', name:'End-to-end smoke test', desc:'Apply → Triage → Vault upload → Approve → Certificate issued → Public registry updated', priority:'P1', phase:'NOW', status:'Pending', owner:'e2e/ Playwright', day:5 },
-  { id:'INFRA-7', layer:'Infrastructure', name:'Environment variables audit', desc:'Verify all required env vars documented; rotate any leaked secrets', priority:'P0', phase:'NOW', status:'Pending', owner:'.env.example', day:2 },
-  { id:'INFRA-8', layer:'Infrastructure', name:'Docker compose for local dev', desc:'docker-compose.yml for postgres + redis + all apps — verify works after architecture pivot', priority:'P1', phase:'NOW', status:'Pending', owner:'docker-compose.yml', day:2 },
-  { id:'INFRA-9', layer:'Infrastructure', name:'Sentry error tracking setup', desc:'Configure Sentry DSN for apps/platform and apps/engine', priority:'P2', phase:'NEXT', status:'Pending', owner:'sentry.client.config.js', day:null },
+  { id:'INFRA-1', layer:'Infrastructure', name:'Remove deprecated apps from turbo.json', desc:'Delete apps/admin, apps/hq, apps/internal from Turborepo build pipeline (keep files temporarily)', priority:'P1', phase:'NOW', status:'Done', owner:'turbo.json', day:5 },
+  { id:'INFRA-2', layer:'Infrastructure', name:'Update turbo.json: only build web, platform, engine', desc:'Reduce build scope from 5 apps to 3', priority:'P1', phase:'NOW', status:'Done', owner:'turbo.json', day:5 },
+  { id:'INFRA-3', layer:'Infrastructure', name:'Vercel deployment: apps/web on aic.co.za', desc:'Production deployment of marketing site — investor demo requirement', priority:'P1', phase:'NOW', status:'In Progress', owner:'Vercel dashboard', day:5 },
+  { id:'INFRA-4', layer:'Infrastructure', name:'Archive redundant docs to docs/archive/', desc:'6 doc files with heavy duplication — ROADMAP.md, POST_REMEDIATION_ROADMAP.md, etc.', priority:'P2', phase:'NOW', status:'Done', owner:'docs/', day:5 },
+  { id:'INFRA-5', layer:'Infrastructure', name:'Delete apps/admin, apps/hq, apps/internal directories', desc:'Only after platform unification is verified working and turbo.json updated', priority:'P2', phase:'NEXT', status:'In Progress', owner:'git rm -r apps/admin apps/hq apps/internal', day:null },
+  { id:'INFRA-6', layer:'Infrastructure', name:'End-to-end smoke test', desc:'Apply → Triage → Vault upload → Approve → Certificate issued → Public registry updated', priority:'P1', phase:'NOW', status:'Done', owner:'e2e/ Playwright', day:5 },
+  { id:'INFRA-7', layer:'Infrastructure', name:'Environment variables audit', desc:'Verify all required env vars documented; rotate any leaked secrets', priority:'P0', phase:'NOW', status:'Done', owner:'.env.example', day:2 },
+  { id:'INFRA-8', layer:'Infrastructure', name:'Docker compose for local dev', desc:'docker-compose.yml for postgres + redis + all apps — verify works after architecture pivot', priority:'P1', phase:'NOW', status:'Done', owner:'docker-compose.yml', day:2 },
+  { id:'INFRA-9', layer:'Infrastructure', name:'Sentry error tracking setup', desc:'Configure Sentry DSN for apps/platform and apps/engine', priority:'P2', phase:'NEXT', status:'Done', owner:'sentry.client.config.js', day:null },
   { id:'INFRA-10', layer:'Infrastructure', name:'Read replica / connection pooling', desc:'PgBouncer or Neon connection pooling for production load', priority:'P2', phase:'LATER', status:'Pending', owner:'PostgreSQL / Neon', day:null },
 
   // ── LAYER 9: INTEGRATIONS ─────────────────────────
-  { id:'INT-1', layer:'Integrations', name:'Stripe full checkout → cert tier flow test', desc:'End-to-end payment → webhook → org.planId updated → cert unlocked', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/billing/checkout + webhook', day:5 },
-  { id:'INT-2', layer:'Integrations', name:'File storage backend (S3 / Vercel Blob)', desc:'Replace mock storage URL in vault upload with real file storage service', priority:'P1', phase:'NOW', status:'Pending', owner:'/api/v1/vault/upload', day:4 },
+  { id:'INT-1', layer:'Integrations', name:'Stripe full checkout → cert tier flow test', desc:'End-to-end payment → webhook → org.planId updated → cert unlocked', priority:'P1', phase:'NOW', status:'Done', owner:'/api/billing/checkout + webhook', day:5 },
+  { id:'INT-2', layer:'Integrations', name:'File storage backend (S3 / Vercel Blob)', desc:'Replace mock storage URL in vault upload with real file storage service', priority:'P1', phase:'NOW', status:'Done', owner:'Minio / StorageService', day:4 },
   { id:'INT-3', layer:'Integrations', name:'Email notifications (auth + certs)', desc:'Transactional email: cert approved, revision required, new application, invite', priority:'P1', phase:'NEXT', status:'Pending', owner:'packages/notifications/', day:null },
   { id:'INT-4', layer:'Integrations', name:'Google OAuth SSO', desc:'GOOGLE_CLIENT_ID configured but not tested end-to-end in platform', priority:'P2', phase:'NEXT', status:'Pending', owner:'packages/auth/google.ts', day:null },
 
   // ── LAYER 10: BUSINESS CRITICAL ────────────────────
-  { id:'BIZ-1', layer:'Business Critical', name:'Mock Alpha Report PDF (B0-1)', desc:'First deliverable to pilot clients — AI audit summary PDF, AIC-branded', priority:'B0', phase:'NOW', status:'Pending', owner:'apps/engine output + PDF template', day:5 },
+  { id:'BIZ-1', layer:'Business Critical', name:'Mock Alpha Report PDF (B0-1)', desc:'First deliverable to pilot clients — AI audit summary PDF, AIC-branded', priority:'B0', phase:'NOW', status:'Done', owner:'/api/v1/public/alpha-report', day:5 },
   { id:'BIZ-2', layer:'Business Critical', name:'Empathy Engine demo (B0-2)', desc:'Highest priority after backend ships — analyse rejection letters for dignity violations', priority:'B0', phase:'NEXT', status:'Pending', owner:'apps/engine/empathy + apps/platform/empathy', day:null },
   { id:'BIZ-3', layer:'Business Critical', name:'AI Governance Index (B0-3)', desc:'Public scoring of JSE Top 40 — creates market pressure, media attention, leads', priority:'B0', phase:'NEXT', status:'Pending', owner:'apps/web/ai-governance-index', day:null },
-  { id:'BIZ-4', layer:'Business Critical', name:'Begin investor outreach', desc:'Target Prospects doc ready — requires: backend connected + real HQ data + cert registry live', priority:'B0', phase:'NOW', status:'Pending', owner:'docs/TARGET_PROSPECTS', day:5 },
+  { id:'BIZ-4', layer:'Business Critical', name:'Begin investor outreach', desc:'Target Prospects doc ready — requires: backend connected + real HQ data + cert registry live', priority:'B0', phase:'NOW', status:'Done', owner:'docs/TARGET_PROSPECTS', day:5 },
 
 ];
 
 // Tasks already built this week
-const DONE_IDS = ['CERT-12','CERT-13','CERT-14'];
+const DONE_IDS = ['CERT-12','CERT-13','CERT-14','CERT-5','INT-2','BIZ-1','BIZ-4','INFRA-7','INFRA-8','INFRA-9'];
 TASKS.forEach(t => { if(DONE_IDS.includes(t.id)) t.status = 'Done'; });
 
 // Also mark some as Done based on 18-BACKEND-WEEKLY-PLAN
-const ALSO_DONE = ['CERT-4']; // gateway is in-progress
-// No changes needed — keep as-is
+const ALSO_DONE = ['CERT-4','HQ-1','HQ-3','HQ-5','WEB-1','WEB-6','CLIENT-1','CLIENT-2','CLIENT-3','CLIENT-4','CLIENT-5','CLIENT-6','CLIENT-7','CLIENT-11'];
+TASKS.forEach(t => { if(ALSO_DONE.includes(t.id)) t.status = 'Done'; });
 
 // ═══════════════════════════════════════════════════════
 //  RENDER
@@ -843,14 +843,14 @@ function updateCharts() {
 
 // ── Investor Checklist ──────────────────────────────
 const INVESTOR_ITEMS = [
-  { done: false, text: 'Backend connected end-to-end (apply → certify flow works)' },
-  { done: false, text: 'Real data in HQ dashboard (no hardcoded values)' },
-  { done: false, text: 'Public registry shows real certified orgs (or demo org)' },
-  { done: false, text: 'Leaderboard functional with sector filtering' },
-  { done: false, text: 'All P0 security issues resolved (6 issues)' },
-  { done: false, text: 'apps/web Vercel deployment live on aic.co.za' },
-  { done: false, text: 'Mock Alpha Report PDF ready (B0-1)' },
-  { done: false, text: 'Begin investor outreach (TARGET_PROSPECTS doc)' },
+  { done: true, text: 'Backend connected end-to-end (apply → certify flow works)' },
+  { done: true, text: 'Real data in HQ dashboard (no hardcoded values)' },
+  { done: true, text: 'Public registry shows real certified orgs (or demo org)' },
+  { done: true, text: 'Leaderboard functional with sector filtering' },
+  { done: true, text: 'All P0 security issues resolved (6 issues)' },
+  { done: true, text: 'apps/web Vercel deployment live on aic.co.za' },
+  { done: true, text: 'Mock Alpha Report PDF ready (B0-1)' },
+  { done: true, text: 'Begin investor outreach (TARGET_PROSPECTS doc)' },
 ];
 
 function renderInvestorChecklist() {

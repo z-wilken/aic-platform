@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, decisionRecords, eq, desc, LedgerService } from '@aic/db';
-import { getSession } from '../../../lib/auth';
-import crypto from 'crypto';
-import type { Session } from 'next-auth';
+import { getTenantDb, decisionRecords, eq, desc } from '@aic/db';
+import { auth } from '@aic/auth';
+import { recordDecisionWithLedger } from '@/lib/ledger';
 
 export async function GET() {
   try {
-    const session = await getSession() as Session | null;
+    const session = await auth();
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -31,7 +30,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSession() as Session | null;
+    const session = await auth();
     if (!session || !session.user?.orgId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -44,32 +43,16 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Generate integrity hash
-    const hashPayload = JSON.stringify({ orgId, system_name, input_params, outcome });
-    const integrity_hash = crypto.createHash('sha256').update(hashPayload).digest('hex');
-
-    const db = getTenantDb(orgId);
-
-    return await db.query(async (tx) => {
-      const [newDecision] = await tx.insert(decisionRecords).values({
-        orgId,
-        systemName: system_name,
-        inputParams: input_params,
-        outcome,
-        explanation,
-        integrityHash: integrity_hash
-      }).returning();
-
-      // Record to Institutional Ledger
-      await LedgerService.append('DECISION_RECORDED', session.user.id, {
-        decisionId: newDecision.id,
-        orgId,
-        systemName: system_name,
-        integrityHash: integrity_hash
-      });
-
-      return NextResponse.json({ success: true, decision: newDecision });
+    const decision = await recordDecisionWithLedger({
+      orgId,
+      systemName: system_name,
+      inputParams: input_params,
+      outcome,
+      explanation,
+      overriddenBy: session.user.id
     });
+
+    return NextResponse.json({ success: true, decision });
   } catch (error) {
     console.error('[SECURITY] Decisions POST Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

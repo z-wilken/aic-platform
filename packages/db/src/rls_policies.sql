@@ -85,7 +85,32 @@ USING (actor_id IN (SELECT id FROM users WHERE org_id = NULLIF(current_setting('
 CREATE POLICY password_reset_tokens_isolation_policy ON "password_reset_tokens"
 USING (user_id IN (SELECT id FROM users WHERE org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid));
 
--- 5. Super Admin Bypass (Crucial for system operations)
--- In a real production environment, we would use a specific 'system' role,
--- but for this MVP-to-Institutional transition, we allow the 'aic_admin' role to bypass RLS.
--- This is handled by default for the table owner/superuser.
+CREATE POLICY audit_documents_isolation_policy ON "audit_documents" 
+USING (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid)
+WITH CHECK (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid);
+
+CREATE POLICY document_comments_isolation_policy ON "document_comments" 
+USING (document_id IN (SELECT id FROM audit_documents WHERE org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid));
+
+CREATE POLICY issued_certifications_isolation_policy ON "issued_certifications" 
+USING (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid)
+WITH CHECK (org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid);
+
+-- Public access policies (No org_id check for specific roles or public views)
+CREATE POLICY global_standards_public_policy ON "global_standards" FOR SELECT USING (true);
+CREATE POLICY personnel_certifications_public_policy ON "personnel_certifications" FOR SELECT USING (true);
+CREATE POLICY exams_public_policy ON "exams" FOR SELECT USING (true);
+CREATE POLICY resources_public_policy ON "resources" FOR SELECT USING (true);
+
+-- RBAC Table Policies (Super Admin Only for Write, Org scope for Read if relevant)
+-- For now, keep them Super Admin restricted by owner status or specific system-wide policies.
+ALTER TABLE "roles" FORCE ROW LEVEL SECURITY;
+CREATE POLICY roles_read_policy ON "roles" FOR SELECT USING (true);
+
+ALTER TABLE "capabilities" FORCE ROW LEVEL SECURITY;
+CREATE POLICY capabilities_read_policy ON "capabilities" FOR SELECT USING (true);
+
+-- hitl_logs (Org scope)
+ALTER TABLE "hitl_logs" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY hitl_logs_isolation_policy ON "hitl_logs" 
+USING (actor_id IN (SELECT id FROM users WHERE org_id = NULLIF(current_setting('app.current_org_id', TRUE), '')::uuid));
