@@ -304,6 +304,50 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     });
   }
 
+  if (path === 'admin/users' && method === 'GET') {
+    const authorized = await hasCapability(userId!, 'manage_users');
+    if (!authorized) return forbidden('manage_users');
+
+    const db = getSystemDb();
+    const allUsers = await db.execute(sql`
+      SELECT 
+        u.id, 
+        u.name, 
+        u.email, 
+        u.role, 
+        u.is_active as "isActive",
+        o.name as "orgName"
+      FROM users u
+      LEFT JOIN organizations o ON u.org_id = o.id
+      ORDER BY u.created_at DESC
+    `);
+    return NextResponse.json(allUsers.rows);
+  }
+
+  if (path === 'admin/users' && method === 'POST') {
+    const authorized = await hasCapability(userId!, 'manage_users');
+    if (!authorized) return forbidden('manage_users');
+
+    const body = await req.json();
+    const db = getSystemDb();
+    const { name, email, password, role, org_id } = body;
+
+    // Use institutional signing logic
+    const bcrypt = await import('bcryptjs');
+    const hash = await bcrypt.hash(password, 12);
+
+    const [newUser] = await db.insert(users).values({
+      name,
+      email,
+      passwordHash: hash,
+      role,
+      orgId: org_id || null,
+      isActive: true
+    }).returning();
+
+    return NextResponse.json({ success: true, userId: newUser.id });
+  }
+
   // Placeholder for successful gateway logic
   return NextResponse.json({ 
     gateway: 'AIC Unified API v1',
