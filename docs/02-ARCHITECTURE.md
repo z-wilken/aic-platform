@@ -1,0 +1,401 @@
+﻿# Technical Architecture
+*Cross-references: [[01-PLATFORM-OVERVIEW]] | [[06-DATABASE-SCHEMA]] | [[07-API-ROUTES]] | [[05-FUNCTIONS-TO-BUILD]] | [[00-INDEX]]*
+
+---
+
+## ΓÜí ARCHITECTURE PIVOT ΓÇö Feb 2026 (COMPLETE)
+
+> **As of commit `51806ed` (Final Consolidation, Feb 26 2026):** The architecture has consolidated from 5 apps to **4 apps**. `apps/admin`, `apps/hq`, `apps/internal`, and `apps/web-legacy` have been **permanently deleted** (31,252 line deletion). All functionality now lives in `apps/platform` behind RBAC. A new `apps/governance-agent` MCP server has been added.
+
+---
+
+## System Map (NEW ΓÇö 2-App Unified Architecture)
+
+```
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé                     apps/web  (port 3000)                           Γöé
+Γöé                     PUBLIC FACE                                     Γöé
+Γöé                                                                     Γöé
+Γöé   Marketing site           Citizens portal                          Γöé
+Γöé   Self-assessment quiz     Algorithmic rights portal                Γöé
+Γöé   Alpha application        AI Governance Index (public)             Γöé
+Γöé   Public org registry      Disclosures hub                          Γöé
+Γöé   Corporate portal         Professional portal                      Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+                                 Γöé
+                                 Γû╝
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé                   apps/platform  (port 3001)                        Γöé
+Γöé                   UNIFIED BACKEND ΓÇö RBAC-GATED                      Γöé
+Γöé                                                                     Γöé
+Γöé   CLIENT FACE (tenant-isolated via getTenantDb)                     Γöé
+Γöé   ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ                      Γöé
+Γöé   /dashboard          Org integrity score + velocity + radar        Γöé
+Γöé   /workspace          Governance workspace (Governance Blocks)      Γöé
+Γöé   /ai-systems         AI system registry + model cards              Γöé
+Γöé   /incidents          Incident log + escalation                     Γöé
+Γöé   /corrections        Right-to-correction pipeline                  Γöé
+Γöé   /decisions          Decision audit trail + SHAP output            Γöé
+Γöé   /reports            Compliance + insurance reports                Γöé
+Γöé   /leaderboard        Global integrity rankings                     Γöé
+Γöé   /settings           Billing, API keys, team management            Γöé
+Γöé                                                                     Γöé
+Γöé   ADMIN FACE (system-level via isSuperAdmin + capabilities)         Γöé
+Γöé   ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ          Γöé
+Γöé   /admin/queue        Certification application triage              Γöé
+Γöé   /admin/permissions  God Mode ΓÇö real-time RBAC management          Γöé
+Γöé   /admin/dashboard    Pipeline, pending apps, verification queue    Γöé
+Γöé   (HQ ops)            Revenue, CRM, engine monitoring               Γöé
+Γöé   (Certification)     Approval ΓåÆ CERTIFIED state machine            Γöé
+Γöé   (Audit Vault)       Document upload + SHA-256 checksum            Γöé
+Γöé                                                                     Γöé
+Γöé   UNIFIED API GATEWAY                                               Γöé
+Γöé   /api/v1/[[...route]]   Capability-checked entry point             Γöé
+Γöé   /api/v1/admin/approve  Issue certification (issuedCertifications) Γöé
+Γöé   /api/v1/admin/triage   Queue triage                               Γöé
+Γöé   /api/v1/vault/upload   Document vault (SHA-256 integrity)         Γöé
+Γöé   /api/v1/stripe/webhook Stripe integration                         Γöé
+Γöé   /api/public/*          Unauthenticated public endpoints           Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+                                 Γöé
+                                 Γû╝
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé                        SHARED INFRASTRUCTURE                        Γöé
+Γöé                                                                     Γöé
+Γöé   apps/engine (port 8000)       packages/db                         Γöé
+Γöé   Python FastAPI                PostgreSQL + Drizzle ORM            Γöé
+Γöé                                                                     Γöé
+Γöé   apps/governance-agent (NEW)   packages/auth                       Γöé
+Γöé   MCP Server (stdio)            TOTP MFA (RFC 6238) Γ£à              Γöé
+Γöé   get_org_integrity_score       JTI Revocation (Redis+DB) Γ£à        Γöé
+Γöé   list_audit_requirements       Account Lockout Γ£à                   Γöé
+Γöé   AI agents (Claude, GPT)                                           Γöé
+Γöé   Bias analysis                 35+ tables (incl. new tables below) Γöé
+Γöé   SHAP/LIME explainability      Row-Level Security (RLS)            Γöé
+Γöé   Privacy audit                 Hash-chain audit ledger             Γöé
+Γöé   Labour audit                  issued_certifications (NEW)         Γöé
+Γöé   Drift monitoring              hitl_logs (NEW)                     Γöé
+Γöé                                 audit_documents / vault (NEW)       Γöé
+Γöé   Celery + Redis                roles + capabilities (NEW)          Γöé
+Γöé   (async heavy tasks)                                               Γöé
+Γöé                                 packages/auth                       Γöé
+Γöé                                 NextAuth.js (shared)                Γöé
+Γöé                                 WordPress-style RBAC                Γöé
+Γöé                                 hasCapability(userId, slug)         Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+```
+
+---
+
+## Γ£à Apps Deleted (Feb 26, 2026 ΓÇö commit `51806ed`)
+
+| App | Status | Migrated to |
+|-----|--------|-------------|
+| `apps/admin` | **DELETED** (31,252 line deletion) | `apps/platform/app/admin/*` |
+| `apps/hq` | **DELETED** | `apps/platform/app/(modules)/hq/*` |
+| `apps/internal` | **DELETED** | `apps/platform/app/internal/*` |
+| `apps/web-legacy` | **DELETED** | Replaced by `apps/web` |
+
+> ΓÜá∩╕Å **Note:** Navigation links to HQ routes must use `/hq/...` prefix. Next.js App Router route group `(modules)` does NOT affect URL ΓÇö confirmed bug in 2 nav links: `/intelligence/engine` ΓåÆ should be `/hq/intelligence/engine`, `/crm` ΓåÆ should be `/hq/crm`.
+
+---
+
+## Repository Structure (Current ΓÇö Post-Pivot)
+
+```
+aic-platform/
+Γö£ΓöÇΓöÇ apps/
+Γöé   Γö£ΓöÇΓöÇ web/               Next.js 15 ΓÇö marketing + public portal
+Γöé   Γö£ΓöÇΓöÇ platform/          Next.js 15 ΓÇö UNIFIED BACKEND (RBAC-gated)
+Γöé   Γöé   Γö£ΓöÇΓöÇ app/admin/         Certification queue + RBAC management
+Γöé   Γöé   Γö£ΓöÇΓöÇ app/(modules)/hq/  HQ operations (note: URL is /hq/*)
+Γöé   Γöé   Γö£ΓöÇΓöÇ app/api/v1/        Unified API gateway (capability-checked)
+Γöé   Γöé   Γö£ΓöÇΓöÇ app/api/public/    Public endpoints (no auth)
+Γöé   Γöé   Γö£ΓöÇΓöÇ lib/rbac.ts        hasCapability() ΓÇö WordPress-style RBAC
+Γöé   Γöé   Γö£ΓöÇΓöÇ lib/capability-middleware.ts
+Γöé   Γöé   Γö£ΓöÇΓöÇ lib/navigation.ts  (Empathy Engine + Organizations added Feb 26)
+Γöé   Γöé   Γö£ΓöÇΓöÇ lib/security.ts    Account lockout + token revocation Γ£à
+Γöé   Γöé   ΓööΓöÇΓöÇ app/lib/state-machine.ts  Certification lifecycle
+Γöé   Γö£ΓöÇΓöÇ engine/            Python FastAPI ΓÇö AI analysis engine (port 8000)
+Γöé   ΓööΓöÇΓöÇ governance-agent/  MCP Server (NEW ΓÇö Feb 26 2026)
+Γöé       ΓööΓöÇΓöÇ src/index.ts       Exposes AIC integrity tools to AI agents
+Γö£ΓöÇΓöÇ packages/
+Γöé   Γö£ΓöÇΓöÇ db/           Drizzle ORM schema + migrations + RLS (510 lines, 35+ tables)
+Γöé   Γö£ΓöÇΓöÇ auth/         Shared NextAuth config + RBAC
+Γöé   Γöé   ΓööΓöÇΓöÇ src/services/
+Γöé   Γöé       Γö£ΓöÇΓöÇ mfa.ts         TOTP RFC 6238 ΓÇö REAL IMPLEMENTATION Γ£à
+Γöé   Γöé       ΓööΓöÇΓöÇ revocation.ts  JTI revocation (Redis+DB) Γ£à ΓÜá∩╕Å Redis setup incomplete
+Γöé   Γö£ΓöÇΓöÇ types/        Shared TypeScript interfaces
+Γöé   Γö£ΓöÇΓöÇ ui/           Radix UI design system (AIC Character here)
+Γöé   Γö£ΓöÇΓöÇ legal/        POPIA + ISO 42001 helpers
+Γöé   ΓööΓöÇΓöÇ notifications/ Alert system
+Γö£ΓöÇΓöÇ docs/             Strategy + spec docs
+Γö£ΓöÇΓöÇ scripts/
+Γöé   ΓööΓöÇΓöÇ seed-capabilities.ts   Seeds default RBAC capabilities + roles Γ£à
+Γö£ΓöÇΓöÇ e2e/              Playwright end-to-end tests
+Γö£ΓöÇΓöÇ turbo.json        Turborepo task config
+ΓööΓöÇΓöÇ docker-compose.yml
+```
+
+---
+
+## Application Deep Dive
+
+### apps/web ΓÇö Marketing & Public Portal (port 3000)
+**Technology:** Next.js 15, Framer Motion, Tailwind CSS
+
+**Purpose:** Convert prospects into leads; serve citizens; run self-assessment quiz.
+
+**Key Pages:**
+- `/` ΓÇö Hero with routing for different audiences (citizens, businesses, regulators)
+- `/assessment` ΓÇö Self-assessment quiz (20 questions, 4 categories, weighted scoring)
+- `/business` ΓÇö B2B offering with pricing
+- `/citizens` ΓÇö Algorithmic rights portal
+- `/citizens/appeal` ΓÇö Submit an algorithmic decision appeal
+- `/registry` ΓÇö Search for certified organisations (publicly visible)
+- `/blog` ΓÇö Citizen education resources
+- `/contact` ΓÇö Lead capture form
+
+**Self-Assessment Quiz (hardcoded ΓÇö see [[08-HARDCODED-DATA]]):**
+- 20 questions across 4 categories
+- Scoring weights: Human Agency 20%, Explanation 35%, Empathy 25%, Truth 20%
+- Outputs tier suggestion and report with improvement plan
+
+**Connects to:** `packages/db` (leads, alphaApplications), `apps/engine` (assessment scoring)
+
+---
+
+### apps/platform ΓÇö Client SaaS Dashboard (port 3001)
+**Technology:** Next.js 15, NextAuth v5, Drizzle ORM, Recharts, Framer Motion
+
+**Purpose:** The core client product. Organisations manage their AI systems here, complete audits, track compliance, report incidents.
+
+**Key Pages:**
+- `/` ΓÇö Command dashboard: integrity score, velocity chart, radar chart, stats grid
+- `/workspace` ΓÇö Living governance workspace (Governance Blocks)
+- `/workspace/[id]` ΓÇö Individual AI system governance
+- `/practitioner` ΓÇö CPD professional certification
+- `/leaderboard` ΓÇö Global integrity rankings
+- `/incidents` ΓÇö AI decision incident log and management
+- `/reports` ΓÇö Compliance and insurance reports
+- `/settings` ΓÇö Billing, API keys, team management
+- `/explain` ΓÇö Decision explanation viewer (SHAP output)
+- `/empathy` ΓÇö Empathy/sentiment analysis viewer
+
+**Data sources:** `/api/stats` (org intelligence), `/api/dashboard` (full metrics) ΓÇö both query PostgreSQL via Drizzle with RLS.
+
+**Connects to:** `apps/engine` (bias/fairness/explainability), `packages/db`, `packages/auth`
+
+---
+
+### apps/governance-agent ΓÇö MCP Server (NEW ΓÇö Feb 26 2026)
+**Technology:** Node.js, `@modelcontextprotocol/sdk`, Drizzle ORM
+
+**Purpose:** Exposes AIC's integrity intelligence as an MCP (Model Context Protocol) server. AI agents ΓÇö Claude, GPT, or any MCP-compatible client ΓÇö can call AIC tools directly to get certification data and audit requirements without needing the full platform API.
+
+**Transport:** stdio (command-line process, not HTTP)
+
+**Exposed Tools:**
+- `get_org_integrity_score` ΓÇö returns an org's current integrity score, tier, and open incidents from the system DB
+- `list_audit_requirements` ΓÇö returns the audit requirements checklist for an org by status
+
+**Use case:** Allows enterprise clients running AI agents internally to query their AIC certification state programmatically. Also enables AIC's own internal agents to query platform data.
+
+**Connects to:** `packages/db` via `getSystemDb()` (system-level read access)
+
+---
+
+### ~~apps/admin~~ ΓÇö DELETED (Feb 26, 2026)
+Functionality migrated to `apps/platform/app/admin/*` and `apps/platform/app/(modules)/hq/*` behind RBAC capability gates. See commit `51806ed`.
+
+### ~~apps/hq~~ ΓÇö DELETED (Feb 26, 2026)
+HQ pages now live at `apps/platform/app/(modules)/hq/*`. URL prefix: `/hq/`. Key sections: `/hq/intelligence/engine`, `/hq/crm`, `/hq/governance`, `/hq/growth/revenue`.
+
+---
+
+### apps/engine ΓÇö AI Analysis Engine (port 8000)
+**Technology:** Python 3.12, FastAPI, pandas, scipy, scikit-learn, SHAP, LIME, TextBlob, Celery, Redis
+
+**Purpose:** All statistical AI analysis. Called by the platform apps via authenticated REST API.
+
+**Core Analysis Types:**
+- `POST /api/v1/analyze` ΓÇö Disparate impact (four-fifths rule)
+- `POST /api/v1/analyze/equalized-odds` ΓÇö Equalized odds fairness
+- `POST /api/v1/analyze/intersectional` ΓÇö Multi-attribute fairness
+- `POST /api/v1/explain` ΓÇö SHAP/LIME decision explanations
+- `POST /api/v1/privacy-audit` ΓÇö PII detection
+- `POST /api/v1/labor-audit` ΓÇö Human oversight ratio verification
+- `POST /api/v1/drift` ΓÇö Model drift monitoring
+- `POST /analyze/async` ΓÇö Async wrapper for heavy operations
+
+**Authentication:** JWT Bearer tokens (RS256, `aud: "aic-engine"`) + API key middleware.
+
+**Current Issues (see [[05-FUNCTIONS-TO-BUILD]]):**
+- 40+ endpoints are synchronous `def` not `async def` ΓÇö blocks under concurrent load
+- Model cache unbounded ΓÇö OOM risk after ~8 hours
+- Only 4 endpoints use Celery for async ΓÇö the rest block
+
+---
+
+## Shared Packages
+
+### packages/db
+The database layer. Shared by all Next.js apps.
+
+- **ORM:** Drizzle ORM with PostgreSQL
+- **Schema:** `packages/db/src/schema.ts` ΓÇö 30+ tables
+- **RLS:** Row-Level Security policies in `rls_policies.sql`
+- **Key exports:**
+  - `getTenantDb(orgId)` ΓÇö RLS-enforced tenant database connection
+  - `getSystemDb()` ΓÇö System-level connection (admin/HQ only)
+  - `calculateOrganizationIntelligence(orgId)` ΓÇö Core scoring function
+
+See [[06-DATABASE-SCHEMA]] for all tables.
+
+### packages/auth
+Shared NextAuth.js configuration.
+- bcrypt password hashing
+- JWT sessions (24h TTL)
+- RBAC: `ADMIN` > `COMPLIANCE_OFFICER` > `AUDITOR` > `VIEWER`
+- Org-level isolation via `orgId` in session
+- **MFA: Γ£à IMPLEMENTED** ΓÇö Real TOTP RFC 6238 in `packages/auth/src/services/mfa.ts`. Zero-dependency. Custom base32 encode/decode, HMAC-SHA1, 30-second windows, ┬▒1 window clock drift tolerance. `generateSecret()`, `verifyToken()`, `getOTPAuthURI()`.
+- **JTI Revocation: Γ£à IMPLEMENTED** ΓÇö `packages/auth/src/services/revocation.ts`. Redis fast-path + PostgreSQL fallback dual-store. `RevocationService.revoke(jti, expiresAt)` + `isRevoked(jti)`. ΓÜá∩╕Å Redis client setup has `// ... (rest of redis setup)` placeholder ΓÇö Redis client initialization is incomplete.
+- **Account Lockout: Γ£à IMPLEMENTED** ΓÇö `apps/platform/lib/security.ts`. `recordLoginAttempt()` + `isTokenRevoked()`. 5 failures / 15 min lockout, DB-backed.
+
+### packages/types
+Canonical TypeScript interface definitions.
+- `StatsResponse` ΓÇö Platform dashboard data shape
+- `DashboardData` ΓÇö Full dashboard including 5-rights compliance
+- `CertificationTier` ΓÇö `'TIER_1' | 'TIER_2' | 'TIER_3'`
+- `UserRole` ΓÇö `'ADMIN' | 'COMPLIANCE_OFFICER' | 'AUDITOR' | 'VIEWER'`
+- `EngineAnalysisType` ΓÇö Engine endpoint types
+
+### packages/ui
+Radix UI design system with AIC-specific design tokens.
+
+**Design colours:**
+- `aic-cyan` ΓÇö #00F5FF (primary action/data)
+- `aic-gold` ΓÇö (secondary, strategy/warning)
+- `aic-red` ΓÇö (error/critical)
+- `aic-slate` ΓÇö (muted text)
+- `aic-obsidian` ΓÇö (background)
+
+### packages/legal
+POPIA Section 71 compliance utilities and ISO/IEC 42001 framework helpers.
+
+---
+
+## Technology Stack Summary
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend framework | Next.js 15.1.7, React 19 |
+| Styling | Tailwind CSS |
+| Animation | Framer Motion |
+| Charts | Recharts |
+| Authentication | NextAuth.js v5 (platform ΓÇö only remaining Next.js app) |
+| ORM | Drizzle ORM |
+| Database | PostgreSQL (single instance, no read replicas yet) |
+| Engine | Python 3.12 + FastAPI |
+| ML/Statistics | scikit-learn, scipy, pandas, numpy |
+| Explainability | SHAP 0.46, LIME 0.2 |
+| NLP | TextBlob |
+| Async tasks | Celery 5.4 + Redis |
+| Cryptography | RSA-3072 (audit signatures), bcrypt (passwords) |
+| Build system | Turborepo + npm workspaces |
+| Containerisation | Docker + docker-compose |
+| Testing | Vitest (TS), pytest (Python), Playwright (E2E) |
+| Error tracking | Sentry |
+| Payments | Stripe |
+
+---
+
+## Data Flow: How an Audit Works
+
+```
+1. Organisation submits AI system data
+   apps/platform/workspace ΓåÆ POST /api/ai-systems
+
+2. Platform calls Engine for bias analysis
+   apps/platform/lib/engine-client.ts ΓåÆ POST engine/api/v1/analyze
+   (JWT-authenticated, org-scoped)
+
+3. Engine returns analysis results
+   { disparate_impact_ratio, affected_groups, recommendations }
+
+4. Platform stores results as audit requirements
+   packages/db ΓåÆ auditRequirements table (status: PENDING)
+
+5. AIC auditor reviews in admin
+   apps/admin/audits ΓåÆ verifies evidence ΓåÆ status: VERIFIED
+
+6. Score recalculated
+   packages/db/calculateOrganizationIntelligence(orgId)
+   Updates organizations.integrity_score
+
+7. Platform dashboard refreshes
+   GET /api/stats ΓåÆ returns updated StatsResponse
+   AreaChart (velocity) + RadarChart (framework distribution) update
+
+8. Ledger entry appended
+   auditLogs ΓåÆ hash-chain entry with previousHash + integrityHash
+```
+
+---
+
+## Environment Variables (Required)
+
+```bash
+# Database
+POSTGRES_URL=postgresql://user:pass@localhost:5432/aic_platform
+
+# Auth
+NEXTAUTH_SECRET=<32-byte base64>
+AUTH_SECRET=<same>
+
+# App URLs
+NEXTAUTH_URL_PLATFORM=http://localhost:3001
+# NEXTAUTH_URL_ADMIN and NEXTAUTH_URL_HQ removed ΓÇö apps/admin and apps/hq deleted Feb 26
+
+# Engine
+ENGINE_URL=http://localhost:8000
+ENGINE_API_KEY=<auto-generated in dev>
+PLATFORM_PUBLIC_KEY=<RSA public key PEM>
+AUDIT_SIGNING_KEY=<RSA private key PEM>
+
+# Optional
+STRIPE_SECRET_KEY=...
+SENTRY_DSN=...
+GOOGLE_CLIENT_ID=...
+```
+
+---
+
+## Running Locally
+
+```bash
+# Install dependencies
+npm install
+
+# Start all apps
+npm run dev
+
+# Start individual apps
+npm run dev:web       # port 3000
+npm run dev:platform  # port 3001
+# (see package.json for all dev:* scripts)
+
+# Database
+npm run db:migrate    # run pending migrations
+npm run db:push       # push schema changes (dev only)
+
+# Tests
+npm test              # vitest
+npm run test:engine   # pytest
+npm run test:e2e      # playwright
+```
+
+---
+
+*Next: [[03-ALGORITHMIC-RIGHTS]] ΓÇö the five rights that power the audit framework.*
+
