@@ -45,6 +45,17 @@ export async function POST(req: NextRequest) {
         verificationCode: Math.random().toString(36).substring(7).toUpperCase()
       });
 
+      // [SECURITY] Record High-Stakes HITL Event
+      const { hitlLogs } = await import('@aic/db');
+      await tx.insert(hitlLogs).values({
+        actorId: session.user.id,
+        targetType: 'CERTIFICATION_ISSUANCE',
+        targetId: orgId,
+        previousValue: { status: org.status },
+        newValue: { status: 'APPROVED', certNumber },
+        overrideReason: 'Final institutional audit verification complete.'
+      });
+
       await tx.update(organizations)
         .set({ 
           certificationStatus: 'APPROVED',

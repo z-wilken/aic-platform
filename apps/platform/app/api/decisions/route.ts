@@ -37,7 +37,15 @@ export async function POST(request: NextRequest) {
     const orgId = session.user.orgId;
 
     const body = await request.json();
-    const { system_name, input_params, outcome, explanation } = body;
+    const { 
+      system_name, 
+      input_params, 
+      outcome, 
+      explanation,
+      isHumanOverride,
+      overrideReason,
+      originalOutcome
+    } = body;
 
     if (!system_name || !input_params || !outcome) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -49,6 +57,9 @@ export async function POST(request: NextRequest) {
       inputParams: input_params,
       outcome,
       explanation,
+      isHumanOverride: isHumanOverride || false,
+      overrideReason: overrideReason,
+      originalOutcome: originalOutcome,
       overriddenBy: session.user.id
     });
 

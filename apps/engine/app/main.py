@@ -132,7 +132,10 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # Import and register routers
 from app.api.v1.endpoints import analysis
+from app.routers import empathy
+
 app.include_router(analysis.router, prefix="/api/v1", tags=["Analysis"])
+app.include_router(empathy.router, prefix="/api/v1/empathy", tags=["Empathy"])
 
 @app.get("/")
 def health_check():

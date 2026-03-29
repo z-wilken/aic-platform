@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { getSystemDb, auditDocuments, eq } from '@aic/db';
 import { auth } from '@aic/auth';
 

@@ -36,59 +36,54 @@ export const engineWorker = new Worker(
     const { type, payload, auditId, orgId, taskId } = job.data;
 
     if (!taskId) {
-      // 1. Initial trigger of Async Engine Task
-      let res: Record<string, unknown>;
+      // 1. Initial trigger of Async Engine Task (Remediation P1)
+      let res: { task_id: string; status: string };
       switch (type) {
         case 'disparate_impact':
-          res = await EngineClient.analyzeDisparateImpact(orgId, payload.data, payload.protected_attribute, payload.outcome_variable, payload.previous_hash);
+          res = await EngineClient.triggerDisparateImpactAsync(orgId, payload.data as any[], payload.protected_attribute as string, payload.outcome_variable as string, payload.previous_hash as string);
           break;
         case 'equalized_odds':
-          res = await EngineClient.analyzeEqualizedOdds(orgId, payload.data, payload.protected_attribute, payload.actual_outcome, payload.predicted_outcome, payload.threshold, payload.previous_hash);
+          res = await EngineClient.triggerEqualizedOddsAsync(orgId, payload.data as any[], payload.protected_attribute as string, payload.actual_outcome as string, payload.predicted_outcome as string, payload.threshold as number, payload.previous_hash as string);
           break;
         case 'intersectional':
-          res = await EngineClient.analyzeIntersectional(orgId, payload.data, payload.protected_attributes, payload.outcome_variable, payload.min_group_size, payload.previous_hash);
+          res = await EngineClient.triggerIntersectionalAsync(orgId, payload.data as any[], payload.protected_attributes as string[], payload.outcome_variable as string, payload.min_group_size as number, payload.previous_hash as string);
           break;
         default:
           throw new Error(`Unknown task type: ${type}`);
       }
 
-      if (res.error) throw new Error(`Engine trigger failed: ${res.error}`);
+      if (!res.task_id) throw new Error(`Engine trigger failed: ${JSON.stringify(res)}`);
       
-      // Note: The new EngineClient methods currently call sync endpoints.
-      // We need to add async trigger methods to EngineClient for true async flow.
-      // For now, if the endpoint returns result directly, we can skip polling.
+      // Update job with taskId to enable polling in next attempt
+      await job.updateData({ ...job.data, taskId: res.task_id });
       
-      if (res.audit_hash) {
-          // Direct sync result
-          await processEngineResult(res, auditId, orgId);
-          return res;
-      }
-
-      const task_id = res.task_id;
-      await job.updateData({ ...job.data, taskId: task_id });
-      
-      // Delay next attempt to give engine time to work
+      // Delay next attempt by throwing a specific error that causes BullMQ to retry
+      // based on the exponential backoff defined in queue options.
       throw new Error('WAITING_FOR_ENGINE');
     } else {
       // 2. Poll for Status
-      // We need a request method in EngineClient for status polling
       const res = await EngineClient.getTaskStatus(taskId, orgId);
       
       const { status, result } = res;
       
       if (status === 'SUCCESS' && result) {
-        await processEngineResult(result, auditId, orgId);
+        // [SECURITY] Result processing is RLS enforced via getTenantDb inside processEngineResult
+        await processEngineResult(result as Record<string, unknown>, auditId, orgId);
         return result;
       } else if (status === 'FAILURE' || status === 'REVOKED') {
         const db = getTenantDb(orgId);
         await db.query(async (tx) => {
           await tx.update(auditLogs)
-            .set({ status: 'FLAGGED' })
+            .set({ 
+                status: 'FLAGGED',
+                details: { error: 'Engine task failed', status }
+            })
             .where(eq(auditLogs.id, auditId));
         });
         throw new Error(`Engine task failed: ${status}`);
       } else {
-        // Still processing
+        // Still processing (PENDING, STARTED, etc.)
+        // We throw so BullMQ retries based on backoff
         throw new Error('STILL_PROCESSING');
       }
     }

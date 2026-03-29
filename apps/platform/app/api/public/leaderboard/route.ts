@@ -22,6 +22,8 @@ export async function GET(req: NextRequest) {
         rights_compliance_score as "rightsCompliance",
         transparency_score as "transparency",
         risk_management_score as "riskManagement",
+        policy_hit_rate as "policyHitRate",
+        human_override_rate as "humanOverrideRate",
         trend,
         is_client as "hasAICertification"
       FROM public_index_rankings

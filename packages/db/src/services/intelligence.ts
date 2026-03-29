@@ -1,4 +1,4 @@
-import { organizations, auditRequirements, incidents, eq, sql, getTenantDb, TenantTransaction } from '../db';
+﻿import { organizations, auditRequirements, incidents, eq, sql, getTenantDb, TenantTransaction } from '../db';
 
 export interface IntelligenceStats {
   score: number;

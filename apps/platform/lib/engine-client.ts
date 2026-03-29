@@ -35,6 +35,31 @@ export class EngineClient {
     const callEngine = async (params: { endpoint: string, method: string, body?: any, orgId?: string }) => {
       const { endpoint, method, body, orgId } = params;
       
+      let targetUrl = ENGINE_URL;
+
+      // [ARCHITECTURE] Hybrid/On-premise Support
+      // If orgId is provided, check if they use an on-prem proxy
+      if (orgId) {
+        try {
+          const { getSystemDb, organizations, eq } = await import('@aic/db');
+          const db = getSystemDb();
+          const [org] = await db
+            .select({ onPremProxyEnabled: organizations.onPremProxyEnabled, apiKey: organizations.apiKey })
+            .from(organizations)
+            .where(eq(organizations.id, orgId))
+            .limit(1);
+          
+          if (org?.onPremProxyEnabled && org.apiKey) {
+            // In a real scenario, the proxy URL would be stored in the DB or derived from the API key
+            // For the prototype, we assume a structured sovereign URL
+            targetUrl = `https://proxy.${orgId}.aic-sovereign.internal`;
+            console.info(`[HYBRID_AGENT] Routing request to sovereign proxy: ${targetUrl}`);
+          }
+        } catch (dbError) {
+          console.warn('[ENGINE_CLIENT] Could not resolve org proxy settings, falling back to central engine.', dbError);
+        }
+      }
+
       // 1. Generate Sovereign Identity Token
       const token = await SigningService.generateServiceToken('aic-engine', orgId);
 
@@ -47,7 +72,7 @@ export class EngineClient {
         headers['X-API-Key'] = process.env.ENGINE_API_KEY;
       }
 
-      const response = await fetch(`${ENGINE_URL}${endpoint}`, {
+      const response = await fetch(`${targetUrl}${endpoint}`, {
         method,
         headers,
         body: body ? JSON.stringify(body) : undefined,
@@ -77,6 +102,40 @@ export class EngineClient {
   private static async request<T>(endpoint: string, method: string = 'GET', body?: any, orgId?: string): Promise<T> {
     this.initializeBreaker();
     return await this.breaker.fire({ endpoint, method, body, orgId }) as T;
+  }
+
+  /**
+   * --- ASYNC TRIGGER METHODS (Remediation P1) ---
+   */
+
+  static async triggerDisparateImpactAsync(orgId: string, data: Record<string, unknown>[], protectedAttribute: string, outcomeVariable: string, previousHash?: string): Promise<{ task_id: string; status: string }> {
+    return this.request<{ task_id: string; status: string }>('/api/v1/analyze/async', 'POST', {
+      data,
+      protected_attribute: protectedAttribute,
+      outcome_variable: outcomeVariable,
+      previous_hash: previousHash
+    }, orgId);
+  }
+
+  static async triggerEqualizedOddsAsync(orgId: string, data: Record<string, unknown>[], protectedAttribute: string, actualOutcome: string, predictedOutcome: string, threshold: number = 0.1, previousHash?: string): Promise<{ task_id: string; status: string }> {
+    return this.request<{ task_id: string; status: string }>('/api/v1/analyze/equalized-odds/async', 'POST', {
+      data,
+      protected_attribute: protectedAttribute,
+      actual_outcome: actualOutcome,
+      predicted_outcome: predictedOutcome,
+      threshold,
+      previous_hash: previousHash
+    }, orgId);
+  }
+
+  static async triggerIntersectionalAsync(orgId: string, data: Record<string, unknown>[], protectedAttributes: string[], outcomeVariable: string, minGroupSize: number = 30, previousHash?: string): Promise<{ task_id: string; status: string }> {
+    return this.request<{ task_id: string; status: string }>('/api/v1/analyze/intersectional/async', 'POST', {
+      data,
+      protected_attributes: protectedAttributes,
+      outcome_variable: outcomeVariable,
+      min_group_size: minGroupSize,
+      previous_hash: previousHash
+    }, orgId);
   }
 
   /**

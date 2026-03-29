@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
+﻿import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'crypto';
 import * as dotenv from 'dotenv';
 import path from 'path';
 

@@ -41,6 +41,21 @@ export async function recordDecisionWithLedger(data: any) {
       overriddenBy: data.overriddenBy
     }).returning();
 
+    // [SECURITY] HITL Trigger Enforcement (Strategic Framework)
+    // If this was a human override of a high-risk system, ensure it is mirrored in hitl_logs
+    if (data.isHumanOverride) {
+      const { hitlLogs } = await import('@aic/db');
+      await tx.insert(hitlLogs).values({
+        actorId: data.overriddenBy,
+        targetType: 'DECISION_OVERRIDE',
+        targetId: decision.id,
+        previousValue: data.originalOutcome || null,
+        newValue: data.outcome,
+        overrideReason: data.overrideReason || 'Regulatory manual override',
+        integrityHash: currentHash
+      });
+    }
+
     // 4. Insert Ledger Entry (Immutable Link)
     await tx.insert(auditLedger).values({
       orgId: data.orgId,

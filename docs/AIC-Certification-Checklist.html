@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIC Certification Process Checklist v2</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3350;
+    --accent: #4f6ef7;
+    --accent2: #7c5cfc;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --text: #e8eaf0;
+    --text-muted: #8892a8;
+    --text-dim: #5a627a;
+    --tier1: #ef4444;
+    --tier2: #f59e0b;
+    --tier3: #22c55e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 14px; line-height: 1.6; min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #0f1117 0%, #1a1d27 100%); border-bottom: 1px solid var(--border); padding: 28px 40px 24px; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-badge { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 6px; letter-spacing: 0.5px; }
+  .logo-title { font-size: 18px; font-weight: 600; color: var(--text); }
+  .logo-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .progress-section { display: flex; align-items: center; gap: 16px; }
+  .progress-bar-wrap { flex: 1; background: var(--surface2); border-radius: 999px; height: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; transition: width 0.4s ease; width: 0%; }
+  .progress-label { font-size: 13px; color: var(--text-muted); white-space: nowrap; min-width: 100px; text-align: right; }
+  .progress-pct { font-weight: 700; color: var(--accent); }
+
+  .tabs { display: flex; gap: 4px; padding: 16px 40px 0; background: var(--bg); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 10px 14px; border-radius: 8px 8px 0 0; font-size: 11.5px; font-weight: 600; cursor: pointer; color: var(--text-muted); border: 1px solid transparent; border-bottom: none; white-space: nowrap; transition: all 0.2s; background: transparent; position: relative; bottom: -1px; }
+  .tab:hover { color: var(--text); background: var(--surface); }
+  .tab.active { color: var(--accent); background: var(--surface); border-color: var(--border); border-bottom-color: var(--surface); }
+  .tab .tab-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); margin-right: 6px; vertical-align: middle; }
+  .tab.done .tab-dot { background: var(--green); }
+  .tab.partial .tab-dot { background: var(--yellow); }
+
+  .main { display: flex; gap: 0; max-width: 1400px; margin: 0 auto; padding: 0 40px 60px; }
+
+  .sidebar { width: 230px; flex-shrink: 0; padding: 24px 16px 24px 0; position: sticky; top: 120px; align-self: flex-start; }
+  .sidebar-title { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; }
+  .sidebar-item { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; }
+  .sidebar-item:hover { background: var(--surface); }
+  .sidebar-item.active { background: var(--surface2); }
+  .sidebar-num { font-size: 10px; font-weight: 700; color: var(--text-dim); width: 18px; text-align: center; flex-shrink: 0; }
+  .sidebar-name { font-size: 11.5px; color: var(--text-muted); flex: 1; }
+  .sidebar-item.active .sidebar-name { color: var(--text); }
+  .sidebar-count { font-size: 10px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+  .sidebar-divider { margin: 12px 0; border: none; border-top: 1px solid var(--border); }
+
+  .tier-legend { margin-top: 16px; }
+  .tier-item { display: flex; align-items: center; gap: 8px; padding: 4px 10px; margin-bottom: 4px; }
+  .tier-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .tier-text { font-size: 11px; color: var(--text-muted); }
+
+  .content { flex: 1; padding: 24px 0 24px 24px; border-left: 1px solid var(--border); min-width: 0; }
+
+  .phase-panel { display: none; }
+  .phase-panel.active { display: block; }
+
+  .phase-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .phase-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .phase-meta { flex: 1; }
+  .phase-name { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .phase-desc { font-size: 13px; color: var(--text-muted); max-width: 600px; }
+  .phase-progress-label { font-size: 12px; color: var(--text-dim); text-align: right; white-space: nowrap; }
+  .phase-progress-num { font-size: 20px; font-weight: 700; color: var(--accent); }
+
+  .section { margin-bottom: 24px; }
+  .section-title { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .section-right-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--surface2); color: var(--accent); border: 1px solid var(--border); letter-spacing: 0.5px; text-transform: none; margin-left: auto; }
+
+  .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border-radius: 8px; margin-bottom: 3px; border: 1px solid transparent; transition: all 0.15s; cursor: pointer; }
+  .check-item:hover { background: var(--surface); border-color: var(--border); }
+  .check-item.checked { background: rgba(34,197,94,0.04); border-color: rgba(34,197,94,0.15); }
+  .check-item.checked .item-label { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--text-dim); }
+
+  .checkbox { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: var(--surface2); }
+  .check-item.checked .checkbox { background: var(--green); border-color: var(--green); }
+  .check-icon { color: white; font-size: 11px; display: none; }
+  .check-item.checked .check-icon { display: block; }
+
+  .item-body { flex: 1; min-width: 0; }
+  .item-label { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .item-note { font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+  .item-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+  .tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.3px; }
+  .tag-right1 { background: rgba(79,110,247,0.15); color: #7c9bff; }
+  .tag-right2 { background: rgba(124,92,252,0.15); color: #a47fff; }
+  .tag-right3 { background: rgba(236,72,153,0.15); color: #f48bca; }
+  .tag-right4 { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .tag-right5 { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .tag-db { background: rgba(99,102,241,0.1); color: #818cf8; }
+  .tag-engine { background: rgba(16,185,129,0.1); color: #34d399; }
+  .tag-platform { background: rgba(245,158,11,0.1); color: #fbbf24; }
+  .tag-tier1 { background: rgba(239,68,68,0.12); color: #f87171; }
+  .tag-tier2 { background: rgba(245,158,11,0.12); color: #fbbf24; }
+  .tag-tier3 { background: rgba(34,197,94,0.12); color: #4ade80; }
+  .tag-notion { background: rgba(255,255,255,0.08); color: #a0a0a0; }
+  .tag-legal { background: rgba(168,85,247,0.12); color: #c084fc; }
+  .tag-billing { background: rgba(6,182,212,0.12); color: #22d3ee; }
+  .tag-critical { background: rgba(239,68,68,0.2); color: #fca5a5; }
+
+  .callout { display: flex; gap: 12px; padding: 14px 16px; border-radius: 8px; margin-bottom: 18px; border: 1px solid; font-size: 12px; }
+  .callout-warn { background: rgba(245,158,11,0.07); border-color: rgba(245,158,11,0.25); color: var(--text-muted); }
+  .callout-danger { background: rgba(239,68,68,0.07); border-color: rgba(239,68,68,0.25); color: var(--text-muted); }
+  .callout-info { background: rgba(79,110,247,0.07); border-color: rgba(79,110,247,0.25); color: var(--text-muted); }
+  .callout strong { color: var(--text); }
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  .score-table { width: 100%; border-collapse: collapse; margin: 10px 0 20px; font-size: 12px; }
+  .score-table th { text-align: left; padding: 8px 12px; background: var(--surface2); color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+  .score-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .score-table tr:last-child td { border-bottom: none; }
+
+  .reset-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 7px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .reset-btn:hover { border-color: var(--red); color: var(--red); }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+
+  .select-all-btn { font-size: 11px; color: var(--text-dim); cursor: pointer; background: none; border: none; padding: 0; margin-left: auto; transition: color 0.15s; }
+  .select-all-btn:hover { color: var(--accent); }
+
+  .state-flow { display: flex; align-items: center; gap: 0; margin: 12px 0 18px; flex-wrap: wrap; }
+  .state-node { padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+  .state-arrow { color: var(--text-dim); font-size: 14px; padding: 0 6px; }
+
+  @media (max-width: 900px) {
+    .main { padding: 0 20px 40px; }
+    .header { padding: 20px; }
+    .tabs { padding: 12px 20px 0; }
+    .sidebar { display: none; }
+    .content { border-left: none; padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-badge">AIC</div>
+      <div>
+        <div class="logo-title">Certification Process Checklist <span style="font-size:12px;color:var(--text-dim);font-weight:400">v2</span></div>
+        <div class="logo-sub">AI Integrity Certification — End-to-End Workflow · 9 Phases · ~130 Items</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="reset-btn" onclick="resetAll()">↺ Reset All</button>
+    </div>
+  </div>
+  <div class="progress-section">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="globalBar"></div></div>
+    <div class="progress-label"><span class="progress-pct" id="globalPct">0%</span>&nbsp;<span id="globalCount">0 / 0</span></div>
+  </div>
+</div>
+
+<div class="tabs" id="tabBar"></div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-title">Phases</div>
+    <div id="sidebarNav"></div>
+    <hr class="sidebar-divider">
+    <div class="tier-legend">
+      <div class="sidebar-title">Risk Tiers</div>
+      <div class="tier-item"><div class="tier-dot" style="background:var(--tier1)"></div><div class="tier-text">TIER_1 Human-Approved</div></div>
+      <div class="tier-item"><div class="tier-dot" style="background:var(--tier2)"></div><div class="tier-text">TIER_2 Human-Supervised</div></div>
+      <div class="tier-item"><div class="tier-dot" style="background:var(--tier3)"></div><div class="tier-text">TIER_3 Automated-Permissible</div></div>
+    </div>
+    <hr class="sidebar-divider">
+    <div>
+      <div class="sidebar-title">Cert Status (by score)</div>
+      <div style="padding:5px 10px">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px"><span style="color:var(--green);font-weight:700;font-size:12px">80–100</span><span style="font-size:11px;color:var(--text-muted)">Certified</span></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px"><span style="color:var(--yellow);font-weight:700;font-size:12px">50–79</span><span style="font-size:11px;color:var(--text-muted)">Provisional</span></div>
+        <div style="display:flex;gap:8px;align-items:center"><span style="color:var(--red);font-weight:700;font-size:12px">&lt; 50</span><span style="font-size:11px;color:var(--text-muted)">Not Certified</span></div>
+      </div>
+    </div>
+    <hr class="sidebar-divider">
+    <div>
+      <div class="sidebar-title">Org State Machine</div>
+      <div style="padding:5px 10px;font-size:10px;color:var(--text-dim);line-height:1.8">
+        DRAFT →<br>PENDING_REVIEW →<br>APPROVED →<br>CERTIFIED
+      </div>
+    </div>
+  </div>
+
+  <div class="content" id="phaseContent"></div>
+</div>
+
+<script>
+const phases = [
+  // ═══════════════════════════════════════════════════════
+  // PHASE 0: AIC INTERNAL SETUP
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "internal",
+    name: "AIC Internal Setup",
+    icon: "🏛️",
+    iconBg: "rgba(168,85,247,0.12)",
+    desc: "Before certifying anyone, AIC itself must be legally and operationally ready. These are prerequisites flagged as CRITICAL in the independent review.",
+    callouts: [
+      { type: "danger", icon: "⚠️", text: "<strong>Blocker:</strong> Items marked [CRITICAL] must be completed before the first Alpha client signs anything. Source: [[17-AIC-COMPLIANCE-OBLIGATIONS]] and [[13-REVIEW-AND-OPINIONS]]." }
+    ],
+    sections: [
+      {
+        title: "Legal Entity & Registrations",
+        items: [
+          { label: "[CRITICAL] CIPC company registration confirmed and up to date", tags: ["legal", "critical"] },
+          { label: "[CRITICAL] Information Officer registered with the Information Regulator (POPIA)", tags: ["legal", "critical"] },
+          { label: "SANAS accreditation roadmap documented (not required for Year 1, but path must be clear)", tags: ["legal"] },
+          { label: "Tax compliance: SARS registration, VAT registration if applicable", tags: ["legal"] },
+        ]
+      },
+      {
+        title: "Insurance & Liability",
+        items: [
+          { label: "[CRITICAL] Professional Indemnity (PI) insurance application submitted", note: "Certification bodies carry liability risk. PI insurance is a market expectation, not optional.", tags: ["legal", "critical"] },
+          { label: "Liability framework documented: what happens if a certified company causes harm?", note: "Review doc flags this as unanswered. Must have a written answer before first cert.", tags: ["legal"] },
+        ]
+      },
+      {
+        title: "Data Protection (AIC's Own Obligations)",
+        items: [
+          { label: "[CRITICAL] DPAs signed with all processors: Vercel, Notion, OpenAI, Supabase/Neon", note: "AIC processes client data through these services. POPIA requires written DPAs.", tags: ["legal", "critical"] },
+          { label: "POPIA privacy policy published on apps/web", tags: ["legal", "platform"] },
+          { label: "Data retention policy documented (how long is client evidence stored?)", tags: ["legal"] },
+        ]
+      },
+      {
+        title: "Alpha Programme Agreement",
+        items: [
+          { label: "[CRITICAL] Alpha Participant Agreement drafted by qualified counsel", note: "8 required clauses documented in [[15-LEGAL-ANALYSIS]]. Template not yet built — flagged in deliverables log.", tags: ["legal", "critical"] },
+          { label: "Limitation of liability clause reviewed and signed off", tags: ["legal"] },
+          { label: "Confidentiality obligations (both directions) documented", tags: ["legal"] },
+          { label: "Right to publish certification status (with client consent) agreed in terms", tags: ["legal"] },
+        ]
+      },
+      {
+        title: "Conflict of Interest Rule (Non-Negotiable)",
+        items: [
+          { label: "Arthur Andersen principle documented and agreed by all staff: AIC NEVER implements AND certifies the same work", note: "AIC audits empathy but does not rewrite communications. Assesses bias but does not retrain models. Identifies gaps but does not implement fixes.", tags: ["legal", "critical"] },
+          { label: "Referral partner network identified — implementation work referred out (10–20% referral fee)", note: "Legal firms, Big 4, compliance consultancies. AIC refers; never acts as the implementer." },
+          { label: "Conflict of interest policy documented in writing and included in service agreements", tags: ["legal"] },
+        ]
+      },
+      {
+        title: "Operational Readiness",
+        items: [
+          { label: "Notion 'Certify Body' workspace configured (AIC Implementation database)", note: "Notion is the current operational reality. Platform is the target state.", tags: ["notion"] },
+          { label: "Certification workflow templates created in Notion", tags: ["notion"] },
+          { label: "Lead auditor identified and available for Alpha programme", },
+          { label: "Pricing confirmed for Alpha: ZAR 50K recommended (R&D, not full price)", note: "Review doc recommendation #9: first 5 certs are R&D. Case studies are worth more than revenue." },
+          { label: "Evidence model for Alpha confirmed: Model 1 (Document-Based) + Model 4 (Self-Assessment)", note: "Year 1 default. No system access required." },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 1: CLIENT ONBOARDING
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "onboard",
+    name: "Client Onboarding",
+    icon: "🚀",
+    iconBg: "rgba(79,110,247,0.15)",
+    desc: "From first contact to active account. The org goes from lead → alpha application → approved → account provisioned on apps/platform.",
+    callouts: [
+      { type: "info", icon: "💡", text: "<strong>State machine:</strong> Organisation record moves through: <code>DRAFT → PENDING_REVIEW → APPROVED → CERTIFIED</code>. This phase covers DRAFT → APPROVED." }
+    ],
+    sections: [
+      {
+        title: "Lead Capture & Self-Assessment",
+        items: [
+          { label: "Organisation submits interest via apps/web lead capture form", note: "Captured in leads table: email, company, source, estimated_tier", tags: ["platform", "db"] },
+          { label: "Self-assessment quiz completed (40 questions across 5 Algorithmic Rights)", note: "apps/web/assessment → generates tier suggestion and indicative score. WARNING: Quiz weights (Agency 20%, Explanation 35%, Empathy 25%, Truth 20%) do NOT match certification methodology (equal weighting). Right 4 (Correction) is missing from quiz entirely. Treat as indicative only.", tags: ["platform"] },
+          { label: "Tier suggestion reviewed: TIER_1 / TIER_2 / TIER_3", note: "Based on DECISION STAKES, not score. Life-altering = TIER_1. Significant but correctable = TIER_2. Low-stakes = TIER_3." },
+          { label: "Alpha application submitted via apps/web", note: "Stored in alphaApplications table: name, company, email, role, use_case, status=PENDING", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Application Review (AIC Internal)",
+        items: [
+          { label: "Application appears in Notion queue / apps/platform admin face", tags: ["notion", "platform"] },
+          { label: "AIC reviews application: use case, industry, AI system type assessed" },
+          { label: "Application status updated: PENDING → APPROVED (or REJECTED with reason)", tags: ["db"] },
+          { label: "Acknowledgement sent to client within 2 business days" },
+          { label: "Lead record updated: status → converted, score updated", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Account Provisioning",
+        items: [
+          { label: "Organisation record created in DB (organisations table)", note: "certification_status = DRAFT. integrity_score = 0. tier set from assessment.", tags: ["db"] },
+          { label: "Organisation invited to apps/platform — login credentials provisioned", tags: ["platform"] },
+          { label: "Primary contact creates account with MFA enabled", note: "Real TOTP MFA now active (Feb 2026). JTI token revocation in place.", tags: ["platform"] },
+          { label: "RBAC roles assigned: ORG_ADMIN for primary contact, ORG_USER for additional team", note: "WordPress-style: roles → capabilities. Super admin bypasses all.", tags: ["db"] },
+          { label: "Row-Level Security confirmed: org data isolated at PostgreSQL level", note: "getTenantDb(orgId) sets app.current_org_id. All queries auto-scoped.", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Scope & Commercial Agreement",
+        items: [
+          { label: "Scoping call held: number and type of AI systems to be certified agreed" },
+          { label: "Track confirmed: Enterprise (auditor-assigned, ZAR 75K–500K) or SME Self-Serve (automated, ZAR 5K–15K)", note: "These are very different processes. SME: self-assessment quiz + evidence upload + automated scoring + PDF report. Enterprise: assigned auditor, document review, engine analysis, HITL verification." },
+          { label: "Evidence model agreed in writing: Document-Based / Output Testing / Self-Assessment", note: "Year 1 default: Model 1 + Model 4. Model 2 (Output Testing) for enterprise with data.", },
+          { label: "Alpha Participant Agreement signed by both parties", tags: ["legal"] },
+          { label: "Stripe customer record created (stripe_customer_id on org)", note: "billingEvents table tracks all Stripe webhook events", tags: ["billing", "db"] },
+          { label: "Initial invoice raised / payment received" , tags: ["billing"] },
+          { label: "Lead auditor assigned and introduced to client", },
+          { label: "Certification_status updated: DRAFT → PENDING_REVIEW", tags: ["db"] },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 2: AI SYSTEM REGISTRATION
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "register",
+    name: "AI System Registration",
+    icon: "🤖",
+    iconBg: "rgba(124,92,252,0.15)",
+    desc: "The org registers each AI system. Every system gets its own record, risk tier, Accountable Person, and lifecycle stage. Individual ML models are registered per system.",
+    callouts: [
+      { type: "warn", icon: "⚠️", text: "<strong>Tier conflict note:</strong> Risk Tier (TIER_1/2/3) is based on decision stakes and never changes unless the system's purpose changes. It is NOT the same as Certification Status (Certified/Provisional/Not Certified), which is based on the Integrity Score. A TIER_1 system with score 45 is 'TIER_1 — Not Yet Certified', not TIER_3." }
+    ],
+    sections: [
+      {
+        title: "Register Each AI System",
+        items: [
+          { label: "Organisation navigates to apps/platform → AI Systems → Add System", tags: ["platform"] },
+          { label: "System name, description, and decision type documented", note: "What decisions does it make? Who is affected? What are the stakes?" },
+          { label: "Risk Tier assigned: TIER_1 / TIER_2 / TIER_3", note: "TIER_1: life-altering, irreversible (parole, diagnosis). TIER_2: significant but correctable (credit, hiring). TIER_3: low-stakes (recommendations, spam).", tags: ["tier1", "tier2", "tier3"] },
+          { label: "Accountable Person named per system", note: "A specific named individual. Not a department, not a job title. This person can be held responsible for every decision this system makes.", tags: ["right1"] },
+          { label: "Lifecycle stage set: DEVELOPMENT / TESTING / PRODUCTION / DECOMMISSIONED", tags: ["db"] },
+          { label: "System record created in ai_systems table", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Register ML Models (per system)",
+        items: [
+          { label: "Each ML model registered under its parent AI system", note: "models table: name, version, algorithm, training_data_description", tags: ["db"] },
+          { label: "Model algorithm type documented (e.g. RandomForest, LogisticRegression, Neural Network, LLM)" },
+          { label: "Training data description provided — what data was the model trained on?" },
+          { label: "Last bias test date recorded (if any previous testing exists)", tags: ["engine"] },
+          { label: "Initial drift_status set: STABLE / DRIFTING / CRITICAL", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Governance Workspace Setup",
+        items: [
+          { label: "Governance workspace initialised in apps/platform for this org", tags: ["platform"] },
+          { label: "Governance blocks created per system (governanceBlocks table)", note: "Block types: TEXT (policies), FILE (uploaded evidence), MODEL_CARD (model documentation), HUMAN_CONTEXT (accountability context)", tags: ["db", "platform"] },
+          { label: "Model card governance block created for each registered model", note: "Documents model purpose, training data, known limitations, bias test results", tags: ["right2"] },
+          { label: "Human-context governance block created per Accountable Person", note: "Who they are, their authority level, how they can intervene", tags: ["right1"] },
+        ]
+      },
+      {
+        title: "Tier-Specific Registration Requirements",
+        items: [
+          { label: "[TIER_1] 100% human approval requirement confirmed and documented", note: "AI is advisory only. No decision acts without named human sign-off.", tags: ["tier1", "right1"] },
+          { label: "[TIER_1] Override mechanism: documented, tested, evidence prepared", tags: ["tier1", "right1"] },
+          { label: "[TIER_1] Decision record mechanism: every decision must have a human signature", tags: ["tier1", "right1"] },
+          { label: "[TIER_1] Correction SLA committed: ≤ 5 business days", tags: ["tier1", "right4"] },
+          { label: "[TIER_2] Human supervision structure documented — who monitors, how often", tags: ["tier2", "right1"] },
+          { label: "[TIER_2] Escalation protocol documented for flagged decisions", tags: ["tier2", "right4"] },
+          { label: "[TIER_2] Bias threshold committed: disparate impact ≤ 0.2 (four-fifths rule)", tags: ["tier2", "engine"] },
+          { label: "[TIER_2] Correction SLA committed: ≤ 10 business days", tags: ["tier2", "right4"] },
+          { label: "[TIER_3] System purpose confirmed as low-stakes (no legal/significant effects)", tags: ["tier3"] },
+          { label: "[TIER_3] AI disclosure confirmed: users told they interact with AI", tags: ["tier3", "right5"] },
+          { label: "[TIER_3] Drift monitoring plan documented", tags: ["tier3", "engine"] },
+          { label: "[TIER_3] Annual review schedule set", tags: ["tier3"] },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 3: EVIDENCE COLLECTION
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "evidence",
+    name: "Evidence Collection",
+    icon: "📋",
+    iconBg: "rgba(34,197,94,0.12)",
+    desc: "The org uploads evidence per the 5 Algorithmic Rights. Each upload enters the audit_documents pipeline: UPLOADED → AI_TRIAGE → REVIEWED → ACCEPTED | REJECTED.",
+    callouts: [
+      { type: "info", icon: "📄", text: "<strong>Document pipeline:</strong> Every evidence file uploads to <code>audit_documents</code> with SHA-256 checksum (file_checksum). Status flow: <code>UPLOADED → AI_TRIAGE → REVIEWED → ACCEPTED | REJECTED</code>. Slot types: bias_test, human_oversight_policy, empathy_comms, etc." }
+    ],
+    sections: [
+      {
+        title: "Right 1: Human Agency — Override & Accountability",
+        sectionRight: "RIGHT 1",
+        items: [
+          { label: "AI system inventory uploaded — what systems exist, what decisions they make", tags: ["right1"] },
+          { label: "Override policy document uploaded — how a human can intervene in any decision", tags: ["right1"] },
+          { label: "Override log evidence — proof that humans have actually intervened (samples)", note: "Must show the process is USED, not just documented. Logs, screenshots, decision records.", tags: ["right1"] },
+          { label: "Org chart / accountability chain showing named Accountable Person per system", tags: ["right1"] },
+          { label: "Staff training materials on algorithmic systems uploaded", tags: ["right1"] },
+          { label: "Human-in-the-Loop (HITL) logs provided (if available)", note: "hitl_logs table: system_id, reviewer_id, decision, override_reason. Core accountability evidence.", tags: ["right1", "db"] },
+          { label: "Human oversight ratio data provided (for engine labor-audit)", tags: ["right1", "engine"] },
+        ]
+      },
+      {
+        title: "Right 2: Explanation — Decision Transparency",
+        sectionRight: "RIGHT 2",
+        items: [
+          { label: "Decision explanation mechanism documented — how are decisions explained to affected persons?", tags: ["right2"] },
+          { label: "Sample decision explanation uploaded (real or redacted)", note: "Must be human-readable. Feature importance scores alone are insufficient.", tags: ["right2"] },
+          { label: "XAI documentation uploaded (SHAP/LIME reports, or equivalent)", note: "If model data available — engine can generate from anonymised data in Model 2.", tags: ["right2", "engine"] },
+          { label: "Decision records retention policy — explanations stored and accessible to affected persons", tags: ["right2"] },
+        ]
+      },
+      {
+        title: "Right 3: Empathy — Human Dignity in Communications",
+        sectionRight: "RIGHT 3",
+        items: [
+          { label: "3–10 sample automated adverse communications uploaded", note: "Rejection letters, denial notices, automated responses. Submitted to Empathy Engine for scoring.", tags: ["right3", "engine"] },
+          { label: "Context-stripping bias documentation — evidence of contextual factors considered", note: "e.g. Does the system consider that a missed payment may reflect supply chain issues, not character?", tags: ["right3"] },
+          { label: "Domain-specific context requirements acknowledged in system documentation", tags: ["right3"] },
+          { label: "Empathy annotations — evidence that training data considers human context", tags: ["right3"] },
+        ]
+      },
+      {
+        title: "Right 4: Correction — Appeals & Remediation",
+        sectionRight: "RIGHT 4",
+        items: [
+          { label: "Public-facing appeal/correction mechanism evidenced (URL, screenshot, or document)", tags: ["right4"] },
+          { label: "Appeals process documentation uploaded — how appeals are logged, assigned, responded to", tags: ["right4"] },
+          { label: "Appeals outcome log (sample) — showing decisions reviewed, outcomes recorded", note: "correctionRequests table: decision_id, description, status, response, responded_at", tags: ["right4", "db"] },
+          { label: "Time-to-response metrics evidenced", note: "TIER_1: ≤ 5 business days. TIER_2: ≤ 10 business days. avgDaysToResponse tracked.", tags: ["right4"] },
+          { label: "Correction history immutably logged — evidence of audit trail", tags: ["right4", "db"] },
+        ]
+      },
+      {
+        title: "Right 5: Truth — AI Disclosure",
+        sectionRight: "RIGHT 5",
+        items: [
+          { label: "AI disclosure policy document uploaded", note: "Must cover ALL points where AI makes or influences a decision.", tags: ["right5"] },
+          { label: "Evidence of disclosure at all decision points (screenshots, user-facing copy, product docs)", tags: ["right5"] },
+          { label: "System metadata accurately describes AI's role in each decision", tags: ["right5"] },
+          { label: "Disclosure statements assessed for specificity — legal boilerplate alone is insufficient", tags: ["right5"] },
+        ]
+      },
+      {
+        title: "Output Testing (Model 2 — Enterprise Only)",
+        items: [
+          { label: "[Model 2] 10,000+ anonymised decisions provided with demographic breakdown", note: "Columns: outcome (approved/denied), demographic (coded), confidence, human_reviewed, timestamp", tags: ["engine"] },
+          { label: "[Model 2] Four-Fifths Rule analysis — disparate impact ≤ 0.2", tags: ["right1", "engine"] },
+          { label: "[Model 2] Equalized odds analysis: POST /api/v1/analyze/equalized-odds", tags: ["engine"] },
+          { label: "[Model 2] Intersectional fairness analysis: POST /api/v1/analyze/intersectional", tags: ["engine"] },
+        ]
+      },
+      {
+        title: "Document Pipeline Verification",
+        items: [
+          { label: "All uploaded documents have SHA-256 checksums generated (file_checksum)", note: "Integrity verification — confirms evidence hasn't been tampered with after upload", tags: ["db"] },
+          { label: "Each document assigned correct slot_type (bias_test, human_oversight_policy, empathy_comms, etc.)", tags: ["db"] },
+          { label: "Document status pipeline: UPLOADED → AI_TRIAGE → REVIEWED for each file", tags: ["db"] },
+          { label: "Uploaded_by recorded — which user submitted each piece of evidence", tags: ["db"] },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 4: ENGINE ANALYSIS
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "analysis",
+    name: "Engine Analysis",
+    icon: "⚙️",
+    iconBg: "rgba(16,185,129,0.12)",
+    desc: "AIC runs the Python analysis engine (apps/engine) on submitted evidence. Bias testing, explanation analysis, empathy scoring. Flagged results create incidents.",
+    sections: [
+      {
+        title: "Bias & Fairness Analysis",
+        items: [
+          { label: "Disparate impact analysis: POST /api/v1/analyze", note: "Four-fifths rule across demographic groups", tags: ["engine", "right1"] },
+          { label: "Equalized odds analysis: POST /api/v1/analyze/equalized-odds", tags: ["engine", "right1"] },
+          { label: "Intersectional analysis: POST /api/v1/analyze/intersectional", note: "Multi-attribute — catches bias that single-group analysis misses", tags: ["engine", "right1"] },
+          { label: "Labour audit: POST /api/v1/labor-audit", note: "Verifies stated human oversight ratio against actual decision data", tags: ["engine", "right1"] },
+        ]
+      },
+      {
+        title: "Explanation Analysis",
+        items: [
+          { label: "SHAP explanation run (if model data available): POST /api/v1/explain", note: "Identifies which features drive decisions. Negative values = potential discriminatory proxies (e.g. postal_code: -0.28).", tags: ["engine", "right2"] },
+          { label: "LIME explanation run (alternative method): POST /api/v1/explain method:lime", tags: ["engine", "right2"] },
+          { label: "Proxy discrimination check — negative SHAP values for protected characteristic proxies flagged", tags: ["engine", "right2"] },
+        ]
+      },
+      {
+        title: "Empathy Engine Analysis",
+        items: [
+          { label: "Empathy Engine run on submitted communications: POST /api/v1/empathy", tags: ["engine", "right3"] },
+          { label: "7-dimension scoring completed:", note: "Tone (20%), Human Recourse (20%), Impact Acknowledgment (15%), Explanation Clarity (15%), Reading Level (10%), Next Steps (10%), Response Time (10%)", tags: ["engine", "right3"] },
+          { label: "Empathy Score recorded (0–100). Below 50 = flagged as gap.", tags: ["engine", "right3"] },
+          { label: "Annotated communications produced — specific improvement recommendations", tags: ["engine", "right3"] },
+        ]
+      },
+      {
+        title: "Privacy & Disclosure Audit",
+        items: [
+          { label: "AI disclosure analysis run (via privacy audit endpoint)", tags: ["engine", "right5"] },
+          { label: "POPIA Section 71 mapping: each system assessed for 'legal or similarly significant effects'", note: "Systems producing such effects require human oversight by law", tags: ["right1", "right5"] },
+        ]
+      },
+      {
+        title: "Incident Creation for Flagged Results",
+        items: [
+          { label: "Engine results outside threshold converted to incidents in DB", note: "incidents table: system_id, severity (LOW/MEDIUM/HIGH/CRITICAL), right_violated", tags: ["db"] },
+          { label: "Each incident has severity assigned: LOW / MEDIUM / HIGH / CRITICAL", tags: ["db"] },
+          { label: "Org notified of open incidents via platform notifications", tags: ["platform", "db"] },
+          { label: "Org responds: provides explanation, corrective evidence, or remediation plan", tags: ["platform"] },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 5: VERIFICATION
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "verify",
+    name: "AIC Verification",
+    icon: "🔍",
+    iconBg: "rgba(245,158,11,0.12)",
+    desc: "AIC auditor reviews all evidence. Each auditRequirement is marked PENDING → SUBMITTED → VERIFIED or FLAGGED. Integrity Score updates in real time as requirements are verified.",
+    sections: [
+      {
+        title: "Auditor Review Process",
+        items: [
+          { label: "Auditor opens verification queue in apps/platform admin face", note: "Queries auditRequirements WHERE status = PENDING or SUBMITTED", tags: ["platform"] },
+          { label: "Each audit requirement reviewed against the 5 Algorithmic Rights" },
+          { label: "Requirement marked VERIFIED — evidence complete, satisfactory, consistent", tags: ["db"] },
+          { label: "Requirement marked FLAGGED — missing, insufficient, or contradictory evidence", tags: ["db"] },
+          { label: "Audit document status updated: REVIEWED → ACCEPTED or REJECTED", note: "audit_documents pipeline completion per file", tags: ["db"] },
+          { label: "Integrity Score updates in real time: score = (verified / total) × 100", tags: ["db"] },
+          { label: "Per-right radar chart reviewed: Human Agency, Explanation, Empathy, Correction, Truth", tags: ["platform"] },
+        ]
+      },
+      {
+        title: "Consistency & Integrity Checks",
+        items: [
+          { label: "Self-reported answers cross-checked against uploaded evidence", note: "e.g. Claiming 100% human review but no override logs? = FLAG" },
+          { label: "Empathy scores cross-checked against stated communication practices", tags: ["right3"] },
+          { label: "Override process: stated policy vs evidence of actual usage compared", tags: ["right1"] },
+          { label: "Accountable Person confirmed as real named individual (not department placeholder)", tags: ["right1"] },
+          { label: "Disclosure statements assessed for specificity beyond legal boilerplate", tags: ["right5"] },
+          { label: "SHA-256 checksums verified on critical evidence documents", note: "Confirms integrity — documents unchanged since upload", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Audit Ledger Entries",
+        items: [
+          { label: "Every verification action written to auditLogs (hash-chained)", note: "action = REQUIREMENT_VERIFIED or REQUIREMENT_FLAGGED. integrity_hash = SHA-256(entity_id + action + actor_id + previous_hash)", tags: ["db"] },
+          { label: "Hash chain integrity confirmed: each entry's previous_hash matches prior entry's integrity_hash", tags: ["db"] },
+          { label: "Auditor signatures recorded in auditSignatures (RS256 multi-sig)", note: "Cryptographic non-repudiation — auditor cannot deny they signed off", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Gap Remediation Loop (REVISION_REQUIRED State)",
+        items: [
+          { label: "Certification status set to REVISION_REQUIRED (branching from PENDING_REVIEW)", note: "State machine: PENDING_REVIEW → REVISION_REQUIRED → PENDING_REVIEW (loop until resolved)", tags: ["db"] },
+          { label: "All FLAGGED requirements communicated to client with specific gap descriptions", tags: ["platform"] },
+          { label: "Client uploads additional or corrective evidence per flagged requirement" },
+          { label: "Re-review conducted — requirement updated to VERIFIED or remains FLAGGED" },
+          { label: "Certification status returns to PENDING_REVIEW after client resubmission", tags: ["db"] },
+          { label: "Integrity Score threshold checked: ≥80 (certify) / 50–79 (provisional) / <50 (defer)" },
+        ]
+      },
+      {
+        title: "AIMS Readiness Level Assessment",
+        items: [
+          { label: "Level 1: Organisation acknowledges AI use (basic disclosure)", tags: ["right5"] },
+          { label: "Level 2: Documented policies exist for all 5 rights" },
+          { label: "Level 3: Evidence submitted and independently verified" },
+          { label: "Level 4: Continuous governance — real-time monitoring, incident response active", tags: ["engine", "platform"] },
+          { label: "AIMS readiness level recorded on org dashboard", tags: ["platform"] },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 6: CERTIFICATION DECISION
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "certify",
+    name: "Certification Decision",
+    icon: "🏅",
+    iconBg: "rgba(34,197,94,0.12)",
+    desc: "AIC issues the formal decision. Certificate generated with unique cert number, verification code, and expiry date. Organisation appears on public registry.",
+    callouts: [
+      { type: "warn", icon: "📌", text: "<strong>What the cert claims:</strong> 'This organisation has implemented human accountability for its AI systems.' It does NOT claim the AI is unbiased, technically sound, or error-free. When the AI fails, there is a named human responsible and a process to address it." }
+    ],
+    sections: [
+      {
+        title: "Certification Decision",
+        items: [
+          { label: "Final Integrity Score confirmed", note: "≥80 = Certified. 50–79 = Provisional. <50 = deferred; remediation plan required." },
+          { label: "Risk Tier confirmed: TIER_1 / TIER_2 / TIER_3 (unchanged — this is stakes-based, not score-based)", tags: ["tier1", "tier2", "tier3"] },
+          { label: "Cert level assigned based on evidence model used:", note: "'AIC Assessed' (Model 1/4, document review). 'AIC Certified' (Model 2, output testing). 'AIC Certified — Verified' (Model 3, sandbox testing)." },
+          { label: "Certification decision reviewed and approved by AIC lead auditor" },
+          { label: "Certification_status updated: PENDING_REVIEW → APPROVED → CERTIFIED", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Certificate Issuance",
+        items: [
+          { label: "Certificate record created in issued_certifications table", note: "cert_number format: AIC-XXXXXXXX-2026. Immutable record.", tags: ["db"] },
+          { label: "Expiry date set (default: 3 years from issue_date)", tags: ["db"] },
+          { label: "Unique verification_code generated for public verification", note: "Used at /verify/[id] public endpoint — anyone can verify a certificate.", tags: ["db", "platform"] },
+          { label: "Certificate PDF generated — includes org name, tier, cert level, score, dates", tags: ["platform"] },
+          { label: "Organisation record updated: certified_at, tier, integrity_score, last_audit_at", tags: ["db"] },
+          { label: "Public listing flag set: public_directory_visible = true", tags: ["db"] },
+          { label: "Organisation appears on public registry / leaderboard", tags: ["platform"] },
+          { label: "Certificate delivered to client (platform download + email)" },
+        ]
+      },
+      {
+        title: "Provisional Certification (score 50–79)",
+        items: [
+          { label: "Provisional status communicated to client with specific gap report" },
+          { label: "Remediation plan issued: which requirements must move from FLAGGED to VERIFIED" },
+          { label: "Timeline agreed for remediation (typically 90 days)" },
+          { label: "Provisional certificate issued (if applicable) with clear expiry" },
+          { label: "Scheduled re-review date set in scheduledAudits table", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Post-Certification Communication & Setup",
+        items: [
+          { label: "Client briefed: what the certification does and does NOT claim", note: "Claims: named human accountable, correction process exists. Does NOT claim: AI is unbiased, error-free, or technically perfect." },
+          { label: "Public verification URL shared with client: /verify/[verification_code]", note: "Client can share this URL on their website, in RFPs, or with customers. Anyone can verify the cert is genuine.", tags: ["platform"] },
+          { label: "API keys provisioned (if enterprise): POST /api/api-keys", note: "Enables programmatic access to governance data. Also available via MCP governance agent for AI-agent integration.", tags: ["platform", "db"] },
+          { label: "Governance Agent MCP access configured (if applicable)", note: "apps/governance-agent exposes get_org_integrity_score and list_audit_requirements as tools for AI agents (Claude, GPT). Enterprise clients building AI workflows can query cert status programmatically.", tags: ["platform"] },
+          { label: "Continuous governance obligations explained and agreed" },
+          { label: "Annual renewal date set and communicated" },
+          { label: "Surveillance audit schedule agreed and entered in scheduledAudits", tags: ["db"] },
+          { label: "Insurance risk score generated (if applicable): POST /api/insurance/risk-score", tags: ["platform", "engine"] },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 7: CONTINUOUS GOVERNANCE
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "governance",
+    name: "Continuous Governance",
+    icon: "🔄",
+    iconBg: "rgba(79,110,247,0.12)",
+    desc: "Certification is living — it must be maintained. Monthly reporting, incident tracking, engine re-runs on model updates. Score drops trigger review.",
+    sections: [
+      {
+        title: "Monthly Compliance Reporting",
+        items: [
+          { label: "Organisation submits monthly compliance report via apps/platform", note: "Decision volumes, override rates, incident log, correction pipeline metrics", tags: ["platform"] },
+          { label: "integrityScore snapshot stored in complianceReports table", note: "per_right_scores JSONB — monthly breakdown per right", tags: ["db"] },
+          { label: "Radar chart and velocity chart updated from monthly data", tags: ["platform"] },
+          { label: "AIC reviews monthly report — flags anomalies or score drops" },
+        ]
+      },
+      {
+        title: "Incident Monitoring & Response",
+        items: [
+          { label: "Organisation logs incidents as they occur in apps/platform", note: "Severity: LOW / MEDIUM / HIGH / CRITICAL. right_violated tracked.", tags: ["platform", "db"] },
+          { label: "AIC notified of incidents above severity threshold (HIGH/CRITICAL)" },
+          { label: "Incident review: evidence of response, root cause, corrective action", tags: ["right4"] },
+          { label: "Correction pipeline SLA monitored — TIER_1: ≤5 days, TIER_2: ≤10 days", tags: ["right4"] },
+          { label: "Incident resolved and closed — audit ledger entry created (hash-chained)", tags: ["db"] },
+          { label: "HITL log entry created for any human override during incident", tags: ["db", "right1"] },
+          { label: "Citizen appeals accepted via apps/web/citizens/appeal → creates correctionRequest → auto-triggers incident if severity warrants", note: "Public citizens can lodge complaints against certified orgs. Each appeal is triaged: if valid, an incident is opened against the org's certification.", tags: ["platform", "right4", "critical"] },
+        ]
+      },
+      {
+        title: "Model Updates & Engine Re-Runs",
+        items: [
+          { label: "Organisation notifies AIC when any AI model is retrained or significantly updated" },
+          { label: "Bias/fairness analysis re-run on updated model output data", tags: ["engine"] },
+          { label: "Drift monitoring active: engine /drift endpoint checked", note: "drift_status on models table: STABLE / DRIFTING / CRITICAL", tags: ["engine", "db"] },
+          { label: "Empathy Engine re-run if automated communications are updated", tags: ["engine", "right3"] },
+          { label: "Empathy Engine 6-week fine-tuning cycle: retrain on new annotated comms, re-score org portfolio", note: "Recurring cycle — each fine-tune improves scoring accuracy. Track fine-tune version in engine metadata.", tags: ["engine", "right3", "critical"] },
+          { label: "Score drop below 80 triggers automatic provisional review" },
+        ]
+      },
+      {
+        title: "Scheduled Surveillance Audits",
+        items: [
+          { label: "Surveillance audit dates tracked in scheduledAudits table", tags: ["db"] },
+          { label: "Pre-audit notification sent to client (30 days advance)" },
+          { label: "Surveillance audit conducted — focused review of changes since last audit" },
+          { label: "Results documented and Integrity Score updated" },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 8: REVOCATION / DOWNGRADE
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "revocation",
+    name: "Revocation & Downgrade",
+    icon: "🛑",
+    iconBg: "rgba(239,68,68,0.12)",
+    desc: "What happens when things go wrong. Voluntary withdrawal, evidence restatement, material non-compliance, forced revocation. This path MUST exist before the first cert is issued.",
+    callouts: [
+      { type: "danger", icon: "⚠️", text: "<strong>This phase was flagged as missing in the independent review.</strong> The review states: 'Before the first Alpha client is certified, there needs to be a written protocol for: voluntary withdrawal, evidence restatement, material non-compliance discovery, forced revocation. This is an insurer requirement, not just a methodological nicety.'" }
+    ],
+    sections: [
+      {
+        title: "Voluntary Withdrawal",
+        items: [
+          { label: "Process documented: how a certified org voluntarily withdraws from certification" },
+          { label: "Public registry updated — org removed or marked as 'Withdrawn'" },
+          { label: "issued_certifications status updated: ACTIVE → REVOKED (voluntary)", tags: ["db"] },
+          { label: "Withdrawal reason recorded in audit ledger", tags: ["db"] },
+        ]
+      },
+      {
+        title: "Evidence Restatement",
+        items: [
+          { label: "Process documented: what happens if evidence is found to be materially incorrect after certification" },
+          { label: "Client notified of restatement finding — opportunity to provide corrected evidence" },
+          { label: "Re-verification cycle triggered on affected requirements" },
+          { label: "Integrity Score recalculated based on corrected evidence" },
+          { label: "Certification status reassessed — upgrade, maintain, or downgrade" },
+        ]
+      },
+      {
+        title: "Material Non-Compliance",
+        items: [
+          { label: "Triggers defined: what constitutes material non-compliance", note: "e.g. Score drops below 50, unreported CRITICAL incident, evidence falsification, refusal to submit monthly reports" },
+          { label: "Investigation process documented — how AIC investigates suspected non-compliance" },
+          { label: "Client notification and response window defined (e.g. 30 days to remediate)" },
+          { label: "Escalation path: warning → provisional downgrade → formal revocation" },
+        ]
+      },
+      {
+        title: "Forced Revocation",
+        items: [
+          { label: "Revocation decision authority defined (who at AIC can revoke a certificate?)" },
+          { label: "Client appeal mechanism documented (right to appeal revocation)" },
+          { label: "issued_certifications status updated: ACTIVE → REVOKED (forced)", tags: ["db"] },
+          { label: "Public registry updated: revoked cert visible with date and reason", tags: ["platform"] },
+          { label: "Audit ledger entry: CERTIFICATION_REVOKED with full chain of events", tags: ["db"] },
+          { label: "Notification to relevant stakeholders (insurers, regulators if applicable)" },
+        ]
+      },
+      {
+        title: "Complaints Against Certified Organisations",
+        items: [
+          { label: "Complaints handling process documented", note: "Review doc flags this as missing: 'How are complaints against certified companies handled?'" },
+          { label: "Citizens portal (apps/web/citizens) accepts complaints/appeals" , tags: ["platform"]},
+          { label: "Complaint triage: severity assessment, investigation scope, timeline" },
+          { label: "Complaint outcome communicated to complainant and certified org" },
+          { label: "Complaint may trigger material non-compliance investigation" },
+        ]
+      }
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════════
+  // PHASE 9: RENEWAL & PROGRESSION
+  // ═══════════════════════════════════════════════════════
+  {
+    id: "renewal",
+    name: "Renewal & Progression",
+    icon: "📈",
+    iconBg: "rgba(124,92,252,0.12)",
+    desc: "Annual renewal cycle. Clients can progress to deeper evidence models over time. Practitioner certification for individuals.",
+    sections: [
+      {
+        title: "Annual Renewal Cycle",
+        items: [
+          { label: "Renewal notification sent 90 days before expiry_date" },
+          { label: "Full evidence review cycle triggered — all 5 Rights re-assessed" },
+          { label: "Updated evidence uploaded by client" },
+          { label: "Auditor conducts fresh verification review" },
+          { label: "Integrity Score reassessed: certification renewed, downgraded, or revoked" },
+          { label: "New issued_certifications record created (new cert_number, new expiry)", tags: ["db"] },
+          { label: "Old certificate marked as superseded (not revoked)" },
+          { label: "Public registry updated with new score and renewal date", tags: ["platform"] },
+        ]
+      },
+      {
+        title: "Evidence Model Progression",
+        items: [
+          { label: "Year 1 → Year 2: consider upgrading Model 1 (Document) to Model 2 (Output Testing)", note: "Requires client to provide 10,000+ anonymised decisions with demographics" },
+          { label: "Year 2 → Year 3+: consider upgrading to Model 3 (Controlled Sandbox)", note: "Gold standard. Client provides sandbox environment for synthetic test cases." },
+          { label: "Cert level upgrades with evidence model: Assessed → Certified → Certified — Verified" },
+          { label: "Progression discussed during renewal — not a requirement, but encouraged" },
+        ]
+      },
+      {
+        title: "Practitioner Certification (Individuals)",
+        items: [
+          { label: "Individual registered in apps/platform/practitioner", tags: ["platform"] },
+          { label: "CPD module: bias-methodology — bias detection methodology", note: "Status: In development" },
+          { label: "CPD module: legal-71 — POPIA Section 71 deep dive" },
+          { label: "CPD module: oversight-hil — Human-in-the-loop design" },
+          { label: "CPD module: tech-bias — Technical bias mitigation" },
+          { label: "Exam completed and passed", },
+          { label: "Practitioner certificate issued — personnel_certifications table", tags: ["db"] },
+          { label: "Annual CPD renewal requirement met" },
+        ]
+      }
+    ]
+  }
+];
+
+// ════════════════════ STATE ════════════════════
+const checked = {};
+let activePhase = 0;
+const getKey = (pi, si, ii) => `${pi}-${si}-${ii}`;
+
+function toggle(key) { checked[key] = !checked[key]; save(); render(); }
+function save() { try { localStorage.setItem('aic-v2', JSON.stringify(checked)); } catch(e){} }
+function load() { try { const d = localStorage.getItem('aic-v2'); if (d) Object.assign(checked, JSON.parse(d)); } catch(e){} }
+function resetAll() { if (!confirm('Reset all checkboxes?')) return; Object.keys(checked).forEach(k => delete checked[k]); save(); render(); }
+
+function countPhase(pi) {
+  let t=0, d=0;
+  phases[pi].sections.forEach((s,si) => s.items.forEach((_,ii) => { t++; if(checked[getKey(pi,si,ii)]) d++; }));
+  return {total:t, done:d};
+}
+function countAll() {
+  let t=0, d=0;
+  phases.forEach((_, pi) => { const c=countPhase(pi); t+=c.total; d+=c.done; });
+  return {total:t, done:d};
+}
+
+// ════════════════════ TAGS ════════════════════
+const tagCls = {
+  right1:'tag-right1', right2:'tag-right2', right3:'tag-right3', right4:'tag-right4', right5:'tag-right5',
+  db:'tag-db', engine:'tag-engine', platform:'tag-platform',
+  tier1:'tag-tier1', tier2:'tag-tier2', tier3:'tag-tier3',
+  notion:'tag-notion', legal:'tag-legal', billing:'tag-billing', critical:'tag-critical'
+};
+const tagLbl = {
+  right1:'Right 1: Agency', right2:'Right 2: Explanation', right3:'Right 3: Empathy',
+  right4:'Right 4: Correction', right5:'Right 5: Truth',
+  db:'DB', engine:'Engine', platform:'Platform',
+  tier1:'TIER_1', tier2:'TIER_2', tier3:'TIER_3',
+  notion:'Notion', legal:'Legal', billing:'Billing', critical:'CRITICAL'
+};
+
+// ════════════════════ RENDER ════════════════════
+function render() {
+  // Global bar
+  const all = countAll();
+  const pct = all.total ? Math.round(all.done/all.total*100) : 0;
+  document.getElementById('globalBar').style.width = pct+'%';
+  document.getElementById('globalPct').textContent = pct+'%';
+  document.getElementById('globalCount').textContent = all.done+' / '+all.total;
+
+  // Tabs
+  document.getElementById('tabBar').innerHTML = phases.map((p,i) => {
+    const c = countPhase(i);
+    let cls = i===activePhase ? 'tab active':'tab';
+    if(c.done===c.total && c.total>0) cls+=' done'; else if(c.done>0) cls+=' partial';
+    return `<div class="${cls}" onclick="setPhase(${i})"><span class="tab-dot"></span>${p.name}</div>`;
+  }).join('');
+
+  // Sidebar
+  document.getElementById('sidebarNav').innerHTML = phases.map((p,i) => {
+    const c = countPhase(i);
+    return `<div class="sidebar-item ${i===activePhase?'active':''}" onclick="setPhase(${i})">
+      <span class="sidebar-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="sidebar-name">${p.name}</span>
+      <span class="sidebar-count">${c.done}/${c.total}</span>
+    </div>`;
+  }).join('');
+
+  // Content
+  const p = phases[activePhase];
+  const c = countPhase(activePhase);
+  let h = `<div class="phase-header">
+    <div class="phase-icon" style="background:${p.iconBg}">${p.icon}</div>
+    <div class="phase-meta"><div class="phase-name">${p.name}</div><div class="phase-desc">${p.desc}</div></div>
+    <div><div class="phase-progress-num">${c.done}</div><div class="phase-progress-label">of ${c.total}</div></div>
+  </div>`;
+
+  if (p.callouts) p.callouts.forEach(co => {
+    h += `<div class="callout callout-${co.type}"><span class="callout-icon">${co.icon}</span><div>${co.text}</div></div>`;
+  });
+
+  p.sections.forEach((s,si) => {
+    const allDone = s.items.every((_,ii) => checked[getKey(activePhase,si,ii)]);
+    h += `<div class="section"><div class="section-title">${s.title}${s.sectionRight?`<span class="section-right-badge">${s.sectionRight}</span>`:''}<button class="select-all-btn" onclick="toggleSection(${si})">${allDone?'Uncheck all':'Check all'}</button></div>`;
+
+    s.items.forEach((item,ii) => {
+      const key = getKey(activePhase,si,ii);
+      const ck = !!checked[key];
+      h += `<div class="check-item ${ck?'checked':''}" onclick="toggle('${key}')">
+        <div class="checkbox"><span class="check-icon">✓</span></div>
+        <div class="item-body">
+          <div class="item-label">${item.label}</div>
+          ${item.note?`<div class="item-note">${item.note}</div>`:''}
+          ${item.tags&&item.tags.length?`<div class="item-tags">${item.tags.map(t=>`<span class="tag ${tagCls[t]||''}">${tagLbl[t]||t}</span>`).join('')}</div>`:''}
+        </div>
+      </div>`;
+    });
+    h += `</div>`;
+  });
+
+  h += `<div style="display:flex;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">`;
+  if(activePhase>0) h += `<button onclick="setPhase(${activePhase-1})" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);padding:9px 18px;border-radius:7px;cursor:pointer;font-size:13px">← ${phases[activePhase-1].name}</button>`;
+  if(activePhase<phases.length-1) h += `<button onclick="setPhase(${activePhase+1})" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:white;padding:9px 18px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;margin-left:auto">${phases[activePhase+1].name} →</button>`;
+  h += `</div>`;
+
+  document.getElementById('phaseContent').innerHTML = h;
+}
+
+function toggleSection(si) {
+  const s = phases[activePhase].sections[si];
+  const allDone = s.items.every((_,ii) => checked[getKey(activePhase,si,ii)]);
+  s.items.forEach((_,ii) => { checked[getKey(activePhase,si,ii)] = !allDone; });
+  save(); render();
+}
+
+function setPhase(i) { activePhase=i; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+load(); render();
+</script>
+</body>
+</html>
