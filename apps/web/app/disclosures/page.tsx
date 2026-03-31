@@ -13,17 +13,30 @@ import {
   AlertCircle,
   Globe,
   Lock,
-  Users,
   Building2,
   Calendar,
   Eye,
   Loader2
 } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Card } from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+
+// Assuming these are available in components/ui
+const Button = ({ children, className, variant, size }: any) => (
+  <button className={`px-4 py-2 rounded-lg font-medium transition-all ${variant === 'outline' ? 'border border-aic-navy text-aic-navy hover:bg-aic-navy/5' : 'bg-aic-navy text-white hover:bg-aic-navy/90'} ${className}`}>
+    {children}
+  </button>
+);
+
+const Card = ({ children, className }: any) => (
+  <div className={`bg-white border border-gray-100 rounded-xl shadow-sm ${className}`}>
+    {children}
+  </div>
+);
+
+const Badge = ({ children, className }: any) => (
+  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${className}`}>
+    {children}
+  </span>
+);
 
 export default function Disclosures() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,7 +47,9 @@ export default function Disclosures() {
   useEffect(() => {
     async function fetchRegistry() {
       try {
-        const res = await fetch('http://localhost:3001/api/v1/public/registry');
+        // D-9: Replace hardcoded localhost with env var
+        const baseUrl = process.env.NEXT_PUBLIC_PLATFORM_URL || 'https://app.aiccertified.cloud';
+        const res = await fetch(`${baseUrl}/api/v1/public/registry`);
         if (res.ok) {
           const data = await res.json();
           setRegistry(data);
@@ -54,62 +69,41 @@ export default function Disclosures() {
       org.tier.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const appealCases = [
-    {
-      caseId: "APP-2026-047",
-      organization: "TechCorp Industries",
-      dateSubmitted: "January 28, 2026",
-      status: "Under Review",
-      issue: "Certification decision dispute",
-    },
-    {
-      caseId: "APP-2025-892",
-      organization: "GlobalBank International",
-      dateSubmitted: "December 12, 2025",
-      status: "Resolved",
-      issue: "Scope clarification request",
-    },
-    {
-      caseId: "APP-2025-743",
-      organization: "HealthAI Solutions",
-      dateSubmitted: "October 20, 2025",
-      status: "Resolved",
-      issue: "Assessment timeline extension",
-    },
-  ];
-
   return (
-    <div>
+    <div className="font-sans">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#0f1f3d] via-[#1a3160] to-[#0a1628] text-white py-20">
-        <div className="max-w-[1600px] mx-auto px-4">
+      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-aic-copper via-transparent to-transparent"></div>
+        </div>
+        <div className="max-w-[1600px] mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">
-              <FileText className="w-6 h-6 text-[#c9920a]" />
-              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
-                IAF MLA Mandatory Disclosures
+              <FileText className="w-6 h-6 text-aic-copper" />
+              <span className="text-aic-copper text-xs uppercase tracking-widest font-mono">
+                Mandatory Disclosures
               </span>
             </div>
-            <h1 className="text-5xl mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Public Disclosures & Compliance
+            <h1 className="text-5xl mb-6 font-serif italic">
+              Transparency & Compliance
             </h1>
             <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
-              As an IAF Multilateral Recognition Arrangement (MLA) signatory, AIC maintains full transparency regarding
-              our impartiality, accreditation status, certified organizations, and appeals processes.
+              AI Integrity Certification (Pty) Ltd is committed to full transparency regarding our methodology, 
+              accreditation roadmap, and impartiality. As we move toward SANAS accreditation, we maintain 
+              the highest standards of professional integrity.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Trust Indicators */}
+      {/* Status Bar */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-[1600px] mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: Shield, label: "IAF MLA Accredited", value: "Since 2023" },
-              { icon: Globe, label: "Recognition", value: "100+ Countries" },
-              { icon: Building2, label: "Certified Orgs", value: registry.length.toString() },
-              { icon: Users, label: "Certified Professionals", value: "4,200+" },
+              { icon: Shield, label: "Accreditation Path", value: "SANAS Roadmap" },
+              { icon: Globe, label: "Regulatory Anchor", value: "POPIA Section 71" },
+              { icon: Building2, label: "Founding Partners", value: "5 Slots Only" },
             ].map((item, i) => {
               const Icon = item.icon;
               return (
@@ -119,11 +113,11 @@ export default function Disclosures() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="text-center"
+                  className="flex flex-col items-center md:items-start p-6 bg-aic-paper rounded-xl"
                 >
-                  <Icon className="w-6 h-6 text-[#c9920a] mx-auto mb-2" />
-                  <div className="text-sm text-gray-500 mb-1">{item.label}</div>
-                  <div className="text-2xl font-bold text-[#0f1f3d]">{item.value}</div>
+                  <Icon className="w-6 h-6 text-aic-copper mb-3" />
+                  <div className="text-xs text-gray-500 uppercase tracking-widest font-mono mb-1">{item.label}</div>
+                  <div className="text-xl font-bold text-aic-navy">{item.value}</div>
                 </motion.div>
               );
             })}
@@ -132,364 +126,160 @@ export default function Disclosures() {
       </section>
 
       {/* Main Content */}
-      <section className="py-16 bg-[#f8fafc]">
+      <section className="py-24 bg-white">
         <div className="max-w-[1600px] mx-auto px-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-8">
-              <TabsTrigger value="impartiality">Impartiality Statement</TabsTrigger>
-              <TabsTrigger value="accreditation">Accreditation Status</TabsTrigger>
-              <TabsTrigger value="directory">Certified Directory</TabsTrigger>
-              <TabsTrigger value="appeals">Appeals Process</TabsTrigger>
-            </TabsList>
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* Sidebar Navigation */}
+            <div className="lg:w-1/4">
+              <div className="sticky top-24 space-y-2">
+                {[
+                  { id: "impartiality", label: "Impartiality" },
+                  { id: "accreditation", label: "Accreditation Roadmap" },
+                  { id: "directory", label: "Certified Registry" },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full text-left px-6 py-4 rounded-lg transition-all font-medium ${
+                      activeTab === tab.id
+                        ? "bg-aic-navy text-white shadow-md"
+                        : "text-gray-500 hover:bg-aic-paper hover:text-aic-navy"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-            {/* Impartiality Statement */}
-            <TabsContent value="impartiality">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <Card className="p-8">
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="w-12 h-12 bg-[#0f1f3d] rounded-lg flex items-center justify-center shrink-0">
-                      <Scale className="w-6 h-6 text-[#c9920a]" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-semibold text-[#0f1f3d] mb-2">
-                        Statement of Impartiality and Independence
-                      </h2>
-                      <p className="text-sm text-gray-500">Last updated: February 1, 2026</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6 text-gray-700 leading-relaxed">
-                    <div>
-                      <h3 className="font-semibold text-[#0f1f3d] mb-2">Core Principle</h3>
+            {/* Content Area */}
+            <div className="lg:w-3/4">
+              {activeTab === "impartiality" && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <Card className="p-10">
+                    <h2 className="text-3xl font-serif text-aic-navy mb-6">Impartiality Statement</h2>
+                    <div className="prose prose-aic max-w-none text-gray-600 space-y-6 text-lg leading-relaxed">
                       <p>
-                        The AI Certification Institute (AIC) operates as an independent, third-party accreditation and
-                        certification body. We maintain strict impartiality in all certification activities and do not
-                        provide consultancy services to organizations seeking certification.
+                        AI Integrity Certification (Pty) Ltd operates as an independent, third-party certification body. 
+                        To ensure trust in our Integrity Scores, we maintain strict separation between assessment and consultancy.
                       </p>
-                    </div>
-
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
-                      <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-                        <div>
-                          <h4 className="font-semibold text-amber-900 mb-2">Conflicts of Interest</h4>
-                          <p className="text-sm text-amber-800">
-                            AIC does <strong>not</strong> provide any of the following services to organizations it
-                            certifies:
-                          </p>
-                          <ul className="mt-2 space-y-1 text-sm text-amber-800 list-disc list-inside">
-                            <li>Management system implementation consulting</li>
-                            <li>Internal audit services</li>
-                            <li>Risk assessment design or execution</li>
-                            <li>Policy or procedure development</li>
-                            <li>Training that compromises impartiality</li>
-                          </ul>
-                        </div>
+                      <div className="bg-aic-paper border-l-4 border-aic-copper p-6 my-8">
+                        <h4 className="font-bold text-aic-navy mb-2 font-mono uppercase text-sm tracking-widest">Conflict of Interest Safeguards</h4>
+                        <ul className="space-y-3">
+                          <li className="flex gap-3 items-start">
+                            <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                            <span>We do not design or implement the AI systems we certify.</span>
+                          </li>
+                          <li className="flex gap-3 items-start">
+                            <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                            <span>We do not provide internal auditing services for client organizations.</span>
+                          </li>
+                          <li className="flex gap-3 items-start">
+                            <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                            <span>Our assessors are prohibited from providing consultancy to any organization they audit for a period of 2 years.</span>
+                          </li>
+                        </ul>
                       </div>
-                    </div>
-
-                    <div>
-                      <h3 className="font-semibold text-[#0f1f3d] mb-2">Independence Safeguards</h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {[
-                          {
-                            title: "Financial Independence",
-                            desc: "No single client represents more than 15% of annual revenue.",
-                          },
-                          {
-                            title: "Personnel Separation",
-                            desc: "Auditors cannot assess organizations they've consulted for within 3 years.",
-                          },
-                          {
-                            title: "Board Oversight",
-                            desc: "Independent ethics committee reviews all conflict of interest allegations.",
-                          },
-                          {
-                            title: "Public Accountability",
-                            desc: "Annual impartiality report published and audited by accreditation body.",
-                          },
-                        ].map((safeguard, i) => (
-                          <div key={i} className="flex items-start gap-3 p-4 bg-white rounded-lg border border-gray-200">
-                            <CheckCircle className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
-                            <div>
-                              <div className="font-medium text-[#0f1f3d] mb-1">{safeguard.title}</div>
-                              <p className="text-sm text-gray-600">{safeguard.desc}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-6 border-t border-gray-200 flex gap-3">
-                      <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white">
-                        <Download className="w-4 h-4 mr-2" />
-                        Download Full Impartiality Policy (PDF)
-                      </Button>
-                      <Button variant="outline">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        IAF Impartiality Requirements
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            </TabsContent>
-
-            {/* Accreditation Status */}
-            <TabsContent value="accreditation">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <div className="space-y-6">
-                  <Card className="p-8">
-                    <div className="flex items-start gap-4 mb-6">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                        <Shield className="w-6 h-6 text-green-700" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h2 className="text-2xl font-semibold text-[#0f1f3d]">Current Accreditation Status</h2>
-                          <Badge className="bg-green-100 text-green-700">Active</Badge>
-                        </div>
-                        <p className="text-sm text-gray-500">Last verified: February 20, 2026</p>
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {[
-                        {
-                          label: "Accrediting Body",
-                          value: "ANAB (ANSI National Accreditation Board)",
-                          icon: Building2,
-                        },
-                        {
-                          label: "Accreditation Standard",
-                          value: "ISO/IEC 17024:2012 (Personnel Certification)",
-                          icon: FileText,
-                        },
-                        {
-                          label: "Accreditation Number",
-                          value: "PCT-1847",
-                          icon: Lock,
-                        },
-                        {
-                          label: "Valid Through",
-                          value: "December 31, 2027",
-                          icon: Calendar,
-                        },
-                        {
-                          label: "IAF MLA Signatory",
-                          value: "Yes (Full Recognition)",
-                          icon: Globe,
-                        },
-                        {
-                          label: "Last Surveillance Audit",
-                          value: "November 2025 (No findings)",
-                          icon: Eye,
-                        },
-                      ].map((item, i) => {
-                        const Icon = item.icon;
-                        return (
-                          <div key={i} className="flex items-start gap-3 p-4 bg-[#f8fafc] rounded-lg">
-                            <Icon className="w-5 h-5 text-[#c9920a] shrink-0 mt-0.5" />
-                            <div>
-                              <div className="text-sm text-gray-500 mb-1">{item.label}</div>
-                              <div className="font-medium text-[#0f1f3d]">{item.value}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
                     </div>
                   </Card>
+                </motion.div>
+              )}
 
-                  <div className="flex gap-3">
-                    <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download Accreditation Certificate
-                    </Button>
-                    <Button variant="outline">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Verify on ANAB Registry
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            </TabsContent>
-
-            {/* Certified Directory */}
-            <TabsContent value="directory">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <Card className="p-8 mb-6">
-                  <div className="flex items-start justify-between mb-6">
-                    <div>
-                      <h2 className="text-2xl font-semibold text-[#0f1f3d] mb-2">
-                        ISO/IEC 42001 Certified Organizations
-                      </h2>
-                      <p className="text-sm text-gray-500">
-                        Public registry of all organizations with active AIC certifications. Updated daily.
+              {activeTab === "accreditation" && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <Card className="p-10">
+                    <h2 className="text-3xl font-serif text-aic-navy mb-6">Accreditation Roadmap</h2>
+                    <div className="space-y-8">
+                      <p className="text-lg text-gray-600 leading-relaxed">
+                        In South Africa, the formal accreditation body is SANAS (South African National Accreditation System). 
+                        AIC is currently in the pre-application phase for ISO/IEC 17024 and ISO/IEC 42001 certification bodies.
                       </p>
-                    </div>
-                    <Button variant="outline">
-                      <Download className="w-4 h-4 mr-2" />
-                      Export CSV
-                    </Button>
-                  </div>
-
-                  <div className="relative mb-6">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                      placeholder="Search by organization name..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-
-                  {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20 gap-3">
-                      <Loader2 className="w-10 h-10 animate-spin text-[#c9920a]" />
-                      <p className="text-gray-500">Loading public registry...</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {filteredOrgs.map((org, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.05 }}
-                          className="border border-gray-200 rounded-lg p-5 bg-white hover:shadow-md transition-shadow"
-                        >
-                          <div className="flex items-start justify-between mb-3">
-                            <div>
-                              <div className="flex items-center gap-3 mb-2">
-                                <h3 className="font-semibold text-[#0f1f3d] text-lg">{org.name}</h3>
-                                <Badge className="bg-green-100 text-green-700">Active</Badge>
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {org.tier === 'TIER_1' ? 'Enterprise' : 'Technology'} • International
-                              </div>
-                            </div>
-                            <Button size="sm" variant="ghost">
-                              <ExternalLink className="w-4 h-4" />
-                            </Button>
-                          </div>
-
-                          <div className="grid md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <div className="text-gray-500 mb-1">Status</div>
-                              <div className="font-mono text-[#0f1f3d]">{org.status}</div>
-                            </div>
-                            <div>
-                              <div className="text-gray-500 mb-1">Certification Date</div>
-                              <div className="text-gray-700">
-                                {new Date(org.certifiedAt).toLocaleDateString()}
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                      {filteredOrgs.length === 0 && (
-                        <div className="text-center py-12 text-gray-400">
-                          No organizations found matching your search.
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </Card>
-              </motion.div>
-            </TabsContent>
-
-            {/* Appeals Process */}
-            <TabsContent value="appeals">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <Card className="p-8">
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="w-12 h-12 bg-[#0f1f3d] rounded-lg flex items-center justify-center shrink-0">
-                      <Scale className="w-6 h-6 text-[#c9920a]" />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-semibold text-[#0f1f3d] mb-2">Appeals and Dispute Resolution</h2>
-                      <p className="text-sm text-gray-500">
-                        Fair, transparent process for challenging certification decisions
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6 text-gray-700 leading-relaxed">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                      <h4 className="font-semibold text-blue-900 mb-3">Appeal Process Timeline</h4>
-                      <div className="space-y-3">
+                      <div className="relative border-l-2 border-aic-paper pl-8 space-y-12">
                         {[
-                          { step: "1", title: "Submit Appeal", time: "Within 30 days of decision" },
-                          { step: "2", title: "Acknowledgment", time: "Within 5 business days" },
-                          { step: "3", title: "Independent Review", time: "30-45 days" },
-                          { step: "4", title: "Final Decision", time: "Within 60 days of submission" },
-                        ].map((item, i) => (
-                          <div key={i} className="flex items-center gap-4">
-                            <div className="w-8 h-8 bg-blue-700 text-white rounded-full flex items-center justify-center font-semibold text-sm shrink-0">
-                              {item.step}
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium text-blue-900">{item.title}</div>
-                              <div className="text-sm text-blue-700">{item.time}</div>
-                            </div>
+                          { status: "Complete", title: "Methodology Development", desc: "The 5 Algorithmic Rights framework and Integrity Score calculation validated." },
+                          { status: "In Progress", title: "Founding Partner Pilot", desc: "Testing the framework with the first 5 organizations under POPIA Section 71." },
+                          { status: "Future", title: "SANAS Application", desc: "Formal submission for accreditation as a certification body (Estimated Q3 2026)." },
+                          { status: "Future", title: "Full Accreditation", desc: "Targeting full SANAS recognition within 14 months of application." },
+                        ].map((milestone, i) => (
+                          <div key={i} className="relative">
+                            <div className={`absolute -left-[41px] top-0 w-4 h-4 rounded-full border-4 border-white ${
+                              milestone.status === "Complete" ? "bg-aic-copper" : 
+                              milestone.status === "In Progress" ? "bg-aic-navy animate-pulse" : "bg-gray-200"
+                            }`}></div>
+                            <Badge className={
+                              milestone.status === "Complete" ? "bg-green-100 text-green-700" : 
+                              milestone.status === "In Progress" ? "bg-aic-copper/20 text-aic-copper" : "bg-gray-100 text-gray-400"
+                            }>{milestone.status}</Badge>
+                            <h4 className="text-xl font-bold text-aic-navy mt-2 mb-1">{milestone.title}</h4>
+                            <p className="text-gray-500">{milestone.desc}</p>
                           </div>
                         ))}
                       </div>
                     </div>
+                  </Card>
+                </motion.div>
+              )}
 
-                    <div>
-                      <h3 className="font-semibold text-[#0f1f3d] mb-3">Recent Appeals Activity</h3>
-                      <div className="space-y-3">
-                        {appealCases.map((appeal, i) => (
-                          <div
-                            key={i}
-                            className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 bg-[#0f1f3d] rounded-lg flex items-center justify-center text-white font-mono text-xs">
-                                {appeal.caseId.split("-")[2]}
-                              </div>
-                              <div>
-                                <div className="font-medium text-[#0f1f3d]">{appeal.organization}</div>
-                                <div className="text-sm text-gray-500">
-                                  {appeal.issue} • {appeal.dateSubmitted}
+              {activeTab === "directory" && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <Card className="p-10">
+                    <div className="flex items-start justify-between mb-8">
+                      <div>
+                        <h2 className="text-3xl font-serif text-aic-navy mb-2">Certified Registry</h2>
+                        <p className="text-gray-500">
+                          Public listing of organizations certified by AI Integrity Certification (Pty) Ltd.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="relative mb-8">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        placeholder="Search organizations..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 bg-aic-paper rounded-xl border-none focus:ring-2 focus:ring-aic-copper/50"
+                      />
+                    </div>
+
+                    {loading ? (
+                      <div className="flex flex-col items-center justify-center py-20 gap-3">
+                        <Loader2 className="w-10 h-10 animate-spin text-aic-copper" />
+                        <p className="text-gray-500 font-mono text-sm">Querying Trust Registry...</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {filteredOrgs.length > 0 ? (
+                          filteredOrgs.map((org, i) => (
+                            <div key={i} className="p-6 border border-gray-100 rounded-xl hover:border-aic-copper/30 transition-colors">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h3 className="text-xl font-bold text-aic-navy mb-1">{org.name}</h3>
+                                  <div className="flex gap-2">
+                                    <Badge className="bg-green-100 text-green-700">Active</Badge>
+                                    <Badge className="bg-aic-paper text-aic-navy">{org.tier}</Badge>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-xs text-gray-400 font-mono uppercase">Certified On</div>
+                                  <div className="font-bold text-aic-navy">{new Date(org.certifiedAt).toLocaleDateString()}</div>
                                 </div>
                               </div>
                             </div>
-                            <Badge
-                              className={
-                                appeal.status === "Resolved"
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-amber-100 text-amber-700"
-                              }
-                            >
-                              {appeal.status}
-                            </Badge>
+                          ))
+                        ) : (
+                          <div className="text-center py-12 bg-aic-paper rounded-xl border-2 border-dashed border-gray-200">
+                            <p className="text-gray-500">No organizations found matching your search.</p>
+                            <p className="text-sm text-gray-400 mt-1 italic">Note: Only Founding Partners and Alpha participants are currently listed.</p>
                           </div>
-                        ))}
+                        )}
                       </div>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            </TabsContent>
-          </Tabs>
+                    )}
+                  </Card>
+                </motion.div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
     </div>

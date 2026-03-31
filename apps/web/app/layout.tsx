@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import { ClientLayout } from "./components/ClientLayout";
 
 export const metadata: Metadata = {
-  title: "AIC - AI Certification Institute",
-  description: "The global standard for certifying the humans accountable for AI systems.",
+  title: "AI Integrity Certification (Pty) Ltd",
+  description: "The South African benchmark for human accountability in automated systems. We certify that human empathy remains in the loop.",
 };
 
 export default function RootLayout({

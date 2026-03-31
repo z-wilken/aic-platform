@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/login',
-        destination: 'http://localhost:3001/login',
+        destination: process.env.NEXT_PUBLIC_PLATFORM_URL || 'https://app.aiccertified.cloud/login',
         permanent: false,
       },
     ];

@@ -2,100 +2,104 @@
 
 import { motion } from "framer-motion";
 import { Shield, Scale, CheckCircle, AlertCircle, Download, ExternalLink } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { toast } from "sonner";
 
 export default function ImpartialityStatement() {
-  const handleDownload = () => {
-    toast.success("Downloading AIC Impartiality Policy v2.1 (Full PDF)");
-  };
-
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen font-sans">
       {/* Hero */}
-      <section className="bg-aic-navy text-white py-20">
-        <div className="max-w-[1600px] mx-auto px-4">
+      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
+        <div className="max-w-[1600px] mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-4">
               <Shield className="w-6 h-6 text-aic-copper" />
-              <span className="text-aic-copper text-sm uppercase tracking-widest font-medium">ISO/IEC 17011 Requirement</span>
+              <span className="text-aic-copper text-xs uppercase tracking-widest font-mono font-bold">Regulatory Requirement</span>
             </div>
-            <h1 className="text-5xl mb-6 font-bold" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h1 className="text-5xl mb-6 font-serif italic">
               Statement of Impartiality
             </h1>
             <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
               Maintaining independence, objectivity, and freedom from conflicts of interest is the foundation 
-              of trust in the AIC certification process.
+              of trust in the AI Integrity Certification (Pty) Ltd process.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-16">
+      <section className="py-24">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="prose prose-slate prose-lg max-w-none">
-            <p className="text-gray-500 mb-8 italic">Last Updated: February 1, 2026</p>
+          <div className="prose prose-aic prose-lg max-w-none">
+            <p className="text-gray-400 mb-8 italic font-mono text-sm uppercase tracking-widest">Last Updated: February 2026</p>
             
-            <h2 className="text-[#0f1f3d] font-bold text-2xl mb-4">Institutional Independence</h2>
-            <p className="text-gray-600 mb-6">
-              The AI Certification Institute (AIC) is committed to impartiality in all its certification activities. 
-              We understand the importance of impartiality in carrying out our certification activities, managing 
-              conflicts of interest, and ensuring the objectivity of our certification activities.
+            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">Institutional Independence</h2>
+            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+              AI Integrity Certification (Pty) Ltd is committed to impartiality in all its certification activities. 
+              As a South African benchmark for human accountability, we maintain strict objectivity in managing 
+              conflicts of interest and ensuring the integrity of our assessments.
             </p>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-8 my-10">
-              <div className="flex items-start gap-4">
-                <AlertCircle className="w-6 h-6 text-amber-700 shrink-0 mt-1" />
+            <div className="bg-aic-paper border border-gray-100 rounded-2xl p-10 my-12 shadow-sm">
+              <div className="flex items-start gap-6">
+                <AlertCircle className="w-8 h-8 text-aic-copper shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-bold text-amber-900 mb-2">Our Conflict Prohibitions</h3>
-                  <p className="text-sm text-amber-800 leading-relaxed">
-                    Per ISO/IEC 42001 and 17024 requirements, AIC prohibits its personnel from:
+                  <h3 className="font-bold text-aic-navy mb-4 font-serif text-xl">Our Conflict Prohibitions</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    Per our accreditation roadmap and POPIA Section 71 requirements, AIC prohibits its personnel from:
                   </p>
-                  <ul className="mt-4 space-y-2 text-sm text-amber-800 list-disc list-inside">
-                    <li>Providing consultancy services to organizations seeking certification.</li>
-                    <li>Auditing their own work or that of their recent employers (within 2 years).</li>
-                    <li>Accepting gifts or inducements from certification candidates.</li>
-                    <li>Participating in decision-making for candidates they have trained.</li>
+                  <ul className="space-y-4 text-gray-700">
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Providing consultancy services to organisations seeking certification.</span>
+                    </li>
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Auditing their own work or that of their recent employers (within 2 years).</span>
+                    </li>
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Accepting gifts or inducements from certification candidates.</span>
+                    </li>
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Participating in decision-making for candidates they have trained.</span>
+                    </li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            <h2 className="text-[#0f1f3d] font-bold text-2xl mb-4">Objective Decision Making</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">Objective Decision Making</h2>
+            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
               AIC certification decisions are based on objective evidence obtained through a fair, valid, 
               and reliable assessment process. Decisions are made by competent personnel who have not participated 
               in the assessment of the candidate.
             </p>
 
-            <div className="grid md:grid-cols-2 gap-6 my-10">
+            <div className="grid md:grid-cols-2 gap-8 my-12">
               {[
                 { title: "Risk Identification", desc: "Ongoing identification of threats to impartiality arising from its activities or relationships." },
-                { title: "Public Disclosure", desc: "Transparency regarding certification processes and impartiality safeguards." }
+                { title: "Public Disclosure", desc: "Full transparency regarding certification processes and impartiality safeguards via the Pulse Registry." }
               ].map((item, i) => (
-                <div key={i} className="p-6 bg-gray-50 rounded-xl border border-gray-100">
-                  <CheckCircle className="w-5 h-5 text-green-600 mb-3" />
-                  <h4 className="font-bold text-[#0f1f3d] mb-1">{item.title}</h4>
-                  <p className="text-sm text-gray-500">{item.desc}</p>
+                <div key={i} className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-aic-copper/30 transition-colors">
+                  <Scale className="w-6 h-6 text-aic-copper mb-4" />
+                  <h4 className="font-bold text-aic-navy mb-2 font-serif text-lg">{item.title}</h4>
+                  <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="pt-10 border-t border-gray-200 flex flex-wrap gap-4">
-              <Button 
-                onClick={handleDownload}
-                className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white px-6"
+            <div className="pt-12 border-t border-aic-paper flex flex-wrap gap-4">
+              <button className="bg-aic-navy text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-lg shadow-aic-navy/10 flex items-center gap-2">
+                <Download className="w-4 h-4" /> Download Full Policy
+              </button>
+              <a 
+                href="https://www.sanas.co.za" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 border-2 border-aic-navy text-aic-navy px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-paper transition-all"
               >
-                <Download className="w-4 h-4 mr-2" />
-                Download Full Policy
-              </Button>
-              <Button variant="outline" asChild>
-                <a href="https://www.iaf.nu" target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  IAF Impartiality Requirements
-                </a>
-              </Button>
+                <ExternalLink className="w-4 h-4" /> SANAS Requirements
+              </a>
             </div>
           </div>
         </div>

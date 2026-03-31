@@ -1,32 +1,46 @@
 "use client";
 
 import Link from "next/link";
-import { Home, ArrowLeft } from "lucide-react";
-import { Button } from "./components/ui/button";
+import { Shield, ArrowLeft, Home } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function NotFound() {
   return (
-    <div className="min-h-[70vh] flex items-center justify-center bg-[#f8fafc]">
-      <div className="max-w-2xl mx-auto px-4 text-center">
-        <div className="text-8xl font-bold text-[#c9920a] mb-4">404</div>
-        <h1 className="text-4xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
-          Page Not Found
-        </h1>
-        <p className="text-gray-600 mb-8 text-lg">
-          The page you're looking for doesn't exist or has been moved. Please check the URL or navigate back to explore our portals.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link href="/">
-            <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white px-6 py-3">
-              <Home className="w-4 h-4 mr-2" />
-              Return Home
-            </Button>
-          </Link>
-          <Button variant="outline" onClick={() => window.history.back()} className="px-6 py-3">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Go Back
-          </Button>
-        </div>
+    <div className="min-h-screen bg-aic-paper flex items-center justify-center px-4 font-sans">
+      <div className="max-w-md w-full text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex justify-center mb-8">
+            <div className="w-20 h-20 bg-aic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-aic-navy/10">
+              <Shield className="w-10 h-10 text-aic-copper" />
+            </div>
+          </div>
+          
+          <h1 className="text-6xl font-bold text-aic-navy mb-4 font-mono">404</h1>
+          <h2 className="text-3xl font-serif italic text-aic-navy mb-6">Page Not Found</h2>
+          
+          <p className="text-gray-600 mb-10 text-lg leading-relaxed">
+            The resource you are looking for does not exist or has been moved within our accountability registry.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center gap-2 bg-aic-navy text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-lg shadow-aic-navy/10"
+            >
+              <Home className="w-4 h-4" /> Return Home
+            </Link>
+            <button
+              onClick={() => window.history.back()}
+              className="inline-flex items-center justify-center gap-2 border-2 border-aic-navy text-aic-navy px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-widest font-mono hover:bg-white transition-all"
+            >
+              <ArrowLeft className="w-4 h-4" /> Go Back
+            </button>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

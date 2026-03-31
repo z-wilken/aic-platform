@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
-const HQ_URL = process.env.HQ_URL || 'http://localhost:3004';
+const HQ_URL = process.env.HQ_URL || 'https://hq.aiccertified.cloud';
 
 export async function POST(request: NextRequest) {
   try {
