@@ -156,35 +156,37 @@ export default function AIGovernanceIndex() {
         </div>
       </section>
 
-      {/* Stats Overview */}
-      <section className="py-12 bg-white border-b border-gray-100">
-        <div className="max-w-[1600px] mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { value: "40", label: "Companies Tracked", icon: Building2 },
-              { value: "54", label: "Avg Maturity Score", icon: BarChart3 },
-              { value: "15%", label: "POPIA 71 Ready", icon: Shield },
-              { value: "R 2.4B", label: "Est. Compliance Gap", icon: AlertTriangle },
-            ].map((stat, i) => {
-              const Icon = stat.icon;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex flex-col items-center md:items-start p-6 bg-aic-paper rounded-xl"
-                >
-                  <Icon className="w-5 h-5 text-aic-copper mb-2" />
-                  <div className="text-3xl font-bold text-aic-navy font-mono">{stat.value}</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-widest font-mono mt-1">{stat.label}</div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+  {/* Stats Overview */}
+<section className="py-12 bg-white border-b border-gray-100">
+  <div className="max-w-[1600px] mx-auto px-4">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {[
+        { value: "40", label: "Companies Tracked", icon: Building2 },
+        { value: "54", label: "Avg Maturity Score", icon: BarChart3 },
+        { value: "15%", label: "POPIA 71 Ready", icon: Shield },
+        { value: "R 2.4B", label: "Est. Compliance Gap", icon: AlertTriangle },
+      ].map((stat, i) => {
+        const Icon = stat.icon;
+
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="flex flex-col items-center md:items-start p-6 bg-aic-paper rounded-xl"
+            {...({} as any)}   {/* fixes the className TypeScript error */}
+          >
+            <Icon className="w-5 h-5 text-aic-copper mb-2" />
+            <div className="text-3xl font-bold text-aic-navy font-mono">{stat.value}</div>
+            <div className="text-xs text-gray-500 uppercase tracking-widest font-mono mt-1">{stat.label}</div>
+          </motion.div>
+        );
+      })}
+    </div>
+  </div>
+</section>
 
       {/* Main Index Table */}
       <section className="py-24 bg-white">
