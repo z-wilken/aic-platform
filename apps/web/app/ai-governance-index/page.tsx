@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   BarChart3,
   TrendingUp,
@@ -387,7 +388,3 @@ export default function AIGovernanceIndex() {
   );
 }
 
-// Simple Link wrapper for the mock
-const Link = ({ children, href, className }: any) => (
-    <a href={href} className={className}>{children}</a>
-);

@@ -16,6 +16,7 @@ import {
   CheckCircle,
   Shield,
   Loader2,
+  Globe,
 } from "lucide-react";
 
 // Assuming these are available in components/ui
