@@ -2,21 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Shield,
-  CheckCircle,
-  AlertTriangle,
-  FileText,
-  Download,
-  ArrowRight,
-  Building2,
-  Clock,
-  BarChart3,
-  Zap,
-  Globe,
-  Lock,
-  Search,
-} from "lucide-react";
+import { Shield, CheckCircle, AlertTriangle, FileText, Download, ArrowRight, Building2, Clock, BarChart3, Zap, Globe, Lock, Search } from "lucide-react";
 
 // D-11: Hero background
 const heroBg = "https://images.unsplash.com/photo-1771931322109-180bb1b35bf8?q=80&w=2000&auto=format&fit=crop";

@@ -2,22 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  Award,
-  Calendar,
-  FileText,
-  BookOpen,
-  Check,
-  ArrowRight,
-  Clock,
-  Users,
-  Target,
-  Download,
-  CheckCircle,
-  Shield,
-  Loader2,
-  Globe,
-} from "lucide-react";
+import { Award, Calendar, FileText, BookOpen, Check, ArrowRight, Clock, Users, Target, Download, CheckCircle, Shield, Loader2, Globe } from "lucide-react";
 
 // Assuming these are available in components/ui
 const Button = ({ children, className, variant, asChild }: any) => (

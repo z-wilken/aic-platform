@@ -2,24 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  Shield,
-  Award,
-  BarChart3,
-  BookOpen,
-  ArrowRight,
-  CheckCircle,
-  Eye,
-  MessageSquare,
-  Heart,
-  RotateCcw,
-  Zap,
-  Globe,
-  Users,
-  Building2,
-  Star,
-  ChevronRight,
-} from "lucide-react";
+import { Shield, Award, BarChart3, BookOpen, ArrowRight, CheckCircle, Eye, MessageSquare, Heart, RotateCcw, Zap, Globe, Users, Building2, Star, ChevronRight } from "lucide-react";
 
 // D-11: Fix images - download from Unsplash, serve via next/image (no hotlinking)
 // For now, keeping the URL but knowing it needs local replacement

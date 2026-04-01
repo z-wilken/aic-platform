@@ -3,25 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import {
-  BarChart3,
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  Download,
-  Search,
-  ChevronDown,
-  Award,
-  AlertTriangle,
-  CheckCircle,
-  Info,
-  Building2,
-  Globe,
-  Users,
-  Shield,
-  Loader2,
-  RefreshCw,
-} from "lucide-react";
+import { BarChart3, TrendingUp, TrendingDown, Minus, Download, Search, ChevronDown, Award, AlertTriangle, CheckCircle, Info, Building2, Globe, Users, Shield, Loader2, RefreshCw } from "lucide-react";
 
 // Simplified UI components for web app
 const Button = ({ children, className, variant, size }: any) => (
@@ -387,4 +369,3 @@ export default function AIGovernanceIndex() {
     </div>
   );
 }
-

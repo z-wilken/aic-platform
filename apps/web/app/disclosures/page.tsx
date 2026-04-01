@@ -5,18 +5,12 @@ import { motion } from "framer-motion";
 import {
   FileText,
   Shield,
-  Scale,
   Search,
-  Download,
-  ExternalLink,
   CheckCircle,
-  AlertCircle,
   Globe,
-  Lock,
   Building2,
-  Calendar,
-  Eye,
-  Loader2
+  Loader2,
+  ArrowRight,
 } from "lucide-react";
 
 // Assuming these are available in components/ui
@@ -172,11 +166,11 @@ export default function Disclosures() {
                           </li>
                           <li className="flex gap-3 items-start">
                             <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
-                            <span>We do not provide internal auditing services for client organizations.</span>
+                            <span>We do not provide internal auditing services for client organisations.</span>
                           </li>
                           <li className="flex gap-3 items-start">
                             <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
-                            <span>Our assessors are prohibited from providing consultancy to any organization they audit for a period of 2 years.</span>
+                            <span>Our assessors are prohibited from providing consultancy to any organisation they audit for a period of 2 years.</span>
                           </li>
                         </ul>
                       </div>
@@ -197,7 +191,7 @@ export default function Disclosures() {
                       <div className="relative border-l-2 border-aic-paper pl-8 space-y-12">
                         {[
                           { status: "Complete", title: "Methodology Development", desc: "The 5 Algorithmic Rights framework and Integrity Score calculation validated." },
-                          { status: "In Progress", title: "Founding Partner Pilot", desc: "Testing the framework with the first 5 organizations under POPIA Section 71." },
+                          { status: "In Progress", title: "Founding Partner Pilot", desc: "Testing the framework with the first 5 organisations under POPIA Section 71." },
                           { status: "Future", title: "SANAS Application", desc: "Formal submission for accreditation as a certification body (Estimated Q3 2026)." },
                           { status: "Future", title: "Full Accreditation", desc: "Targeting full SANAS recognition within 14 months of application." },
                         ].map((milestone, i) => (
@@ -227,7 +221,7 @@ export default function Disclosures() {
                       <div>
                         <h2 className="text-3xl font-serif text-aic-navy mb-2">Certified Registry</h2>
                         <p className="text-gray-500">
-                          Public listing of organizations certified by AI Integrity Certification (Pty) Ltd.
+                          Public listing of organisations certified by AI Integrity Certification (Pty) Ltd.
                         </p>
                       </div>
                     </div>
@@ -235,7 +229,7 @@ export default function Disclosures() {
                     <div className="relative mb-8">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <input
-                        placeholder="Search organizations..."
+                        placeholder="Search organisations..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-12 pr-4 py-4 bg-aic-paper rounded-xl border-none focus:ring-2 focus:ring-aic-copper/50"
@@ -269,7 +263,7 @@ export default function Disclosures() {
                           ))
                         ) : (
                           <div className="text-center py-12 bg-aic-paper rounded-xl border-2 border-dashed border-gray-200">
-                            <p className="text-gray-500">No organizations found matching your search.</p>
+                            <p className="text-gray-500">No organisations found matching your search.</p>
                             <p className="text-sm text-gray-400 mt-1 italic">Note: Only Founding Partners and Alpha participants are currently listed.</p>
                           </div>
                         )}

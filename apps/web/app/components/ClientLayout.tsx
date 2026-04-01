@@ -3,19 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Shield,
-  Menu,
-  X,
-  Globe,
-  Award,
-  BarChart3,
-  BookOpen,
-  FileText,
-  LogIn,
-  ArrowRight,
-  ChevronRight,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { Shield, Menu, X, Globe, Award, BarChart3, BookOpen, FileText, LogIn, ArrowRight, ChevronRight } from "lucide-react";
 
 const navItems = [
   {

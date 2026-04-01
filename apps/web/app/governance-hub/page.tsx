@@ -19,6 +19,7 @@ import {
   Map,
   Loader2,
   Shield,
+  CheckCircle,
 } from "lucide-react";
 
 // D-11: Hero background
