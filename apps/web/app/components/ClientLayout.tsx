@@ -14,6 +14,7 @@ import {
   FileText,
   LogIn,
   ArrowRight,
+  ChevronRight,
 } from "lucide-react";
 
 const navItems = [
