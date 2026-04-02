@@ -176,7 +176,6 @@ export default function AIGovernanceIndex() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
             className="flex flex-col items-center md:items-start p-6 bg-aic-paper rounded-xl"
-            {...({} as any)}   {/* fixes the className TypeScript error */}
           >
             <Icon className="w-5 h-5 text-aic-copper mb-2" />
             <div className="text-3xl font-bold text-aic-navy font-mono">{stat.value}</div>
