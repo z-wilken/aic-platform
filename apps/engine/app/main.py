@@ -138,12 +138,16 @@ app.include_router(analysis.router, prefix="/api/v1", tags=["Analysis"])
 app.include_router(empathy.router, prefix="/api/v1/empathy", tags=["Empathy"])
 
 @app.get("/")
-def health_check():
+def home():
     return {
         "status": "AIC Audit Engine Operational", 
         "version": "3.0.0",
         "timestamp": datetime.utcnow().isoformat()
     }
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "service": "aic-engine"}
 
 if __name__ == "__main__":
     import uvicorn
