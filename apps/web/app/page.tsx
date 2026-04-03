@@ -11,9 +11,9 @@ import {
   CheckCircle, 
   Eye, 
   MessageSquare, 
-  Bell, 
-  RefreshCw, 
-  UserCheck, 
+  Heart, 
+  RotateCcw, 
+  Zap, 
   Globe, 
   Users, 
   Building2, 
@@ -25,53 +25,53 @@ const heroBg = "https://images.unsplash.com/photo-1694340016914-e684a924f5b3?cro
 
 const algorithmicRights = [
   {
-    icon: Eye,
-    title: "Algorithmic Transparency",
-    description: "Every individual has the right to know when an AI system is making decisions that affect them and to understand the logic behind those decisions.",
+    icon: Shield,
+    title: "Human Agency",
+    description: "No final decision affecting a person's dignity, freedom, or livelihood shall be made solely by a machine. A named human must remain accountable.",
     color: "bg-blue-50 text-blue-700 border-blue-100",
     iconBg: "bg-blue-100",
   },
   {
     icon: MessageSquare,
-    title: "Algorithmic Explainability",
-    description: "Individuals have the right to receive meaningful, human-readable explanations of automated outcomes that affect their rights, welfare, or opportunities.",
+    title: "Explanation",
+    description: "Every individual has the right to receive a meaningful, human-readable explanation of how an automated outcome was reached.",
     color: "bg-amber-50 text-amber-700 border-amber-100",
     iconBg: "bg-amber-100",
   },
   {
-    icon: Bell,
-    title: "Right to be Informed",
-    description: "All persons must be notified whenever they are interacting with or being evaluated by an automated system, prior to the interaction taking place.",
+    icon: Heart,
+    title: "Empathy",
+    description: "Automated interactions must preserve human dignity. Cold, bureaucratic rejection by algorithms is a design failure that must be remediated.",
     color: "bg-emerald-50 text-emerald-700 border-emerald-100",
     iconBg: "bg-emerald-100",
   },
   {
-    icon: RefreshCw,
-    title: "Decision Recourse",
-    description: "No individual shall be subject to a decision based solely on automated processing that significantly affects their legal rights or personal circumstances.",
+    icon: RotateCcw,
+    title: "Correction",
+    description: "Every system must provide a clear, accessible, human-staffed mechanism to appeal and correct unjust automated decisions.",
     color: "bg-purple-50 text-purple-700 border-purple-100",
     iconBg: "bg-purple-100",
   },
   {
-    icon: UserCheck,
-    title: "Human Interaction Choice",
-    description: "Every person retains the fundamental right to opt out of AI-mediated services and request human service in any context affecting their material interests.",
+    icon: Zap,
+    title: "Truth",
+    description: "Every person has the right to know if they are interacting with an AI system. Transparency is the foundation of trust.",
     color: "bg-rose-50 text-rose-700 border-rose-100",
     iconBg: "bg-rose-100",
   },
 ];
 
 const stats = [
-  { value: "4,200+", label: "Certified Professionals", icon: Users },
-  { value: "340+", label: "Accredited Organizations", icon: Building2 },
-  { value: "48", label: "Countries Represented", icon: Globe },
-  { value: "97%", label: "Employer Recognition Rate", icon: Star },
+  { value: "R 2,500", label: "Monthly Founding Rate", icon: Award },
+  { value: "5", label: "Founding Partner Slots", icon: Users },
+  { value: "100%", label: "Human Accountability", icon: Shield },
+  { value: "POPIA", label: "Section 71 Aligned", icon: Globe },
 ];
 
 const standards = [
+  { code: "POPIA Section 71", name: "Automated Decision Making", desc: "The legal requirement in South Africa for human intervention in automated decisions that significantly affect data subjects." },
   { code: "ISO/IEC 42001", name: "AI Management Systems", desc: "Framework for establishing, implementing, and continually improving an Artificial Intelligence Management System." },
-  { code: "ISO/IEC 17024", name: "Personnel Certification", desc: "General requirements for bodies operating certification of persons, ensuring consistent and internationally recognized credentials." },
-  { code: "NIST AI RMF", name: "Risk Management Framework", desc: "Voluntary framework for managing AI risks across the full lifecycle, mapping to Govern, Map, Measure, and Manage functions." },
+  { code: "NIST AI RMF", name: "Risk Management Framework", desc: "Voluntary framework for managing AI risks across the full lifecycle, mapping to Govern, Map, and Measure functions." },
 ];
 
 export default function Home() {
@@ -86,7 +86,7 @@ export default function Home() {
         <div className="absolute inset-0 hero-gradient" />
 
         {/* Subtle grid overlay */}
-        <div className="absolute inset-0 opacity-10 subtle-grid" />
+        <div className="absolute inset-0 opacity-5 subtle-grid" />
 
         <div className="relative max-w-7xl mx-auto px-4 py-24">
           <motion.div
@@ -97,7 +97,7 @@ export default function Home() {
           >
             <div className="flex items-center gap-2 mb-6">
               <span className="px-3 py-1 bg-aic-gold/20 text-aic-gold-light text-xs rounded-full border border-aic-gold/30 uppercase tracking-widest font-mono">
-                IAF MLA Accredited · ISO/IEC 17024
+                South African Standard · POPIA Compliant
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl text-white mb-6 leading-tight">
@@ -106,20 +106,20 @@ export default function Home() {
               Behind the Algorithm
             </h1>
             <p className="text-xl text-white/70 mb-10 max-w-2xl leading-relaxed">
-              AIC is the world's premier accreditation body focused on certifying the professionals accountable for AI — not just the machines. We establish the global standard for AI governance, ethics, and human responsibility.
+              AI Integrity Certification (Pty) Ltd is the South African benchmark for ensuring no final decision about a human being is made solely by a machine. We certify human empathy and accountability.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="/professional-portal"
+                href="/alpha-apply"
                 className="inline-flex items-center gap-2 bg-aic-gold hover:bg-aic-gold/90 text-white px-8 py-4 rounded-lg transition-all text-sm font-medium shadow-lg shadow-aic-gold/20"
               >
-                Get Certified Now <ArrowRight className="w-4 h-4" />
+                Become a Founding Partner <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/governance-hub"
                 className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 py-4 rounded-lg transition-all text-sm font-medium backdrop-blur-sm"
               >
-                Explore Algorithmic Rights <ChevronRight className="w-4 h-4" />
+                The 5 Algorithmic Rights <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
           </motion.div>
@@ -168,12 +168,12 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-aic-gold text-sm uppercase tracking-[0.3em] font-mono font-bold">Universal Standard</span>
-            <h2 className="text-4xl text-aic-navy mt-4 mb-6">
+            <span className="text-aic-gold text-sm uppercase tracking-[0.3em] font-mono font-bold">Universal Principles</span>
+            <h2 className="text-4xl text-aic-navy mt-4 mb-6 italic">
               Declaration of Algorithmic Rights
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed italic font-serif">
-              AIC's foundational framework establishing the inalienable rights of every individual interacting with automated systems. These five rights form the basis for all AIC certification assessments.
+            <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed font-serif">
+              Our foundational framework ensures that automated systems preserve human dignity. These five rights are the benchmark for AI Integrity Certification (Pty) Ltd.
             </p>
           </motion.div>
 
@@ -211,6 +211,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Pricing Section - Founding Partner */}
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="bg-aic-navy rounded-[2.5rem] p-12 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 opacity-5 subtle-grid" />
+            <div className="absolute top-0 right-0 p-8">
+              <span className="bg-aic-gold text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest font-mono">Limited Offer</span>
+            </div>
+            <h2 className="text-3xl text-white mb-6 font-serif italic">Founding Partner Program</h2>
+            <p className="text-white/70 mb-8 text-lg">
+              Join the first 5 South African organisations to define the future of human-accountable AI.
+            </p>
+            <div className="text-6xl font-bold text-white mb-2 font-mono">R 2,500<span className="text-xl text-white/50">/month</span></div>
+            <p className="text-aic-gold text-sm mb-10 font-medium tracking-wide font-mono uppercase">Locked for life · Free upgrade to SANAS-accredited certification</p>
+            <Link
+              href="/alpha-apply"
+              className="inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest font-mono transition-all shadow-xl shadow-aic-gold/20"
+            >
+              Apply for Founding Partner Slot <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Standards Section */}
       <section className="py-24 bg-aic-navy-mid relative overflow-hidden">
         <div
@@ -226,12 +250,12 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-aic-gold text-sm uppercase tracking-[0.3em] font-mono font-bold">Professional Standards</span>
+            <span className="text-aic-gold text-sm uppercase tracking-[0.3em] font-mono font-bold">Regulatory Frameworks</span>
             <h2 className="text-4xl text-white mt-4 mb-6">
-              Built on International Frameworks
+              Built on Global & Local Law
             </h2>
             <p className="text-white/50 max-w-2xl mx-auto text-lg leading-relaxed">
-              All AIC certification programs are rigorously aligned with the most authoritative international standards in AI governance and personnel certification.
+              Our methodology maps directly to POPIA Section 71 and emerging international standards like ISO/IEC 42001.
             </p>
           </motion.div>
 
@@ -258,33 +282,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-gradient-to-br from-aic-gold to-[#b07d08] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 subtle-grid" />
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+      {/* Final CTA */}
+      <section className="py-24 bg-aic-paper">
+        <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl text-white mb-6">
-              Ready to Lead Responsible AI?
+            <h2 className="text-4xl text-aic-navy mb-6 font-serif italic">
+              Is Your AI System Compliant?
             </h2>
-            <p className="text-white/80 mb-12 text-xl leading-relaxed font-serif italic">
-              Join thousands of AI Ethics Leads, Chief AI Officers, and governance professionals who carry the AIC credential — the gold standard in human AI accountability.
+            <p className="text-gray-600 mb-10 text-xl leading-relaxed">
+              Don't wait for a POPIA audit. Start your journey toward human-accountable AI today with AI Integrity Certification (Pty) Ltd.
             </p>
-            <div className="flex flex-wrap gap-6 justify-center">
-              <Link
-                href="/professional-portal"
-                className="inline-flex items-center gap-2 bg-white text-aic-gold px-10 py-5 rounded-2xl font-bold uppercase tracking-widest font-mono hover:bg-aic-navy hover:text-white transition-all shadow-2xl shadow-black/20"
-              >
-                Start Certification <ArrowRight className="w-4 h-4" />
-              </Link>
+            <div className="flex flex-wrap gap-4 justify-center">
               <Link
                 href="/alpha-apply"
-                className="inline-flex items-center gap-2 border-2 border-white/40 text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-widest font-mono hover:bg-white/10 transition-all"
+                className="inline-flex items-center gap-2 bg-aic-navy text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-xl shadow-black/10"
               >
-                Institutional Inquiry
+                Become a Founding Partner <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 border-2 border-aic-navy text-aic-navy px-10 py-4 rounded-xl hover:bg-aic-navy hover:text-white transition-all font-bold uppercase tracking-widest font-mono"
+              >
+                Contact Us
               </Link>
             </div>
           </motion.div>

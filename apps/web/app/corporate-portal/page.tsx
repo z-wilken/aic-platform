@@ -8,59 +8,56 @@ const heroBg = "https://images.unsplash.com/photo-1771931322109-180bb1b35bf8?cro
 
 const certificationTiers = [
   {
-    tier: "Foundation",
-    code: "ISO/IEC 42001 – Level 1",
-    price: "$12,400",
-    duration: "4–6 weeks",
-    color: "#1d4ed8",
-    features: [
-      "AI Risk Inventory Assessment",
-      "Gap Analysis Report (50+ controls)",
-      "AIMS Policy Template Package",
-      "Readiness Scorecard",
-      "1 Remediation Consultation Session",
-    ],
-    audience: "Organizations initiating AI governance programs",
-  },
-  {
-    tier: "Professional",
-    code: "ISO/IEC 42001 – Level 2",
-    price: "$38,000",
-    duration: "8–12 weeks",
+    tier: "Founding Partner",
+    code: "POPIA §71 + ISO 42001",
+    price: "R 2,500 /mo",
+    duration: "Ongoing",
     color: "#c9920a",
     featured: true,
     features: [
-      "Full AIMS Implementation Audit",
-      "Risk Treatment Plan Development",
-      "ISO/IEC 42001 Certification (3-year cycle)",
-      "Algorithmic Rights Compliance Review",
-      "NIST AI RMF Cross-Mapping",
-      "3 Surveillance Audits included",
-      "Chief Risk Officer Briefing Package",
+      "POPIA Section 71 Compliance Audit",
+      "ISO/IEC 42001 Readiness Assessment",
+      "Lifetime Price Lock",
+      "Free Upgrade to SANAS Accreditation",
+      "Monthly AI Integrity Intelligence Brief",
+      "Priority Access to Audit Engine",
     ],
-    audience: "Mid-to-large enterprises deploying AI at scale",
+    audience: "Early adopters defining South African AI standards",
   },
   {
-    tier: "Enterprise",
-    code: "ISO/IEC 42001 – Level 3",
-    price: "Custom",
-    duration: "12–24 weeks",
+    tier: "Conformity Assessment",
+    code: "ISO/IEC 42001 – Full",
+    price: "R 185,000",
+    duration: "8–12 weeks",
     color: "#0f1f3d",
     features: [
-      "Multi-site AIMS Certification",
-      "Board-level AI Governance Assessment",
-      "Regulatory Alignment (EU AI Act, CCPA, etc.)",
-      "Dedicated Certification Manager",
-      "Annual AI Maturity Benchmarking",
-      "AIC Global AI Governance Index Listing",
-      "White-glove Appeals Management",
-      "Unlimited Surveillance Audits",
+      "Full AIMS Implementation Audit",
+      "Risk Treatment Plan Development",
+      "Conformity Certificate (3-year cycle)",
+      "Algorithmic Rights Compliance Review",
+      "3 Surveillance Audits included",
+      "Executive Board Briefing",
     ],
-    audience: "Fortune 500 companies and regulated industries",
+    audience: "Large enterprises requiring formal certification",
+  },
+  {
+    tier: "Gap Analysis",
+    code: "Baseline Review",
+    price: "R 45,000",
+    duration: "2 weeks",
+    color: "#1d4ed8",
+    features: [
+      "AI Risk Inventory Assessment",
+      "Gap Analysis Report (108 controls)",
+      "Readiness Scorecard",
+      "1 Remediation Workshop",
+    ],
+    audience: "Organizations assessing their current risk exposure",
   },
 ];
 
 const gapControls = [
+  { domain: "POPIA Section 71 Compliance", controls: 10, completed: 4, risk: "High" },
   { domain: "AI Strategy & Governance", controls: 12, completed: 9, risk: "Low" },
   { domain: "Risk Management Framework", controls: 18, completed: 11, risk: "Medium" },
   { domain: "Data Governance & Privacy", controls: 15, completed: 13, risk: "Low" },
@@ -68,24 +65,22 @@ const gapControls = [
   { domain: "Algorithmic Rights Compliance", controls: 10, completed: 4, risk: "High" },
   { domain: "Incident Response & Monitoring", controls: 14, completed: 10, risk: "Medium" },
   { domain: "Human Oversight Mechanisms", controls: 8, completed: 6, risk: "Low" },
-  { domain: "Third-Party AI Procurement", controls: 11, completed: 5, risk: "High" },
 ];
 
 const riskTemplates = [
-  { title: "AI Risk Register Template", desc: "Comprehensive 200-row risk register aligned to ISO/IEC 42001 Annex A controls and NIST AI RMF categories.", type: "Excel / CSV", size: "248 KB" },
-  { title: "AIMS Policy Framework", desc: "Pre-populated AI Management System policy templates for Board, Executive, and Operational levels.", type: "Word / PDF", size: "1.2 MB" },
-  { title: "Algorithmic Impact Assessment", desc: "Structured AIA form for assessing high-risk AI system deployments under EU AI Act Article 9 requirements.", type: "PDF / Word", size: "387 KB" },
-  { title: "Vendor AI Due Diligence Checklist", desc: "40-point checklist for evaluating third-party AI provider compliance and contractual accountability.", type: "PDF / Excel", size: "156 KB" },
-  { title: "AI Incident Response Playbook", desc: "Step-by-step playbook for classifying, responding to, and reporting AI system failures or biased outcomes.", type: "PDF", size: "892 KB" },
-  { title: "NIST AI RMF Gap Analysis Workbook", desc: "Structured workbook mapping current controls to GOVERN, MAP, MEASURE, and MANAGE functions.", type: "Excel", size: "312 KB" },
+  { title: "POPIA Section 71 Checklist", desc: "Specific audit criteria for automated decision-making systems under South African law.", type: "PDF / Word", size: "156 KB" },
+  { title: "AI Risk Register Template", desc: "Comprehensive 200-row risk register aligned to ISO/IEC 42001 Annex A controls.", type: "Excel / CSV", size: "248 KB" },
+  { title: "AIMS Policy Framework", desc: "Pre-populated AI Management System policy templates for Board and Operational levels.", type: "Word / PDF", size: "1.2 MB" },
+  { title: "Algorithmic Impact Assessment", desc: "Structured AIA form for assessing high-risk AI system deployments.", type: "PDF / Word", size: "387 KB" },
+  { title: "Vendor AI Due Diligence", desc: "40-point checklist for evaluating third-party AI provider accountability.", type: "PDF / Excel", size: "156 KB" },
+  { title: "SANAS Roadmap Guide", desc: "Step-by-step technical guide to the AIC accreditation process.", type: "PDF", size: "892 KB" },
 ];
 
 const certifiedOrgs = [
-  { name: "Meridian Financial Group", sector: "Finance", tier: "Enterprise", since: "2024", score: 94 },
-  { name: "NovaTech Healthcare Systems", sector: "Healthcare", tier: "Professional", since: "2024", score: 88 },
-  { name: "Apex Logistics Corp.", sector: "Supply Chain", tier: "Professional", since: "2023", score: 85 },
-  { name: "GlobalEdge Insurance", sector: "Insurance", tier: "Enterprise", since: "2025", score: 91 },
-  { name: "Pinnacle HR Solutions", sector: "HR Technology", tier: "Foundation", since: "2025", score: 76 },
+  { name: "South African FinCorp", sector: "Finance", tier: "Founding Partner", since: "2024", score: 94 },
+  { name: "Cape Health Systems", sector: "Healthcare", tier: "Gap Analysis", since: "2024", score: 88 },
+  { name: "Jo'burg Logistics", sector: "Supply Chain", tier: "Conformity", since: "2023", score: 85 },
+  { name: "Pretoria Insurance", sector: "Insurance", tier: "Founding Partner", since: "2025", score: 91 },
 ];
 
 export default function CorporatePortal() {
@@ -101,7 +96,7 @@ export default function CorporatePortal() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative py-24 overflow-hidden min-h-[60vh] flex items-center">
+      <section className="relative py-24 overflow-hidden min-h-[60vh] flex items-center text-white">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
         <div className="absolute inset-0 hero-gradient" />
         <div className="relative max-w-7xl mx-auto px-4">
@@ -111,18 +106,18 @@ export default function CorporatePortal() {
               <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">Corporate Portal</span>
             </div>
             <h1 className="text-5xl md:text-6xl text-white mb-6 leading-tight">
-              ISO/IEC 42001 Certification<br />
-              <span className="text-aic-gold">for Your Organization</span>
+              POPIA Section 71<br />
+              <span className="text-aic-gold">Audit & Certification</span>
             </h1>
             <p className="text-white/70 text-xl max-w-2xl mb-10 leading-relaxed font-serif italic">
-              Achieve internationally recognized AI Management System certification. AIC's conformity assessment services help Chief Risk Officers build defensible, auditable AI governance programs.
+              Ensure your automated decision systems are legally defensible and ethically sound. We provide the South African benchmark for human accountability in AI.
             </p>
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => setActiveTab("certification")}
                 className="bg-aic-gold text-white px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-widest font-mono hover:bg-[#b07d08] transition-all shadow-lg shadow-aic-gold/20"
               >
-                View Certification Tiers
+                Join Founding Program
               </button>
               <button
                 onClick={() => setActiveTab("gap")}
@@ -142,8 +137,8 @@ export default function CorporatePortal() {
             {[
               { id: "certification", label: "Certification Services", icon: Shield },
               { id: "gap", label: "Gap Analysis Tool", icon: BarChart3 },
-              { id: "templates", label: "Risk Templates", icon: FileText },
-              { id: "directory", label: "Certified Organizations", icon: Building2 },
+              { id: "templates", label: "Regulatory Templates", icon: FileText },
+              { id: "directory", label: "Registry of Certified Orgs", icon: Building2 },
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -167,12 +162,12 @@ export default function CorporatePortal() {
         {activeTab === "certification" && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="text-center mb-16">
-              <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">ISO/IEC 42001</span>
-              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6">
-                AI Management System Certification
+              <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">South African Standard</span>
+              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6 font-bold">
+                Conformity Assessment Tiers
               </h2>
               <p className="text-gray-500 max-w-2xl mx-auto text-lg font-serif italic">
-                Select the certification tier that matches your organization's AI deployment scale, regulatory exposure, and governance maturity.
+                Select the audit path that aligns with your organization's risk profile and POPIA Section 71 requirements.
               </p>
             </div>
 
@@ -188,7 +183,7 @@ export default function CorporatePortal() {
                 >
                   {tier.featured && (
                     <div className="absolute top-0 left-0 right-0 text-center py-3 text-white text-[10px] font-bold uppercase tracking-[0.2em] font-mono" style={{ backgroundColor: tier.color }}>
-                      Most Popular
+                      Limited Founding Opportunity
                     </div>
                   )}
                   <div className={`p-10 ${tier.featured ? "mt-8" : ""}`}>
@@ -203,7 +198,7 @@ export default function CorporatePortal() {
                     <div className="text-3xl font-bold mb-2 font-mono" style={{ color: tier.color }}>{tier.price}</div>
                     <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-400 font-mono mb-6">
                       <Clock className="w-4 h-4" />
-                      {tier.duration} timeline
+                      {tier.duration}
                     </div>
                     <p className="text-sm text-gray-500 mb-8 italic font-serif leading-relaxed border-l-2 border-gray-100 pl-4">{tier.audience}</p>
                     <ul className="space-y-4 mb-10">
@@ -215,39 +210,18 @@ export default function CorporatePortal() {
                       ))}
                     </ul>
                     <button
-                      className="w-full py-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest font-mono transition-all"
+                      className="w-full py-4 rounded-2xl text-[11px] font-bold uppercase tracking-widest font-mono transition-all shadow-lg"
                       style={{
                         backgroundColor: tier.featured ? tier.color : "transparent",
                         color: tier.featured ? "white" : tier.color,
                         border: `2px solid ${tier.color}`,
                       }}
                     >
-                      {tier.price === "Custom" ? "Request Proposal" : "Begin Assessment"}
+                      {tier.tier === "Founding Partner" ? "Apply for Founding Slot" : "Request Quote"}
                     </button>
                   </div>
                 </motion.div>
               ))}
-            </div>
-
-            {/* Trust indicators */}
-            <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { icon: Globe, label: "48+ countries", sub: "Internationally recognized" },
-                { icon: Lock, label: "IAF MLA", sub: "Multilateral recognition" },
-                { icon: RefreshCw, label: "3-year cycle", sub: "With annual surveillance" },
-                { icon: Users, label: "Dedicated CRM", sub: "Your account manager" },
-              ].map((item, i) => {
-                const Icon = item.icon;
-                return (
-                  <div key={i} className="flex items-center gap-4 p-6 bg-aic-paper rounded-2xl border border-gray-100 group hover:border-aic-gold/30 transition-colors">
-                    <Icon className="w-10 h-10 text-aic-gold shrink-0 group-hover:scale-110 transition-transform" />
-                    <div>
-                      <div className="font-bold text-[#0f1f3d] text-sm uppercase tracking-widest font-mono">{item.label}</div>
-                      <div className="text-gray-400 text-xs font-sans mt-1">{item.sub}</div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </motion.div>
         )}
@@ -255,13 +229,13 @@ export default function CorporatePortal() {
         {/* Gap Analysis Tool */}
         {activeTab === "gap" && (
           <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
-            <div className="mb-12">
-              <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">Free Tool</span>
-              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6">
-                Indicative Gap Analysis
+            <div className="mb-12 text-center md:text-left">
+              <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">Free Readiness Tool</span>
+              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6 font-bold">
+                POPIA §71 Gap Analysis
               </h2>
               <p className="text-gray-500 max-w-2xl text-lg font-serif italic">
-                This indicative gap analysis shows control coverage across eight key ISO/IEC 42001 domains. 
+                Indicative assessment of your organization's readiness for automated decision-making audits under South African law.
               </p>
             </div>
 
@@ -269,26 +243,22 @@ export default function CorporatePortal() {
               <div className="md:col-span-1 bg-[#0f1f3d] rounded-[2rem] p-10 text-white text-center shadow-2xl relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10 subtle-grid" />
                 <div className="relative z-10">
-                  <div className="text-6xl font-bold text-aic-gold font-mono">61%</div>
-                  <div className="text-white/70 text-[10px] uppercase tracking-widest font-mono mt-4">Overall Readiness</div>
-                  <div className="text-white/40 text-[9px] uppercase tracking-widest font-mono mt-2">vs. 78% industry avg.</div>
+                  <div className="text-6xl font-bold text-aic-gold font-mono">42%</div>
+                  <div className="text-white/70 text-[10px] uppercase tracking-widest font-mono mt-4">Local Readiness</div>
                   <div className="mt-8 h-2 bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-aic-gold transition-all duration-1000" style={{ width: "61%" }}></div>
+                    <div className="h-full bg-aic-gold transition-all duration-1000" style={{ width: "42%" }}></div>
                   </div>
                 </div>
               </div>
-              <div className="md:col-span-3 grid grid-cols-3 gap-4">
+              <div className="md:col-span-3 grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { label: "High Risk Gaps", value: "3", color: "text-red-600", bg: "bg-red-50 border-red-100" },
-                  { label: "Medium Risk Gaps", value: "2", color: "text-amber-600", bg: "bg-amber-50 border-amber-100" },
-                  { label: "Low Risk Gaps", value: "3", color: "text-green-600", bg: "bg-green-50 border-green-100" },
-                  { label: "Controls Met", value: "66/108", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
-                  { label: "Controls Partial", value: "22/108", color: "text-amber-600", bg: "bg-amber-50 border-amber-100" },
-                  { label: "Controls Missing", value: "20/108", color: "text-red-600", bg: "bg-red-50 border-red-100" },
+                  { label: "POPIA Gaps", value: "6", color: "text-red-600", bg: "bg-red-50" },
+                  { label: "Transparency Score", value: "34/100", color: "text-amber-600", bg: "bg-amber-50" },
+                  { label: "Accountability", value: "Partial", color: "text-blue-600", bg: "bg-blue-50" },
                 ].map((item, i) => (
-                  <div key={i} className={`border rounded-2xl p-6 ${item.bg} flex flex-col justify-center`}>
+                  <div key={i} className={`border border-gray-100 rounded-2xl p-6 ${item.bg} flex flex-col justify-center`}>
                     <div className={`text-3xl font-bold font-mono ${item.color}`}>{item.value}</div>
-                    <div className="text-[10px] uppercase tracking-widest text-gray-500 font-mono mt-2">{item.label}</div>
+                    <div className="text-[10px] uppercase tracking-widest text-gray-500 font-mono mt-2 font-bold">{item.label}</div>
                   </div>
                 ))}
               </div>
@@ -323,11 +293,10 @@ export default function CorporatePortal() {
                         }`}>
                           {control.risk} Risk
                         </span>
-                        <span className="text-[10px] text-gray-400 font-mono">{control.completed}/{control.controls} Controls</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-6">
-                      <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                      <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-1000 ${
                             pct >= 80 ? "bg-green-500" : pct >= 60 ? "bg-amber-500" : "bg-red-500"
@@ -335,40 +304,25 @@ export default function CorporatePortal() {
                           style={{ width: `${pct}%` }}
                         ></div>
                       </div>
-                      <span className={`text-sm font-bold font-mono shrink-0 w-12 text-right ${
-                        pct >= 80 ? "text-green-600" : pct >= 60 ? "text-amber-600" : "text-red-600"
-                      }`}>
-                        {pct}%
-                      </span>
+                      <span className="text-xs font-bold font-mono text-gray-400">{pct}%</span>
                     </div>
                   </motion.div>
                 );
               })}
             </div>
-
-            <div className="mt-12 p-10 bg-[#0f1f3d] rounded-[2.5rem] text-center relative overflow-hidden group">
-              <div className="absolute inset-0 opacity-5 subtle-grid group-hover:opacity-10 transition-opacity" />
-              <h3 className="text-white text-2xl font-bold mb-4 relative z-10">Get Your Official Gap Analysis Report</h3>
-              <p className="text-white/60 text-lg mb-8 max-w-2xl mx-auto relative z-10 font-serif italic">
-                AIC's certified assessors will conduct a rigorous, defensible gap analysis across all 108 ISO/IEC 42001 controls.
-              </p>
-              <button className="bg-aic-gold text-white px-10 py-4 rounded-xl text-[11px] font-bold uppercase tracking-[0.2em] font-mono hover:bg-[#b07d08] transition-all relative z-10 shadow-xl">
-                Schedule a Formal Assessment
-              </button>
-            </div>
           </motion.div>
         )}
 
-        {/* Risk Templates */}
+        {/* Regulatory Templates */}
         {activeTab === "templates" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div className="mb-16">
-              <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">Intelligence Resources</span>
-              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6 font-serif">
-                Governance Implementation Kits
+            <div className="mb-16 text-center md:text-left">
+              <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">South African Compliance</span>
+              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6 font-bold">
+                Regulatory Audit Templates
               </h2>
               <p className="text-gray-500 max-w-2xl text-lg font-serif italic">
-                AIC-developed tools and templates to accelerate your AI governance implementation.
+                Tools and frameworks specifically designed for South African legal alignment and SANAS accreditation readiness.
               </p>
             </div>
 
@@ -386,14 +340,13 @@ export default function CorporatePortal() {
                     <FileText className="w-7 h-7 text-[#0f1f3d] group-hover:text-white transition-colors" />
                   </div>
                   <h3 className="font-bold text-[#0f1f3d] mb-3 text-lg leading-tight group-hover:text-aic-gold transition-colors">{template.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed mb-8 font-sans">{template.desc}</p>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-8">{template.desc}</p>
                   <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-50">
                     <div className="flex items-center gap-3">
                       <span className="text-[10px] font-bold px-3 py-1 bg-gray-100 rounded-lg text-gray-500 uppercase tracking-widest font-mono group-hover:bg-aic-gold/10 group-hover:text-aic-gold transition-colors">{template.type}</span>
-                      <span className="text-[10px] text-gray-400 font-mono">{template.size}</span>
                     </div>
                     <button className="flex items-center gap-2 text-aic-gold font-bold uppercase tracking-widest text-[10px] font-mono hover:gap-3 transition-all">
-                      <Download className="w-4 h-4" /> Download
+                      <Download className="w-4 h-4" />
                     </button>
                   </div>
                 </motion.div>
@@ -402,28 +355,17 @@ export default function CorporatePortal() {
           </motion.div>
         )}
 
-        {/* Certified Organizations Directory */}
+        {/* Directory */}
         {activeTab === "directory" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="mb-12">
               <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">Public Registry</span>
-              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6">
-                Verified Certified Bodies
+              <h2 className="text-4xl text-[#0f1f3d] mt-4 mb-6 font-bold">
+                Verified Certified Organizations
               </h2>
               <p className="text-gray-500 max-w-2xl text-lg font-serif italic">
-                Publicly searchable registry of ISO/IEC 42001-certified organizations. 
+                Registry of South African organizations holding active AIC certifications or Founding Partner status.
               </p>
-            </div>
-
-            <div className="relative mb-8 max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by organization or sector..."
-                className="w-full pl-12 pr-6 py-4 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-aic-gold/10 transition-all font-sans"
-                value={searchOrg}
-                onChange={(e) => setSearchOrg(e.target.value)}
-              />
             </div>
 
             <div className="overflow-hidden rounded-[2rem] border border-gray-100 shadow-xl bg-white">
@@ -434,41 +376,35 @@ export default function CorporatePortal() {
                       <th className="text-left px-8 py-5">Organization</th>
                       <th className="text-left px-8 py-5">Sector</th>
                       <th className="text-left px-8 py-5">Tier</th>
-                      <th className="text-left px-8 py-5 hidden md:table-cell">Certified Since</th>
-                      <th className="text-left px-8 py-5">AIC Maturity Score</th>
-                      <th className="text-left px-8 py-5 hidden lg:table-cell">Status</th>
+                      <th className="text-left px-8 py-5">Integrity Score</th>
+                      <th className="px-8 py-5"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
                     {filteredOrgs.map((org, i) => (
                       <tr key={i} className="hover:bg-gray-50 group transition-colors">
                         <td className="px-8 py-6 font-bold text-[#0f1f3d] flex items-center gap-3">
-                          <Building2 className="w-5 h-5 text-aic-gold group-hover:scale-110 transition-transform" />
+                          <Building2 className="w-5 h-5 text-aic-gold" />
                           {org.name}
                         </td>
-                        <td className="px-8 py-6 text-gray-500 font-medium">{org.sector}</td>
+                        <td className="px-8 py-6 text-gray-500">{org.sector}</td>
                         <td className="px-8 py-6">
-                          <span className={`text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-widest font-mono shadow-sm ${
-                            org.tier === "Enterprise" ? "bg-[#0f1f3d] text-white" :
-                            org.tier === "Professional" ? "bg-aic-gold text-white" :
-                            "bg-blue-50 text-blue-700"
+                          <span className={`text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-widest font-mono ${
+                            org.tier === "Founding Partner" ? "bg-aic-gold text-white" : "bg-blue-50 text-blue-700"
                           }`}>
                             {org.tier}
                           </span>
                         </td>
-                        <td className="px-8 py-6 text-gray-400 font-mono hidden md:table-cell">{org.since}</td>
                         <td className="px-8 py-6">
                           <div className="flex items-center gap-3">
-                            <div className="w-20 bg-gray-100 rounded-full h-2 overflow-hidden shadow-inner">
-                              <div className="h-full rounded-full bg-aic-gold transition-all duration-1000" style={{ width: `${org.score}%` }}></div>
+                            <div className="w-20 bg-gray-100 rounded-full h-2 overflow-hidden">
+                              <div className="h-full bg-aic-gold transition-all duration-1000" style={{ width: `${org.score}%` }}></div>
                             </div>
                             <span className="text-xs font-bold text-gray-700 font-mono">{org.score}</span>
                           </div>
                         </td>
-                        <td className="px-8 py-6 hidden lg:table-cell">
-                          <span className="flex items-center gap-2 text-green-600 text-[10px] font-bold uppercase tracking-widest font-mono">
-                            <CheckCircle className="w-4 h-4" /> Verified
-                          </span>
+                        <td className="px-8 py-6 text-right">
+                          <CheckCircle className="w-4 h-4 text-green-500 inline-block" />
                         </td>
                       </tr>
                     ))}
