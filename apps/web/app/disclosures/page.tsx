@@ -53,7 +53,7 @@ export default function Disclosures() {
           style={{ backgroundImage: `url(https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=2000)` }} 
         />
         <div className="absolute inset-0 hero-gradient" />
-        <div className="absolute inset-0 opacity-10 subtle-grid" />
+        <div className="absolute inset-0 opacity-5 subtle-grid" />
         <div className="relative max-w-7xl mx-auto px-4 z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-6">
