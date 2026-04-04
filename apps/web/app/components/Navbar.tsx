@@ -160,7 +160,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100 shadow-2xl h-screen overflow-y-auto">
+          <div className="lg:hidden bg-white border-t border-gray-100 shadow-2xl overflow-y-auto" style={{ maxHeight: 'calc(100dvh - 120px)' }}>
             <div className="px-4 py-8 space-y-2">
               {navItems.map((item) => {
                 const Icon = item.icon;

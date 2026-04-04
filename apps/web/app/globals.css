@@ -192,12 +192,41 @@
 
 @layer utilities {
   .hero-gradient {
-    @apply bg-gradient-to-br from-[#0a1628]/80 via-[#0f1f3d]/60 to-[#0a1628]/40;
+    @apply bg-gradient-to-br from-[#0a1628]/95 via-[#0f1f3d]/90 to-[#1a3160]/80;
   }
   
   .subtle-grid {
-    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), 
-                      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), 
+                      linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
     background-size: 60px 60px;
   }
+}
+
+/* ─── Mobile scroll performance ─────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent framer-motion layout shifts during hydration */
+[data-framer-motion] {
+  will-change: opacity;
+}
+
+/* ─── Typography responsiveness ─────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Improve tap targets on mobile */
+  nav a,
+  button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ─── Subtle grid utility (used in hero) ────────────────────────── */
+.subtle-grid {
+  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
 }

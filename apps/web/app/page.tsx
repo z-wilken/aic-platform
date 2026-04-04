@@ -62,7 +62,7 @@ const algorithmicRights = [
 ];
 
 const stats = [
-  { value: "R 2,500", label: "Monthly Founding Rate", icon: Award },
+  { value: "R 3,000", label: "Monthly Founding Rate", icon: Award },
   { value: "5", label: "Founding Partner Slots", icon: Users },
   { value: "100%", label: "Human Accountability", icon: Shield },
   { value: "POPIA", label: "Section 71 Aligned", icon: Globe },
@@ -88,7 +88,7 @@ export default function Home() {
         {/* Subtle grid overlay */}
         <div className="absolute inset-0 opacity-5 subtle-grid" />
 
-        <div className="relative max-w-7xl mx-auto px-4 py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -97,7 +97,7 @@ export default function Home() {
           >
             <div className="flex items-center gap-2 mb-6">
               <span className="px-3 py-1 bg-aic-gold/20 text-aic-gold-light text-xs rounded-full border border-aic-gold/30 uppercase tracking-widest font-mono">
-                South African Standard · POPIA Compliant
+                Global Standard · POPIA Section 71 Compliant
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl text-white mb-6 leading-tight">
@@ -106,7 +106,7 @@ export default function Home() {
               Behind the Algorithm
             </h1>
             <p className="text-xl text-white/70 mb-10 max-w-2xl leading-relaxed">
-              AI Integrity Certification (Pty) Ltd is the South African benchmark for ensuring no final decision about a human being is made solely by a machine. We certify human empathy and accountability.
+              AIC is the world's premier accreditation body focused on certifying the professionals accountable for AI — not just the machines. We establish the global standard for AI governance, ethics, and human responsibility.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
@@ -143,7 +143,7 @@ export default function Home() {
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, amount: 0.1 }}
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
@@ -165,7 +165,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.1, margin: "0px 0px -80px 0px" }}
             className="text-center mb-16"
           >
             <span className="text-aic-gold text-sm uppercase tracking-[0.3em] font-mono font-bold">Universal Principles</span>
@@ -183,10 +183,10 @@ export default function Home() {
               return (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, amount: 0.05, margin: "0px 0px -60px 0px" }}
+                  transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
                   className={`border rounded-2xl p-8 transition-all hover:shadow-xl hover:-translate-y-1 bg-white ${right.color} ${i === 4 ? "md:col-span-2 lg:col-span-1" : ""}`}
                 >
                   <div className={`w-12 h-12 rounded-xl ${right.iconBg} flex items-center justify-center mb-6 shadow-sm`}>
@@ -214,7 +214,7 @@ export default function Home() {
       {/* Pricing Section - Founding Partner */}
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-aic-navy rounded-[2.5rem] p-12 text-center relative overflow-hidden shadow-2xl">
+          <div className="bg-aic-navy rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 md:p-12 text-center relative overflow-hidden shadow-2xl">
             <div className="absolute inset-0 opacity-5 subtle-grid" />
             <div className="absolute top-0 right-0 p-8">
               <span className="bg-aic-gold text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest font-mono">Limited Offer</span>
@@ -223,7 +223,7 @@ export default function Home() {
             <p className="text-white/70 mb-8 text-lg">
               Join the first 5 South African organisations to define the future of human-accountable AI.
             </p>
-            <div className="text-6xl font-bold text-white mb-2 font-mono">R 2,500<span className="text-xl text-white/50">/month</span></div>
+            <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-2 font-mono">R 3,000<span className="text-xl text-white/50">/month</span></div>
             <p className="text-aic-gold text-sm mb-10 font-medium tracking-wide font-mono uppercase">Locked for life · Free upgrade to SANAS-accredited certification</p>
             <Link
               href="/alpha-apply"
@@ -267,7 +267,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="border border-white/10 rounded-3xl p-10 bg-white/5 backdrop-blur-md hover:border-aic-gold/40 transition-colors group"
+                className="border border-white/10 rounded-2xl sm:rounded-3xl p-6 md:p-10 bg-white/5 backdrop-blur-md hover:border-aic-gold/40 transition-colors group"
               >
                 <div className="text-aic-gold font-bold text-xl mb-2 font-mono">{std.code}</div>
                 <div className="text-white text-lg font-medium mb-4">{std.name}</div>

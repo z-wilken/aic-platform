@@ -1,23 +1,45 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://aic.co.za'
-  
-  const routes = [
-    '',
-    '/citizens',
-    '/business',
-    '/registry',
-    '/about',
-    '/contact',
-    '/process',
-    '/tiers'
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString().split('T')[0],
-    changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
-  }))
+  const baseUrl = "https://aiccertified.cloud";
+  const now = new Date();
 
-  return routes
+  return [
+    {
+      url: baseUrl,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/governance-hub`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/corporate-portal`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/professional-portal`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/ai-governance-index`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/disclosures`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+  ];
 }
