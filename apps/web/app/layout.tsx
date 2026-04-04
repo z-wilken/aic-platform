@@ -33,21 +33,12 @@ export const metadata: Metadata = {
     title: "AI Integrity Certification | Certifying Human Accountability in AI",
     description:
       "AIC is the world's premier accreditation body certifying the professionals accountable for AI — not just the machines. Founding Partner slots now open.",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "AI Integrity Certification (Pty) Ltd",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AI Integrity Certification | Human Accountability in AI",
     description:
       "The global standard for AI governance, ethics, and human responsibility. POPIA Section 71 compliant.",
-    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
