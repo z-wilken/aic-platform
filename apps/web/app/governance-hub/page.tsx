@@ -181,7 +181,7 @@ export default function GovernanceHub() {
 
             <div className="lg:w-2/3 space-y-4">
               {rights.map((right, i) => {
-                const Icon = right.icon;
+                const RightIcon = right.icon;
                 const isExpanded = expandedRight === i;
                 return (
                   <motion.div
@@ -197,7 +197,7 @@ export default function GovernanceHub() {
                       onClick={() => setExpandedRight(isExpanded ? null : i)}
                     >
                       <div className={`w-12 h-12 rounded-xl ${right.iconClass} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-6 h-6" />
+                        <RightIcon className="w-6 h-6" />
                       </div>
                       <div className="flex-1">
                         <div className="text-[10px] uppercase tracking-widest font-mono font-bold opacity-60 mb-1">{right.article}</div>

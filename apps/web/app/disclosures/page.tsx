@@ -47,7 +47,7 @@ export default function Disclosures() {
   return (
     <div className="font-sans">
       {/* Hero */}
-      <section className="relative py-24 overflow-hidden min-h-[60vh] flex items-center">
+      <section className="relative py-24 overflow-hidden min-h-[60vh] flex items-center text-white">
         <div 
           className="absolute inset-0 bg-cover bg-center" 
           style={{ backgroundImage: `url(https://images.unsplash.com/photo-1450101499163-c8848c66ca85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=2000)` }} 
@@ -82,7 +82,7 @@ export default function Disclosures() {
               { icon: Building2, label: "Certified Orgs", value: "340+" },
               { icon: Users, label: "Certified Professionals", value: "4,200+" },
             ].map((item, i) => {
-              const Icon = item.icon;
+              const StatIcon = item.icon;
               return (
                 <motion.div
                   key={i}
@@ -92,7 +92,7 @@ export default function Disclosures() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <Icon className="w-6 h-6 text-aic-gold mx-auto mb-3" />
+                  <StatIcon className="w-6 h-6 text-aic-gold mx-auto mb-3" />
                   <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-1 font-mono">{item.label}</div>
                   <div className="text-2xl font-bold text-[#0f1f3d] font-mono">{item.value}</div>
                 </motion.div>
@@ -281,10 +281,10 @@ export default function Disclosures() {
                           icon: Eye,
                         },
                       ].map((item, i) => {
-                        const Icon = item.icon;
+                        const AccIcon = item.icon;
                         return (
                           <div key={i} className="flex items-start gap-4 p-6 bg-aic-paper rounded-2xl border border-gray-100 transition-all hover:bg-white hover:shadow-md">
-                            <Icon className="w-6 h-6 text-aic-gold shrink-0 mt-0.5" />
+                            <AccIcon className="w-6 h-6 text-aic-gold shrink-0 mt-0.5" />
                             <div>
                               <div className="text-[10px] text-gray-400 uppercase tracking-widest font-mono font-bold mb-1">{item.label}</div>
                               <div className="font-bold text-[#0f1f3d] text-sm leading-tight">{item.value}</div>

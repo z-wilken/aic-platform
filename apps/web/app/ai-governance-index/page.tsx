@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   BarChart3,
@@ -308,5 +308,3 @@ export default function AIGovernanceIndex() {
     </div>
   );
 }
-
-import React from 'react';

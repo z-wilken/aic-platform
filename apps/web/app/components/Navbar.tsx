@@ -180,7 +180,7 @@ export default function Navbar() {
           >
             <div className="px-4 py-6 space-y-1">
               {navItems.map((item) => {
-                const Icon = item.icon;
+                const NavIcon = item.icon;
                 return (
                   <Link
                     key={item.href}
@@ -191,7 +191,7 @@ export default function Navbar() {
                         : "text-[#0f1f3d] hover:bg-gray-50"
                     }`}
                   >
-                    <Icon
+                    <NavIcon
                       className={`w-5 h-5 shrink-0 ${
                         pathname === item.href
                           ? "text-aic-gold"

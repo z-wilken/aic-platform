@@ -94,7 +94,7 @@ export default function ProfessionalPortal() {
               <Award className="w-6 h-6 text-aic-gold" />
               <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">Personnel Certification</span>
             </div>
-            <h1 className="text-5xl md:text-6xl mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl mb-6 leading-tight font-bold">
               Human Accountability<br />
               <span className="text-aic-gold">Practitioner Portal</span>
             </h1>
@@ -122,13 +122,16 @@ export default function ProfessionalPortal() {
               { value: "100%", label: "Local Recognition", icon: Globe },
               { value: "3", label: "Pathway Levels", icon: Award },
               { value: "POPIA", label: "Legal Foundation", icon: Shield },
-            ].map((stat, i) => (
-              <div key={i} className="space-y-1">
-                <stat.icon className="w-5 h-5 text-aic-gold mx-auto mb-2" />
-                <div className="text-3xl font-bold text-[#0f1f3d] font-mono">{stat.value}</div>
-                <div className="text-[10px] uppercase tracking-widest text-gray-400 font-mono font-bold">{stat.label}</div>
-              </div>
-            ))}
+            ].map((stat, i) => {
+              const StatIcon = stat.icon;
+              return (
+                <div key={i} className="space-y-1">
+                  <StatIcon className="w-5 h-5 text-aic-gold mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-[#0f1f3d] font-mono">{stat.value}</div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-400 font-mono font-bold">{stat.label}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
