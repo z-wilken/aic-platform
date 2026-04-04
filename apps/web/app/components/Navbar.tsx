@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Shield,
   Menu,
   X,
   Globe,
@@ -13,6 +12,7 @@ import {
   FileText,
   LogIn,
 } from "lucide-react";
+import { AICLogo } from "./AICLogo";
 
 const navItems = [
   {
@@ -110,17 +110,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-[72px]">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group shrink-0">
-              <div className="w-10 h-10 bg-[#0f1f3d] rounded-lg flex items-center justify-center group-hover:bg-[#1a3160] transition-colors shadow-lg shadow-[#0f1f3d]/15">
-                <Shield className="w-5 h-5 text-aic-gold" />
-              </div>
-              <div className="hidden sm:block">
-                <div className="text-[#0f1f3d] font-bold text-lg leading-tight tracking-tight font-serif italic">
-                  AIC
-                </div>
-                <div className="text-gray-400 text-[9px] leading-tight tracking-[0.15em] uppercase font-mono">
-                  AI Certification Institute
-                </div>
-              </div>
+              <AICLogo variant="full" scheme="light" size="md" className="group-hover:opacity-80 transition-opacity" />
             </Link>
 
             {/* Desktop nav */}
