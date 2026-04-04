@@ -104,7 +104,7 @@ export default function Home() {
         <div className="absolute inset-0 hero-gradient" />
         <div className="absolute inset-0 opacity-5 subtle-grid" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -114,11 +114,11 @@ export default function Home() {
             {/* Badge */}
             <div className="flex items-center gap-2 mb-6 sm:mb-8">
               <span className="px-3 py-1 bg-aic-gold/20 text-aic-gold-light text-[10px] sm:text-xs rounded-full border border-aic-gold/30 uppercase tracking-widest font-mono">
-                IAF MLA Accredited · ISO/IEC 17024
+                Global Standard · POPIA Section 71 Compliant
               </span>
             </div>
 
-            {/* H1 — significantly larger to match Figma */}
+            {/* H1 — scaled to match Figma proportions */}
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[6.5rem] text-white mb-6 sm:mb-8 leading-[1.05] font-serif">
               Certifying the{" "}
               <span className="text-aic-gold">Human</span>{" "}
@@ -126,10 +126,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg sm:text-xl text-white/70 mb-10 max-w-2xl sm:max-w-3xl leading-relaxed">
-              AIC is the world&apos;s premier accreditation body focused on
-              certifying the professionals accountable for AI — not just the
-              machines. We establish the global standard for AI governance,
-              ethics, and human responsibility.
+              AIC is the world&apos;s premier accreditation body focused on certifying the professionals accountable for AI — not just the machines. We establish the global standard for AI governance, ethics, and human responsibility.
             </p>
 
             <div className="flex flex-wrap gap-3 sm:gap-4">
@@ -169,7 +166,7 @@ export default function Home() {
                   key={i}
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
-                  viewport={viewportOpts}
+                  viewport={{ ...viewportOpts, amount: 0.1 }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
                   className="text-center"
                 >
@@ -195,7 +192,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={viewportOpts}
+            viewport={{ ...viewportOpts, amount: 0.1 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-12 sm:mb-16"
           >
@@ -206,9 +203,7 @@ export default function Home() {
               Declaration of Algorithmic Rights
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-              Our foundational framework ensures that automated systems preserve
-              human dignity. These five rights are the benchmark for AI
-              Integrity Certification (Pty) Ltd.
+              Our foundational framework ensures that automated systems preserve human dignity. These five rights are the benchmark for AI Integrity Certification (Pty) Ltd.
             </p>
           </motion.div>
 
@@ -220,8 +215,8 @@ export default function Home() {
                   key={i}
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
-                  viewport={viewportOpts}
-                  transition={{ delay: i * 0.07, duration: 0.5 }}
+                  viewport={{ ...viewportOpts, amount: 0.05, margin: "0px 0px -60px 0px" }}
+                  transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
                   className={`border rounded-2xl p-6 sm:p-8 transition-all hover:shadow-xl hover:-translate-y-1 bg-white ${right.color} ${
                     i === 4 ? "sm:col-span-2 lg:col-span-1" : ""
                   }`}
@@ -234,11 +229,9 @@ export default function Home() {
                   <div className="text-[10px] uppercase tracking-[0.2em] font-mono opacity-50 mb-2">
                     Article {i + 1}
                   </div>
-                  {/* Title inherits colored text from parent className */}
                   <h3 className="text-lg sm:text-xl font-bold mb-3">
                     {right.title}
                   </h3>
-                  {/* Description is explicitly grey — NOT colored */}
                   <p className="text-sm leading-relaxed text-gray-600">
                     {right.description}
                   </p>
@@ -262,7 +255,7 @@ export default function Home() {
       {/* ── Founding Partner Pricing ───────────────────────────── */}
       <section className="py-20 sm:py-24 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="bg-aic-navy rounded-[2rem] sm:rounded-[2.5rem] p-7 sm:p-10 md:p-14 text-center relative overflow-hidden shadow-2xl">
+          <div className="bg-aic-navy rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 md:p-12 text-center relative overflow-hidden shadow-2xl">
             <div className="absolute inset-0 opacity-5 subtle-grid" />
             <div className="absolute top-0 right-0 p-6 sm:p-8">
               <span className="bg-aic-gold text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest font-mono">
@@ -274,11 +267,10 @@ export default function Home() {
               Founding Partner Program
             </h2>
             <p className="text-white/70 mb-6 sm:mb-8 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
-              Join the first 5 South African organisations to define the future
-              of human-accountable AI.
+              Join the first 5 South African organisations to define the future of human-accountable AI.
             </p>
 
-            <div className="text-5xl sm:text-6xl font-bold text-white mb-2 font-mono">
+            <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-2 font-mono">
               R 3,000
               <span className="text-lg sm:text-xl text-white/50">/month</span>
             </div>
@@ -310,7 +302,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={viewportOpts}
+            viewport={{ ...viewportOpts, amount: 0.1 }}
             transition={{ duration: 0.6 }}
             className="text-center mb-12 sm:mb-16"
           >
@@ -321,8 +313,7 @@ export default function Home() {
               Built on Global &amp; Local Law
             </h2>
             <p className="text-white/50 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-              Our methodology maps directly to POPIA Section 71 and emerging
-              international standards like ISO/IEC 42001.
+              Our methodology maps directly to POPIA Section 71 and emerging international standards like ISO/IEC 42001.
             </p>
           </motion.div>
 
@@ -332,9 +323,9 @@ export default function Home() {
                 key={i}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                viewport={viewportOpts}
+                viewport={{ ...viewportOpts, amount: 0.12, duration: 0.5 }}
                 transition={{ delay: i * 0.12, duration: 0.5 }}
-                className="border border-white/10 rounded-2xl sm:rounded-3xl p-6 md:p-8 lg:p-10 bg-white/5 backdrop-blur-md hover:border-aic-gold/40 transition-all group"
+                className="border border-white/10 rounded-2xl sm:rounded-3xl p-6 md:p-10 bg-white/5 backdrop-blur-md hover:border-aic-gold/40 transition-colors group"
               >
                 <div className="text-aic-gold font-bold text-lg sm:text-xl mb-2 font-mono">
                   {std.code}
@@ -366,16 +357,14 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={viewportOpts}
+            viewport={{ ...viewportOpts, amount: 0.1 }}
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl sm:text-4xl text-aic-navy mb-5 sm:mb-6 font-serif italic">
               Is Your AI System Compliant?
             </h2>
             <p className="text-gray-600 mb-8 sm:mb-10 text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto">
-              Don&apos;t wait for a POPIA audit. Start your journey toward
-              human-accountable AI today with AI Integrity Certification (Pty)
-              Ltd.
+              Don&apos;t wait for a POPIA audit. Start your journey toward human-accountable AI today with AI Integrity Certification (Pty) Ltd.
             </p>
             <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
               <Link

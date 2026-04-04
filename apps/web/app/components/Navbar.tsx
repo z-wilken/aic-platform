@@ -144,7 +144,14 @@ export default function Navbar() {
             </div>
 
             {/* Desktop CTAs — matching Figma V20 */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-4">
+              <a
+                href={platformUrl}
+                className="flex items-center gap-2 text-[13px] font-semibold text-[#0f1f3d] hover:text-aic-gold transition-colors px-2 font-mono uppercase tracking-widest"
+              >
+                <LogIn className="w-4 h-4" />
+                Login
+              </a>
               <Link
                 href="/alpha-apply"
                 className="text-[13px] font-semibold text-[#0f1f3d] border-2 border-[#0f1f3d] px-5 py-2 rounded-lg hover:bg-[#0f1f3d] hover:text-white transition-all"
@@ -211,9 +218,16 @@ export default function Navbar() {
               })}
 
               <div className="pt-6 flex flex-col gap-3 px-1">
+                <a
+                  href={platformUrl}
+                  className="flex items-center justify-center gap-2 w-full text-sm font-bold text-white bg-[#0f1f3d] py-4 rounded-xl hover:bg-[#1a3160] transition-all shadow-lg shadow-[#0f1f3d]/20 min-h-[52px]"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Client Login
+                </a>
                 <Link
                   href="/alpha-apply"
-                  className="flex items-center justify-center w-full text-sm font-bold text-white bg-[#0f1f3d] py-4 rounded-xl hover:bg-[#1a3160] transition-all shadow-lg shadow-[#0f1f3d]/20 min-h-[52px]"
+                  className="flex items-center justify-center w-full text-sm font-bold text-aic-navy border-2 border-aic-navy py-4 rounded-xl hover:bg-aic-navy hover:text-white transition-all min-h-[52px]"
                 >
                   Get Certified
                 </Link>
