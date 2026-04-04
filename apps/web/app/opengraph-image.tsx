@@ -31,19 +31,22 @@ export default async function Image() {
         >
           South African Standard · POPIA Compliant
         </div>
+
         <div
           style={{
+            display: "flex",
+            flexDirection: "column",
             color: "white",
             fontSize: 62,
             fontWeight: 700,
             lineHeight: 1.1,
             marginBottom: 28,
           }}
-       >
-          AI Integrity
-          <br />
-          Certification
+        >
+          <span>AI Integrity</span>
+          <span>Certification</span>
         </div>
+
         <div
           style={{
             color: "rgba(255,255,255,0.55)",
@@ -52,9 +55,9 @@ export default async function Image() {
             lineHeight: 1.55,
           }}
         >
-          The global standard for AI governance, ethics, and human
-          accountability.
+          The global standard for AI governance, ethics, and human accountability.
         </div>
+
         <div
           style={{
             marginTop: 64,
