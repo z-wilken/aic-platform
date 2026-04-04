@@ -85,15 +85,22 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4 text-xs text-white/60 font-mono uppercase tracking-widest">
               {[
-                "POPIA Section 71",
-                "ISO/IEC 42001 (AIMS)",
-                "ISO/IEC 17024 (Personnel)",
-                "NIST AI RMF",
-                "EU AI Act Alignment",
+                { label: "POPIA Section 71", url: "https://www.justice.gov.za/inforeg/" },
+                { label: "ISO/IEC 42001 (AIMS)", url: "https://www.iso.org/standard/81230.html" },
+                { label: "ISO/IEC 17024 (Personnel)", url: "https://www.iso.org/standard/52993.html" },
+                { label: "NIST AI RMF", url: "https://airc.nist.gov/RMF" },
+                { label: "EU AI Act", url: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" },
               ].map((std) => (
-                <li key={std} className="flex items-center gap-2">
-                  <span className="w-1 h-1 rounded-full bg-aic-gold shrink-0" />
-                  {std}
+                <li key={std.label}>
+                  <a
+                    href={std.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-aic-gold transition-colors group"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-aic-gold shrink-0 group-hover:scale-150 transition-transform" />
+                    {std.label}
+                  </a>
                 </li>
               ))}
             </ul>
