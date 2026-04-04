@@ -10,7 +10,7 @@ const certificationTiers = [
   {
     tier: "Founding Partner",
     code: "POPIA §71 + ISO 42001",
-    price: "R 2,500 /mo",
+    price: "R 3,000 /mo",
     duration: "Ongoing",
     color: "#c9920a",
     featured: true,

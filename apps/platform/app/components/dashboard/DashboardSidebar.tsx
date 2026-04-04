@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Server,
 } from 'lucide-react';
+import { AICLogo } from '../../../../web/app/components/AICLogo';
 
 const navItems = [
   { label: 'Overview',          href: '/',               section: 'Command',      icon: <LayoutDashboard className="w-4 h-4" /> },
@@ -50,13 +51,7 @@ export function DashboardSidebar({
       {/* ── Logo ─────────────────────────────────────────────────── */}
       <div className="flex justify-between items-center mb-10 px-2">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="h-8 w-8 rounded bg-aic-copper/10 border border-aic-copper/30 flex items-center justify-center text-aic-copper font-mono font-bold text-lg group-hover:bg-aic-copper/20 transition-all">
-            A
-          </div>
-          <div>
-            <h1 className="font-sans text-base font-bold tracking-tight text-white leading-none">AIC PULSE</h1>
-            <p className="text-[9px] font-mono text-aic-copper uppercase tracking-widest mt-1">Governance Dashboard</p>
-          </div>
+          <AICLogo variant="full" scheme="dark" size="sm" className="group-hover:opacity-80 transition-opacity" />
         </Link>
         <button onClick={onClose} className="md:hidden text-white/30 hover:text-white">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Shield, Mail, MapPin, ChevronRight } from "lucide-react";
 import { navItems } from "./Navbar";
+import { AICLogo } from "./AICLogo";
 
 export default function Footer() {
   return (
@@ -38,17 +39,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16">
           {/* Brand */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-aic-navy-mid rounded-lg flex items-center justify-center border border-white/10 shrink-0">
-                <Shield className="w-5 h-5 text-aic-gold" />
-              </div>
-              <div>
-                <div className="font-bold text-lg font-serif italic">AIC</div>
-                <div className="text-white/40 text-[10px] uppercase tracking-wider font-mono">
-                  AI Integrity Certification
-                </div>
-              </div>
-            </div>
+            <Link href="/" className="inline-block group">
+              <AICLogo variant="full" scheme="dark" size="md" className="group-hover:opacity-80 transition-opacity" />
+            </Link>
             <p className="text-white/50 text-sm leading-relaxed">
               The world&apos;s premier accreditation body certifying the professionals accountable for AI — not just the machines.
             </p>
