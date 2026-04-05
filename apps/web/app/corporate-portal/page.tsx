@@ -139,7 +139,7 @@ export default function CorporatePortal() {
               { id: "gap", label: "Gap Analysis Tool", icon: BarChart3 },
               { id: "templates", label: "Regulatory Templates", icon: FileText },
               { id: "directory", label: "Registry of Certified Orgs", icon: Building2 },
-            ].map(({ id, label, icon: Icon }) => (
+            ].map(({ id, label, icon: TabIcon }) => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id as any)}
@@ -149,7 +149,7 @@ export default function CorporatePortal() {
                     : "border-transparent text-gray-400 hover:text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                <TabIcon className="w-4 h-4" />
                 {label}
               </button>
             ))}

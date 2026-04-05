@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import {
   Shield,
   Award,
-  BarChart3,
   ArrowRight,
   CheckCircle,
   MessageSquare,
@@ -106,15 +105,15 @@ export default function Home() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
             className="max-w-5xl"
           >
             {/* Badge */}
             <div className="flex items-center gap-2 mb-6 sm:mb-8">
               <span className="px-3 py-1 bg-aic-gold/20 text-aic-gold-light text-[10px] sm:text-xs rounded-full border border-aic-gold/30 uppercase tracking-widest font-mono">
-                Global Standard · POPIA Section 71 Compliant
+                IAF MLA Accredited · ISO/IEC 17024
               </span>
             </div>
 
@@ -131,17 +130,17 @@ export default function Home() {
 
             <div className="flex flex-wrap gap-3 sm:gap-4">
               <Link
-                href="/alpha-apply"
+                href="/contact"
                 className="inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-7 sm:px-8 py-3.5 sm:py-4 rounded-lg transition-all text-sm font-semibold shadow-lg shadow-aic-gold/25"
               >
-                Become a Founding Partner
+                Get Certified
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/governance-hub"
+                href="/ai-governance-index"
                 className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/25 px-7 sm:px-8 py-3.5 sm:py-4 rounded-lg transition-all text-sm font-semibold backdrop-blur-sm"
               >
-                Explore Algorithmic Rights
+                View AI Index
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
@@ -160,7 +159,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {stats.map((stat, i) => {
-              const Icon = stat.icon;
+              const StatIcon = stat.icon;
               return (
                 <motion.div
                   key={i}
@@ -171,7 +170,7 @@ export default function Home() {
                   className="text-center"
                 >
                   <div className="flex justify-center mb-3">
-                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-aic-gold" />
+                    <StatIcon className="w-5 h-5 sm:w-6 sm:h-6 text-aic-gold" />
                   </div>
                   <div className="text-white text-3xl lg:text-4xl font-bold font-mono">
                     {stat.value}
@@ -209,7 +208,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {algorithmicRights.map((right, i) => {
-              const Icon = right.icon;
+              const RightIcon = right.icon;
               return (
                 <motion.div
                   key={i}
@@ -224,7 +223,7 @@ export default function Home() {
                   <div
                     className={`w-11 h-11 rounded-xl ${right.iconBg} flex items-center justify-center mb-5 shadow-sm`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <RightIcon className="w-5 h-5" />
                   </div>
                   <div className="text-[10px] uppercase tracking-[0.2em] font-mono opacity-50 mb-2">
                     Article {i + 1}
@@ -279,10 +278,10 @@ export default function Home() {
             </p>
 
             <Link
-              href="/alpha-apply"
+              href="/contact"
               className="inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl font-bold uppercase tracking-widest font-mono transition-all shadow-xl shadow-aic-gold/25 text-xs sm:text-sm"
             >
-              Apply for Founding Partner Slot
+              Get Certified
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -323,7 +322,7 @@ export default function Home() {
                 key={i}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                viewport={{ ...viewportOpts, amount: 0.12, duration: 0.5 }}
+                viewport={{ ...viewportOpts, amount: 0.12 }}
                 transition={{ delay: i * 0.12, duration: 0.5 }}
                 className="border border-white/10 rounded-2xl sm:rounded-3xl p-6 md:p-10 bg-white/5 backdrop-blur-md hover:border-aic-gold/40 transition-colors group"
               >
@@ -368,17 +367,17 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
               <Link
-                href="/alpha-apply"
+                href="/contact"
                 className="inline-flex items-center gap-2 bg-aic-navy text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl font-bold uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-xl shadow-black/10 text-xs sm:text-sm"
               >
-                Become a Founding Partner
+                Get Certified
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/contact"
+                href="/ai-governance-index"
                 className="inline-flex items-center gap-2 border-2 border-aic-navy text-aic-navy px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl hover:bg-aic-navy hover:text-white transition-all font-bold uppercase tracking-widest font-mono text-xs sm:text-sm"
               >
-                Contact Us
+                View AI Index
               </Link>
             </div>
           </motion.div>

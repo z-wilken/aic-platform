@@ -305,3 +305,36 @@ html {
   .xs\:inline { display: inline; }
   .xs\:hidden { display: none; }
 }
+
+/* ── Hero utilities ────────────────────────────────────────── */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 22, 40, 0.92) 0%,
+    rgba(15, 31, 61, 0.85) 50%,
+    rgba(10, 22, 40, 0.78) 100%
+  );
+}
+
+.subtle-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Extra small breakpoint (480px) ────────────────────────── */
+@media (min-width: 480px) {
+  .xs\:inline { display: inline; }
+  .xs\:hidden { display: none; }
+  .xs\:text-base { font-size: 1rem; line-height: 1.5rem; }
+}
+
+/* ── Mobile tap target minimum ─────────────────────────────── */
+@media (max-width: 768px) {
+  button, a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}

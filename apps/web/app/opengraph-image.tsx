@@ -27,6 +27,7 @@ export default async function Image() {
             letterSpacing: 6,
             marginBottom: 32,
             textTransform: "uppercase",
+            display: "flex",
           }}
         >
           South African Standard · POPIA Compliant
@@ -53,6 +54,7 @@ export default async function Image() {
             fontSize: 22,
             maxWidth: 680,
             lineHeight: 1.55,
+            display: "flex",
           }}
         >
           The global standard for AI governance, ethics, and human accountability.
@@ -72,6 +74,7 @@ export default async function Image() {
               height: 8,
               borderRadius: "50%",
               background: "#c9920a",
+              display: "flex",
             }}
           />
           <div
@@ -80,6 +83,7 @@ export default async function Image() {
               fontSize: 16,
               textTransform: "uppercase",
               letterSpacing: 4,
+              display: "flex",
             }}
           >
             aiccertified.cloud
