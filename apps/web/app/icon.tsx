@@ -36,7 +36,7 @@ export default function Icon() {
               display: "flex",
             }}
           >
-            AIC
+            C
           </div>
           <div
             style={{

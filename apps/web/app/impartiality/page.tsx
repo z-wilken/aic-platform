@@ -1,136 +1,109 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { Scale, ShieldCheck, AlertTriangle, FileText, CheckCircle } from "lucide-react";
+"use client";
 
-export default function ImpartialityPage() {
+import { motion } from "framer-motion";
+import { Shield, Scale, CheckCircle, AlertCircle, Download, ExternalLink } from "lucide-react";
+
+export default function ImpartialityStatement() {
   return (
-    <div className="flex flex-col min-h-screen bg-white text-aic-navy">
-      <Navbar />
-
-      <main className="flex-grow pt-32 pb-24">
-        <div className="container max-w-5xl mx-auto px-6">
-          <div className="space-y-12 mb-20">
-            <h1 className="text-5xl md:text-6xl font-heading font-bold leading-tight">
-              Impartiality & Disclosure
+    <div className="bg-white min-h-screen font-sans">
+      {/* Hero */}
+      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
+        <div className="max-w-[1600px] mx-auto px-4 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="flex items-center gap-2 mb-4">
+              <Shield className="w-6 h-6 text-aic-copper" />
+              <span className="text-aic-copper text-xs uppercase tracking-widest font-mono font-bold">Regulatory Requirement</span>
+            </div>
+            <h1 className="text-5xl mb-6 font-serif italic">
+              Statement of Impartiality
             </h1>
-            <p className="text-xl font-sans text-aic-navy/70 leading-relaxed italic border-l-4 border-aic-copper pl-8">
-              &quot;AIC is currently in its founding phase. We are building toward SANAS accreditation. Our standards are modelled on ISO/IEC 17021 and 17024 and designed to meet accreditation requirements from day one.&quot;
+            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
+              Maintaining independence, objectivity, and freedom from conflicts of interest is the foundation 
+              of trust in the AI Integrity Certification (Pty) Ltd process.
             </p>
-          </div>
+          </motion.div>
+        </div>
+      </section>
 
-          <div className="space-y-24">
-            {/* Core Principle */}
-            <section className="space-y-8">
-              <div className="flex items-center gap-4 text-aic-copper uppercase font-mono text-xs font-bold tracking-[0.2em]">
-                <Scale className="w-5 h-5" />
-                <span>The Core Principle</span>
-              </div>
-              <h2 className="text-3xl font-heading font-bold">Independence is our only product.</h2>
-              <p className="text-lg font-sans text-aic-navy/70 leading-relaxed">
-                AI Integrity Certification (Pty) Ltd operates as an independent, third-party certification body. We maintain strict impartiality in all certification activities. We do not provide consultancy services to organisations seeking certification. If we help you build it, we cannot certify it.
-              </p>
-            </section>
+      {/* Content */}
+      <section className="py-24">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="prose prose-aic prose-lg max-w-none">
+            <p className="text-gray-400 mb-8 italic font-mono text-sm uppercase tracking-widest">Last Updated: February 2026</p>
+            
+            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">Institutional Independence</h2>
+            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+              AI Integrity Certification (Pty) Ltd is committed to impartiality in all its certification activities. 
+              As a South African benchmark for human accountability, we maintain strict objectivity in managing 
+              conflicts of interest and ensuring the integrity of our assessments.
+            </p>
 
-            {/* The Arthur Andersen Rule */}
-            <section className="bg-aic-navy text-white p-10 md:p-16 space-y-10">
-              <div className="space-y-4">
-                <h2 className="text-3xl font-heading font-bold">The Arthur Andersen Rule</h2>
-                <p className="text-white/60 font-sans leading-relaxed">
-                  The collapse of a major auditing firm over a conflict of interest is the clearest illustration of why independence matters. To prevent this, AIC enforces a hard separation between advice and audit.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <h3 className="text-sm font-mono uppercase tracking-widest text-aic-copper">Prohibited Services</h3>
-                <p className="text-white/80 font-sans">AIC does <strong className="text-white">not</strong> provide any of the following services to organisations it certifies:</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {[
-                    "AI Management system implementation",
-                    "Internal audit services for AI governance",
-                    "Algorithm or model risk assessment design",
-                    "Policy or procedure development for clients",
-                    "Custom AI software integration or coding",
-                    "Direct employee training on client-specific tools"
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3 text-sm font-sans text-white/70">
-                      <AlertTriangle className="w-4 h-4 text-aic-copper shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* Safeguards */}
-            <section className="space-y-12">
-              <h2 className="text-3xl font-heading font-bold">Conflict of Interest Safeguards</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="space-y-4">
-                  <h3 className="text-xl font-heading font-bold">Personnel Separation</h3>
-                  <p className="text-aic-navy/60 font-sans text-sm leading-relaxed">
-                    Auditors and technical assessors are prohibited from evaluating any organisation where they have provided consultancy or had any commercial interest within the previous 24 months.
+            <div className="bg-aic-paper border border-gray-100 rounded-2xl p-10 my-12 shadow-sm">
+              <div className="flex items-start gap-6">
+                <AlertCircle className="w-8 h-8 text-aic-copper shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-bold text-aic-navy mb-4 font-serif text-xl">Our Conflict Prohibitions</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    Per our accreditation roadmap and POPIA Section 71 requirements, AIC prohibits its personnel from:
                   </p>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xl font-heading font-bold">Financial Independence</h3>
-                  <p className="text-aic-navy/60 font-sans text-sm leading-relaxed">
-                    AIC is structured to ensure that no single client or founding partner represents more than 15% of our annual operating revenue, preventing commercial pressure on certification decisions.
-                  </p>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xl font-heading font-bold">Impartiality Committee</h3>
-                  <p className="text-aic-navy/60 font-sans text-sm leading-relaxed">
-                    Our certification decisions are reviewed by an independent committee that includes representatives from legal, academic, and regulatory backgrounds who have no financial stake in AIC.
-                  </p>
-                </div>
-                <div className="space-y-4">
-                  <h3 className="text-xl font-heading font-bold">Public Accountability</h3>
-                  <p className="text-aic-navy/60 font-sans text-sm leading-relaxed">
-                    Any reported conflict of interest is investigated immediately. Our register of interests is available for inspection by accreditation bodies and regulators.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {/* Accreditation Roadmap */}
-            <section className="border-t border-aic-navy/10 pt-24 space-y-8">
-              <div className="flex items-center gap-4 text-aic-copper uppercase font-mono text-xs font-bold tracking-[0.2em]">
-                <ShieldCheck className="w-5 h-5" />
-                <span>Accreditation Roadmap</span>
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                <div className="lg:col-span-7 space-y-6">
-                  <h2 className="text-3xl font-heading font-bold">Building toward the SANAS Gold Standard</h2>
-                  <p className="text-aic-navy/70 font-sans leading-relaxed">
-                    In South Africa, formal accreditation is granted by SANAS (South African National Accreditation System). The process for a new certification body typically takes 18 to 24 months.
-                  </p>
-                  <p className="text-aic-navy/70 font-sans leading-relaxed">
-                    AIC is currently in the operational phase required to demonstrate compliance. We operate to ISO/IEC 17021 (Management Systems) and ISO/IEC 17024 (Personnel Certification) standards. Certificates issued during this phase are issued as &quot;Founding Partner Verifications&quot; and will be eligible for upgrade to accredited status upon completion of the SANAS process.
-                  </p>
-                </div>
-                <div className="lg:col-span-5 bg-aic-navy/[0.02] p-8 border border-aic-navy/5">
-                  <h3 className="text-sm font-mono uppercase tracking-widest text-aic-navy/40 mb-6">Alignment Matrix</h3>
-                  <ul className="space-y-4">
-                    {[
-                      { std: "ISO/IEC 17021", status: "Operational Compliance" },
-                      { std: "ISO/IEC 17024", status: "Operational Compliance" },
-                      { std: "ISO/IEC 42001", status: "Assessment Ready" },
-                      { std: "POPIA Sec 71", status: "Full Mapping" }
-                    ].map((item, idx) => (
-                      <li key={idx} className="flex justify-between items-center text-sm font-mono">
-                        <span className="text-aic-navy font-bold">{item.std}</span>
-                        <span className="text-aic-copper">{item.status}</span>
-                      </li>
-                    ))}
+                  <ul className="space-y-4 text-gray-700">
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Providing consultancy services to organisations seeking certification.</span>
+                    </li>
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Auditing their own work or that of their recent employers (within 2 years).</span>
+                    </li>
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Accepting gifts or inducements from certification candidates.</span>
+                    </li>
+                    <li className="flex gap-3 items-start">
+                        <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
+                        <span>Participating in decision-making for candidates they have trained.</span>
+                    </li>
                   </ul>
                 </div>
               </div>
-            </section>
+            </div>
+
+            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">Objective Decision Making</h2>
+            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+              AIC certification decisions are based on objective evidence obtained through a fair, valid, 
+              and reliable assessment process. Decisions are made by competent personnel who have not participated 
+              in the assessment of the candidate.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-8 my-12">
+              {[
+                { title: "Risk Identification", desc: "Ongoing identification of threats to impartiality arising from its activities or relationships." },
+                { title: "Public Disclosure", desc: "Full transparency regarding certification processes and impartiality safeguards via the Pulse Registry." }
+              ].map((item, i) => (
+                <div key={i} className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-aic-copper/30 transition-colors">
+                  <Scale className="w-6 h-6 text-aic-copper mb-4" />
+                  <h4 className="font-bold text-aic-navy mb-2 font-serif text-lg">{item.title}</h4>
+                  <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-12 border-t border-aic-paper flex flex-wrap gap-4">
+              <button className="bg-aic-navy text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-lg shadow-aic-navy/10 flex items-center gap-2">
+                <Download className="w-4 h-4" /> Download Full Policy
+              </button>
+              <a 
+                href="https://www.sanas.co.za" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 border-2 border-aic-navy text-aic-navy px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-paper transition-all"
+              >
+                <ExternalLink className="w-4 h-4" /> SANAS Requirements
+              </a>
+            </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
+      </section>
     </div>
   );
 }
