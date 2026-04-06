@@ -1,388 +1,259 @@
-"use client";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  Shield,
-  Award,
-  ArrowRight,
-  CheckCircle,
-  MessageSquare,
-  Heart,
-  RotateCcw,
-  Zap,
-  Globe,
-  Users,
-  ChevronRight,
-} from "lucide-react";
-
-const heroBg =
-  "https://images.unsplash.com/photo-1694340016914-e684a924f5b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=2000";
-
-const algorithmicRights = [
-  {
-    icon: Shield,
-    title: "Human Agency",
-    description:
-      "No final decision affecting a person's dignity, freedom, or livelihood shall be made solely by a machine. A named human must remain accountable.",
-    color: "bg-blue-50 text-blue-700 border-blue-100",
-    iconBg: "bg-blue-100",
-  },
-  {
-    icon: MessageSquare,
-    title: "Explanation",
-    description:
-      "Every individual has the right to receive a meaningful, human-readable explanation of how an automated outcome was reached.",
-    color: "bg-amber-50 text-amber-700 border-amber-100",
-    iconBg: "bg-amber-100",
-  },
-  {
-    icon: Heart,
-    title: "Empathy",
-    description:
-      "Automated interactions must preserve human dignity. Cold, bureaucratic rejection by algorithms is a design failure that must be remediated.",
-    color: "bg-emerald-50 text-emerald-700 border-emerald-100",
-    iconBg: "bg-emerald-100",
-  },
-  {
-    icon: RotateCcw,
-    title: "Correction",
-    description:
-      "Every system must provide a clear, accessible, human-staffed mechanism to appeal and correct unjust automated decisions.",
-    color: "bg-purple-50 text-purple-700 border-purple-100",
-    iconBg: "bg-purple-100",
-  },
-  {
-    icon: Zap,
-    title: "Truth",
-    description:
-      "Every person has the right to know if they are interacting with an AI system. Transparency is the foundation of trust.",
-    color: "bg-rose-50 text-rose-700 border-rose-100",
-    iconBg: "bg-rose-100",
-  },
-];
-
-const stats = [
-  { value: "R 3,000", label: "Monthly Founding Rate", icon: Award },
-  { value: "5", label: "Founding Partner Slots", icon: Users },
-  { value: "100%", label: "Human Accountability", icon: Shield },
-  { value: "POPIA", label: "Section 71 Aligned", icon: Globe },
-];
-
-const standards = [
-  {
-    code: "POPIA Section 71",
-    name: "Automated Decision Making",
-    desc: "The legal requirement in South Africa for human intervention in automated decisions that significantly affect data subjects.",
-    url: "https://www.justice.gov.za/inforeg/",
-  },
-  {
-    code: "ISO/IEC 42001",
-    name: "AI Management Systems",
-    desc: "Framework for establishing, implementing, and continually improving an Artificial Intelligence Management System.",
-    url: "https://www.iso.org/standard/81230.html",
-  },
-  {
-    code: "NIST AI RMF",
-    name: "Risk Management Framework",
-    desc: "Voluntary framework for managing AI risks across the full lifecycle, mapping to Govern, Map, and Measure functions.",
-    url: "https://airc.nist.gov/RMF",
-  },
-];
-
-const viewportOpts = { once: true, amount: 0.05, margin: "0px 0px -80px 0px" } as const;
+import { ChevronRight, Shield, Scale, Eye, Heart, CheckCircle2, FileText, Lock } from "lucide-react";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <div>
-      {/* ── Hero ───────────────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroBg})` }}
-        />
-        <div className="absolute inset-0 hero-gradient" />
-        <div className="absolute inset-0 opacity-5 subtle-grid" />
+    <div className="flex flex-col min-h-screen bg-white">
+      <Navbar />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="max-w-5xl"
-          >
-            {/* Badge */}
-            <div className="flex items-center gap-2 mb-6 sm:mb-8">
-              <span className="px-3 py-1 bg-aic-gold/20 text-aic-gold-light text-[10px] sm:text-xs rounded-full border border-aic-gold/30 uppercase tracking-widest font-mono">
-                IAF MLA Accredited · ISO/IEC 17024
-              </span>
-            </div>
+      <main className="flex-grow">
+        {/* Section 1: Hero */}
+        <section className="relative min-h-[90vh] flex items-center pt-20 bg-aic-navy overflow-hidden">
+          {/* Option A: Pure deep navy with subtle grid */}
+          <div className="absolute inset-0 subtle-grid opacity-20" />
+          
+          <div className="container relative z-10 max-w-5xl mx-auto px-6">
+            <div className="flex flex-col items-center text-center space-y-12">
+              <div className="space-y-6">
+                <h1 className="text-white text-5xl md:text-7xl font-heading font-bold leading-tight">
+                  Certifying the Human Behind the Algorithm
+                </h1>
+                <div className="w-24 h-1 bg-aic-copper mx-auto" />
+              </div>
+              
+              <p className="text-white/80 text-lg md:text-xl font-sans max-w-3xl leading-relaxed">
+                When an AI system makes a decision that affects someone&apos;s life — their credit, their job, their healthcare — AIC certification means a named human is accountable for it. We certify organisations on how they govern AI. What we verify is whether someone can be held responsible.
+              </p>
 
-            {/* H1 — scaled to match Figma proportions */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[6.5rem] text-white mb-6 sm:mb-8 leading-[1.05] font-serif">
-              Certifying the{" "}
-              <span className="text-aic-gold">Human</span>{" "}
-              Behind the Algorithm
-            </h1>
-
-            <p className="text-lg sm:text-xl text-white/70 mb-10 max-w-2xl sm:max-w-3xl leading-relaxed">
-              AIC is the world&apos;s premier accreditation body focused on certifying the professionals accountable for AI — not just the machines. We establish the global standard for AI governance, ethics, and human responsibility.
-            </p>
-
-            <div className="flex flex-wrap gap-3 sm:gap-4">
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-7 sm:px-8 py-3.5 sm:py-4 rounded-lg transition-all text-sm font-semibold shadow-lg shadow-aic-gold/25"
-              >
-                Get Certified
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/ai-governance-index"
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/25 px-7 sm:px-8 py-3.5 sm:py-4 rounded-lg transition-all text-sm font-semibold backdrop-blur-sm"
-              >
-                View AI Index
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 text-xs">
-          <span className="font-mono uppercase tracking-widest text-[10px]">Scroll to explore</span>
-          <div className="w-px h-7 bg-gradient-to-b from-white/40 to-transparent mt-1" />
-        </div>
-      </section>
-
-      {/* ── Stats bar ──────────────────────────────────────────── */}
-      <section className="bg-aic-navy-mid border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {stats.map((stat, i) => {
-              const StatIcon = stat.icon;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ ...viewportOpts, amount: 0.1 }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  className="text-center"
+              <div className="pt-8">
+                <Link
+                  href="/classify"
+                  className="bg-aic-copper text-aic-navy px-10 py-5 text-lg font-bold uppercase tracking-widest hover:bg-aic-copper/90 transition-all shadow-2xl shadow-aic-copper/20"
                 >
-                  <div className="flex justify-center mb-3">
-                    <StatIcon className="w-5 h-5 sm:w-6 sm:h-6 text-aic-gold" />
-                  </div>
-                  <div className="text-white text-3xl lg:text-4xl font-bold font-mono">
-                    {stat.value}
-                  </div>
-                  <div className="text-white/50 text-xs uppercase tracking-[0.15em] font-mono mt-1">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              );
-            })}
+                  Find Your Division
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Declaration of Algorithmic Rights ─────────────────── */}
-      <section className="py-20 sm:py-24 bg-aic-paper">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ ...viewportOpts, amount: 0.1 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12 sm:mb-16"
-          >
-            <span className="text-aic-gold text-xs uppercase tracking-[0.3em] font-mono font-bold">
-              Universal Principles
-            </span>
-            <h2 className="text-3xl sm:text-4xl text-aic-navy mt-4 mb-5 font-serif">
-              Declaration of Algorithmic Rights
+        {/* Section 2: The Problem */}
+        <section className="py-24 lg:py-32 bg-white">
+          <div className="container max-w-4xl mx-auto px-6">
+            <h2 className="text-aic-navy text-3xl md:text-5xl font-heading mb-12">
+              AI is making consequential decisions. Someone needs to be accountable.
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-              Our foundational framework ensures that automated systems preserve human dignity. These five rights are the benchmark for AI Integrity Certification (Pty) Ltd.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {algorithmicRights.map((right, i) => {
-              const RightIcon = right.icon;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ ...viewportOpts, amount: 0.05, margin: "0px 0px -60px 0px" }}
-                  transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" }}
-                  className={`border rounded-2xl p-6 sm:p-8 transition-all hover:shadow-xl hover:-translate-y-1 bg-white ${right.color} ${
-                    i === 4 ? "sm:col-span-2 lg:col-span-1" : ""
-                  }`}
-                >
-                  <div
-                    className={`w-11 h-11 rounded-xl ${right.iconBg} flex items-center justify-center mb-5 shadow-sm`}
-                  >
-                    <RightIcon className="w-5 h-5" />
-                  </div>
-                  <div className="text-[10px] uppercase tracking-[0.2em] font-mono opacity-50 mb-2">
-                    Article {i + 1}
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-bold mb-3">
-                    {right.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-gray-600">
-                    {right.description}
-                  </p>
-                </motion.div>
-              );
-            })}
+            <div className="space-y-8 text-aic-navy/70 text-lg md:text-xl font-sans leading-relaxed">
+              <p>
+                POPIA Section 71 creates legal exposure for automated decisions that affect South Africans. But regulation alone doesn&apos;t create accountability — it just creates liability.
+              </p>
+              <p>
+                AIC certification does both: it documents that your organisation has a governance framework AND that a named person within it can answer for every decision the algorithm makes. When the regulator asks &quot;who decided this?&quot; — AIC certification means you have an answer.
+              </p>
+            </div>
           </div>
+        </section>
 
-          <div className="text-center mt-12 sm:mt-16">
-            <Link
-              href="/governance-hub"
-              className="inline-flex items-center gap-2 text-aic-navy border-2 border-aic-navy px-7 sm:px-8 py-3.5 sm:py-4 rounded-xl hover:bg-aic-navy hover:text-white transition-all text-xs sm:text-sm font-bold uppercase tracking-widest font-mono"
-            >
-              Read the Full Declaration
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Founding Partner Pricing ───────────────────────────── */}
-      <section className="py-20 sm:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="bg-aic-navy rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 md:p-12 text-center relative overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 opacity-5 subtle-grid" />
-            <div className="absolute top-0 right-0 p-6 sm:p-8">
-              <span className="bg-aic-gold text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest font-mono">
-                Limited Offer
-              </span>
+        {/* Section 3: The Five Algorithmic Rights */}
+        <section className="py-24 lg:py-32 bg-aic-navy text-white">
+          <div className="container max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-heading mb-6">The Declaration of Algorithmic Rights</h2>
+              <p className="text-white/60 font-sans max-w-2xl mx-auto">
+                AIC&apos;s certification framework is built on these five rights. Every assessment measures how well an organisation upholds each one.
+              </p>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl text-white mb-4 sm:mb-6 font-serif italic">
-              Founding Partner Program
-            </h2>
-            <p className="text-white/70 mb-6 sm:mb-8 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
-              Join the first 5 South African organisations to define the future of human-accountable AI.
-            </p>
-
-            <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-2 font-mono">
-              R 3,000
-              <span className="text-lg sm:text-xl text-white/50">/month</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+              {[
+                { icon: Shield, title: "Article I: Human Agency", desc: "Humans must retain the power to override automated outcomes." },
+                { icon: Eye, title: "Article II: Explanation", desc: "Every consequential decision must be explainable in plain language." },
+                { icon: Heart, title: "Article III: Empathy", desc: "Systems must account for human context and dignity in their outputs." },
+                { icon: CheckCircle2, title: "Article IV: Correction", desc: "A clear, human-led path must exist to contest and fix errors." },
+                { icon: Scale, title: "Article V: Truth", desc: "Algorithms must be audited for factual accuracy and bias mitigation." },
+              ].map((right, idx) => (
+                <div key={idx} className="border border-white/10 p-8 flex flex-col items-center text-center space-y-6">
+                  <right.icon className="w-8 h-8 text-aic-copper" />
+                  <h3 className="text-xl font-heading font-bold">{right.title}</h3>
+                  <p className="text-white/60 text-sm font-sans">{right.desc}</p>
+                </div>
+              ))}
             </div>
-            <p className="text-aic-gold text-xs sm:text-sm mb-8 sm:mb-10 font-medium tracking-wide font-mono uppercase">
-              Locked for life · Free upgrade to SANAS-accredited certification
-            </p>
-
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl font-bold uppercase tracking-widest font-mono transition-all shadow-xl shadow-aic-gold/25 text-xs sm:text-sm"
-            >
-              Get Certified
-              <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Standards ──────────────────────────────────────────── */}
-      <section className="py-20 sm:py-24 bg-aic-navy-mid relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 30% 50%, #c9920a 0%, transparent 60%), radial-gradient(circle at 70% 50%, #1d4ed8 0%, transparent 60%)",
-          }}
-        />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ ...viewportOpts, amount: 0.1 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12 sm:mb-16"
-          >
-            <span className="text-aic-gold text-xs uppercase tracking-[0.3em] font-mono font-bold">
-              Regulatory Frameworks
-            </span>
-            <h2 className="text-3xl sm:text-4xl text-white mt-4 mb-5 font-serif">
-              Built on Global &amp; Local Law
-            </h2>
-            <p className="text-white/50 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
-              Our methodology maps directly to POPIA Section 71 and emerging international standards like ISO/IEC 42001.
-            </p>
-          </motion.div>
+        {/* Section 4: The 5 Divisions */}
+        <section className="py-24 lg:py-32 bg-white text-aic-navy">
+          <div className="container max-w-7xl mx-auto px-6">
+            <div className="mb-20">
+              <h2 className="text-4xl md:text-5xl font-heading mb-6">Which Division Are You?</h2>
+              <p className="text-aic-navy/60 font-sans max-w-2xl">
+                AIC certifies organisations across the full spectrum of AI use — from companies that use no AI at all, to companies that build and sell AI products.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8">
-            {standards.map((std, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ ...viewportOpts, amount: 0.12 }}
-                transition={{ delay: i * 0.12, duration: 0.5 }}
-                className="border border-white/10 rounded-2xl sm:rounded-3xl p-6 md:p-10 bg-white/5 backdrop-blur-md hover:border-aic-gold/40 transition-colors group"
-              >
-                <div className="text-aic-gold font-bold text-lg sm:text-xl mb-2 font-mono">
-                  {std.code}
+            <div className="space-y-4">
+              {[
+                { num: 1, name: "Sovereign", desc: "Your organisation uses no AI in operational decisions. AIC certifies that you've audited for Shadow AI and remain human-led." },
+                { num: 2, name: "Supervised", desc: "AI recommends. A named human decides. AIC certifies that your override processes are documented and real." },
+                { num: 3, name: "Reviewed", desc: "AI decides. Humans review patterns and cases. AIC certifies that your review cadence and appeals process are functioning." },
+                { num: 4, name: "Monitored", desc: "Systems operate autonomously. AIC certifies that your drift detection, escalation paths, and disclosure practices are sound." },
+                { num: 5, name: "Artificial", desc: "You build or sell AI systems. AIC certifies each product for transparency, bias testing, and human override capability." },
+              ].map((div) => (
+                <div key={div.num} className="group border-b border-aic-navy/10 py-10 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:bg-aic-navy/[0.02] transition-colors px-4">
+                  <div className="flex items-center gap-8">
+                    <span className="font-mono text-3xl text-aic-copper/40 group-hover:text-aic-copper transition-colors">0{div.num}</span>
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-heading font-bold">{div.name}</h3>
+                      <p className="text-aic-navy/60 font-sans max-w-xl">{div.desc}</p>
+                    </div>
+                  </div>
+                  <Link href="/divisions" className="inline-flex items-center gap-2 text-aic-navy font-bold uppercase tracking-widest text-sm">
+                    Learn more <ChevronRight className="w-4 h-4" />
+                  </Link>
                 </div>
-                <div className="text-white text-base sm:text-lg font-medium mb-3 sm:mb-4">
-                  {std.name}
-                </div>
-                <p className="text-white/50 text-sm leading-relaxed mb-6 sm:mb-8">
-                  {std.desc}
+              ))}
+            </div>
+
+            <div className="mt-20 text-center">
+              <Link href="/classify" className="inline-block border-2 border-aic-navy px-8 py-4 font-bold uppercase tracking-widest hover:bg-aic-navy hover:text-white transition-all">
+                Take the 5-minute classification assessment
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 5: AIC Pulse */}
+        <section className="py-24 lg:py-32 bg-aic-navy text-white">
+          <div className="container max-w-7xl mx-auto px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-8">
+                <h2 className="text-4xl md:text-5xl font-heading leading-tight">AIC Pulse — Decision Logging for AI Systems</h2>
+                <p className="text-white/60 text-lg font-sans leading-relaxed">
+                  Pulse is an SDK that creates an immutable audit trail of every AI decision your system makes. Three lines of code. No codebase access required. Every decision logged, timestamped, and human-reviewable.
                 </p>
-                <a
-                  href={std.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-aic-gold text-xs font-mono uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <CheckCircle className="w-4 h-4" />
-                  <span>AIC Aligned · View Standard</span>
-                </a>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                <Link href="/waitlist" className="inline-block bg-aic-copper text-aic-navy px-8 py-4 font-bold uppercase tracking-widest hover:bg-aic-copper/90 transition-all">
+                  Request early access
+                </Link>
+              </div>
+              <div className="bg-aic-navy-mid p-8 border border-white/10 font-mono text-aic-copper text-sm">
+                <pre className="whitespace-pre-wrap">
+{`// Initialize AIC Pulse
+const pulse = new AICPulse({ apiKey: process.env.AIC_KEY });
 
-      {/* ── Final CTA ──────────────────────────────────────────── */}
-      <section className="py-20 sm:py-24 bg-aic-paper">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ ...viewportOpts, amount: 0.1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl sm:text-4xl text-aic-navy mb-5 sm:mb-6 font-serif italic">
-              Is Your AI System Compliant?
-            </h2>
-            <p className="text-gray-600 mb-8 sm:mb-10 text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto">
-              Don&apos;t wait for a POPIA audit. Start your journey toward human-accountable AI today with AI Integrity Certification (Pty) Ltd.
-            </p>
-            <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 bg-aic-navy text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl font-bold uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-xl shadow-black/10 text-xs sm:text-sm"
-              >
-                Get Certified
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/ai-governance-index"
-                className="inline-flex items-center gap-2 border-2 border-aic-navy text-aic-navy px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl hover:bg-aic-navy hover:text-white transition-all font-bold uppercase tracking-widest font-mono text-xs sm:text-sm"
-              >
-                View AI Index
+// Log automated decision
+await pulse.log({
+  decisionId: "loan_apr_4421",
+  subjectId: "user_882",
+  outcome: "approved",
+  accountableHuman: "John Doe (Chief Risk Officer)"
+});`}
+                </pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 6: Regulatory Context */}
+        <section className="py-24 lg:py-32 bg-white text-aic-navy">
+          <div className="container max-w-7xl mx-auto px-6">
+            <h2 className="text-4xl font-heading mb-20 text-center">Built Around the Regulations That Are Already Binding</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              <div className="space-y-6">
+                <h3 className="text-xl font-heading font-bold text-aic-copper tracking-wider uppercase">PO71 (South Africa)</h3>
+                <p className="font-sans text-aic-navy/70 leading-relaxed">
+                  The Protection of Personal Information Act (POPIA) Section 71 regulates decisions based solely on automated processing. AIC operationalises this by ensuring &quot;human in the loop&quot; is not just a policy, but a verified reality.
+                </p>
+              </div>
+              <div className="space-y-6">
+                <h3 className="text-xl font-heading font-bold text-aic-copper tracking-wider uppercase">EU AI Act</h3>
+                <p className="font-sans text-aic-navy/70 leading-relaxed">
+                  With enforcement starting August 2, 2026, the EU AI Act imposes strict transparency and accountability requirements on high-risk systems. AIC certification maps directly to these extraterritorial obligations.
+                </p>
+              </div>
+              <div className="space-y-6">
+                <h3 className="text-xl font-heading font-bold text-aic-copper tracking-wider uppercase">ISO/IEC 42001</h3>
+                <p className="font-sans text-aic-navy/70 leading-relaxed">
+                  The international standard for AI Management Systems (AIMS). AIC&apos;s framework bridges the gap between management-level standards and the technical reality of decision accountability.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 7: Articles Teaser */}
+        <section className="py-24 lg:py-32 bg-aic-navy/[0.02] border-y border-aic-navy/5">
+          <div className="container max-w-7xl mx-auto px-6 text-aic-navy">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+              <div>
+                <h2 className="text-4xl font-heading mb-4">AIC Articles</h2>
+                <p className="text-aic-navy/60 font-sans">Published thinking on algorithmic accountability.</p>
+              </div>
+              <Link href="/articles" className="font-bold uppercase tracking-widest text-sm border-b-2 border-aic-copper pb-1">
+                View all articles
               </Link>
             </div>
-          </motion.div>
-        </div>
-      </section>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                { cat: "Governance", title: "POPIA Section 71: Why South African Boards Can No Longer Ignore Automated Decision-Making", date: "April 2026" },
+                { cat: "Case Studies", title: "A Credit Rejection, an Algorithm, and No One to Call", date: "March 2026" },
+                { cat: "Policy", title: "The EU AI Act Enforcement Begins August 2026. What South African Companies Need to Know.", date: "March 2026" },
+              ].map((article, idx) => (
+                <Link key={idx} href="/articles" className="group bg-white border border-aic-navy/10 p-8 space-y-6 hover:shadow-xl transition-all">
+                  <span className="inline-block bg-aic-navy text-white text-[10px] font-mono font-bold uppercase tracking-[0.2em] px-3 py-1">{article.cat}</span>
+                  <h3 className="text-xl font-heading font-bold group-hover:text-aic-copper transition-colors">{article.title}</h3>
+                  <div className="flex justify-between items-center text-[11px] font-mono text-aic-navy/40 uppercase tracking-widest">
+                    <span>{article.date}</span>
+                    <span className="group-hover:translate-x-2 transition-transform">Read →</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 8: Founding Partner Programme */}
+        <section className="py-24 lg:py-32 bg-aic-navy text-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-aic-copper/5 -skew-x-12 translate-x-1/2" />
+          <div className="container max-w-4xl mx-auto px-6 relative z-10 text-center">
+            <h2 className="text-4xl md:text-5xl font-heading mb-8">Founding Partner Programme</h2>
+            <div className="space-y-12">
+              <p className="text-white/60 text-lg font-sans leading-relaxed">
+                We are building the standard. Join us now and your pricing is locked for life. When SANAS accreditation completes, Founding Partners receive a free upgrade to full certified status — at no additional cost.
+              </p>
+              
+              <div className="bg-white/5 border border-white/10 p-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-mono uppercase tracking-[0.15em] text-aic-copper">
+                <div className="space-y-2">
+                  <div className="text-white/40 text-[10px]">Investment</div>
+                  <div className="text-white">ZAR 2,500/month</div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-white/40 text-[10px]">Term</div>
+                  <div className="text-white">12-Month Lock</div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-white/40 text-[10px]">Accreditation</div>
+                  <div className="text-white">Free Upgrade</div>
+                </div>
+              </div>
+
+              <div className="pt-8">
+                <Link href="/waitlist" className="inline-block bg-aic-copper text-aic-navy px-12 py-5 text-lg font-bold uppercase tracking-widest hover:bg-aic-copper/90 transition-all">
+                  Apply for a Founding Partner Slot
+                </Link>
+                <p className="mt-8 text-white/30 text-xs font-sans italic">
+                  We are currently in the Founding Partner phase. Full SANAS accreditation is a 12–24 month process. Partners who join now are investing in the standard, not just buying certification.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }

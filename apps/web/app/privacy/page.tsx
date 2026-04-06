@@ -1,78 +1,67 @@
-"use client";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
-import { motion } from "framer-motion";
-import { Shield, Lock, Eye, Globe, FileText } from "lucide-react";
-
-export default function PrivacyPolicy() {
+export default function PrivacyPage() {
   return (
-    <div className="bg-white min-h-screen font-sans">
-      {/* Hero */}
-      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
-        <div className="max-w-[1600px] mx-auto px-4 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Lock className="w-6 h-6 text-aic-copper" />
-              <span className="text-aic-copper text-xs uppercase tracking-widest font-mono font-bold">Institutional Trust</span>
-            </div>
-            <h1 className="text-5xl mb-6 font-serif italic">
-              Privacy Policy
-            </h1>
-            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
-              AI Integrity Certification (Pty) Ltd is committed to the highest standards of data protection, 
-              ensuring the confidentiality of institutional audit evidence and personal records.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="flex flex-col min-h-screen bg-white text-aic-navy">
+      <Navbar />
 
-      {/* Content */}
-      <section className="py-24">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="prose prose-aic prose-lg max-w-none">
-            <p className="text-gray-400 mb-8 italic font-mono text-sm uppercase tracking-widest">Last Updated: February 2026</p>
-            
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">1. Scope of Data Collection</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              AIC collects data necessary for the execution of conformity assessments and personnel certification. 
-              This includes organisational governance documents, bias audit metadata, and professional competency evidence 
-              required for POPIA Section 71 compliance verification.
-            </p>
+      <main className="flex-grow pt-32 pb-24">
+        <div className="container max-w-4xl mx-auto px-6">
+          <header className="mb-16 space-y-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold">Privacy Policy</h1>
+            <p className="text-aic-navy/40 font-mono text-sm uppercase tracking-widest">Effective Date: April 6, 2026</p>
+          </header>
 
-            <div className="grid md:grid-cols-2 gap-8 my-12">
-              <div className="p-8 bg-aic-paper rounded-2xl border border-gray-100 shadow-sm">
-                <Eye className="w-6 h-6 text-aic-copper mb-4" />
-                <h3 className="font-bold text-aic-navy mb-2 font-serif text-lg">Transparency</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">We clearly disclose what data is required for certification and how it is utilized within our automated triage systems.</p>
-              </div>
-              <div className="p-8 bg-aic-paper rounded-2xl border border-gray-100 shadow-sm">
-                <Shield className="w-6 h-6 text-aic-copper mb-4" />
-                <h3 className="font-bold text-aic-navy mb-2 font-serif text-lg">Security</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">All audit evidence is stored in encrypted vaults with strict role-based access control (RBAC) enforced via institutional credentials.</p>
-              </div>
-            </div>
+          <div className="prose prose-lg max-w-none font-sans text-aic-navy/80 leading-relaxed space-y-8">
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">1. Commitment to POPIA</h2>
+              <p>
+                AI Integrity Certification (Pty) Ltd (&quot;AIC&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting the privacy and personal information of our clients, partners, and visitors. This policy explains how we process personal information in compliance with the Protection of Personal Information Act (POPIA) of South Africa.
+              </p>
+            </section>
 
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">2. Institutional Data Handling</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              Audit evidence provided through the Corporate Portal is processed via isolated agents. 
-              AIC does not utilize client audit data to train generalized AI models. All data handling 
-              is compliant with POPIA (South Africa) and the AIC Declaration of Algorithmic Rights.
-            </p>
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">2. Information We Collect</h2>
+              <p>We collect information necessary for our certification and governance services, including:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Professional contact details (name, email, job title, company name).</li>
+                <li>Information about your organisation&apos;s AI systems and governance frameworks.</li>
+                <li>Usage data through our AIC Pulse SDK (if integrated).</li>
+                <li>Communication history regarding assessments and certification.</li>
+              </ul>
+            </section>
 
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">3. Data Retention</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              Records are maintained for the duration of the certification cycle plus an additional 
-              period for regulatory compliance auditing, unless requested otherwise by the client organisation 
-              or required by South African law.
-            </p>
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">3. Purpose of Processing</h2>
+              <p>We process personal information only for the following purposes:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Conducting Division classification assessments.</li>
+                <li>Administering the Founding Partner Programme.</li>
+                <li>Providing AIC Pulse monitoring and audit services.</li>
+                <li>Verifying the named human accountability required for certification.</li>
+                <li>Compliance with legal and regulatory obligations.</li>
+              </ul>
+            </section>
 
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">4. Contact Information</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              For inquiries regarding data protection or to exercise your rights under POPIA, 
-              please contact our Information Officer at <a href="mailto:integrity@aiccertified.cloud" className="text-aic-copper underline font-bold">integrity@aiccertified.cloud</a>.
-            </p>
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">4. Data Subject Rights</h2>
+              <p>
+                Under POPIA, you have the right to access, correct, or request the deletion of your personal information. You may also object to the processing of your data for certain purposes. To exercise these rights, please contact our Information Officer at info@aiccertified.cloud.
+              </p>
+            </section>
+
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">5. Security</h2>
+              <p>
+                We implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk, including encryption of audit logs and strict access controls.
+              </p>
+            </section>
           </div>
         </div>
-      </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }

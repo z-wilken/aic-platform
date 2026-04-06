@@ -1,80 +1,58 @@
-"use client";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
-import { motion } from "framer-motion";
-import { FileText, Shield, Scale, AlertTriangle } from "lucide-react";
-
-export default function TermsOfUse() {
+export default function TermsPage() {
   return (
-    <div className="bg-white min-h-screen font-sans">
-      {/* Hero */}
-      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
-        <div className="max-w-[1600px] mx-auto px-4 relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Scale className="w-6 h-6 text-aic-copper" />
-              <span className="text-aic-copper text-xs uppercase tracking-widest font-mono font-bold">Agreement</span>
-            </div>
-            <h1 className="text-5xl mb-6 font-serif italic">
-              Terms of Use
-            </h1>
-            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
-              Standard operating terms for accessing the Pulse platform, certification registries, and 
-              intellectual property relating to the Declaration of Algorithmic Rights.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="flex flex-col min-h-screen bg-white text-aic-navy">
+      <Navbar />
 
-      {/* Content */}
-      <section className="py-24">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="prose prose-aic prose-lg max-w-none">
-            <p className="text-gray-400 mb-8 italic font-mono text-sm uppercase tracking-widest">Last Updated: February 2026</p>
-            
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">1. Acceptance of Terms</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              By accessing the AI Integrity Certification (Pty) Ltd (AIC) platforms or utilizing our certification services, 
-              you agree to comply with these terms and all applicable laws and regulations in South Africa. 
-              If you do not agree with these terms, you are prohibited from using or accessing this site.
-            </p>
+      <main className="flex-grow pt-32 pb-24">
+        <div className="container max-w-4xl mx-auto px-6">
+          <header className="mb-16 space-y-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold">Terms of Service</h1>
+            <p className="text-aic-navy/40 font-mono text-sm uppercase tracking-widest">Effective Date: April 6, 2026</p>
+          </header>
 
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">2. Use License</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              Permission is granted to temporarily download one copy of the materials (information or software) 
-              on AIC's website for personal, non-commercial transitory viewing only. This is the grant of a 
-              license, not a transfer of title.
-            </p>
+          <div className="prose prose-lg max-w-none font-sans text-aic-navy/80 leading-relaxed space-y-8">
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">1. Certification Services</h2>
+              <p>
+                AI Integrity Certification (Pty) Ltd (&quot;AIC&quot;) provides independent certification and governance services for organisations using AI. Certification is awarded based on an organisation&apos;s ability to demonstrate human accountability, transparency, and compliance with the AIC framework.
+              </p>
+            </section>
 
-            <div className="bg-aic-paper border border-aic-copper/20 rounded-2xl p-10 my-12 shadow-sm">
-              <div className="flex items-start gap-6">
-                <AlertTriangle className="w-8 h-8 text-aic-copper shrink-0 mt-1" />
-                <div>
-                  <h3 className="font-bold text-aic-navy mb-4 font-serif text-xl">Certification Integrity</h3>
-                  <p className="text-sm text-gray-700 leading-relaxed">
-                    The use of AIC certification marks, logos, and badges is strictly reserved for organisations 
-                    and individuals with active, verified certification status. Misrepresentation of certification 
-                    is a violation of our accreditation roadmap and POPIA Section 71 requirements and may lead to legal action.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">2. Founding Partner Programme</h2>
+              <p>
+                Founding Partners commit to a 12-month membership at ZAR 2,500/month. This pricing is locked for the life of the membership. Partners who join during this phase will receive a free upgrade to full certified status once AIC achieves SANAS accreditation, provided they maintain their membership and meet the required certification standards.
+              </p>
+            </section>
 
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">3. Accuracy of Materials</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              The materials appearing on AIC's website could include technical, typographical, or photographic 
-              errors. AIC does not warrant that any of the materials on its website are accurate, complete, or 
-              current. AIC may make changes to the materials contained on its website at any time without notice.
-            </p>
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">3. AIC Pulse SDK</h2>
+              <p>
+                Use of the AIC Pulse SDK is subject to its own separate license agreement provided at the time of integration. Pulse remains the intellectual property of AIC. The data collected by Pulse is used for audit and certification purposes as agreed between the parties.
+              </p>
+            </section>
 
-            <h2 className="text-aic-navy font-serif italic text-3xl mb-6">4. Governing Law</h2>
-            <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              These terms and conditions are governed by and construed in accordance with the laws of 
-              South Africa, and you irrevocably submit to the exclusive jurisdiction of the courts in the 
-              Republic of South Africa.
-            </p>
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">4. Impartiality and Conflicts</h2>
+              <p>
+                AIC reserves the right to refuse or withdraw certification if a conflict of interest is identified or if the organisation fails to uphold its governance obligations. We do not provide consulting services to the same organisations we certify.
+              </p>
+            </section>
+
+            <section className="space-y-4">
+              <h2 className="text-2xl font-heading font-bold text-aic-navy">5. Governing Law</h2>
+              <p>
+                These terms are governed by the laws of the Republic of South Africa. Any disputes arising from these terms or our services shall be subject to the exclusive jurisdiction of the South African courts.
+              </p>
+            </section>
           </div>
         </div>
-      </section>
+      </main>
+
+      <Footer />
     </div>
   );
 }

@@ -6,17 +6,17 @@ import { ClientLayout } from "./components/ClientLayout";
 export const metadata: Metadata = {
   metadataBase: new URL("https://aiccertified.cloud"),
   title: {
-    default: "AI Integrity Certification (Pty) Ltd | AIC",
+    default: "AIC | Certifying the Human Behind the Algorithm",
     template: "%s | AIC",
   },
   description:
-    "AIC is South Africa's first algorithmic accountability certification body. We certify that human empathy and accountability remain in every consequential automated decision. Anchored in POPIA Section 71 and ISO/IEC 42001.",
+    "AIC is South Africa's first algorithmic accountability certification body. We certify that human empathy and accountability remain in every consequential automated decision. Anchored in POPIA Section 71.",
   openGraph: {
     type: "website",
     locale: "en_ZA",
     url: "https://aiccertified.cloud",
     siteName: "AI Integrity Certification",
-    title: "AI Integrity Certification (Pty) Ltd | AIC",
+    title: "AIC | Certifying the Human Behind the Algorithm",
     description:
       "South Africa's first algorithmic accountability certification body. Certifying that humans stay in the loop for every consequential AI decision.",
     images: [
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Integrity Certification (Pty) Ltd | AIC",
+    title: "AIC | Certifying the Human Behind the Algorithm",
     description:
       "South Africa's first algorithmic accountability certification body.",
     images: ["/opengraph-image"],
@@ -49,9 +49,11 @@ export const metadata: Metadata = {
     canonical: "https://aiccertified.cloud",
   },
   icons: {
-    icon: [{ url: "/icon", type: "image/png", sizes: "32x32" }],
-    apple: [{ url: "/icon", type: "image/png", sizes: "180x180" }],
-    shortcut: "/favicon.ico",
+    icon: [
+      { url: "/icon", type: "image/png", sizes: "32x32" },
+      { url: "/icon?size=16", type: "image/png", sizes: "16x16" },
+    ],
+    apple: [{ url: "/icon?size=180", type: "image/png", sizes: "180x180" }],
   },
 };
 
@@ -69,7 +71,7 @@ const jsonLd = {
   areaServed: "ZA",
   contactPoint: {
     "@type": "ContactPoint",
-    email: "zander@ztoaholdings.co.za",
+    email: "info@aiccertified.cloud",
     contactType: "General Enquiries",
   },
 };

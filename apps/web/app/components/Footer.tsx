@@ -1,146 +1,79 @@
 import Link from "next/link";
-import { Shield, Mail, MapPin, ChevronRight } from "lucide-react";
-import { navItems } from "./Navbar";
-import { AICLogo } from "./AICLogo";
+import { Mail, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer id="contact" className="bg-aic-navy text-white overflow-hidden relative">
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-aic-copper via-transparent to-transparent" />
-      </div>
-
-      {/* Manifesto band */}
-      <div className="relative z-10 border-b border-white/10">
-        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 py-16 sm:py-20">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-            <div className="max-w-3xl">
-              <div className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold mb-5">
-                Our Mission
-              </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white font-serif italic leading-relaxed">
-                Certifying that a named human remains accountable for every decision that matters.
-              </h2>
-            </div>
-            <Link
-              href="/alpha-apply"
-              className="shrink-0 inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-7 py-4 rounded-xl transition-all text-xs font-bold uppercase tracking-widest font-mono shadow-xl shadow-aic-gold/20 self-start lg:self-auto"
-            >
-              Become a Founding Partner
-              <ChevronRight className="w-4 h-4" />
+    <footer className="bg-aic-navy text-white border-t border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+          {/* Brand Column */}
+          <div className="space-y-6">
+            <Link href="/" className="flex flex-col">
+              <span className="text-white font-heading text-2xl font-bold leading-none tracking-tight">
+                AIC
+              </span>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-mono text-aic-copper leading-none mt-1">
+                AI Integrity Certification
+              </span>
             </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Main footer grid */}
-      <div className="max-w-[1600px] mx-auto px-6 sm:px-8 py-16 sm:py-20 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16">
-          {/* Brand */}
-          <div className="space-y-6 sm:col-span-2 lg:col-span-1">
-            <Link href="/" className="inline-block group">
-              <AICLogo variant="full" scheme="dark" size="md" className="group-hover:opacity-80 transition-opacity" />
-            </Link>
-            <p className="text-white/50 text-sm leading-relaxed">
-              The world&apos;s premier accreditation body certifying the professionals accountable for AI — not just the machines.
+            <p className="text-white/50 text-sm leading-relaxed max-w-xs font-sans">
+              Certifying the human accountability behind automated decision systems. Based in Johannesburg, serving the global standard.
             </p>
-            <div className="pt-2 flex items-center gap-2 text-[10px] text-aic-gold font-mono uppercase tracking-widest">
-              <Shield className="w-3.5 h-3.5 shrink-0" />
-              <span>POPIA Section 71 · SANAS Roadmap</span>
-            </div>
           </div>
 
-          {/* Navigation */}
+          {/* Navigation Column */}
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-7 font-mono">
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-aic-copper mb-6 font-mono">
               Platform
             </h4>
             <ul className="space-y-4">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-white/60 hover:text-aic-gold text-xs transition-colors font-mono uppercase tracking-widest flex items-center gap-2 group"
-                  >
-                    <ChevronRight className="w-3 h-3 text-aic-gold opacity-0 group-hover:opacity-100 transition-opacity -ml-1" />
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              <li><Link href="/divisions" className="text-white/60 hover:text-white transition-colors text-sm">Divisions</Link></li>
+              <li><Link href="/classify" className="text-white/60 hover:text-white transition-colors text-sm">Classify</Link></li>
+              <li><Link href="/articles" className="text-white/60 hover:text-white transition-colors text-sm">Articles</Link></li>
+              <li><Link href="/waitlist" className="text-white/60 hover:text-white transition-colors text-sm">Waitlist</Link></li>
             </ul>
           </div>
 
-          {/* Standards */}
+          {/* Legal Column */}
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-7 font-mono">
-              Regulatory
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-aic-copper mb-6 font-mono">
+              Governance
             </h4>
-            <ul className="space-y-4 text-xs text-white/60 font-mono uppercase tracking-widest">
-              {[
-                { label: "POPIA Section 71", url: "https://www.justice.gov.za/inforeg/" },
-                { label: "ISO/IEC 42001 (AIMS)", url: "https://www.iso.org/standard/81230.html" },
-                { label: "ISO/IEC 17024 (Personnel)", url: "https://www.iso.org/standard/52993.html" },
-                { label: "NIST AI RMF", url: "https://airc.nist.gov/RMF" },
-                { label: "EU AI Act", url: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" },
-              ].map((std) => (
-                <li key={std.label}>
-                  <a
-                    href={std.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-aic-gold transition-colors group"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-aic-gold shrink-0 group-hover:scale-150 transition-transform" />
-                    {std.label}
-                  </a>
-                </li>
-              ))}
+            <ul className="space-y-4">
+              <li><Link href="/impartiality" className="text-white/60 hover:text-white transition-colors text-sm">Impartiality</Link></li>
+              <li><Link href="/privacy" className="text-white/60 hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-white/60 hover:text-white transition-colors text-sm">Terms of Service</Link></li>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact Column */}
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-7 font-mono">
+            <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-aic-copper mb-6 font-mono">
               Contact
             </h4>
-            <ul className="space-y-5 text-sm text-white/60">
-              <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5">
-                  <MapPin className="w-4 h-4 text-aic-gold" />
-                </div>
-                <span className="leading-relaxed">Johannesburg, South Africa</span>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 text-white/60 text-sm leading-relaxed">
+                <MapPin className="w-4 h-4 text-aic-copper shrink-0 mt-0.5" />
+                <span>Johannesburg, South Africa</span>
               </li>
-              <li className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
-                  <Mail className="w-4 h-4 text-aic-gold" />
-                </div>
-                <a
-                  href="mailto:integrity@aiccertified.cloud"
-                  className="hover:text-white transition-colors break-all"
-                >
-                  integrity@aiccertified.cloud
+              <li className="flex items-center gap-3 text-white/60 text-sm">
+                <Mail className="w-4 h-4 text-aic-copper shrink-0" />
+                <a href="mailto:info@aiccertified.cloud" className="hover:text-white transition-colors">
+                  info@aiccertified.cloud
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
-          <p className="text-white/20 text-[10px] font-mono uppercase tracking-widest text-center sm:text-left">
-            © 2026 AI Integrity Certification (Pty) Ltd. All rights reserved.
+        {/* Bottom Bar */}
+        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-white/30 text-[10px] font-mono uppercase tracking-[0.1em]">
+            © 2026 AI Integrity Certification (Pty) Ltd.
           </p>
-          <div className="flex gap-6 sm:gap-8 text-[10px] text-white/20 font-mono uppercase tracking-widest">
-            <Link href="/privacy" className="hover:text-aic-gold transition-colors">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-aic-gold transition-colors">
-              Terms
-            </Link>
-            <Link href="/disclosures" className="hover:text-aic-gold transition-colors">
-              Impartiality
-            </Link>
+          <div className="flex gap-8 text-[10px] text-white/30 font-mono uppercase tracking-[0.1em]">
+            <span>POPIA Section 71 Compliant</span>
+            <span>Registration: 2026/012345/07</span>
           </div>
         </div>
       </div>
