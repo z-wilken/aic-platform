@@ -8,7 +8,6 @@ import { z } from 'zod';
 export * from './errors';
 
 export type CertificationTier = 'TIER_1' | 'TIER_2' | 'TIER_3';
-export type AuditStatus = 'PENDING' | 'VERIFIED' | 'FLAGGED';
 export type UserRole = 'ADMIN' | 'COMPLIANCE_OFFICER' | 'AUDITOR' | 'VIEWER';
 
 export const ROLE_HIERARCHY: UserRole[] = ['VIEWER', 'AUDITOR', 'COMPLIANCE_OFFICER', 'ADMIN'];
@@ -20,9 +19,10 @@ export function hasRole(userRole: UserRole, requiredRole: UserRole): boolean {
   return ROLE_HIERARCHY.indexOf(userRole) >= ROLE_HIERARCHY.indexOf(requiredRole);
 }
 
-export type IncidentStatus = 'OPEN' | 'INVESTIGATING' | 'RESOLVED' | 'DISMISSED' | 'CLOSED';
+export type IncidentStatus = 'OPEN' | 'UNDER_REVIEW' | 'RESOLVED' | 'ESCALATED';
 export type ScheduledAuditStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-export type CorrectionStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'RESOLVED' | 'REJECTED';
+export type CorrectionStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'IMPLEMENTED' | 'VERIFIED' | 'REJECTED';
+export type AuditStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FLAGGED';
 
 export interface Permissions {
   // Audit Permissions

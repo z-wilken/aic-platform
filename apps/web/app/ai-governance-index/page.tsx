@@ -1,15 +1,18 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   BarChart3,
   TrendingUp,
   TrendingDown,
   Minus,
+  Filter,
   Download,
   Search,
   ChevronDown,
+  ChevronUp,
   Award,
   AlertTriangle,
   CheckCircle,
@@ -18,11 +21,14 @@ import {
   Globe,
   Users,
   Shield,
-  ArrowRight,
 } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Card } from "@/app/components/ui/card";
+import { Badge } from "@/app/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 
-// Relevant hero for Index/Data focus
-const heroBg = "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=2000";
+const heroBg = "https://images.unsplash.com/photo-1759661966728-4a02e3c6ed91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwYW5hbHl0aWNzJTIwYnVzaW5lc3MlMjBkYXNoYm9hcmR8ZW58MXx8fHwxNzc1MjQ4MTE3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
 
 type MaturityLevel = "Leading" | "Established" | "Developing" | "Emerging" | "Basic";
 type TrendDirection = "up" | "down" | "stable";
@@ -119,190 +125,505 @@ const companies: CompanyData[] = [
     certifiedProfessionals: 5,
     hasAICertification: true,
   },
+  {
+    rank: 6,
+    company: "Walmart Inc.",
+    industry: "Retail",
+    maturityScore: 82,
+    maturityLevel: "Established",
+    boardOversight: 80,
+    rightsCompliance: 85,
+    transparency: 81,
+    riskManagement: 82,
+    trend: "stable",
+    rankChange: 0,
+    certifiedProfessionals: 4,
+    hasAICertification: false,
+  },
+  {
+    rank: 7,
+    company: "Pfizer Inc.",
+    industry: "Healthcare",
+    maturityScore: 80,
+    maturityLevel: "Established",
+    boardOversight: 83,
+    rightsCompliance: 79,
+    transparency: 78,
+    riskManagement: 80,
+    trend: "up",
+    rankChange: 2,
+    certifiedProfessionals: 3,
+    hasAICertification: true,
+  },
+  {
+    rank: 8,
+    company: "Amazon.com Inc.",
+    industry: "Technology",
+    maturityScore: 78,
+    maturityLevel: "Established",
+    boardOversight: 74,
+    rightsCompliance: 81,
+    transparency: 76,
+    riskManagement: 82,
+    trend: "down",
+    rankChange: -3,
+    certifiedProfessionals: 9,
+    hasAICertification: false,
+  },
+  {
+    rank: 9,
+    company: "Goldman Sachs Group",
+    industry: "Financial Services",
+    maturityScore: 76,
+    maturityLevel: "Established",
+    boardOversight: 79,
+    rightsCompliance: 75,
+    transparency: 74,
+    riskManagement: 76,
+    trend: "stable",
+    rankChange: 0,
+    certifiedProfessionals: 7,
+    hasAICertification: true,
+  },
+  {
+    rank: 10,
+    company: "Tesla Inc.",
+    industry: "Automotive",
+    maturityScore: 74,
+    maturityLevel: "Developing",
+    boardOversight: 70,
+    rightsCompliance: 77,
+    transparency: 72,
+    riskManagement: 78,
+    trend: "up",
+    rankChange: 4,
+    certifiedProfessionals: 2,
+    hasAICertification: false,
+  },
 ];
 
-const maturityLevelColors: Record<MaturityLevel, string> = {
-  Leading: "bg-green-100 text-green-700",
-  Established: "bg-blue-100 text-blue-700",
-  Developing: "bg-amber-100 text-amber-700",
-  Emerging: "bg-orange-100 text-orange-700",
-  Basic: "bg-red-100 text-red-700",
+const maturityLevelColors: Record<MaturityLevel, { bg: string; text: string; border: string }> = {
+  Leading: { bg: "bg-green-50", text: "text-green-700", border: "border-green-200" },
+  Established: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+  Developing: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+  Emerging: { bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-200" },
+  Basic: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
 };
 
-export default function AIGovernanceIndex() {
+export default function AIGovernanceIndexPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIndustry, setSelectedIndustry] = useState("all");
+  const [sortBy, setSortBy] = useState<"rank" | "maturity" | "board" | "rights">("rank");
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
-  const filteredCompanies = companies.filter((c) =>
-    c.company.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const industries = ["all", ...Array.from(new Set(companies.map((c) => c.industry)))];
+
+  const filteredCompanies = companies
+    .filter((c) => {
+      const matchesSearch = c.company.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesIndustry = selectedIndustry === "all" || c.industry === selectedIndustry;
+      return matchesSearch && matchesIndustry;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "maturity":
+          return b.maturityScore - a.maturityScore;
+        case "board":
+          return b.boardOversight - a.boardOversight;
+        case "rights":
+          return b.rightsCompliance - a.rightsCompliance;
+        default:
+          return a.rank - b.rank;
+      }
+    });
+
+  const getTrendIcon = (trend: TrendDirection, change: number) => {
+    if (trend === "up") return <TrendingUp className="w-4 h-4 text-green-600" />;
+    if (trend === "down") return <TrendingDown className="w-4 h-4 text-red-600" />;
+    return <Minus className="w-4 h-4 text-gray-400" />;
+  };
+
+  const getRankChangeDisplay = (change: number) => {
+    if (change === 0) return <span className="text-gray-400">—</span>;
+    if (change > 0) return <span className="text-green-600">+{change}</span>;
+    return <span className="text-red-600">{change}</span>;
+  };
 
   return (
     <div>
       {/* Hero */}
-      <section className="relative py-24 overflow-hidden min-h-[60vh] flex items-center">
+      <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 hero-gradient" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0f1f3d]/95 via-[#1a3160]/90 to-[#0a1628]/85" />
         <div className="relative max-w-7xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="flex items-center gap-2 mb-6">
-              <BarChart3 className="w-5 h-5 text-aic-gold" />
-              <span className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold">Data & Intelligence</span>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="flex items-center gap-2 mb-4">
+              <BarChart3 className="w-6 h-6 text-[#c9920a]" />
+              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
+                Fortune 500 AI Maturity Rankings
+              </span>
             </div>
-            <h1 className="text-5xl md:text-6xl text-white mb-6 leading-tight">
-              Global AI<br />
-              <span className="text-aic-gold">Governance Index</span>
+            <h1 className="text-5xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+              Global AI Governance Index
             </h1>
-            <p className="text-white/70 text-xl max-w-2xl mb-10 leading-relaxed font-serif italic">
-              The definitive ranking of Fortune 500 companies based on AI maturity, board oversight, and human accountability metrics. Updated quarterly.
+            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
+              The definitive ranking of Fortune 500 companies based on AI maturity, board oversight, algorithmic rights
+              compliance, and human accountability. Updated quarterly.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <button className="bg-aic-gold text-white px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-widest font-mono hover:bg-[#b07d08] transition-all shadow-lg shadow-aic-gold/20">
-                Download Q1 2026 Report
-              </button>
-              <button className="bg-white/10 text-white border-2 border-white/20 px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-widest font-mono hover:bg-white/20 transition-all">
+            <div className="flex flex-wrap gap-4 mt-8">
+              <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-6 py-3">
+                <Download className="w-4 h-4 mr-2" />
+                Download Full Report (Q1 2026)
+              </Button>
+              <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-6 py-3">
                 Methodology
-              </button>
+              </Button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Stats bar */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      {/* Stats Overview */}
+      <section className="py-12 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { value: "500", label: "Companies Tracked", icon: Building2 },
-              { value: "72", label: "Average Maturity", icon: BarChart3 },
-              { value: "23%", label: "Board Oversight", icon: Shield },
-              { value: "142", label: "Certified Orgs", icon: Award },
-            ].map((stat, i) => (
-              <div key={i} className="space-y-1">
-                <stat.icon className="w-5 h-5 text-aic-gold mx-auto mb-2" />
-                <div className="text-3xl font-bold text-[#0f1f3d] font-mono">{stat.value}</div>
-                <div className="text-[10px] uppercase tracking-widest text-gray-400 font-mono font-bold">{stat.label}</div>
-              </div>
-            ))}
+              { value: "72", label: "Average Maturity Score", icon: BarChart3 },
+              { value: "23%", label: "With Board AI Committees", icon: Users },
+              { value: "142", label: "AIC-Certified Orgs", icon: Award },
+            ].map((stat, i) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="text-center"
+                >
+                  <Icon className="w-5 h-5 text-[#c9920a] mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-[#0f1f3d]">{stat.value}</div>
+                  <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Filters & Search */}
+      <section className="py-8 bg-[#f8fafc] border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search companies..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+              <SelectTrigger className="w-full md:w-64">
+                <SelectValue placeholder="Filter by Industry" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Industries</SelectItem>
+                {industries.slice(1).map((industry) => (
+                  <SelectItem key={industry} value={industry}>
+                    {industry}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
+              <SelectTrigger className="w-full md:w-64">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="rank">Rank (Default)</SelectItem>
+                <SelectItem value="maturity">Maturity Score</SelectItem>
+                <SelectItem value="board">Board Oversight</SelectItem>
+                <SelectItem value="rights">Rights Compliance</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </section>
 
       {/* Main Index Table */}
-      <section className="py-24 bg-aic-paper">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+          <div className="mb-6 flex items-center justify-between">
             <div>
-              <h2 className="text-4xl text-[#0f1f3d] mb-2 font-bold">Quarterly Rankings</h2>
-              <p className="text-gray-500 font-serif italic text-lg">Top 10 Global Leaders in Responsible AI Governance</p>
+              <h2 className="text-2xl font-semibold text-[#0f1f3d]">Top 10 Rankings</h2>
+              <p className="text-sm text-gray-500 mt-1">Based on Q1 2026 assessment cycle</p>
             </div>
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search index..."
-                className="w-full pl-12 pr-6 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-aic-gold/10 transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Info className="w-4 h-4" />
+              <span>Click row to expand details</span>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-[2rem] border border-gray-100 shadow-xl bg-white">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm font-sans">
-                <thead>
-                  <tr className="bg-[#0f1f3d] text-white/70 text-[10px] uppercase tracking-[0.2em] font-mono">
-                    <th className="text-left px-8 py-5">Rank</th>
-                    <th className="text-left px-8 py-5">Organization</th>
-                    <th className="text-left px-8 py-5">Maturity Score</th>
-                    <th className="text-left px-8 py-5">Level</th>
-                    <th className="text-left px-8 py-5">Status</th>
-                    <th className="px-8 py-5"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {filteredCompanies.map((company, i) => {
-                    const isExpanded = expandedRow === company.rank;
-                    return (
-                      <React.Fragment key={company.rank}>
-                        <tr 
-                          className="hover:bg-gray-50 transition-colors group cursor-pointer"
-                          onClick={() => setExpandedRow(isExpanded ? null : company.rank)}
-                        >
-                          <td className="px-8 py-6 font-mono font-bold text-[#0f1f3d]">#{company.rank}</td>
-                          <td className="px-8 py-6">
-                            <div className="font-bold text-[#0f1f3d] flex items-center gap-2">
-                              {company.company}
-                              {company.hasAICertification && <Shield className="w-4 h-4 text-aic-gold" />}
-                            </div>
-                            <div className="text-[10px] text-gray-400 uppercase tracking-widest font-mono">{company.industry}</div>
-                          </td>
-                          <td className="px-8 py-6">
-                            <div className="flex items-center gap-3">
-                              <div className="w-20 bg-gray-100 rounded-full h-2 overflow-hidden">
-                                <div className="h-full bg-aic-gold transition-all duration-1000" style={{ width: `${company.maturityScore}%` }}></div>
+          <div className="space-y-3">
+            {filteredCompanies.map((company, i) => {
+              const isExpanded = expandedRow === company.rank;
+              const maturityColors = maturityLevelColors[company.maturityLevel];
+
+              return (
+                <motion.div
+                  key={company.rank}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <Card
+                    className={`overflow-hidden transition-all cursor-pointer hover:shadow-lg ${
+                      isExpanded ? "ring-2 ring-[#c9920a]" : ""
+                    }`}
+                    onClick={() => setExpandedRow(isExpanded ? null : company.rank)}
+                  >
+                    {/* Main Row */}
+                    <div className="p-5">
+                      <div className="flex items-center gap-4">
+                        {/* Rank */}
+                        <div className="w-12 text-center">
+                          <div className="text-2xl font-bold text-[#0f1f3d]">#{company.rank}</div>
+                          <div className="text-xs text-gray-500 mt-0.5">
+                            {getRankChangeDisplay(company.rankChange)}
+                          </div>
+                        </div>
+
+                        {/* Company Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-[#0f1f3d] truncate">{company.company}</h3>
+                            {company.hasAICertification && (
+                              <Badge className="bg-[#c9920a] text-white shrink-0">
+                                <Shield className="w-3 h-3 mr-1" />
+                                AIC Certified
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <span>{company.industry}</span>
+                            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                            <span>{company.certifiedProfessionals} certified professionals</span>
+                          </div>
+                        </div>
+
+                        {/* Maturity Score */}
+                        <div className="text-center hidden sm:block">
+                          <div className="text-2xl font-bold text-[#0f1f3d]">{company.maturityScore}</div>
+                          <div className="text-xs text-gray-500">Maturity</div>
+                        </div>
+
+                        {/* Maturity Level */}
+                        <div className="hidden md:block">
+                          <Badge
+                            className={`${maturityColors.bg} ${maturityColors.text} border ${maturityColors.border}`}
+                          >
+                            {company.maturityLevel}
+                          </Badge>
+                        </div>
+
+                        {/* Trend */}
+                        <div className="flex items-center gap-1">
+                          {getTrendIcon(company.trend, company.rankChange)}
+                          <ChevronDown
+                            className={`w-5 h-5 text-gray-400 transition-transform ${
+                              isExpanded ? "rotate-180" : ""
+                            }`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expanded Details */}
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="border-t border-gray-100 bg-[#f8fafc] p-6"
+                      >
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                          {[
+                            {
+                              label: "Board Oversight",
+                              score: company.boardOversight,
+                              icon: Users,
+                              color: "text-blue-600",
+                            },
+                            {
+                              label: "Rights Compliance",
+                              score: company.rightsCompliance,
+                              icon: Shield,
+                              color: "text-green-600",
+                            },
+                            {
+                              label: "Transparency",
+                              score: company.transparency,
+                              icon: Globe,
+                              color: "text-purple-600",
+                            },
+                            {
+                              label: "Risk Management",
+                              score: company.riskManagement,
+                              icon: AlertTriangle,
+                              color: "text-amber-600",
+                            },
+                          ].map((metric, j) => {
+                            const Icon = metric.icon;
+                            return (
+                              <div key={j} className="bg-white rounded-lg p-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Icon className={`w-4 h-4 ${metric.color}`} />
+                                  <span className="text-sm text-gray-600">{metric.label}</span>
+                                </div>
+                                <div className="text-2xl font-bold text-[#0f1f3d] mb-2">{metric.score}</div>
+                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                  <div
+                                    className="bg-[#c9920a] h-2 rounded-full transition-all"
+                                    style={{ width: `${metric.score}%` }}
+                                  />
+                                </div>
                               </div>
-                              <span className="text-xs font-bold font-mono text-gray-700">{company.maturityScore}</span>
-                            </div>
-                          </td>
-                          <td className="px-8 py-6">
-                            <span className={`text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-widest font-mono ${maturityLevelColors[company.maturityLevel]}`}>
-                              {company.maturityLevel}
-                            </span>
-                          </td>
-                          <td className="px-8 py-6">
-                            {company.trend === "up" ? <TrendingUp className="w-4 h-4 text-green-500" /> : <Minus className="w-4 h-4 text-gray-300" />}
-                          </td>
-                          <td className="px-8 py-6 text-right">
-                            <ChevronDown className={`w-5 h-5 text-gray-300 transition-transform ${isExpanded ? "rotate-180 text-aic-gold" : ""}`} />
-                          </td>
-                        </tr>
-                        {isExpanded && (
-                          <tr className="bg-aic-paper/30">
-                            <td colSpan={6} className="px-8 py-10">
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                {[
-                                  { label: "Board Oversight", val: company.boardOversight },
-                                  { label: "Rights Compliance", val: company.rightsCompliance },
-                                  { label: "Transparency", val: company.transparency },
-                                  { label: "Risk Management", val: company.riskManagement },
-                                ].map((m, idx) => (
-                                  <div key={idx} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                                    <div className="text-[10px] uppercase tracking-widest text-gray-400 font-mono mb-2">{m.label}</div>
-                                    <div className="text-2xl font-bold text-[#0f1f3d] font-mono">{m.val}</div>
-                                    <div className="mt-3 h-1 bg-gray-100 rounded-full overflow-hidden">
-                                      <div className="h-full bg-aic-gold" style={{ width: `${m.val}%` }}></div>
-                                    </div>
-                                  </div>
-                                ))}
+                            );
+                          })}
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                            {company.hasAICertification ? (
+                              <div className="flex items-center gap-1 text-green-600">
+                                <CheckCircle className="w-4 h-4" />
+                                <span>ISO/IEC 42001 Certified</span>
                               </div>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
+                            ) : (
+                              <div className="flex items-center gap-1 text-amber-600">
+                                <AlertTriangle className="w-4 h-4" />
+                                <span>Certification Recommended</span>
+                              </div>
+                            )}
+                          </div>
+                          <Button size="sm" variant="outline">
+                            View Full Profile
+                          </Button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-500 mb-4">Showing top 10 of 500 companies</p>
+            <Button variant="outline">View Full Index (500 Companies)</Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Methodology */}
+      <section className="py-16 bg-[#f8fafc]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl text-[#0f1f3d] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+              Assessment Methodology
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              Our index uses a rigorous, multi-dimensional framework aligned with international standards and the Declaration of Algorithmic Rights.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                category: "Board Oversight",
+                weight: "30%",
+                criteria: ["Dedicated AI committee", "Executive accountability", "Risk reporting frequency"],
+              },
+              {
+                category: "Rights Compliance",
+                weight: "25%",
+                criteria: ["Algorithmic transparency", "Explainability mechanisms", "Recourse processes"],
+              },
+              {
+                category: "Transparency",
+                weight: "25%",
+                criteria: ["Public disclosures", "AI inventory", "Impact assessments"],
+              },
+              {
+                category: "Risk Management",
+                weight: "20%",
+                criteria: ["ISO/IEC 42001 alignment", "Testing protocols", "Incident response"],
+              },
+            ].map((method, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Card className="p-6 h-full">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-[#0f1f3d]">{method.category}</h3>
+                    <Badge className="bg-[#c9920a] text-white">{method.weight}</Badge>
+                  </div>
+                  <ul className="space-y-2">
+                    {method.criteria.map((criterion, j) => (
+                      <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
+                        <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                        <span>{criterion}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-semibold text-blue-900 mb-2">Data Sources & Verification</h4>
+                <p className="text-sm text-blue-800 leading-relaxed">
+                  Rankings are based on publicly available disclosures, regulatory filings, third-party audits, and
+                  direct company submissions. All data is independently verified by AIC's Research Division and updated
+                  quarterly. Companies may dispute rankings through our formal appeals process.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Methodology CTA */}
-      <section className="py-24 bg-[#0f1f3d] text-white relative overflow-hidden text-center">
-        <div className="absolute inset-0 opacity-5 subtle-grid" />
-        <div className="max-w-4xl mx-auto px-4 relative z-10">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }}>
-            <h2 className="text-4xl mb-6">Improve Your Global Standing</h2>
-            <p className="text-white/60 text-xl mb-10 font-serif italic">
-              AIC certification demonstrates a verifiable commitment to human accountability and ethics, significantly impacting your quarterly maturity score.
-            </p>
-            <button className="bg-aic-gold text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-widest font-mono hover:bg-[#b07d08] transition-all shadow-2xl">
-              Request Assessment Briefing
-            </button>
-          </motion.div>
+      {/* CTA */}
+      <section className="py-16 bg-gradient-to-br from-[#c9920a] to-[#b07d08] text-white">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <BarChart3 className="w-12 h-12 mx-auto mb-4 text-white" />
+          <h2 className="text-3xl mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            Improve Your Organization's Ranking
+          </h2>
+          <p className="text-white/90 mb-8 text-lg">
+            AIC certification demonstrates commitment to responsible AI governance and can significantly boost your
+            maturity score. Schedule a gap analysis to identify opportunities for improvement.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button className="bg-white text-[#c9920a] hover:bg-white/90 px-8 py-3">
+              Request Gap Analysis
+            </Button>
+            <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-3">
+              Learn About Certification
+            </Button>
+          </div>
         </div>
       </section>
     </div>

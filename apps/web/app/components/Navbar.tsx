@@ -5,9 +5,9 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
 export const navItems = [
-  { href: "/ai-governance-index", label: "AI Index" },
-  { href: "/governance-hub", label: "Governance hub" },
+  { href: "/governance-hub", label: "Governance Hub" },
   { href: "/corporate-portal", label: "Corporate" },
+  { href: "/articles", label: "Articles" },
   { href: "/disclosures", label: "Disclosures" },
 ];
 
@@ -83,12 +83,6 @@ export default function Navbar() {
               >
                 Get Certified
               </Link>
-              <Link
-                href="/ai-governance-index"
-                className="text-[13px] font-semibold px-4 py-2 bg-aic-gold text-aic-navy rounded-md hover:bg-aic-gold/90 transition-colors"
-              >
-                View AI Index
-              </Link>
             </div>
 
             {/* Mobile menu button */}
@@ -126,13 +120,6 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}
                 >
                   Get Certified
-                </Link>
-                <Link
-                  href="/ai-governance-index"
-                  className="text-center font-semibold px-4 py-3 bg-aic-gold text-aic-navy rounded-md hover:bg-aic-gold/90 transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  View AI Index
                 </Link>
               </div>
               <div className="pt-4 border-t border-white/10 text-[11px] font-mono text-white/40 tracking-wider">
