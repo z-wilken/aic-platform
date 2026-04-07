@@ -13,7 +13,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@aic/db": "^1.0.0",
+    "@aic/db": "*",
     "@aic/types": "*",
     "@aic/ui": "*",
     "@radix-ui/react-accordion": "^1.2.12",
@@ -71,9 +71,9 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "15.1.6",
     "tailwindcss": "^4",
-    "typescript": "5.9.3",
+    "typescript": "^5.7.3",
     "vitest": "^1.6.1"
   }
 }
