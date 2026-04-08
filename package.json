@@ -2,6 +2,7 @@
   "name": "aic-platform-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/web",
     "apps/platform",
@@ -29,7 +30,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.0.0",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "1.49.1",
     "@testing-library/jest-dom": "^6.4.0",
     "@testing-library/react": "^16.0.0",
     "@types/bcrypt": "^6.0.0",
@@ -48,6 +49,9 @@
       "eslint --fix",
       "vitest related --run"
     ]
+  },
+  "overrides": {
+    "playwright": "1.49.1"
   },
   "dependencies": {
     "dotenv": "^17.3.1",
