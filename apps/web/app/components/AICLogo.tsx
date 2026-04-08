@@ -88,7 +88,7 @@ export function AICLogo({
               style={{ fontFamily: "var(--font-mono), monospace" }}
               letterSpacing="2"
             >
-              AI CERTIFITUTE
+              AI INTEGRITY CERTIFICATION
             </text>
           </g>
         )}

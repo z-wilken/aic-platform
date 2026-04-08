@@ -44,23 +44,27 @@ export default function ContactPage() {
             <p className="text-aic-navy text-lg font-medium">
               Johannesburg, South Africa
             </p>
+            <p className="text-gray-500 text-sm mt-1">
+              15 Smit Street, Building 4 Unit 420, Johannesburg, Gauteng, 2000
+            </p>
           </div>
 
-          <div className="border-2 border-aic-navy rounded-lg p-6 bg-aic-navy text-white">
-            <h2 className="text-sm font-mono tracking-widest text-aic-gold uppercase mb-2">
+          <div className="border-2 border-[#0f1f3d] rounded-lg p-6 bg-[#0f1f3d] text-white">
+            <p className="text-xs font-mono tracking-widest text-[#f0b429] uppercase mb-2">
               Founding Partner Enquiry
-            </h2>
-            <p className="text-white/80 mb-4 leading-relaxed">
-              Founding Partners receive lifetime-locked pricing, a complimentary
-              first-year audit, and the AIC Founding Partner trust mark.
-              R 3,000/month. Limited to 10 partners.
             </p>
-            <Link
+            <p className="text-white/80 mb-4 text-sm leading-relaxed">
+              Join the first South African organisations defining the future of human-accountable AI.
+              Founding Partners receive priority certification access, permanent rate protection, and
+              direct input into AIC&apos;s standards committee.
+            </p>
+            <a
               href="mailto:zander@ztoaholdings.co.za?subject=Founding Partner Enquiry"
-              className="inline-block bg-aic-gold text-aic-navy font-semibold px-6 py-3 rounded-md text-sm hover:bg-aic-gold/90 transition-colors"
+              className="inline-block bg-[#c9920a] hover:bg-[#b07d08] text-white font-bold px-6 py-3 rounded-lg text-xs uppercase tracking-widest transition-all"
             >
-              Express Interest
-            </Link>
+              Enquire About Partnership
+            </a>
+            <p className="text-white/30 text-xs mt-3">Enquiries reviewed within 2 business days</p>
           </div>
         </div>
       </div>

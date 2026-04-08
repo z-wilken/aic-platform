@@ -76,12 +76,26 @@ export default function WaitingListPage() {
     certificationType: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send data to a backend
-    console.log("Waiting list submission:", formData);
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitError('');
+    try {
+      const res = await fetch('/api/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) throw new Error('Submission failed');
+      setSubmitted(true);
+    } catch {
+      setSubmitError('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -420,11 +434,15 @@ export default function WaitingListPage() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full bg-[#c9920a] hover:bg-[#b07d08] text-white py-4 text-base font-medium"
+                disabled={isSubmitting}
+                className="w-full bg-[#c9920a] hover:bg-[#b07d08] text-white py-4 text-base font-medium disabled:opacity-60"
               >
-                Join Waiting List <ArrowRight className="w-5 h-5 ml-2" />
+                {isSubmitting ? 'Submitting...' : 'Join Waiting List'} <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </form>
+            {submitError && (
+              <p className="text-red-500 text-sm mt-2 text-center">{submitError}</p>
+            )}
           </Card>
         </div>
       </section>
