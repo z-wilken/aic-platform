@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -161,7 +161,7 @@ export default function ArticlesPage() {
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail) return;
     setNewsletterLoading(true);
