@@ -19,10 +19,9 @@ export function hasRole(userRole: UserRole, requiredRole: UserRole): boolean {
   return ROLE_HIERARCHY.indexOf(userRole) >= ROLE_HIERARCHY.indexOf(requiredRole);
 }
 
-export type IncidentStatus = 'OPEN' | 'UNDER_REVIEW' | 'RESOLVED' | 'ESCALATED';
+export type IncidentStatus = 'OPEN' | 'INVESTIGATING' | 'RESOLVED' | 'DISMISSED' | 'CLOSED';
 export type ScheduledAuditStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-export type CorrectionStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'IMPLEMENTED' | 'VERIFIED' | 'REJECTED';
-export type AuditStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FLAGGED';
+export type CorrectionStatus = 'SUBMITTED' | 'UNDER_REVIEW' | 'RESOLVED' | 'REJECTED';
 
 export interface Permissions {
   // Audit Permissions
@@ -123,7 +122,7 @@ export interface AuditLog {
   system_name: string;
   event_type: string;
   details: Record<string, unknown>;
-  status: AuditStatus;
+  status: string;
   metadata: Record<string, unknown>;
   integrity_hash: string;
   previous_hash?: string | null;

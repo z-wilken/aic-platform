@@ -3,12 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { AICLogo } from "@/app/components/AICLogo";
 
 export const navItems = [
   { href: "/governance-hub", label: "Governance Hub" },
   { href: "/corporate-portal", label: "Corporate" },
+  { href: "/professional-portal", label: "Professional" },
   { href: "/articles", label: "Articles" },
   { href: "/disclosures", label: "Disclosures" },
+  { href: "/certification", label: "Certification" },
 ];
 
 export default function Navbar() {
@@ -53,13 +56,8 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex flex-col">
-              <span className="text-white font-serif text-lg leading-none tracking-tight">
-                AIC
-              </span>
-              <span className="text-[9px] tracking-[0.15em] uppercase font-mono text-aic-gold/80 leading-none mt-0.5">
-                AI Certification Institute
-              </span>
+            <Link href="/" aria-label="AIC Home">
+              <AICLogo variant="full" scheme="dark" size="sm" />
             </Link>
 
             {/* Desktop nav links */}
@@ -89,7 +87,8 @@ export default function Navbar() {
             <button
               className="md:hidden text-white p-2"
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
+              aria-label="Toggle navigation menu"
+              aria-expanded={menuOpen}
             >
               {menuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>

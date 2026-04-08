@@ -157,6 +157,28 @@ const recentArticles = [
 export default function ArticlesPage() {
   const [selectedCategory, setSelectedCategory] = useState("All Articles");
   const [searchQuery, setSearchQuery] = useState("");
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [newsletterSuccess, setNewsletterSuccess] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    setNewsletterLoading(true);
+    try {
+      const res = await fetch('/api/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+      if (!res.ok) throw new Error('Failed');
+      setNewsletterSuccess(true);
+    } catch {
+      // silent fail — keep button enabled for retry
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
 
   const filteredArticles = [...featuredArticles, ...recentArticles].filter((article) => {
     const matchesCategory = selectedCategory === "All Articles" || article.category === selectedCategory;
@@ -386,16 +408,24 @@ export default function ArticlesPage() {
             <p className="text-white/70 mb-8 text-lg">
               Subscribe to receive monthly insights on certification trends, policy updates, and best practices from AIC experts.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input
                 type="email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder="Enter your email"
+                aria-label="Email address for newsletter"
+                required
                 className="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]"
               />
-              <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-6 py-3">
-                Subscribe
+              <Button
+                type="submit"
+                disabled={newsletterLoading || newsletterSuccess}
+                className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-6 py-3 disabled:opacity-60"
+              >
+                {newsletterSuccess ? 'Subscribed ✓' : newsletterLoading ? 'Subscribing...' : 'Subscribe'}
               </Button>
-            </div>
+            </form>
             <p className="text-white/40 text-xs mt-4">
               No spam. Unsubscribe anytime. Read our{" "}
               <Link href="/disclosures" className="underline hover:text-white/60">

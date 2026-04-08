@@ -24,7 +24,7 @@ export default function Footer() {
               </h2>
             </div>
             <Link
-              href="/alpha-apply"
+              href="/contact"
               className="shrink-0 inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-7 py-4 rounded-xl transition-all text-xs font-bold uppercase tracking-widest font-mono shadow-xl shadow-aic-gold/20 self-start lg:self-auto"
             >
               Become a Founding Partner
@@ -116,10 +116,10 @@ export default function Footer() {
                   <Mail className="w-4 h-4 text-aic-gold" />
                 </div>
                 <a
-                  href="mailto:integrity@aiccertified.cloud"
+                  href="mailto:zander@ztoaholdings.co.za"
                   className="hover:text-white transition-colors break-all"
                 >
-                  integrity@aiccertified.cloud
+                  zander@ztoaholdings.co.za
                 </a>
               </li>
             </ul>
