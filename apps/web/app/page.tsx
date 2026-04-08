@@ -254,45 +254,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Founding Partner Enquiry */}
-      <section className="py-20 sm:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="bg-[#0f1f3d] rounded-[2rem] sm:rounded-[2.5rem] p-8 sm:p-12 text-center relative overflow-hidden shadow-2xl">
-            <div
-              className="absolute inset-0 opacity-5"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle at 30% 50%, #c9920a 0%, transparent 60%), radial-gradient(circle at 70% 50%, #1d4ed8 0%, transparent 60%)",
-              }}
-            />
-            <div className="relative">
-              <span className="inline-block bg-[#c9920a]/20 text-[#f0b429] text-xs font-medium px-3 py-1 rounded-full border border-[#c9920a]/30 uppercase tracking-wider mb-6">
-                Limited Slots Available
-              </span>
-              <h2 className="text-2xl sm:text-3xl text-white mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
-                Founding Partner Programme
-              </h2>
-              <p className="text-white/70 mb-4 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
-                Join the first South African organisations to define the future of human-accountable AI — and secure a permanent place in AIC's founding governance structure.
-              </p>
-              <p className="text-white/50 mb-8 text-sm max-w-md mx-auto leading-relaxed">
-                Founding Partners gain priority certification access, permanent rate protection, direct input into AIC's standards committee, and early recognition on the AIC Governance Index.
-              </p>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#c9920a]/25 text-xs sm:text-sm"
-              >
-                Enquire About Partnership
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <p className="text-white/30 text-xs mt-4">
-                Enquiries reviewed within 2 business days
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Portals */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">

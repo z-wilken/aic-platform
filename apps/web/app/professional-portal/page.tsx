@@ -126,7 +126,7 @@ export default function ProfessionalPortalPage() {
               <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-6 py-3">
                 Start Your Certification Journey <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-6 py-3">
+              <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40 px-6 py-3">
                 View Exam Schedule
               </Button>
             </div>
@@ -432,7 +432,7 @@ export default function ProfessionalPortalPage() {
                     <p className="text-white/70 text-sm mb-4">
                       Instructor-led courses from AIC-approved training organizations. Includes live workshops and 1-on-1 mentorship.
                     </p>
-                    <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                    <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40">
                       Find Training Providers
                     </Button>
                   </Card>
@@ -443,7 +443,7 @@ export default function ProfessionalPortalPage() {
                     <p className="text-white/90 text-sm mb-4">
                       Join peer study groups, attend webinars, and connect with certified professionals preparing for exams.
                     </p>
-                    <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                    <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40">
                       Join Community
                     </Button>
                   </Card>
@@ -541,7 +541,7 @@ export default function ProfessionalPortalPage() {
             <Button className="bg-white text-[#c9920a] hover:bg-white/90 px-8 py-3">
               Register for Exam
             </Button>
-            <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-3">
+            <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40 px-8 py-3">
               Schedule Consultation
             </Button>
           </div>
