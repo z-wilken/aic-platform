@@ -1,22 +1,24 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { AICLogo } from "@/app/components/AICLogo";
+import { usePathname } from "next/navigation";
+import { Globe, Shield, Award, BarChart3, BookOpen, FileText, Newspaper, Menu, X } from "lucide-react";
 
 export const navItems = [
-  { href: "/governance-hub", label: "Governance Hub" },
-  { href: "/corporate-portal", label: "Corporate" },
-  { href: "/professional-portal", label: "Professional" },
-  { href: "/articles", label: "Articles" },
-  { href: "/disclosures", label: "Disclosures" },
-  { href: "/certification", label: "Certification" },
+  { href: "/governance-hub",      label: "Governance Hub",      icon: BookOpen,  description: "Algorithmic Rights & Global Standards" },
+  { href: "/corporate-portal",    label: "Corporate Portal",    icon: Shield,    description: "ISO/IEC 42001 Certification Services" },
+  { href: "/professional-portal", label: "Professional Portal", icon: Award,     description: "ISO/IEC 17024 Personnel Certification" },
+  { href: "/ai-governance-index", label: "AI Governance Index", icon: BarChart3, description: "JSE AI Maturity Rankings" },
+  { href: "/articles",            label: "Articles",            icon: Newspaper, description: "Governance insights and updates" },
+  { href: "/disclosures",         label: "Disclosures",         icon: FileText,  description: "Impartiality & Accreditation Directory" },
+  { href: "/certification",       label: "Certification",       icon: Shield,    description: "Five-Division Accountability Framework" },
 ];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -25,59 +27,70 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Top bar — IAF MLA accreditation status */}
-      <div className="bg-aic-navy/95 border-b border-white/10 px-4 py-1.5 hidden md:block">
-        <div className="max-w-7xl mx-auto flex items-center justify-between text-[11px] font-mono tracking-wider">
-          <div className="flex items-center gap-4 text-white/60">
-            <span>IAF MLA Accredited Body</span>
-            <span className="text-white/30">·</span>
-            <span className="text-green-400 font-medium">Certification Status: Active</span>
+    <header className="sticky top-0 z-50">
+      {/* Top utility bar — solid dark, no transparency */}
+      <div className="bg-[#0a1628] text-white/70 text-xs py-2">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5">
+              <Globe className="w-3 h-3" />
+              IAF MLA Accredited Body
+            </span>
+            <span className="hidden sm:flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+              Certification Status: Active
+            </span>
           </div>
-          <div className="flex items-center gap-4 text-white/60">
-            <Link href="/disclosures" className="hover:text-aic-gold transition-colors">
-              Public Disclosures
-            </Link>
-            <Link href="/contact" className="hover:text-aic-gold transition-colors">
-              Contact
-            </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/disclosures" className="hover:text-white transition-colors">Public Disclosures</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
           </div>
         </div>
       </div>
 
-      {/* Main nav */}
-      <nav
-        className={`transition-all duration-300 ${
-          scrolled
-            ? "bg-aic-navy/98 shadow-lg backdrop-blur-sm"
-            : "bg-aic-navy/90 backdrop-blur-sm"
-        }`}
-      >
+      {/* Main nav — white background, dark text */}
+      <nav className={`transition-all duration-300 ${
+        scrolled ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100" : "bg-white shadow-sm"
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+
             {/* Logo */}
-            <Link href="/" aria-label="AIC Home">
-              <AICLogo variant="full" scheme="dark" size="sm" />
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 bg-[#0f1f3d] rounded-lg flex items-center justify-center group-hover:bg-[#1a3160] transition-colors">
+                <Shield className="w-5 h-5 text-[#c9920a]" />
+              </div>
+              <div>
+                <div className="text-[#0f1f3d] font-bold text-lg leading-tight tracking-tight">AIC</div>
+                <div className="text-gray-500 text-[10px] leading-tight tracking-wider uppercase">AI Integrity Certification</div>
+              </div>
             </Link>
 
             {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-6">
-              {navItems.map((link) => (
+            <div className="hidden lg:flex items-center gap-0.5">
+              {navItems.map((item) => (
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-white/75 text-[13px] font-medium hover:text-white transition-colors"
+                  key={item.href}
+                  href={item.href}
+                  className={`px-3 py-2 rounded-md text-sm transition-colors relative ${
+                    pathname === item.href
+                      ? "text-[#0f1f3d] bg-[#f0f4f8] font-medium"
+                      : "text-gray-600 hover:text-[#0f1f3d] hover:bg-[#f0f4f8]"
+                  }`}
                 >
-                  {link.label}
+                  {item.label}
+                  {pathname === item.href && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#c9920a] rounded-full" />
+                  )}
                 </Link>
               ))}
             </div>
 
-            {/* Desktop CTAs */}
-            <div className="hidden md:flex items-center gap-3">
+            {/* Desktop CTA */}
+            <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/contact"
-                className="text-[13px] font-medium px-4 py-2 border-2 border-white/30 text-white rounded-md hover:border-white/60 transition-colors"
+                className="text-sm text-[#0f1f3d] border border-[#0f1f3d] px-4 py-2 rounded-md hover:bg-[#0f1f3d] hover:text-white transition-all"
               >
                 Get Certified
               </Link>
@@ -85,7 +98,7 @@ export default function Navbar() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden text-white p-2"
+              className="lg:hidden text-[#0f1f3d] p-2"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
@@ -98,32 +111,40 @@ export default function Navbar() {
         {/* Mobile menu */}
         {menuOpen && (
           <div
-            className="md:hidden bg-aic-navy border-t border-white/10 overflow-y-auto"
-            style={{ maxHeight: "calc(100dvh - 110px)" }}
+            className="lg:hidden bg-white border-t border-gray-100 overflow-y-auto"
+            style={{ maxHeight: "calc(100dvh - 120px)" }}
           >
-            <div className="px-4 py-6 flex flex-col gap-4">
-              {navItems.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-white/80 text-base font-medium py-2 border-b border-white/10 hover:text-white transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="flex flex-col gap-3 pt-2">
+            <div className="px-4 py-4 flex flex-col gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                      isActive
+                        ? "bg-[#0f1f3d] text-white"
+                        : "text-gray-700 hover:bg-[#f0f4f8]"
+                    }`}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Icon className={`w-5 h-5 shrink-0 ${isActive ? "text-[#c9920a]" : "text-gray-400"}`} />
+                    <div>
+                      <div className="text-sm font-medium">{item.label}</div>
+                      <div className={`text-xs ${isActive ? "text-white/70" : "text-gray-500"}`}>{item.description}</div>
+                    </div>
+                  </Link>
+                );
+              })}
+              <div className="pt-3 mt-2 border-t border-gray-100">
                 <Link
                   href="/contact"
-                  className="text-center font-medium px-4 py-3 border-2 border-white/30 text-white rounded-md hover:border-white/60 transition-colors"
+                  className="flex items-center justify-center text-sm text-[#0f1f3d] border border-[#0f1f3d] px-4 py-3 rounded-md hover:bg-[#0f1f3d] hover:text-white transition-all font-medium"
                   onClick={() => setMenuOpen(false)}
                 >
                   Get Certified
                 </Link>
-              </div>
-              <div className="pt-4 border-t border-white/10 text-[11px] font-mono text-white/40 tracking-wider">
-                <div>IAF MLA Accredited Body</div>
-                <div className="text-green-400/70 mt-1">Certification Status: Active</div>
               </div>
             </div>
           </div>

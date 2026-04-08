@@ -34,6 +34,9 @@ const categories = [
   "Best Practices",
 ];
 
+// TODO: Replace with CMS API call (WordPress REST API or Contentful)
+// Each article needs: id, title, excerpt, category, date, readTime, author, slug
+// On "Read Article" click, navigate to /articles/[slug] — dynamic route needed
 const featuredArticles = [
   {
     id: 1,
@@ -416,7 +419,7 @@ export default function ArticlesPage() {
                 placeholder="Enter your email"
                 aria-label="Email address for newsletter"
                 required
-                className="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]"
+                className="flex-1 px-4 py-3 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c9920a]"
               />
               <Button
                 type="submit"

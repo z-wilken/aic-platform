@@ -4,311 +4,299 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   Shield,
-  UserCheck,
-  Eye,
-  CheckCircle,
   ArrowRight,
+  Users,
+  Eye,
+  RefreshCw,
+  Activity,
+  Code2,
+  CheckCircle,
+  ChevronRight,
 } from "lucide-react";
 
-const heroBg = "https://images.unsplash.com/photo-1557804506-669a67965ba0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080";
-
-const tiers = [
+const divisions = [
   {
-    tier: "Tier 1",
-    label: "Critical",
-    sublabel: "Human-Approved",
-    color: "blue",
-    icon: UserCheck,
-    description:
-      "Every consequential decision is touched, reviewed, and countersigned by a named, accountable human before it takes effect. The accountability chain is fully documented and immutable.",
-    requirement:
-      "Required for decisions where the outcome cannot reasonably be reversed and materially affects a person's livelihood, freedom, health, or financial standing.",
-    sectors: [
-      "Credit adjudication",
-      "Employment termination",
-      "Healthcare diagnosis support",
-      "Law enforcement flagging",
-    ],
-    obligations: [
-      "Named human approver documented per decision",
-      "Decision rationale on file in plain language",
-      "Full audit log signed with RSA-3072",
-      "Override mechanism tested quarterly",
-      "Annual AIC on-site verification",
-    ],
-  },
-  {
-    tier: "Tier 2",
-    label: "Elevated",
-    sublabel: "Supervised",
-    color: "amber",
-    icon: Eye,
-    description:
-      "Automated decisions proceed in standard cases. Flagged or edge-case decisions are escalated to a named supervisor within 24 hours for human review before outcome is communicated.",
-    requirement:
-      "Required for decisions with medium material impact where reversal is possible but burdensome, and where patterns of bias or error carry reputational or legal risk.",
-    sectors: [
-      "Insurance underwriting",
-      "Academic and scholarship scoring",
-      "Benefits and welfare assessment",
-      "Rental application processing",
-    ],
-    obligations: [
-      "Escalation logic documented and tested",
-      "Named supervisor per decision category",
-      "24-hour SLA on flagged decisions",
-      "Monthly bias audit across demographics",
-      "Bi-annual AIC remote verification",
-    ],
-  },
-  {
-    tier: "Tier 3",
-    label: "Standard",
-    sublabel: "Monitored",
-    color: "emerald",
+    number: "01",
+    name: "Sovereign",
+    tagline: "We make decisions. Humans make them.",
+    who: "Organisations making no use of AI in consequential decisions.",
+    accentBg: "bg-slate-400",
+    accentText: "text-slate-400",
+    accentBorderColor: "border-slate-400/40",
+    accentStripBg: "bg-slate-400",
     icon: Shield,
-    description:
-      "Automated decisions execute at speed. An immutable audit trail captures every decision. Human oversight occurs at the batch or weekly report level — anomalies trigger escalation.",
-    requirement:
-      "Appropriate where individual decisions are low-stakes, reversible, and consistent. Acceptable risk profile requires ongoing monitoring rather than per-decision review.",
-    sectors: [
-      "Customer service query routing",
-      "Content moderation queuing",
-      "Internal resource scheduling",
-      "Marketing personalisation",
-    ],
-    obligations: [
-      "Immutable per-decision audit log",
-      "Weekly anomaly review by designated officer",
-      "Quarterly statistical bias report",
-      "Plaintext explanation available on request",
-      "Annual AIC self-assessment + documentation review",
-    ],
+    what: "Human accountability structures documented, no undisclosed AI in use, POPIA-compliant human data processing. Shadow AI audit confirms no automated decision systems.",
+    product: "Sovereign Assessment — point-in-time audit + annual renewal.",
+    valueProp: "Prove you are fully human-accountable before regulators, clients, or media ask.",
+    kpi: "No AI in consequential decisions — verified annually",
+  },
+  {
+    number: "02",
+    name: "Supervised",
+    tagline: "AI assists. Humans decide.",
+    who: "AI generates recommendations; a named human makes every consequential decision.",
+    accentBg: "bg-blue-500",
+    accentText: "text-blue-400",
+    accentBorderColor: "border-blue-400/40",
+    accentStripBg: "bg-blue-500",
+    icon: Users,
+    examples: "Bank using AI credit model where loan officer decides. Hospital using AI diagnostic where clinician signs off. Employer using AI CV screening where recruiter approves shortlist.",
+    what: "Every AI system registered. Override process tested and evidenced. Decision records include both AI recommendation and human decision. Explanation mechanisms exist. Rejection communications meet dignity standards. Appeal processes functional. AI involvement disclosed to affected persons.",
+    product: "Full Pulse monitoring.",
+    kpi: "Human override rate is the primary KPI.",
+  },
+  {
+    number: "03",
+    name: "Reviewed",
+    tagline: "AI decides. Humans review patterns and cases.",
+    who: "AI makes operational decisions; humans conduct periodic reviews and investigate flagged cases.",
+    accentBg: "bg-amber-500",
+    accentText: "text-amber-400",
+    accentBorderColor: "border-amber-400/40",
+    accentStripBg: "bg-amber-500",
+    icon: Eye,
+    examples: "Lender with automated credit decisions + compliance officer reviewing weekly flags. HR tech platform auto-screening applications + recruiter reviewing rejected candidates weekly.",
+    what: "AI systems registered with documented risk categories. Periodic human review schedules documented and evidenced. Escalation protocols for flagged decisions functional. Bias testing conducted quarterly. Correction SLA ≤ 10 business days. Full transparency to users.",
+    product: "Pulse monitoring.",
+    kpi: "Periodic human review rate is the primary KPI.",
+  },
+  {
+    number: "04",
+    name: "Monitored",
+    tagline: "AI operates. Systems and humans monitor outcomes.",
+    who: "AI operates autonomously with continuous technical monitoring; humans monitor aggregate metrics and investigate anomalies.",
+    accentBg: "bg-emerald-500",
+    accentText: "text-emerald-400",
+    accentBorderColor: "border-emerald-400/40",
+    accentStripBg: "bg-emerald-500",
+    icon: Activity,
+    examples: "E-commerce AI recommendations monitored by algorithm team. AI fraud detection monitored by security team. AI route optimisation monitored by operations management.",
+    what: "All AI systems registered with documented purpose and risk category. Continuous technical monitoring in place (drift detection, performance metrics). Annual human review documented. Users informed they are interacting with AI. Anomaly escalation path exists.",
+    product: "Pulse monitoring focused on drift detection and aggregate pattern alerts.",
+    kpi: "Drift detection and aggregate outcome pattern monitoring.",
+  },
+  {
+    number: "05",
+    name: "Artificial",
+    tagline: "We build AI. Others use it to make decisions.",
+    who: "Organisations that develop, train, and sell AI systems or models to other organisations. Their accountability is upstream — they are responsible for the accountability architecture their customers' decisions rest on.",
+    accentBg: "bg-purple-500",
+    accentText: "text-purple-400",
+    accentBorderColor: "border-purple-400/40",
+    accentStripBg: "bg-purple-500",
+    icon: Code2,
+    examples: "SA LLM company selling to banks. Credit scoring SaaS selling to lenders. AI-powered medical diagnostic tool provider. HR tech company selling AI hiring tools.",
+    what: "AI product has documented accountability architecture for downstream users. Product includes human override capabilities. Explanation mechanisms built into the product. Bias testing conducted on training data and documented. Transparency disclosure published for each product. Process exists for receiving and responding to downstream incident reports.",
+    product: "Builder Certification — product-level certification. Each AI product sold receives its own certification. Analogous to CE marking or ISO product certification.",
+    kpi: "Product accountability architecture completeness.",
+    note: "Division 5 certification does NOT replace the obligation of the Division 5 company's customers to hold their own AIC certification.",
   },
 ];
 
-const certificationProcess = [
-  {
-    step: "01",
-    title: "Self-Assessment",
-    description:
-      "Complete AIC's structured self-assessment questionnaire to determine applicable tier and identify gaps.",
-  },
-  {
-    step: "02",
-    title: "Gap Analysis",
-    description:
-      "AIC reviews your systems and processes against the tier standard. A written gap report is produced within 10 business days.",
-  },
-  {
-    step: "03",
-    title: "Remediation Period",
-    description:
-      "Your team addresses identified gaps. AIC provides technical guidance and access to the AI Governance Index reference materials.",
-  },
-  {
-    step: "04",
-    title: "Verification Audit",
-    description:
-      "AIC conducts a structured verification (remote for Tier 3, hybrid for Tier 2, on-site for Tier 1) to confirm compliance.",
-  },
-  {
-    step: "05",
-    title: "Certification Issued",
-    description:
-      "Upon passing verification, AIC issues your Certification Mark and registers you on the public AI Governance Index.",
-  },
+const journeySteps = [
+  { step: "01", title: "Self-Assessment", desc: "Complete AIC's diagnostic questionnaire to identify your Division classification based on how your organisation relates to AI in consequential decisions." },
+  { step: "02", title: "Gap Analysis", desc: "AIC conducts a structured gap analysis against the accountability requirements for your Division, identifying what evidence and controls are needed." },
+  { step: "03", title: "Evidence Review", desc: "Submit documentation of your human accountability structures, AI system registrations, override processes, and monitoring mechanisms." },
+  { step: "04", title: "Certification Audit", desc: "An AIC-accredited auditor conducts the formal assessment. For Sovereign and Builder certifications, this is a point-in-time audit." },
+  { step: "05", title: "Certification & Pulse", desc: "Upon passing, receive your AIC Division certificate. Supervised, Reviewed, and Monitored organisations enter continuous Pulse monitoring." },
 ];
-
-const colorMap: Record<string, { text: string; border: string; bg: string; badge: string }> = {
-  blue: {
-    text: "text-blue-400",
-    border: "border-blue-500/30",
-    bg: "bg-blue-500/10",
-    badge: "bg-blue-500/10 text-blue-300 border-blue-500/20",
-  },
-  amber: {
-    text: "text-amber-400",
-    border: "border-amber-500/30",
-    bg: "bg-amber-500/10",
-    badge: "bg-amber-500/10 text-amber-300 border-amber-500/20",
-  },
-  emerald: {
-    text: "text-emerald-400",
-    border: "border-emerald-500/30",
-    bg: "bg-emerald-500/10",
-    badge: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
-  },
-};
 
 export default function CertificationPage() {
   return (
-    <main className="min-h-screen bg-[#f8fafc]">
-
+    <div>
       {/* Hero */}
-      <section className="relative min-h-[420px] flex items-end pb-16">
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0f1f3d] to-[#1a3160]" />
         <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${heroBg})` }}
-        />
-        <div className="absolute inset-0 bg-[#0a1628]/85" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-5"
           style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
           }}
         />
-        <div className="relative max-w-5xl mx-auto px-6 w-full">
-          <span className="inline-block text-xs font-mono tracking-widest text-[#f0b429] uppercase mb-4">
-            AIC Certification Framework
-          </span>
-          <h1 className="text-4xl md:text-5xl font-serif italic text-white mb-4 leading-tight">
-            Three-Tier Certification
-          </h1>
-          <p className="text-white/70 max-w-xl text-lg leading-relaxed">
-            AIC certifies the accountability behind automated decisions — not the
-            technology itself. Every tier demands a named human responsible for
-            every consequential outcome.
-          </p>
+        <div className="relative max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="max-w-3xl"
+          >
+            <div className="flex items-center gap-2 mb-6">
+              <span className="px-3 py-1 bg-[#c9920a]/20 text-[#f0b429] text-[10px] rounded-full border border-[#c9920a]/30 uppercase tracking-[0.2em] font-mono">
+                AIC Five-Division Framework
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-6xl text-white mb-6 leading-tight" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
+              Accountability<br />
+              <span className="text-[#c9920a]">Calibrated to AI</span>
+            </h1>
+            <p className="text-xl text-white/70 leading-relaxed mb-10 max-w-2xl">
+              AIC certification is structured around how your organisation actually relates to AI in consequential decisions — not a one-size-fits-all compliance checkbox. Choose the Division that reflects your reality.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-8 py-4 rounded-lg transition-all text-sm font-medium shadow-lg shadow-[#c9920a]/20"
+              >
+                Enquire About Certification <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href="#divisions"
+                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 py-4 rounded-lg transition-all text-sm font-medium"
+              >
+                Explore the Five Divisions <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Intro */}
-      <section className="py-16 bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6">
-          <p className="text-sm font-mono tracking-widest text-[#c9920a] uppercase mb-4">
-            The Framework
-          </p>
-          <div className="grid md:grid-cols-2 gap-10 items-start">
-            <div>
-              <h2 className="text-3xl font-serif text-[#0a1628] mb-4 leading-snug">
-                Accountability is calibrated to risk
+      {/* Intro — accountability calibrated */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">The Framework</span>
+              <h2 className="text-4xl text-[#0f1f3d] mt-3 mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+                Your relationship with AI determines your certification path
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-4">
-                AIC does not audit technology. We audit whether a named, accountable
-                human is genuinely responsible for the decisions an algorithm makes.
-                The three tiers define how deeply that accountability must be embedded —
-                from per-decision human approval to batch-level monitoring.
+              <p className="text-gray-600 leading-relaxed mb-6">
+                The AIC Five-Division Framework recognises that organisations sit at very different points on the human-AI accountability spectrum. A hospital where clinicians sign off every AI diagnostic is fundamentally different from a platform where algorithms operate autonomously with periodic human review.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Tier assignment is determined by the material impact of the decision,
-                the reversibility of outcomes, and the regulatory exposure of the
-                organisation. AIC&apos;s gap analysis confirms the appropriate tier.
+                AIC certification is calibrated to your actual relationship with AI. Each Division has distinct requirements, monitoring obligations, and primary accountability KPIs — because generic compliance frameworks miss the nuance that matters.
               </p>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              {tiers.map((t) => (
-                <div
-                  key={t.tier}
-                  className="text-center p-4 rounded-xl border border-gray-100 bg-[#f8fafc]"
-                >
-                  <p className="text-xs font-mono tracking-wider text-gray-400 uppercase mb-1">
-                    {t.tier}
-                  </p>
-                  <p className="font-serif text-[#0a1628] text-lg">{t.label}</p>
-                  <p className="text-xs text-gray-500 mt-1">{t.sublabel}</p>
-                </div>
-              ))}
+            </motion.div>
+
+            {/* Division summary grid */}
+            <div className="grid grid-cols-1 gap-3">
+              {divisions.map((div, i) => {
+                const Icon = div.icon;
+                return (
+                  <motion.a
+                    key={div.number}
+                    href={`#division-${div.number}`}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08 }}
+                    className={`flex items-center gap-4 p-4 rounded-xl border ${div.accentBorderColor} bg-[#f8fafc] hover:bg-[#f0f4f8] transition-colors`}
+                  >
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-gray-100`}>
+                      <Icon className={`w-5 h-5 ${div.accentText}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Division {div.number}</span>
+                        <span className="text-sm font-semibold text-[#0f1f3d]">{div.name}</span>
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">{div.tagline}</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+                  </motion.a>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Tier Cards */}
-      <section className="py-16 bg-[#f8fafc]">
-        <div className="max-w-5xl mx-auto px-6">
-          <p className="text-sm font-mono tracking-widest text-[#c9920a] uppercase mb-4 text-center">
-            Certification Tiers
-          </p>
-          <h2 className="text-3xl font-serif text-[#0a1628] mb-12 text-center">
-            What each tier demands
-          </h2>
-          <div className="space-y-8">
-            {tiers.map((tier, i) => {
-              const Icon = tier.icon;
-              const c = colorMap[tier.color];
+      {/* Division Cards */}
+      <section id="divisions" className="py-20 bg-[#f8fafc]">
+        <div className="max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">Full Detail</span>
+            <h2 className="text-4xl text-[#0f1f3d] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+              The Five Divisions
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              Each Division maps to a distinct accountability model. Find yours and see exactly what AIC certifies.
+            </p>
+          </motion.div>
+
+          <div className="space-y-6">
+            {divisions.map((div, i) => {
+              const Icon = div.icon;
               return (
                 <motion.div
-                  key={tier.tier}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={div.number}
+                  id={`division-${div.number}`}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className={`rounded-2xl border ${c.border} bg-[#0f1f3d] overflow-hidden`}
+                  transition={{ delay: i * 0.08 }}
+                  className="bg-[#0f1f3d] rounded-2xl overflow-hidden border border-white/10"
                 >
+                  {/* Colored top accent strip */}
+                  <div className={`h-1 ${div.accentStripBg}`} />
+
                   <div className="p-8 md:p-10">
-                    <div className="flex items-start gap-5 mb-6">
-                      <div
-                        className={`w-12 h-12 rounded-xl ${c.bg} flex items-center justify-center flex-shrink-0`}
-                      >
-                        <Icon className={`w-6 h-6 ${c.text}`} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <span
-                            className={`text-xs font-mono tracking-widest uppercase px-2 py-0.5 rounded border ${c.badge}`}
-                          >
-                            {tier.tier}
-                          </span>
+                    <div className="flex flex-col lg:flex-row gap-8">
+                      {/* Left — identity */}
+                      <div className="lg:w-64 shrink-0">
+                        <div className={`w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center mb-4`}>
+                          <Icon className={`w-7 h-7 ${div.accentText}`} />
                         </div>
-                        <h3 className="text-2xl font-serif text-white">
-                          {tier.label}{" "}
-                          <span className="text-white/50 italic">
-                            / {tier.sublabel}
-                          </span>
+                        <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-1">Division {div.number}</div>
+                        <h3 className="text-2xl text-white font-bold mb-2" style={{ fontFamily: "'Merriweather', serif" }}>
+                          {div.name}
                         </h3>
-                      </div>
-                    </div>
-                    <p className="text-white/70 leading-relaxed mb-4">
-                      {tier.description}
-                    </p>
-                    <div
-                      className={`rounded-lg p-4 ${c.bg} border ${c.border} mb-6`}
-                    >
-                      <p className={`text-xs font-mono tracking-widest uppercase mb-2 ${c.text}`}>
-                        When it applies
-                      </p>
-                      <p className="text-white/70 text-sm leading-relaxed">
-                        {tier.requirement}
-                      </p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <p className="text-xs font-mono tracking-widest text-white/40 uppercase mb-3">
-                          Typical Sectors
+                        <p className={`text-sm font-medium italic mb-4 ${div.accentText}`}>
+                          &ldquo;{div.tagline}&rdquo;
                         </p>
-                        <ul className="space-y-2">
-                          {tier.sectors.map((s) => (
-                            <li
-                              key={s}
-                              className="flex items-center gap-2 text-sm text-white/60"
-                            >
-                              <CheckCircle
-                                className={`w-4 h-4 ${c.text} flex-shrink-0`}
-                              />
-                              {s}
-                            </li>
-                          ))}
-                        </ul>
+                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                          <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">Primary KPI</div>
+                          <p className="text-white/80 text-xs leading-relaxed">{div.kpi}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-xs font-mono tracking-widest text-white/40 uppercase mb-3">
-                          Key Obligations
-                        </p>
-                        <ul className="space-y-2">
-                          {tier.obligations.map((o) => (
-                            <li
-                              key={o}
-                              className="flex items-start gap-2 text-sm text-white/60"
-                            >
-                              <ArrowRight
-                                className={`w-4 h-4 ${c.text} flex-shrink-0 mt-0.5`}
-                              />
-                              {o}
-                            </li>
-                          ))}
-                        </ul>
+
+                      {/* Right — detail */}
+                      <div className="flex-1 space-y-5">
+                        <div>
+                          <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">Who This Is</div>
+                          <p className="text-white/80 text-sm leading-relaxed">{div.who}</p>
+                        </div>
+
+                        {div.examples && (
+                          <div>
+                            <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">Examples</div>
+                            <p className="text-white/60 text-sm leading-relaxed">{div.examples}</p>
+                          </div>
+                        )}
+
+                        <div>
+                          <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">What AIC Certifies</div>
+                          <p className="text-white/80 text-sm leading-relaxed">{div.what}</p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4">
+                          <div className="flex-1 p-4 rounded-xl bg-white/5 border border-white/10">
+                            <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">AIC Product</div>
+                            <p className="text-white/80 text-xs leading-relaxed">{div.product}</p>
+                          </div>
+                          {div.valueProp && (
+                            <div className="flex-1 p-4 rounded-xl bg-[#c9920a]/10 border border-[#c9920a]/20">
+                              <div className="text-[10px] font-mono text-[#c9920a]/70 uppercase tracking-widest mb-2">Value Proposition</div>
+                              <p className="text-white/80 text-xs leading-relaxed italic">{div.valueProp}</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {div.note && (
+                          <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-start gap-3">
+                            <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${div.accentText}`} />
+                            <p className="text-white/60 text-xs leading-relaxed">{div.note}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -319,34 +307,44 @@ export default function CertificationPage() {
         </div>
       </section>
 
-      {/* Certification Process */}
-      <section className="py-16 bg-white border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-6">
-          <p className="text-sm font-mono tracking-widest text-[#c9920a] uppercase mb-4 text-center">
-            How It Works
-          </p>
-          <h2 className="text-3xl font-serif text-[#0a1628] mb-12 text-center">
-            The certification process
-          </h2>
-          <div className="grid md:grid-cols-5 gap-4">
-            {certificationProcess.map((step, i) => (
+      {/* Certification Journey */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">How It Works</span>
+            <h2 className="text-4xl text-[#0f1f3d] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+              Your Certification Journey
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">
+              Five steps from self-assessment to certified — with ongoing Pulse monitoring for organisations in Divisions 2, 3, and 4.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-5 gap-6">
+            {journeySteps.map((step, i) => (
               <motion.div
                 key={step.step}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="text-center"
+                transition={{ delay: i * 0.1 }}
+                className="relative"
               >
-                <div className="w-12 h-12 rounded-full bg-[#0a1628] text-white font-mono text-sm flex items-center justify-center mx-auto mb-3">
-                  {step.step}
+                <div className="bg-[#f8fafc] border border-gray-100 rounded-2xl p-6 h-full hover:border-[#c9920a]/30 hover:shadow-md transition-all">
+                  <div className="text-[#c9920a] text-2xl font-bold font-mono mb-4">{step.step}</div>
+                  <h3 className="text-[#0f1f3d] font-semibold mb-3 text-sm">{step.title}</h3>
+                  <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
                 </div>
-                <h3 className="font-semibold text-[#0a1628] text-sm mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-gray-500 text-xs leading-relaxed">
-                  {step.description}
-                </p>
+                {i < journeySteps.length - 1 && (
+                  <div className="hidden md:flex absolute top-1/2 -right-3 z-10 items-center justify-center">
+                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
@@ -354,29 +352,38 @@ export default function CertificationPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-[#0a1628]">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <span className="inline-block bg-[#c9920a]/20 text-[#f0b429] text-xs font-mono px-3 py-1 rounded-full border border-[#c9920a]/30 uppercase tracking-widest mb-6">
-            Get Started
-          </span>
-          <h2 className="text-3xl font-serif italic text-white mb-4">
-            Enquire about certification
-          </h2>
-          <p className="text-white/60 mb-8 max-w-lg mx-auto leading-relaxed">
-            AIC will assess your organisation&apos;s decision landscape, assign the
-            appropriate tier, and guide you through the certification process.
-            Founding Partners receive priority scheduling and permanent rate protection.
-          </p>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#c9920a]/25 text-xs"
+      <section className="py-20 bg-gradient-to-br from-[#0a1628] to-[#0f1f3d] relative overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: "radial-gradient(circle at 30% 50%, #c9920a 0%, transparent 60%), radial-gradient(circle at 70% 50%, #1d4ed8 0%, transparent 60%)",
+          }}
+        />
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
-            Enquire About Certification
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+            <span className="px-3 py-1 bg-[#c9920a]/20 text-[#f0b429] text-[10px] rounded-full border border-[#c9920a]/30 uppercase tracking-[0.2em] font-mono mb-6 inline-block">
+              Get Certified
+            </span>
+            <h2 className="text-4xl text-white mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+              Ready to Certify Your Accountability?
+            </h2>
+            <p className="text-white/70 mb-10 text-lg max-w-2xl mx-auto leading-relaxed">
+              Start with a diagnostic conversation. AIC will help you identify the right Division, understand the gap, and design a certification pathway that fits your organisation.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#c9920a]/25 text-sm"
+            >
+              Enquire About Certification
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </div>
       </section>
-
-    </main>
+    </div>
   );
 }
