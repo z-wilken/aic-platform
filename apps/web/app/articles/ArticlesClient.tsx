@@ -212,11 +212,12 @@ export default function ArticlesClient({ initialArticles, heroBg, categories }: 
                           <User className="w-4 h-4 text-gray-400" />
                           <span className="text-sm text-gray-600">{article.author}</span>
                         </div>
-                        <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white text-sm">
-                          Read Article <ArrowRight className="w-4 h-4 ml-1" />
-                        </Button>
-                      </div>
-                    </div>
+                        <Link href={`/articles/${article.id === 1 || article.id === 2 ? '#' : article.slug}`}>
+                          <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white text-sm">
+                            Read Article <ArrowRight className="w-4 h-4 ml-1" />
+                          </Button>
+                        </Link>
+                      </div>                    </div>
                   </Card>
                 </motion.article>
               ))}
@@ -271,9 +272,12 @@ export default function ArticlesClient({ initialArticles, heroBg, categories }: 
                     </p>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <span className="text-xs text-gray-500">{article.date}</span>
-                      <button className="text-[#0f1f3d] hover:text-[#c9920a] transition-colors text-sm font-medium flex items-center gap-1">
+                      <Link 
+                        href={`/articles/${typeof article.id === 'number' && article.id >= 4 ? '#' : article.slug}`}
+                        className="text-[#0f1f3d] hover:text-[#c9920a] transition-colors text-sm font-medium flex items-center gap-1"
+                      >
                         Read <ArrowRight className="w-3 h-3" />
-                      </button>
+                      </Link>
                     </div>
                   </Card>
                 </motion.article>

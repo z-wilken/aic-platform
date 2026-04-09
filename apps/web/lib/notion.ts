@@ -1,8 +1,11 @@
 import { Client } from "@notionhq/client";
+import { NotionToMarkdown } from "notion-to-md";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
 });
+
+const n2m = new NotionToMarkdown({ notionClient: notion });
 
 const ARTICLES_DATABASE_ID = process.env.NOTION_ARTICLES_DATABASE_ID;
 const POLICY_UPDATES_DATABASE_ID = process.env.NOTION_POLICY_UPDATES_DATABASE_ID;
@@ -40,6 +43,38 @@ export async function getArticles() {
       slug: page.properties.Slug?.rich_text[0]?.plain_text || page.id,
     };
   });
+}
+
+export async function getArticleBySlug(slug: string) {
+  if (!ARTICLES_DATABASE_ID) return null;
+
+  const response = await notion.databases.query({
+    database_id: ARTICLES_DATABASE_ID,
+    filter: {
+      property: "Slug",
+      rich_text: {
+        equals: slug,
+      },
+    },
+  });
+
+  const page = response.results[0];
+  if (!page) return null;
+
+  const mdblocks = await n2m.pageToMarkdown(page.id);
+  const mdString = n2m.toMarkdownString(mdblocks);
+
+  return {
+    id: page.id,
+    title: (page as any).properties.Title?.title[0]?.plain_text || "Untitled",
+    excerpt: (page as any).properties.Excerpt?.rich_text[0]?.plain_text || "",
+    category: (page as any).properties.Category?.select?.name || "Uncategorized",
+    author: (page as any).properties.Author?.rich_text[0]?.plain_text || "AIC Team",
+    date: (page as any).properties.Date?.date?.start || "",
+    readTime: (page as any).properties.ReadTime?.rich_text[0]?.plain_text || "5 min read",
+    image: (page as any).properties.Image?.url || "https://images.unsplash.com/photo-1764087957302-ef0756ed8e0a?auto=format&fit=crop&q=80&w=1080",
+    content: mdString.parent,
+  };
 }
 
 export async function getPolicyUpdates() {
