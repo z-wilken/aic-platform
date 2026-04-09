@@ -55,7 +55,7 @@ const fallbackArticles = [
 ];
 
 export default async function ArticlesPage() {
-  let articlesData = { results: [], nextCursor: null };
+  let articlesData: { results: any[]; nextCursor: string | null } = { results: [], nextCursor: null };
   try {
     articlesData = await getArticles(12);
   } catch (error) {

@@ -119,7 +119,7 @@ const fallbackPolicyUpdates = [
 ];
 
 export default async function GovernanceHubPage() {
-  let policyUpdatesData = { results: [], nextCursor: null };
+  let policyUpdatesData: { results: any[]; nextCursor: string | null } = { results: [], nextCursor: null };
   try {
     policyUpdatesData = await getPolicyUpdates(4);
   } catch (error) {
