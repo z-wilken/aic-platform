@@ -6,19 +6,19 @@ import { ClientLayout } from "./components/ClientLayout";
 export const metadata: Metadata = {
   metadataBase: new URL("https://aiccertified.cloud"),
   title: {
-    default: "AI Integrity Certification (Pty) Ltd | AIC",
+    default: "AI Integrity Certification | Certifying Responsible AI Leaders",
     template: "%s | AIC",
   },
   description:
-    "AIC is South Africa's first algorithmic accountability certification body. We certify that human empathy and accountability remain in every consequential automated decision. Anchored in POPIA Section 71 and ISO/IEC 42001.",
+    "Certifying the human behind the algorithm. AIC is the world's premier accreditation body for AI governance and ethics. Join thousands of Chief AI Officers, ethics leaders, and organizations building accountable, transparent, and trustworthy AI systems that put humanity first.",
   openGraph: {
     type: "website",
     locale: "en_ZA",
     url: "https://aiccertified.cloud",
     siteName: "AI Integrity Certification",
-    title: "AI Integrity Certification (Pty) Ltd | AIC",
+    title: "AI Integrity Certification | Certifying Responsible AI Leaders",
     description:
-      "South Africa's first algorithmic accountability certification body. Certifying that humans stay in the loop for every consequential AI decision.",
+      "Certifying the human behind the algorithm. AIC is the world's premier accreditation body for AI governance and ethics. Join thousands of leaders building accountable, transparent, and trustworthy AI systems.",
     images: [
       {
         url: "/opengraph-image",
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Integrity Certification (Pty) Ltd | AIC",
+    title: "AI Integrity Certification | Certifying Responsible AI Leaders",
     description:
-      "South Africa's first algorithmic accountability certification body.",
+      "Certifying the human behind the algorithm. AIC is the world's premier accreditation body for AI governance and ethics.",
     images: ["/opengraph-image"],
   },
   robots: {
