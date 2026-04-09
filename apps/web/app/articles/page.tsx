@@ -26,6 +26,7 @@ const fallbackArticles = [
     date: "April 1, 2026",
     readTime: "12 min read",
     featured: true,
+    slug: "rise-of-algorithmic-accountability",
   },
   {
     id: 2,
@@ -37,6 +38,7 @@ const fallbackArticles = [
     date: "March 28, 2026",
     readTime: "18 min read",
     featured: true,
+    slug: "iso-iec-42001-implementation-guide",
   },
   {
     id: 3,
@@ -48,23 +50,25 @@ const fallbackArticles = [
     date: "March 25, 2026",
     readTime: "10 min read",
     featured: false,
+    slug: "eu-ai-act-enforcement-begins",
   },
 ];
 
 export default async function ArticlesPage() {
-  let articles = [];
+  let articlesData = { results: [], nextCursor: null };
   try {
-    articles = await getArticles();
+    articlesData = await getArticles(12);
   } catch (error) {
     console.error("Failed to fetch articles from Notion:", error);
   }
 
   // Use fallback if no articles are found in Notion
-  const displayArticles = articles.length > 0 ? articles : fallbackArticles;
+  const displayArticles = articlesData.results.length > 0 ? articlesData.results : fallbackArticles;
 
   return (
     <ArticlesClient 
       initialArticles={displayArticles} 
+      initialNextCursor={articlesData.nextCursor}
       heroBg={heroBg} 
       categories={categories} 
     />

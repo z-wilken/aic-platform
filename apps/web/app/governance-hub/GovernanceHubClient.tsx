@@ -17,7 +17,9 @@ import {
   Scale,
   Map,
   Newspaper,
+  Loader2,
 } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
 
 interface Right {
   article: string;
@@ -52,6 +54,7 @@ interface GovernanceHubClientProps {
   rights: Right[];
   globalStandards: Standard[];
   initialPolicyUpdates: PolicyUpdate[];
+  initialNextCursor: string | null;
 }
 
 export default function GovernanceHubClient({
@@ -59,10 +62,30 @@ export default function GovernanceHubClient({
   rights,
   globalStandards,
   initialPolicyUpdates,
+  initialNextCursor,
 }: GovernanceHubClientProps) {
   const [expandedRight, setExpandedRight] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("All Regions");
+  
+  const [policyUpdates, setPolicyUpdates] = useState<PolicyUpdate[]>(initialPolicyUpdates);
+  const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const handleLoadMorePolicies = async () => {
+    if (!nextCursor || isLoadingMore) return;
+    setIsLoadingMore(true);
+    try {
+      const res = await fetch(`/api/notion/policy-updates?cursor=${nextCursor}`);
+      const data = await res.json();
+      setPolicyUpdates(prev => [...prev, ...data.results]);
+      setNextCursor(data.nextCursor);
+    } catch (error) {
+      console.error("Failed to load more policies:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   const filteredStandards = globalStandards.filter(
     (s) =>
@@ -305,13 +328,13 @@ export default function GovernanceHubClient({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {initialPolicyUpdates.map((update, i) => (
+            {policyUpdates.map((update, i) => (
               <motion.div
-                key={i}
+                key={update.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: (i % 4) * 0.1 }}
                 className="border border-gray-100 rounded-xl p-6 hover:shadow-md transition-all"
               >
                 <div className="flex items-center gap-3 mb-3">
@@ -333,6 +356,25 @@ export default function GovernanceHubClient({
               </motion.div>
             ))}
           </div>
+
+          {nextCursor && (
+            <div className="mt-12 flex justify-center">
+              <Button
+                onClick={handleLoadMorePolicies}
+                disabled={isLoadingMore}
+                className="bg-white border border-gray-200 text-[#0f1f3d] hover:bg-gray-50 px-8 py-6 h-auto text-base"
+              >
+                {isLoadingMore ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  "Load More Policy Updates"
+                )}
+              </Button>
+            </div>
+          )}
         </div>
       </section>
     </div>

@@ -119,14 +119,14 @@ const fallbackPolicyUpdates = [
 ];
 
 export default async function GovernanceHubPage() {
-  let policyUpdates = [];
+  let policyUpdatesData = { results: [], nextCursor: null };
   try {
-    policyUpdates = await getPolicyUpdates();
+    policyUpdatesData = await getPolicyUpdates(4);
   } catch (error) {
     console.error("Failed to fetch policy updates from Notion:", error);
   }
 
-  const displayPolicyUpdates = policyUpdates.length > 0 ? policyUpdates : fallbackPolicyUpdates;
+  const displayPolicyUpdates = policyUpdatesData.results.length > 0 ? policyUpdatesData.results : fallbackPolicyUpdates;
 
   return (
     <GovernanceHubClient 
@@ -134,6 +134,7 @@ export default async function GovernanceHubPage() {
       rights={rights}
       globalStandards={globalStandards}
       initialPolicyUpdates={displayPolicyUpdates}
+      initialNextCursor={policyUpdatesData.nextCursor}
     />
   );
 }

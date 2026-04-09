@@ -18,6 +18,7 @@ import {
   Globe,
   ArrowRight,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
@@ -32,20 +33,40 @@ interface Article {
   readTime: string;
   image?: string;
   featured?: boolean;
+  slug: string;
 }
 
 interface ArticlesClientProps {
   initialArticles: Article[];
+  initialNextCursor: string | null;
   heroBg: string;
   categories: string[];
 }
 
-export default function ArticlesClient({ initialArticles, heroBg, categories }: ArticlesClientProps) {
+export default function ArticlesClient({ initialArticles, initialNextCursor, heroBg, categories }: ArticlesClientProps) {
+  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Articles");
   const [searchQuery, setSearchQuery] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterSuccess, setNewsletterSuccess] = useState(false);
+
+  const handleLoadMore = async () => {
+    if (!nextCursor || isLoadingMore) return;
+    setIsLoadingMore(true);
+    try {
+      const res = await fetch(`/api/notion/articles?cursor=${nextCursor}`);
+      const data = await res.json();
+      setArticles(prev => [...prev, ...data.results]);
+      setNextCursor(data.nextCursor);
+    } catch (error) {
+      console.error("Failed to load more articles:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   const handleNewsletterSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -66,7 +87,7 @@ export default function ArticlesClient({ initialArticles, heroBg, categories }: 
     }
   };
 
-  const filteredArticles = initialArticles.filter((article) => {
+  const filteredArticles = articles.filter((article) => {
     const matchesCategory = selectedCategory === "All Articles" || article.category === selectedCategory;
     const matchesSearch =
       searchQuery === "" ||
@@ -75,7 +96,7 @@ export default function ArticlesClient({ initialArticles, heroBg, categories }: 
     return matchesCategory && matchesSearch;
   });
 
-  const featuredArticles = initialArticles.filter(a => a.featured);
+  const featuredArticles = articles.filter(a => a.featured);
 
   return (
     <div className="min-h-screen bg-white">
@@ -212,12 +233,13 @@ export default function ArticlesClient({ initialArticles, heroBg, categories }: 
                           <User className="w-4 h-4 text-gray-400" />
                           <span className="text-sm text-gray-600">{article.author}</span>
                         </div>
-                        <Link href={`/articles/${article.id === 1 || article.id === 2 ? '#' : article.slug}`}>
+                        <Link href={`/articles/${article.slug}`}>
                           <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white text-sm">
                             Read Article <ArrowRight className="w-4 h-4 ml-1" />
                           </Button>
                         </Link>
-                      </div>                    </div>
+                      </div>
+                    </div>
                   </Card>
                 </motion.article>
               ))}
@@ -244,45 +266,66 @@ export default function ArticlesClient({ initialArticles, heroBg, categories }: 
               <p className="text-gray-500">No articles found matching your criteria.</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredArticles.map((article, i) => (
-                <motion.article
-                  key={article.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: (i % 6) * 0.05 }}
-                >
-                  <Card className="p-6 hover:shadow-lg transition-shadow group h-full flex flex-col">
-                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
-                      <Tag className="w-3 h-3" />
-                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">
-                        {article.category}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {article.readTime}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-[#0f1f3d] mb-2 group-hover:text-[#c9920a] transition-colors leading-tight flex-1">
-                      {article.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                      {article.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-xs text-gray-500">{article.date}</span>
-                      <Link 
-                        href={`/articles/${typeof article.id === 'number' && article.id >= 4 ? '#' : article.slug}`}
-                        className="text-[#0f1f3d] hover:text-[#c9920a] transition-colors text-sm font-medium flex items-center gap-1"
-                      >
-                        Read <ArrowRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  </Card>
-                </motion.article>
-              ))}
-            </div>
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredArticles.map((article, i) => (
+                  <motion.article
+                    key={article.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: (i % 6) * 0.05 }}
+                  >
+                    <Card className="p-6 hover:shadow-lg transition-shadow group h-full flex flex-col">
+                      <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                        <Tag className="w-3 h-3" />
+                        <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">
+                          {article.category}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {article.readTime}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-semibold text-[#0f1f3d] mb-2 group-hover:text-[#c9920a] transition-colors leading-tight flex-1">
+                        {article.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                        {article.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span className="text-xs text-gray-500">{article.date}</span>
+                        <Link 
+                          href={`/articles/${article.slug}`}
+                          className="text-[#0f1f3d] hover:text-[#c9920a] transition-colors text-sm font-medium flex items-center gap-1"
+                        >
+                          Read <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </Card>
+                  </motion.article>
+                ))}
+              </div>
+
+              {nextCursor && selectedCategory === "All Articles" && searchQuery === "" && (
+                <div className="mt-12 flex justify-center">
+                  <Button
+                    onClick={handleLoadMore}
+                    disabled={isLoadingMore}
+                    className="bg-white border border-gray-200 text-[#0f1f3d] hover:bg-gray-50 px-8 py-6 h-auto text-base"
+                  >
+                    {isLoadingMore ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      "Load More Articles"
+                    )}
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

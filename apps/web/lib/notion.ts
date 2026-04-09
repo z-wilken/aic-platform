@@ -10,11 +10,13 @@ const n2m = new NotionToMarkdown({ notionClient: notion });
 const ARTICLES_DATABASE_ID = process.env.NOTION_ARTICLES_DATABASE_ID;
 const POLICY_UPDATES_DATABASE_ID = process.env.NOTION_POLICY_UPDATES_DATABASE_ID;
 
-export async function getArticles() {
-  if (!ARTICLES_DATABASE_ID) return [];
+export async function getArticles(pageSize = 12, startCursor?: string) {
+  if (!ARTICLES_DATABASE_ID) return { results: [], nextCursor: null };
 
   const response = await notion.databases.query({
     database_id: ARTICLES_DATABASE_ID,
+    page_size: pageSize,
+    start_cursor: startCursor,
     filter: {
       property: "Status",
       select: {
@@ -29,7 +31,7 @@ export async function getArticles() {
     ],
   });
 
-  return response.results.map((page: any) => {
+  const results = response.results.map((page: any) => {
     return {
       id: page.id,
       title: page.properties.Title?.title[0]?.plain_text || "Untitled",
@@ -43,6 +45,11 @@ export async function getArticles() {
       slug: page.properties.Slug?.rich_text[0]?.plain_text || page.id,
     };
   });
+
+  return {
+    results,
+    nextCursor: response.next_cursor,
+  };
 }
 
 export async function getArticleBySlug(slug: string) {
@@ -77,11 +84,13 @@ export async function getArticleBySlug(slug: string) {
   };
 }
 
-export async function getPolicyUpdates() {
-  if (!POLICY_UPDATES_DATABASE_ID) return [];
+export async function getPolicyUpdates(pageSize = 4, startCursor?: string) {
+  if (!POLICY_UPDATES_DATABASE_ID) return { results: [], nextCursor: null };
 
   const response = await notion.databases.query({
     database_id: POLICY_UPDATES_DATABASE_ID,
+    page_size: pageSize,
+    start_cursor: startCursor,
     filter: {
       property: "Status",
       select: {
@@ -96,7 +105,7 @@ export async function getPolicyUpdates() {
     ],
   });
 
-  return response.results.map((page: any) => {
+  const results = response.results.map((page: any) => {
     return {
       id: page.id,
       date: page.properties.Date?.date?.start || "",
@@ -105,4 +114,9 @@ export async function getPolicyUpdates() {
       summary: page.properties.Summary?.rich_text[0]?.plain_text || "",
     };
   });
+
+  return {
+    results,
+    nextCursor: response.next_cursor,
+  };
 }
