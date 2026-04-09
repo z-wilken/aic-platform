@@ -5,9 +5,9 @@ import { sql } from 'drizzle-orm';
 export const tierEnum = pgEnum('tier_enum', ['TIER_1', 'TIER_2', 'TIER_3']);
 export const userRoleEnum = pgEnum('user_role_enum', ['ADMIN', 'AUDITOR', 'COMPLIANCE_OFFICER', 'VIEWER']);
 export const auditStatusEnum = pgEnum('audit_status_enum', ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FLAGGED']);
-export const incidentStatusEnum = pgEnum('incident_status_enum', ['OPEN', 'UNDER_REVIEW', 'RESOLVED', 'ESCALATED']);
+export const incidentStatusEnum = pgEnum('incident_status_enum', ['OPEN', 'INVESTIGATING', 'RESOLVED', 'DISMISSED', 'CLOSED']);
 export const auditScheduledStatusEnum = pgEnum('audit_scheduled_status_enum', ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']);
-export const correctionStatusEnum = pgEnum('correction_status_enum', ['SUBMITTED', 'UNDER_REVIEW', 'IMPLEMENTED', 'VERIFIED', 'REJECTED']);
+export const correctionStatusEnum = pgEnum('correction_status_enum', ['SUBMITTED', 'UNDER_REVIEW', 'RESOLVED', 'REJECTED']);
 
 // Roles (WordPress style)
 export const roles = pgTable('roles', {

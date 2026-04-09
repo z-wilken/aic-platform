@@ -210,13 +210,13 @@ const maturityLevelColors: Record<MaturityLevel, { bg: string; text: string; bor
   Basic: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
 };
 
+const industries = ["all", ...Array.from(new Set(companies.map((c) => c.industry)))];
+
 export default function AIGovernanceIndexPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("all");
   const [sortBy, setSortBy] = useState<"rank" | "maturity" | "board" | "rights">("rank");
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
-
-  const industries = ["all", ...Array.from(new Set(companies.map((c) => c.industry)))];
 
   const filteredCompanies = companies
     .filter((c) => {
