@@ -120,16 +120,29 @@ export default function Footer() {
                   </div>
                 </div>
               </li>
-              <li className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
-                  <Mail className="w-4 h-4 text-aic-gold" />
+              <li className="flex flex-col gap-3">
+                <div className="flex items-center gap-3 group">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4 text-aic-gold" />
+                  </div>
+                  <a
+                    href="mailto:zander@ztoaholdings.com"
+                    className="hover:text-white transition-colors break-all"
+                  >
+                    zander@ztoaholdings.com
+                  </a>
                 </div>
-                <a
-                  href="mailto:zander@ztoaholdings.co.za"
-                  className="hover:text-white transition-colors break-all"
-                >
-                  zander@ztoaholdings.co.za
-                </a>
+                <div className="flex items-center gap-3 group ml-0 sm:ml-0">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4 text-aic-gold" />
+                  </div>
+                  <a
+                    href="mailto:albert@ztoaholdings.com"
+                    className="hover:text-white transition-colors break-all"
+                  >
+                    albert@ztoaholdings.com
+                  </a>
+                </div>
               </li>
             </ul>
           </div>
