@@ -219,9 +219,13 @@ export default function GovernanceHubPage() {
                   <div className="flex justify-between"><span className="text-gray-500">Signatories</span><span className="font-medium text-[#0f1f3d]">67 Nations</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">Last Amended</span><span className="font-medium text-[#0f1f3d]">Oct 2025</span></div>
                 </div>
-                <button className="mt-4 w-full flex items-center justify-center gap-2 bg-[#0f1f3d] text-white text-sm py-2.5 rounded-lg hover:bg-[#1a3160] transition-colors">
+                <a 
+                  href="/AIC-Declaration-of-Algorithmic-Rights.pdf" 
+                  download 
+                  className="mt-4 w-full flex items-center justify-center gap-2 bg-[#0f1f3d] text-white text-sm py-2.5 rounded-lg hover:bg-[#1a3160] transition-colors"
+                >
                   <Download className="w-4 h-4" /> Download PDF
-                </button>
+                </a>
               </div>
             </div>
 
