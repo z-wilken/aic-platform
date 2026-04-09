@@ -80,6 +80,7 @@ const portals = [
     accent: "#0f1f3d",
     tag: "Enterprise",
   },
+  /*
   {
     icon: Award,
     label: "Professional Portal",
@@ -96,6 +97,7 @@ const portals = [
     accent: "#059669",
     tag: "Rankings & Analytics",
   },
+  */
 ];
 
 const stats = [

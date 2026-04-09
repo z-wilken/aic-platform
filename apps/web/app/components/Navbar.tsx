@@ -8,8 +8,8 @@ import { Globe, Shield, Award, BarChart3, BookOpen, FileText, Newspaper, Menu, X
 export const navItems = [
   { href: "/governance-hub",      label: "Governance Hub",      icon: BookOpen,  description: "Algorithmic Rights & Global Standards" },
   { href: "/corporate-portal",    label: "Corporate Portal",    icon: Shield,    description: "ISO/IEC 42001 Certification Services" },
-  { href: "/professional-portal", label: "Professional Portal", icon: Award,     description: "ISO/IEC 17024 Personnel Certification" },
-  { href: "/ai-governance-index", label: "AI Governance Index", icon: BarChart3, description: "JSE AI Maturity Rankings" },
+  // { href: "/professional-portal", label: "Professional Portal", icon: Award,     description: "ISO/IEC 17024 Personnel Certification" },
+  // { href: "/ai-governance-index", label: "AI Governance Index", icon: BarChart3, description: "JSE AI Maturity Rankings" },
   { href: "/articles",            label: "Articles",            icon: Newspaper, description: "Governance insights and updates" },
   { href: "/disclosures",         label: "Disclosures",         icon: FileText,  description: "Impartiality & Accreditation Directory" },
   { href: "/certification",       label: "Certification",       icon: Shield,    description: "Five-Division Accountability Framework" },
