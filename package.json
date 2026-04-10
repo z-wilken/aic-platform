@@ -14,7 +14,7 @@
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=web -- --port 3000",
     "dev:platform": "turbo dev --filter=platform -- --port 3001",
-    "build": "turbo build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' turbo build --filter=web --concurrency=1",
     "test": "turbo test",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
