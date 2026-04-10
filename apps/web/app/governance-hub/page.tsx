@@ -8,7 +8,10 @@ import {
   UserCheck,
 } from "lucide-react";
 
-export const revalidate = 3600; // Revalidate every hour
+// force-dynamic: prevents build-time prerender so Notion calls only happen
+// at request time when env vars are available. Switch to `revalidate = 3600`
+// once Notion databases are confirmed and the integration is tested.
+export const dynamic = "force-dynamic";
 
 const heroBg = "https://images.unsplash.com/photo-1585417239901-f3a4085218b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbG9iYWwlMjBkaWdpdGFsJTIwbmV0d29yayUyMGRhdGElMjBjb21wbGlhbmNlfGVufDF8fHx8MTc3MTk2MjY5MXww&ixlib=rb-4.1.0&q=80&w=1080";
 

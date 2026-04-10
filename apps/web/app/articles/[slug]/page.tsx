@@ -6,7 +6,7 @@ import { Calendar, Clock, User, ArrowLeft, Shield } from "lucide-react";
 import Link from "next/link";
 import { Card } from "@/app/components/ui/card";
 
-export const revalidate = 3600; // Revalidate every hour
+export const dynamic = "force-dynamic";
 
 export default async function ArticlePage({
   params,
