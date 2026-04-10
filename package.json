@@ -10,14 +10,6 @@
     "apps/governance-agent",
     "packages/*"
   ],
-  "os": [
-    "darwin",
-    "linux"
-  ],
-  "cpu": [
-    "x64",
-    "arm64"
-  ],
   "scripts": {
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=web -- --port 3000",
@@ -62,6 +54,12 @@
   },
   "overrides": {
     "playwright": "1.51.1"
+  },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-linux-x64-gnu": "4.2.2",
+    "@tailwindcss/oxide-linux-x64-musl": "4.2.2",
+    "@tailwindcss/oxide-linux-arm64-gnu": "4.2.2",
+    "@tailwindcss/oxide-linux-arm64-musl": "4.2.2"
   },
   "dependencies": {
     "dotenv": "^17.3.1",
