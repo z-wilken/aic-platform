@@ -10,6 +10,14 @@
     "apps/governance-agent",
     "packages/*"
   ],
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
   "scripts": {
     "dev": "turbo dev",
     "dev:web": "turbo dev --filter=web -- --port 3000",
