@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 // Mock the questions module before importing scoring
 vi.mock('../../app/data/questions', () => ({
@@ -30,7 +30,7 @@ vi.mock('../../app/data/questions', () => ({
   ],
 }));
 
-import { calculateAssessmentResult, CategoryScore, TierInfo, AssessmentResult } from '../../lib/scoring';
+import { calculateAssessmentResult } from '../../lib/scoring';
 
 describe('calculateAssessmentResult', () => {
   describe('Score Calculation', () => {

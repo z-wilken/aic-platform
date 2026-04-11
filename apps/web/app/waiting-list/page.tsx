@@ -400,7 +400,7 @@ export default function WaitingListPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   <Award className="w-4 h-4 inline mr-1" />
-                  I'm Interested In
+                  I&apos;m Interested In
                 </label>
                 <div className="space-y-3">
                   {certificationTypes.map((type) => (

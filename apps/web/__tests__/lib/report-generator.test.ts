@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Define types locally
 interface CategoryScore {
@@ -33,7 +33,7 @@ const mockSetDrawColor = vi.fn();
 const mockSetLineWidth = vi.fn();
 const mockRect = vi.fn();
 const mockLine = vi.fn();
-const mockSplitTextToSize = vi.fn((text: string, _size: number) => [text]);
+const mockSplitTextToSize = vi.fn((text: string) => [text]);
 
 const mockJsPDFInstance = {
   save: mockSave,
@@ -49,7 +49,7 @@ const mockJsPDFInstance = {
   splitTextToSize: mockSplitTextToSize,
 };
 
-const mockJsPDF = vi.fn((_options?: unknown) => mockJsPDFInstance);
+const mockJsPDF = vi.fn(() => mockJsPDFInstance);
 
 // Inline implementation of generatePDFReport for testing
 // This mirrors the actual implementation in lib/report-generator.ts

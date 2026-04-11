@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   BarChart3,
   TrendingUp,
   TrendingDown,
   Minus,
-  Filter,
   Download,
   Search,
   ChevronDown,
-  ChevronUp,
   Award,
   AlertTriangle,
   CheckCircle,
@@ -237,7 +234,7 @@ export default function AIGovernanceIndexPage() {
       }
     });
 
-  const getTrendIcon = (trend: TrendDirection, change: number) => {
+  const getTrendIcon = (trend: TrendDirection) => {
     if (trend === "up") return <TrendingUp className="w-4 h-4 text-green-600" />;
     if (trend === "down") return <TrendingDown className="w-4 h-4 text-red-600" />;
     return <Minus className="w-4 h-4 text-gray-400" />;
@@ -432,7 +429,7 @@ export default function AIGovernanceIndexPage() {
 
                         {/* Trend */}
                         <div className="flex items-center gap-1">
-                          {getTrendIcon(company.trend, company.rankChange)}
+                          {getTrendIcon(company.trend)}
                           <ChevronDown
                             className={`w-5 h-5 text-gray-400 transition-transform ${
                               isExpanded ? "rotate-180" : ""
@@ -596,7 +593,7 @@ export default function AIGovernanceIndexPage() {
                 <h4 className="font-semibold text-blue-900 mb-2">Data Sources & Verification</h4>
                 <p className="text-sm text-blue-800 leading-relaxed">
                   Rankings are based on publicly available disclosures, regulatory filings, third-party audits, and
-                  direct company submissions. All data is independently verified by AIC's Research Division and updated
+                  direct company submissions. All data is independently verified by AIC&apos;s Research Division and updated
                   quarterly. Companies may dispute rankings through our formal appeals process.
                 </p>
               </div>
@@ -610,7 +607,7 @@ export default function AIGovernanceIndexPage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <BarChart3 className="w-12 h-12 mx-auto mb-4 text-white" />
           <h2 className="text-3xl mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
-            Improve Your Organization's Ranking
+            Improve Your Organization&apos;s Ranking
           </h2>
           <p className="text-white/90 mb-8 text-lg">
             AIC certification demonstrates commitment to responsible AI governance and can significantly boost your

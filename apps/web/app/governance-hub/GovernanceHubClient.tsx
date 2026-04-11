@@ -4,11 +4,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   BookOpen,
-  Eye,
-  MessageSquare,
-  Bell,
-  RefreshCw,
-  UserCheck,
   Globe,
   Download,
   Search,
@@ -110,7 +105,7 @@ export default function GovernanceHubClient({
             <span className="text-[#c9920a]">Algorithmic Rights</span>
           </h1>
           <p className="text-white/70 text-lg max-w-2xl mb-8">
-            Access AIC's foundational Declaration of Algorithmic Rights, global standards maps, and real-time policy intelligence for researchers, regulators, and policymakers.
+            Access AIC&apos;s foundational Declaration of Algorithmic Rights, global standards maps, and real-time policy intelligence for researchers, regulators, and policymakers.
           </p>
           <div className="flex gap-4">
             <a
@@ -229,7 +224,7 @@ export default function GovernanceHubClient({
               AI Regulatory Standards Map
             </h2>
             <p className="text-gray-500 text-sm max-w-2xl">
-              Track the status of AI governance legislation and voluntary frameworks across major jurisdictions, and see how they align with AIC's Declaration of Algorithmic Rights.
+              Track the status of AI governance legislation and voluntary frameworks across major jurisdictions, and see how they align with AIC&apos;s Declaration of Algorithmic Rights.
             </p>
           </div>
 

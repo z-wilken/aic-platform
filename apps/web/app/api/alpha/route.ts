@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSystemDb, leads, sql } from '@aic/db';
+import { getSystemDb, leads } from '@aic/db';
 import { isValidEmail, isNonEmptyString, safeParseJSON } from '@/lib/validation';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
@@ -19,7 +19,6 @@ export async function POST(request: Request) {
     const firstName = body['first-name'];
     const lastName = body['last-name'];
     const { email, company } = body;
-    const useCase = body['use-case'];
 
     if (!isValidEmail(email)) {
       return NextResponse.json({ success: false, message: 'Valid email is required.' }, { status: 400 });

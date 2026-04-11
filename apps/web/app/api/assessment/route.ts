@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSystemDb, leads, sql } from '@aic/db';
+import { getSystemDb, leads } from '@aic/db';
 import { isValidEmail, isValidScore, isValidTier, safeParseJSON } from '@/lib/validation';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 

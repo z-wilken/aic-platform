@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   Award,
   Calendar,
@@ -308,7 +307,7 @@ export default function ProfessionalPortalPage() {
                   <div className="flex items-start gap-3">
                     <Calendar className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold text-blue-900 mb-1">Can't find a suitable date?</h4>
+                      <h4 className="font-semibold text-blue-900 mb-1">Can&apos;t find a suitable date?</h4>
                       <p className="text-sm text-blue-700 mb-3">
                         Request a custom exam session for your organization. Minimum 5 candidates required.
                       </p>

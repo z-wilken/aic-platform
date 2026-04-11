@@ -1,4 +1,4 @@
-import { questions, Question } from '../app/data/questions';
+import { questions } from '../app/data/questions';
 
 export interface CategoryScore {
     name: string;

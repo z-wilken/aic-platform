@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, Shield, Award, BarChart3, BookOpen, FileText, Newspaper, Menu, X } from "lucide-react";
+import { Globe, Shield, BookOpen, FileText, Newspaper, Menu, X } from "lucide-react";
 
 export const navItems = [
   { href: "/certification",       label: "Certification",       icon: Shield,    description: "Five-Division Accountability Framework" },

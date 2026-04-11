@@ -2,27 +2,20 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import {
   Shield,
   CheckCircle,
   AlertTriangle,
-  TrendingUp,
   FileText,
   Download,
-  ArrowRight,
   Users,
   Building2,
   Clock,
   BarChart3,
-  ChevronRight,
-  Star,
-  Zap,
-  Globe,
   Lock,
   RefreshCw,
   Search,
-  X,
+  Globe,
 } from "lucide-react";
 
 const heroBg = "https://images.unsplash.com/photo-1771931322109-180bb1b35bf8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjByaXNrJTIwbWFuYWdlbWVudCUyMGNvbXBsaWFuY2UlMjBhdWRpdHxlbnwxfHx8fDE3NzE5NjI2OTR8MA&ixlib=rb-4.1.0&q=80&w=1080";
@@ -135,7 +128,7 @@ export default function CorporatePortalPage() {
             <span className="text-[#c9920a]">for Your Organization</span>
           </h1>
           <p className="text-white/70 text-lg max-w-2xl mb-8">
-            Achieve internationally recognized AI Management System certification. AIC's conformity assessment services help Chief Risk Officers build defensible, auditable AI governance programs.
+            Achieve internationally recognized AI Management System certification. AIC&apos;s conformity assessment services help Chief Risk Officers build defensible, auditable AI governance programs.
           </p>
           <div className="flex flex-wrap gap-3">
             <button
@@ -279,7 +272,7 @@ export default function CorporatePortalPage() {
                 ISO/IEC 42001 Gap Analysis Dashboard
               </h2>
               <p className="text-gray-500 max-w-2xl text-sm">
-                This indicative gap analysis shows control coverage across eight key ISO/IEC 42001 domains. Use AIC's full assessment service for a defensible, audited baseline.
+                This indicative gap analysis shows control coverage across eight key ISO/IEC 42001 domains. Use AIC&apos;s full assessment service for a defensible, audited baseline.
               </p>
             </div>
 

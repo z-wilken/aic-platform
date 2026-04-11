@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FileText, Shield, Scale, AlertTriangle, Ban, BookOpen, Globe } from "lucide-react";
+import { Scale, AlertTriangle, Ban, Globe } from "lucide-react";
 
 export default function TermsOfUse() {
   return (

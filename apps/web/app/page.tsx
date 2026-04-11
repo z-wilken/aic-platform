@@ -4,10 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Shield,
-  Award,
-  BarChart3,
   BookOpen,
-  FileText,
   ArrowRight,
   CheckCircle,
   Eye,
@@ -16,7 +13,6 @@ import {
   RefreshCw,
   UserCheck,
   Globe,
-  TrendingUp,
   Users,
   Building2,
   Star,
@@ -218,7 +214,7 @@ export default function Home() {
               Declaration of Algorithmic Rights
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto text-base leading-relaxed">
-              AIC's foundational framework establishing the inalienable rights of every individual interacting with automated systems. These five rights form the basis for all AIC certification assessments.
+              AIC&apos;s foundational framework establishing the inalienable rights of every individual interacting with automated systems. These five rights form the basis for all AIC certification assessments.
             </p>
           </motion.div>
 

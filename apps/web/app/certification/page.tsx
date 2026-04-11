@@ -7,7 +7,6 @@ import {
   ArrowRight,
   Users,
   Eye,
-  RefreshCw,
   Activity,
   Code2,
   CheckCircle,
