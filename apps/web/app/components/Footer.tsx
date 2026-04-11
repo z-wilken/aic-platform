@@ -115,8 +115,8 @@ export default function Footer() {
                 <div className="leading-relaxed">
                   <div>Johannesburg, South Africa</div>
                   <div className="text-white/40 text-xs mt-1">
-                    15 Smit Street<br />
-                    Johannesburg, Gauteng, 2000                  </div>
+                    15 Smit Street, Johannesburg<br />
+                    Gauteng, 2000                  </div>
                 </div>
               </li>
               <li className="flex flex-col gap-3">
