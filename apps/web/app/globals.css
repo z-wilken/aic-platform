@@ -53,6 +53,7 @@
   --aic-navy-mid: #0f1f3d;
   --aic-gold: #c9920a;
   --aic-gold-light: #f0b429;
+  --aic-copper: #c9920a; /* Mapping to gold for now, or use #b07d08 if preferred */
   --aic-paper: #f8fafc;
 }
 
@@ -138,6 +139,7 @@
   --color-aic-navy-mid: var(--aic-navy-mid);
   --color-aic-gold: var(--aic-gold);
   --color-aic-gold-light: var(--aic-gold-light);
+  --color-aic-copper: var(--aic-copper);
   --color-aic-paper: var(--aic-paper);
 
   /* Font mapping - Sovereign Style */
