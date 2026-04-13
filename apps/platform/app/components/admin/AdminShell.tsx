@@ -42,14 +42,14 @@ export default function AdminShell({ children }: AdminShellProps) {
   ]
 
   return (
-    <div className="flex h-screen bg-[#F9FAFB] text-[#0A111F] font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#F9FAFB] text-[#0A1728] font-sans overflow-hidden">
       {/* Sidebar - Compact & Dense */}
       <aside className="w-64 bg-aic-paper border-r border-gray-200 flex flex-col shrink-0">
         <div className="p-6 border-b border-gray-100 flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#0A111F] rounded flex items-center justify-center text-aic-paper font-bold text-xs">A</div>
+          <div className="w-8 h-8 bg-[#0A1728] rounded flex items-center justify-center text-aic-paper font-bold text-xs">A</div>
           <div>
             <h1 className="text-sm font-black tracking-tight leading-none">ADMIN CONTROL</h1>
-            <p className="text-[10px] text-[#C17C4E] font-bold uppercase mt-1">Sovereign Layer</p>
+            <p className="text-[10px] text-[#c36c32] font-bold uppercase mt-1">Sovereign Layer</p>
           </div>
         </div>
 
@@ -67,11 +67,11 @@ export default function AdminShell({ children }: AdminShellProps) {
                       className={cn(
                         "flex items-center gap-3 py-2 px-3 rounded-lg text-xs font-medium transition-all",
                         isActive 
-                          ? "bg-gray-100 text-[#0A111F] shadow-sm" 
-                          : "text-gray-500 hover:bg-gray-50 hover:text-[#0A111F]"
+                          ? "bg-gray-100 text-[#0A1728] shadow-sm" 
+                          : "text-gray-500 hover:bg-gray-50 hover:text-[#0A1728]"
                       )}
                     >
-                      <span className={cn(isActive ? "text-[#C17C4E]" : "text-gray-400")}>
+                      <span className={cn(isActive ? "text-[#c36c32]" : "text-gray-400")}>
                         {item.icon}
                       </span>
                       <span>{item.label}</span>
@@ -105,7 +105,7 @@ export default function AdminShell({ children }: AdminShellProps) {
               <input 
                 type="text" 
                 placeholder="Global Search (Omni-bar)..." 
-                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-2 focus:ring-[#C17C4E]/20 outline-none"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-2 focus:ring-[#c36c32]/20 outline-none"
               />
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function AdminShell({ children }: AdminShellProps) {
                 <p className="text-xs font-bold text-gray-900 leading-none">Root Admin</p>
                 <p className="text-[10px] text-gray-400 uppercase font-bold mt-1">Privileged Account</p>
               </div>
-              <div className="w-8 h-8 rounded-lg bg-[#0A111F] flex items-center justify-center text-aic-paper text-xs font-bold shadow-lg shadow-gray-200">
+              <div className="w-8 h-8 rounded-lg bg-[#0A1728] flex items-center justify-center text-aic-paper text-xs font-bold shadow-lg shadow-gray-200">
                 RA
               </div>
             </div>

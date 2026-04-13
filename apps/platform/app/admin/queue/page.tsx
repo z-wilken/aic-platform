@@ -62,7 +62,7 @@ export default function AdminQueue() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm"><Filter className="w-4 h-4 mr-2" /> Filter</Button>
-            <Button className="bg-[#0A111F] text-aic-paper" size="sm">Export Report</Button>
+            <Button className="bg-[#0A1728] text-aic-paper" size="sm">Export Report</Button>
           </div>
         </header>
 
@@ -90,7 +90,7 @@ export default function AdminQueue() {
           
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-3 bg-aic-paper">
-              <Loader2 className="w-10 h-10 animate-spin text-[#C17C4E]" />
+              <Loader2 className="w-10 h-10 animate-spin text-[#c36c32]" />
               <p className="text-gray-500">Loading submission queue...</p>
             </div>
           ) : (
@@ -177,8 +177,8 @@ export default function AdminQueue() {
         {selectedItem && (
           <div className="space-y-8">
             <div>
-              <div className="text-[10px] font-bold text-[#C17C4E] uppercase tracking-widest mb-1">Organization</div>
-              <h4 className="text-xl font-black text-[#0A111F]">{selectedItem.org}</h4>
+              <div className="text-[10px] font-bold text-[#c36c32] uppercase tracking-widest mb-1">Organization</div>
+              <h4 className="text-xl font-black text-[#0A1728]">{selectedItem.org}</h4>
               <p className="text-xs text-gray-400 font-mono mt-1">{selectedItem.id}</p>
             </div>
 
@@ -186,7 +186,7 @@ export default function AdminQueue() {
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">AI Risk Score</p>
                 <div className="flex items-baseline gap-1">
-                  <span className={cn("text-2xl font-black", selectedItem.risk > 70 ? "text-red-600" : "text-[#0A111F]")}>
+                  <span className={cn("text-2xl font-black", selectedItem.risk > 70 ? "text-red-600" : "text-[#0A1728]")}>
                     {selectedItem.risk}
                   </span>
                   <span className="text-xs text-gray-400">/100</span>
@@ -202,9 +202,9 @@ export default function AdminQueue() {
 
             <div className="space-y-4">
               <h5 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2 flex items-center gap-2">
-                <Zap className="w-3 h-3 text-[#C17C4E]" /> AI Triage Findings
+                <Zap className="w-3 h-3 text-[#c36c32]" /> AI Triage Findings
               </h5>
-              <div className="p-4 bg-[#0A111F] text-aic-paper rounded-xl shadow-lg shadow-gray-200">
+              <div className="p-4 bg-[#0A1728] text-aic-paper rounded-xl shadow-lg shadow-gray-200">
                 <p className="text-xs leading-relaxed text-aic-paper/80 italic">
                   "Automated scan detected <strong>missing digital signatures</strong> on page 4. Summary statistics for 'Gender Parity' are present but <strong>raw covariance matrix</strong> is missing from Annex C."
                 </p>
@@ -234,7 +234,7 @@ export default function AdminQueue() {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#0A111F] flex items-center justify-center text-[10px] font-bold text-aic-paper">RA</div>
+                  <div className="w-8 h-8 rounded-full bg-[#0A1728] flex items-center justify-center text-[10px] font-bold text-aic-paper">RA</div>
                   <div className="text-xs">
                     <p className="text-gray-900 font-medium">Root Admin viewed submission</p>
                     <p className="text-gray-400">Just now</p>

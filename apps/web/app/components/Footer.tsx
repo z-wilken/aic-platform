@@ -33,7 +33,7 @@ export default function Footer() {
             </div>
             <Link
               href="/contact"
-              className="shrink-0 inline-flex items-center gap-2 bg-aic-gold hover:bg-[#C17C4E] text-aic-paper px-7 py-4 rounded-xl transition-all text-xs font-bold uppercase tracking-widest font-sans shadow-xl shadow-aic-gold/20 self-start lg:self-auto"
+              className="shrink-0 inline-flex items-center gap-2 bg-aic-gold hover:bg-[#c36c32] text-aic-paper px-7 py-4 rounded-xl transition-all text-xs font-bold uppercase tracking-widest font-sans shadow-xl shadow-aic-gold/20 self-start lg:self-auto"
             >
               Become a Founding Partner
               <ChevronRight className="w-4 h-4" />

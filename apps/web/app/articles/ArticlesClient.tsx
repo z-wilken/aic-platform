@@ -106,7 +106,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A111F]/95 via-[#0A111F]/90 to-[#1a3160]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1728]/95 via-[#0A1728]/90 to-[#1a3160]/85" />
         
         {/* Grid overlay */}
         <div
@@ -125,8 +125,8 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
             className="text-center max-w-3xl mx-auto"
           >
             <div className="flex items-center justify-center gap-2 mb-6">
-              <BookOpen className="w-5 h-5 text-[#C17C4E]" />
-              <span className="text-[#C17C4E] text-sm uppercase tracking-widest font-medium">
+              <BookOpen className="w-5 h-5 text-[#c36c32]" />
+              <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">
                 Knowledge Center
               </span>
             </div>
@@ -152,7 +152,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 focus:border-[#C17C4E]"
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c36c32]/20 focus:border-[#c36c32]"
               />
             </div>
 
@@ -165,7 +165,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                   onClick={() => setSelectedCategory(category)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                     selectedCategory === category
-                      ? "bg-[#0A111F] text-aic-paper"
+                      ? "bg-[#0A1728] text-aic-paper"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -182,8 +182,8 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-semibold text-[#0A111F]">Featured Articles</h2>
-              <TrendingUp className="w-5 h-5 text-[#C17C4E]" />
+              <h2 className="text-2xl font-semibold text-[#0A1728]">Featured Articles</h2>
+              <TrendingUp className="w-5 h-5 text-[#c36c32]" />
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -203,7 +203,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-4 left-4">
-                        <span className="px-3 py-1 bg-[#C17C4E] text-aic-paper text-xs rounded-full font-medium">
+                        <span className="px-3 py-1 bg-[#c36c32] text-aic-paper text-xs rounded-full font-medium">
                           Featured
                         </span>
                       </div>
@@ -222,7 +222,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           {article.readTime}
                         </span>
                       </div>
-                      <h3 className="text-xl font-semibold text-[#0A111F] mb-3 group-hover:text-[#C17C4E] transition-colors leading-tight">
+                      <h3 className="text-xl font-semibold text-[#0A1728] mb-3 group-hover:text-[#c36c32] transition-colors leading-tight">
                         {article.title}
                       </h3>
                       <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-1">
@@ -234,7 +234,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           <span className="text-sm text-gray-600">{article.author}</span>
                         </div>
                         <Link href={`/articles/${article.slug}`}>
-                          <Button className="bg-[#0A111F] hover:bg-[#1a3160] text-aic-paper text-sm">
+                          <Button className="bg-[#0A1728] hover:bg-[#1a3160] text-aic-paper text-sm">
                             Read Article <ArrowRight className="w-4 h-4 ml-1" />
                           </Button>
                         </Link>
@@ -252,7 +252,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
       <section className="py-16 bg-aic-paper">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-semibold text-[#0A111F]">
+            <h2 className="text-2xl font-semibold text-[#0A1728]">
               {selectedCategory === "All Articles" ? "All Articles" : selectedCategory}
             </h2>
             <span className="text-sm text-gray-500">
@@ -287,7 +287,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           {article.readTime}
                         </span>
                       </div>
-                      <h3 className="text-lg font-semibold text-[#0A111F] mb-2 group-hover:text-[#C17C4E] transition-colors leading-tight flex-1">
+                      <h3 className="text-lg font-semibold text-[#0A1728] mb-2 group-hover:text-[#c36c32] transition-colors leading-tight flex-1">
                         {article.title}
                       </h3>
                       <p className="text-gray-600 text-sm leading-relaxed mb-4">
@@ -297,7 +297,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                         <span className="text-xs text-gray-500">{article.date}</span>
                         <Link 
                           href={`/articles/${article.slug}`}
-                          className="text-[#0A111F] hover:text-[#C17C4E] transition-colors text-sm font-medium flex items-center gap-1"
+                          className="text-[#0A1728] hover:text-[#c36c32] transition-colors text-sm font-medium flex items-center gap-1"
                         >
                           Read <ArrowRight className="w-3 h-3" />
                         </Link>
@@ -312,7 +312,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                   <Button
                     onClick={handleLoadMore}
                     disabled={isLoadingMore}
-                    className="bg-aic-paper border border-gray-200 text-[#0A111F] hover:bg-gray-50 px-8 py-6 h-auto text-base"
+                    className="bg-aic-paper border border-gray-200 text-[#0A1728] hover:bg-gray-50 px-8 py-6 h-auto text-base"
                   >
                     {isLoadingMore ? (
                       <>
@@ -331,14 +331,14 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
       </section>
 
       {/* Newsletter Subscription */}
-      <section className="py-16 bg-gradient-to-br from-[#0A111F] to-[#1a3160]">
+      <section className="py-16 bg-gradient-to-br from-[#0A1728] to-[#1a3160]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Shield className="w-12 h-12 text-[#C17C4E] mx-auto mb-6" />
+            <Shield className="w-12 h-12 text-[#c36c32] mx-auto mb-6" />
             <h2 className="text-3xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Stay Informed on AI Governance
             </h2>
@@ -353,12 +353,12 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 placeholder="Enter your email"
                 aria-label="Email address for newsletter"
                 required
-                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C17C4E]"
+                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c36c32]"
               />
               <Button
                 type="submit"
                 disabled={newsletterLoading || newsletterSuccess}
-                className="bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper px-6 py-3 disabled:opacity-60"
+                className="bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-6 py-3 disabled:opacity-60"
               >
                 {newsletterSuccess ? 'Subscribed ✓' : newsletterLoading ? 'Subscribing...' : 'Subscribe'}
               </Button>
@@ -411,14 +411,14 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                   transition={{ delay: i * 0.1 }}
                 >
                   <Card className="p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
-                    <div className="w-12 h-12 rounded-xl bg-[#0A111F]/5 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-[#0A111F]" />
+                    <div className="w-12 h-12 rounded-xl bg-[#0A1728]/5 flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-[#0A1728]" />
                     </div>
-                    <h3 className="text-lg font-semibold text-[#0A111F] mb-2">{resource.title}</h3>
+                    <h3 className="text-lg font-semibold text-[#0A1728] mb-2">{resource.title}</h3>
                     <p className="text-gray-600 text-sm mb-4 flex-1">{resource.description}</p>
                     <Link
                       href={resource.link}
-                      className="text-[#C17C4E] hover:text-[#C17C4E] font-medium text-sm flex items-center gap-1"
+                      className="text-[#c36c32] hover:text-[#c36c32] font-medium text-sm flex items-center gap-1"
                     >
                       {resource.linkText} <ExternalLink className="w-3 h-3" />
                     </Link>

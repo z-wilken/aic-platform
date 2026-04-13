@@ -28,8 +28,8 @@ const rights = [
     article: "Article I",
     icon: Eye,
     title: "Algorithmic Transparency",
-    colorClass: "bg-blue-50 border-blue-200 text-blue-800",
-    iconClass: "bg-blue-100 text-blue-700",
+    colorClass: "bg-aic-paper border-aic-navy/10 text-aic-navy",
+    iconClass: "bg-aic-navy/5 text-aic-navy",
     scope: "All automated decision systems affecting natural persons",
     obligations: [
       "Disclose the existence of automated decision-making systems",
@@ -43,8 +43,8 @@ const rights = [
     article: "Article II",
     icon: MessageSquare,
     title: "Algorithmic Explainability",
-    colorClass: "bg-amber-50 border-amber-200 text-amber-800",
-    iconClass: "bg-amber-100 text-amber-700",
+    colorClass: "bg-aic-paper border-aic-navy/10 text-aic-navy",
+    iconClass: "bg-aic-navy/5 text-aic-navy",
     scope: "Decisions with material impact on individual rights, welfare, or opportunities",
     obligations: [
       "Provide plain-language explanations upon individual request",
@@ -58,8 +58,8 @@ const rights = [
     article: "Article III",
     icon: Bell,
     title: "Right to be Informed",
-    colorClass: "bg-emerald-50 border-emerald-200 text-emerald-800",
-    iconClass: "bg-emerald-100 text-emerald-700",
+    colorClass: "bg-aic-paper border-aic-navy/10 text-aic-navy",
+    iconClass: "bg-aic-navy/5 text-aic-navy",
     scope: "All consumer-facing and employment-context AI interactions",
     obligations: [
       "Disclose AI interaction prior to engagement, not retrospectively",
@@ -73,8 +73,8 @@ const rights = [
     article: "Article IV",
     icon: RefreshCw,
     title: "Decision Recourse",
-    colorClass: "bg-purple-50 border-purple-200 text-purple-800",
-    iconClass: "bg-purple-100 text-purple-700",
+    colorClass: "bg-aic-paper border-aic-navy/10 text-aic-navy",
+    iconClass: "bg-aic-navy/5 text-aic-navy",
     scope: "All high-stakes automated decisions (credit, employment, healthcare, legal)",
     obligations: [
       "Provide a human review pathway for all consequential AI decisions",
@@ -88,8 +88,8 @@ const rights = [
     article: "Article V",
     icon: UserCheck,
     title: "Human Interaction Choice",
-    colorClass: "bg-rose-50 border-rose-200 text-rose-800",
-    iconClass: "bg-rose-100 text-rose-700",
+    colorClass: "bg-aic-paper border-aic-navy/10 text-aic-navy",
+    iconClass: "bg-aic-navy/5 text-aic-navy",
     scope: "All service providers offering AI-mediated customer or citizen interactions",
     obligations: [
       "Offer a human service alternative at no additional cost",
@@ -164,15 +164,15 @@ export default function GovernanceHubClient({
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A111F]/95 to-[#0A111F]/85" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A1728]/95 to-[#0A1728]/85" />
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-2 mb-4">
-            <BookOpen className="w-4 h-4 text-[#C17C4E]" />
-            <span className="text-[#C17C4E] text-sm uppercase tracking-widest">Governance Hub</span>
+            <BookOpen className="w-4 h-4 text-[#c36c32]" />
+            <span className="text-[#c36c32] text-sm uppercase tracking-widest">Governance Hub</span>
           </div>
           <h1 className="text-5xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
             The Global Standard for<br />
-            <span className="text-[#C17C4E]">Algorithmic Rights</span>
+            <span className="text-[#c36c32]">Algorithmic Rights</span>
           </h1>
           <p className="text-aic-paper/70 text-lg max-w-2xl mb-8">
             Access AIC&apos;s foundational Declaration of Algorithmic Rights, global standards maps, and real-time policy intelligence for researchers, regulators, and policymakers.
@@ -180,7 +180,7 @@ export default function GovernanceHubClient({
           <div className="flex gap-4">
             <a
               href="#declaration"
-              className="inline-flex items-center gap-2 bg-[#C17C4E] text-aic-paper px-6 py-3 rounded-lg text-sm font-medium hover:bg-[#C17C4E] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#c36c32] text-aic-paper px-6 py-3 rounded-lg text-sm font-medium hover:bg-[#c36c32] transition-colors"
             >
               <Scale className="w-4 h-4" /> Declaration of Rights
             </a>
@@ -199,25 +199,25 @@ export default function GovernanceHubClient({
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-12 items-start">
             <div className="lg:w-1/3 lg:sticky lg:top-24">
-              <span className="text-[#C17C4E] text-sm uppercase tracking-widest">Universal Standard</span>
-              <h2 className="text-3xl text-[#0A111F] mt-2 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#c36c32] text-sm uppercase tracking-widest">Universal Standard</span>
+              <h2 className="text-3xl text-[#0A1728] mt-2 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
                 Declaration of Algorithmic Rights
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-6">
                 Adopted by the AIC General Assembly in 2023, the Declaration of Algorithmic Rights establishes five fundamental entitlements for every person interacting with automated systems. These rights form the cornerstone of all AIC certification assessments.
               </p>
-              <div className="bg-[#F9F7F2] rounded-xl p-5 border border-gray-100">
+              <div className="bg-[#F9F8F4] rounded-xl p-5 border border-gray-100">
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Document Reference</div>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-gray-500">Version</span><span className="font-medium text-[#0A111F]">3.1 (2025)</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Languages</span><span className="font-medium text-[#0A111F]">24 Official</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Signatories</span><span className="font-medium text-[#0A111F]">67 Nations</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Last Amended</span><span className="font-medium text-[#0A111F]">Oct 2025</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Version</span><span className="font-medium text-[#0A1728]">3.1 (2025)</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Languages</span><span className="font-medium text-[#0A1728]">24 Official</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Signatories</span><span className="font-medium text-[#0A1728]">67 Nations</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">Last Amended</span><span className="font-medium text-[#0A1728]">Oct 2025</span></div>
                 </div>
                 <a 
                   href="/AIC-Declaration-of-Algorithmic-Rights.pdf" 
                   download 
-                  className="mt-4 w-full flex items-center justify-center gap-2 bg-[#0A111F] text-aic-paper text-sm py-2.5 rounded-lg hover:bg-[#1a3160] transition-colors"
+                  className="mt-4 w-full flex items-center justify-center gap-2 bg-[#0A1728] text-aic-paper text-sm py-2.5 rounded-lg hover:bg-[#1a3160] transition-colors"
                 >
                   <Download className="w-4 h-4" /> Download PDF
                 </a>
@@ -286,11 +286,11 @@ export default function GovernanceHubClient({
       </section>
 
       {/* Global Standards Map */}
-      <section id="standards-map" className="py-20 bg-[#F9F7F2]">
+      <section id="standards-map" className="py-20 bg-[#F9F8F4]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-10">
-            <span className="text-[#C17C4E] text-sm uppercase tracking-widest">Global Overview</span>
-            <h2 className="text-3xl text-[#0A111F] mt-2 mb-2" style={{ fontFamily: "'Merriweather', serif" }}>
+            <span className="text-[#c36c32] text-sm uppercase tracking-widest">Global Overview</span>
+            <h2 className="text-3xl text-[#0A1728] mt-2 mb-2" style={{ fontFamily: "'Merriweather', serif" }}>
               AI Regulatory Standards Map
             </h2>
             <p className="text-gray-500 text-sm max-w-2xl">
@@ -304,7 +304,7 @@ export default function GovernanceHubClient({
               <input
                 type="text"
                 placeholder="Search regions or frameworks..."
-                className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-aic-paper text-sm focus:outline-none focus:ring-2 focus:ring-[#0A111F]/20"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-aic-paper text-sm focus:outline-none focus:ring-2 focus:ring-[#0A1728]/20"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -322,7 +322,7 @@ export default function GovernanceHubClient({
           <div className="overflow-hidden rounded-xl border border-gray-200 bg-aic-paper">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#0A111F] text-aic-paper/70 text-xs uppercase tracking-wider">
+                <tr className="bg-[#0A1728] text-aic-paper/70 text-xs uppercase tracking-wider">
                   <th className="text-left px-5 py-3">Region</th>
                   <th className="text-left px-5 py-3">Framework</th>
                   <th className="text-left px-5 py-3">Status</th>
@@ -334,8 +334,8 @@ export default function GovernanceHubClient({
               <tbody className="divide-y divide-gray-100">
                 {filteredStandards.map((s, i) => (
                   <tr key={i} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-4 font-medium text-[#0A111F] flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-[#C17C4E]" />
+                    <td className="px-5 py-4 font-medium text-[#0A1728] flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-[#c36c32]" />
                       {s.region}
                     </td>
                     <td className="px-5 py-4 text-gray-600">{s.framework}</td>
@@ -361,7 +361,7 @@ export default function GovernanceHubClient({
                       <div className="flex items-center gap-2">
                         <div className="flex-1 bg-gray-100 rounded-full h-1.5 max-w-[100px]">
                           <div
-                            className="h-1.5 rounded-full bg-[#C17C4E]"
+                            className="h-1.5 rounded-full bg-[#c36c32]"
                             style={{ width: `${s.alignment}%` }}
                           ></div>
                         </div>
@@ -382,12 +382,12 @@ export default function GovernanceHubClient({
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <span className="text-[#C17C4E] text-sm uppercase tracking-widest">Intelligence</span>
-              <h2 className="text-3xl text-[#0A111F] mt-2" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#c36c32] text-sm uppercase tracking-widest">Intelligence</span>
+              <h2 className="text-3xl text-[#0A1728] mt-2" style={{ fontFamily: "'Merriweather', serif" }}>
                 Policy Updates
               </h2>
             </div>
-            <button className="flex items-center gap-2 text-sm text-[#0A111F] border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
+            <button className="flex items-center gap-2 text-sm text-[#0A1728] border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
               <Newspaper className="w-4 h-4" /> All Updates
             </button>
           </div>
@@ -413,9 +413,9 @@ export default function GovernanceHubClient({
                   </span>
                   <span className="text-xs text-gray-400">{update.date}</span>
                 </div>
-                <h3 className="text-[#0A111F] font-semibold mb-2 leading-snug">{update.title}</h3>
+                <h3 className="text-[#0A1728] font-semibold mb-2 leading-snug">{update.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed mb-4">{update.summary}</p>
-                <button className="flex items-center gap-1 text-sm text-[#C17C4E] font-medium">
+                <button className="flex items-center gap-1 text-sm text-[#c36c32] font-medium">
                   Read More <ChevronRight className="w-3 h-3" />
                 </button>
               </motion.div>
@@ -427,7 +427,7 @@ export default function GovernanceHubClient({
               <Button
                 onClick={handleLoadMorePolicies}
                 disabled={isLoadingMore}
-                className="bg-aic-paper border border-gray-200 text-[#0A111F] hover:bg-gray-50 px-8 py-6 h-auto text-base"
+                className="bg-aic-paper border border-gray-200 text-[#0A1728] hover:bg-gray-50 px-8 py-6 h-auto text-base"
               >
                 {isLoadingMore ? (
                   <>

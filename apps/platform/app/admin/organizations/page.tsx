@@ -67,12 +67,12 @@ export default function AdminOrganizations() {
       <div className="max-w-[1600px] mx-auto">
         <header className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-[#0A111F]">Master Toggle: Organization Control</h1>
+            <h1 className="text-3xl font-bold text-[#0A1728]">Master Toggle: Organization Control</h1>
             <p className="text-gray-500">Global tenant management and capability overrides.</p>
           </div>
           <div className="flex gap-3">
             <Button variant="outline"><Filter className="w-4 h-4 mr-2" /> Advanced Filter</Button>
-            <Button className="bg-[#0A111F] text-aic-paper">Provision New Tenant</Button>
+            <Button className="bg-[#0A1728] text-aic-paper">Provision New Tenant</Button>
           </div>
         </header>
 
@@ -91,7 +91,7 @@ export default function AdminOrganizations() {
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-40 gap-3 bg-aic-paper">
-              <Loader2 className="w-10 h-10 animate-spin text-[#C17C4E]" />
+              <Loader2 className="w-10 h-10 animate-spin text-[#c36c32]" />
               <p className="text-gray-500">Loading master organization table...</p>
             </div>
           ) : (
@@ -112,13 +112,13 @@ export default function AdminOrganizations() {
                   <tr key={org.id} className="hover:bg-gray-50 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-[#0A111F] font-bold">
+                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-[#0A1728] font-bold">
                           {org.name[0]}
                         </div>
                         <div>
                           <div className="font-bold text-gray-900 flex items-center gap-1">
                             {org.name}
-                            {org.isAlpha && <Badge className="text-[8px] h-4 bg-[#C17C4E]">Alpha</Badge>}
+                            {org.isAlpha && <Badge className="text-[8px] h-4 bg-[#c36c32]">Alpha</Badge>}
                           </div>
                           <div className="text-[10px] text-gray-400 font-mono">{org.id.substring(0,8)}</div>
                         </div>
@@ -156,7 +156,7 @@ export default function AdminOrganizations() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="w-24 bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div className="h-full bg-[#C17C4E]" style={{ width: `${org.iso42001Readiness}%` }}></div>
+                        <div className="h-full bg-[#c36c32]" style={{ width: `${org.iso42001Readiness}%` }}></div>
                       </div>
                       <div className="text-[10px] text-gray-400 mt-1 font-bold">{org.iso42001Readiness}% Ready</div>
                     </td>
@@ -166,7 +166,7 @@ export default function AdminOrganizations() {
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button size="icon" variant="ghost" className="h-8 w-8 text-blue-600"><ExternalLink className="w-4 h-4" /></Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-[#C17C4E]"><Zap className="w-4 h-4" /></Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-[#c36c32]"><Zap className="w-4 h-4" /></Button>
                         <Button size="icon" variant="ghost" className="h-8 w-8"><MoreHorizontal className="w-4 h-4" /></Button>
                       </div>
                     </td>
@@ -179,9 +179,9 @@ export default function AdminOrganizations() {
 
         {/* Global Capability Insights */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <Card className="p-6 bg-[#0A111F] text-aic-paper">
+          <Card className="p-6 bg-[#0A1728] text-aic-paper">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-[#C17C4E]" /> Revenue Velocity
+              <CreditCard className="w-5 h-5 text-[#c36c32]" /> Revenue Velocity
             </h3>
             <div className="flex items-baseline gap-2">
               <span className="text-4xl font-black">$42,800</span>
@@ -192,7 +192,7 @@ export default function AdminOrganizations() {
 
           <Card className="p-6 bg-aic-paper border-none shadow-sm">
             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-[#C17C4E]" /> Auditor Distribution
+              <UserCheck className="w-5 h-5 text-[#c36c32]" /> Auditor Distribution
             </h3>
             <div className="space-y-3">
               {[

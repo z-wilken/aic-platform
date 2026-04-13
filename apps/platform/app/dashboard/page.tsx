@@ -39,14 +39,14 @@ export default function ClientDashboard() {
         {/* Header */}
         <header className="flex justify-between items-end mb-12">
           <div>
-            <h1 className="text-4xl font-bold text-[#0A111F] mb-2">Welcome, Meridian Financial</h1>
+            <h1 className="text-4xl font-bold text-[#0A1728] mb-2">Welcome, Meridian Financial</h1>
             <p className="text-gray-500">Manage your ISO/IEC 42001 certification lifecycle.</p>
           </div>
           <div className="text-right">
             <div className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1">Compliance Health</div>
             <div className="flex items-center gap-3">
-              <span className="text-5xl font-black text-[#0A111F]">84<span className="text-[#C17C4E]">/100</span></span>
-              <div className="w-12 h-12 rounded-full border-4 border-[#C17C4E] border-t-transparent animate-spin-slow"></div>
+              <span className="text-5xl font-black text-[#0A1728]">84<span className="text-[#c36c32]">/100</span></span>
+              <div className="w-12 h-12 rounded-full border-4 border-[#c36c32] border-t-transparent animate-spin-slow"></div>
             </div>
           </div>
         </header>
@@ -60,13 +60,13 @@ export default function ClientDashboard() {
             {STEPS.map((step, idx) => (
               <div key={step.id} className="relative z-10 flex flex-col items-center bg-gray-50 px-4">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 transition-all duration-500 ${
-                  step.status === 'completed' ? 'bg-[#0A111F] text-aic-paper' : 
-                  step.status === 'current' ? 'bg-[#C17C4E] text-aic-paper scale-110 shadow-lg' : 
+                  step.status === 'completed' ? 'bg-[#0A1728] text-aic-paper' : 
+                  step.status === 'current' ? 'bg-[#c36c32] text-aic-paper scale-110 shadow-lg' : 
                   'bg-aic-paper border-2 border-gray-200 text-gray-400'
                 }`}>
                   {step.status === 'completed' ? <CheckCircle2 className="w-6 h-6" /> : idx + 1}
                 </div>
-                <span className={`text-sm font-bold ${step.status === 'upcoming' ? 'text-gray-400' : 'text-[#0A111F]'}`}>
+                <span className={`text-sm font-bold ${step.status === 'upcoming' ? 'text-gray-400' : 'text-[#0A1728]'}`}>
                   {step.label}
                 </span>
               </div>
@@ -79,11 +79,11 @@ export default function ClientDashboard() {
           <div className="lg:col-span-2 space-y-8">
             <section>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-[#0A111F] flex items-center gap-2">
-                  <Shield className="w-6 h-6 text-[#C17C4E]" />
+                <h2 className="text-2xl font-bold text-[#0A1728] flex items-center gap-2">
+                  <Shield className="w-6 h-6 text-[#c36c32]" />
                   Secure Audit Vault
                 </h2>
-                <Badge variant="outline" className="text-[#C17C4E] border-[#C17C4E]/20">
+                <Badge variant="outline" className="text-[#c36c32] border-[#c36c32]/20">
                   {mandatoryUploaded}/{mandatoryCount} Mandatory Files
                 </Badge>
               </div>
@@ -101,7 +101,7 @@ export default function ClientDashboard() {
                         <Badge variant="secondary">Missing</Badge>
                       )}
                     </div>
-                    <h3 className="font-bold text-[#0A111F] mb-1">{slot.label}</h3>
+                    <h3 className="font-bold text-[#0A1728] mb-1">{slot.label}</h3>
                     <p className="text-xs text-gray-500 mb-4">{slot.required ? 'Mandatory for Submission' : 'Recommended Evidence'}</p>
                     
                     {!slot.uploaded ? (
@@ -120,16 +120,16 @@ export default function ClientDashboard() {
 
             {/* In-Portal Communication */}
             <section className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
-              <h2 className="text-xl font-bold text-[#0A111F] mb-6 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-[#C17C4E]" />
+              <h2 className="text-xl font-bold text-[#0A1728] mb-6 flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-[#c36c32]" />
                 Auditor Correspondence
               </h2>
               <div className="space-y-4">
                 <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[#0A111F] flex items-center justify-center text-aic-paper text-xs font-bold">AIC</div>
+                  <div className="w-10 h-10 rounded-full bg-[#0A1728] flex items-center justify-center text-aic-paper text-xs font-bold">AIC</div>
                   <div className="bg-aic-paper p-4 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm flex-1">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-bold text-[#0A111F]">System Auditor</span>
+                      <span className="text-sm font-bold text-[#0A1728]">System Auditor</span>
                       <span className="text-[10px] text-gray-400">2 hours ago</span>
                     </div>
                     <p className="text-sm text-gray-600">The "Bias Audit Report" is currently empty. Please ensure you upload the full statistical breakdown before submitting.</p>
@@ -138,9 +138,9 @@ export default function ClientDashboard() {
                 <div className="relative">
                   <textarea 
                     placeholder="Type a message to your auditor..."
-                    className="w-full bg-aic-paper border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 min-h-[100px]"
+                    className="w-full bg-aic-paper border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#c36c32]/20 min-h-[100px]"
                   />
-                  <Button className="absolute bottom-3 right-3 bg-[#0A111F] text-aic-paper">Send</Button>
+                  <Button className="absolute bottom-3 right-3 bg-[#0A1728] text-aic-paper">Send</Button>
                 </div>
               </div>
             </section>
@@ -148,7 +148,7 @@ export default function ClientDashboard() {
 
           {/* Sidebar / Next Actions */}
           <div className="space-y-8">
-            <div className="bg-[#0A111F] rounded-3xl p-8 text-aic-paper">
+            <div className="bg-[#0A1728] rounded-3xl p-8 text-aic-paper">
               <h3 className="text-xl font-bold mb-4">Completeness Gauge</h3>
               <div className="mb-6">
                 <div className="flex justify-between text-sm mb-2">
@@ -168,15 +168,15 @@ export default function ClientDashboard() {
 
               <Button 
                 disabled={!isComplete}
-                className={`w-full py-6 rounded-xl font-bold transition-all ${isComplete ? 'bg-[#C17C4E] hover:bg-[#C17C4E]' : 'bg-aic-paper/5 text-aic-paper/20'}`}
+                className={`w-full py-6 rounded-xl font-bold transition-all ${isComplete ? 'bg-[#c36c32] hover:bg-[#c36c32]' : 'bg-aic-paper/5 text-aic-paper/20'}`}
               >
                 Submit for AIC Audit
               </Button>
             </div>
 
             <Card className="p-6">
-              <h3 className="font-bold text-[#0A111F] mb-4 flex items-center gap-2">
-                <Building className="w-5 h-5 text-[#C17C4E]" />
+              <h3 className="font-bold text-[#0A1728] mb-4 flex items-center gap-2">
+                <Building className="w-5 h-5 text-[#c36c32]" />
                 Profile Command
               </h3>
               <div className="space-y-4 text-sm">

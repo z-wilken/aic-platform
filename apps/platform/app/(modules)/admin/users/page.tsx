@@ -97,7 +97,7 @@ export default function UserManagementPage() {
                     </div>
                     <Button 
                         onClick={() => setDrawerMode('create')}
-                        className="bg-[#0A111F] text-aic-paper hover:bg-[#1a3160]"
+                        className="bg-[#0A1728] text-aic-paper hover:bg-[#1a3160]"
                     >
                         <UserPlus className="w-4 h-4 mr-2" /> Register New Identity
                     </Button>
@@ -123,7 +123,7 @@ export default function UserManagementPage() {
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {loading ? (
-                                <tr><td colSpan={5} className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin text-[#C17C4E] mx-auto mb-2" /><p className="text-xs text-gray-400">Synchronizing with registry...</p></td></tr>
+                                <tr><td colSpan={5} className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin text-[#c36c32] mx-auto mb-2" /><p className="text-xs text-gray-400">Synchronizing with registry...</p></td></tr>
                             ) : users.map((user) => (
                                 <tr 
                                     key={user.id} 
@@ -154,7 +154,7 @@ export default function UserManagementPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2 text-xs font-bold text-gray-700">
-                                            <Shield className="w-3.5 h-3.5 text-[#C17C4E]" />
+                                            <Shield className="w-3.5 h-3.5 text-[#c36c32]" />
                                             {user.role}
                                         </div>
                                     </td>
@@ -212,7 +212,7 @@ export default function UserManagementPage() {
                         <div>
                             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Access Level (Fallback Role)</label>
                             <select 
-                                className="w-full bg-gray-50 border border-gray-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#C17C4E]/20 outline-none"
+                                className="w-full bg-gray-50 border border-gray-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#c36c32]/20 outline-none"
                                 value={newUser.role}
                                 onChange={e => setNewUser(prev => ({ ...prev, role: e.target.value }))}
                             >
@@ -225,7 +225,7 @@ export default function UserManagementPage() {
                         <div>
                             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Organization Scope</label>
                             <select 
-                                className="w-full bg-gray-50 border border-gray-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#C17C4E]/20 outline-none"
+                                className="w-full bg-gray-50 border border-gray-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#c36c32]/20 outline-none"
                                 value={newUser.org_id}
                                 onChange={e => setNewUser(prev => ({ ...prev, org_id: e.target.value }))}
                             >
@@ -237,7 +237,7 @@ export default function UserManagementPage() {
                         </div>
                     </div>
                     <div className="pt-6 border-t border-gray-100 space-y-3">
-                        <Button type="submit" className="w-full bg-[#0A111F] text-aic-paper">Provision Identity</Button>
+                        <Button type="submit" className="w-full bg-[#0A1728] text-aic-paper">Provision Identity</Button>
                         <Button variant="ghost" type="button" onClick={() => setDrawerMode(null)} className="w-full text-gray-400">Cancel</Button>
                     </div>
                 </form>
@@ -252,7 +252,7 @@ export default function UserManagementPage() {
                 {selectedUser && (
                     <div className="space-y-8">
                         <div className="flex flex-col items-center text-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
-                            <div className="w-20 h-20 rounded-full bg-aic-paper shadow-sm flex items-center justify-center text-3xl font-black text-[#0A111F] mb-4">
+                            <div className="w-20 h-20 rounded-full bg-aic-paper shadow-sm flex items-center justify-center text-3xl font-black text-[#0A1728] mb-4">
                                 {selectedUser.name[0]}
                             </div>
                             <h4 className="text-xl font-bold text-gray-900 leading-none">{selectedUser.name}</h4>
@@ -270,7 +270,7 @@ export default function UserManagementPage() {
                             <div className="p-4 bg-aic-paper border border-gray-100 rounded-xl">
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Access Level</p>
                                 <div className="flex items-center gap-2">
-                                    <Shield className="w-3.5 h-3.5 text-[#C17C4E]" />
+                                    <Shield className="w-3.5 h-3.5 text-[#c36c32]" />
                                     <span className="text-sm font-bold text-gray-700">{selectedUser.role}</span>
                                 </div>
                             </div>

@@ -103,7 +103,7 @@ export default function AICCharacter({
   className = '',
   animate: shouldAnimate = true,
 }: AICCharacterProps) {
-  const stroke = scheme === 'dark' ? '#F9F7F2' : '#0A111F';
+  const stroke = scheme === 'dark' ? '#F9F8F4' : '#0A1728';
   const copperStroke = '#c87941';
 
   const torsoControls = useAnimationControls();

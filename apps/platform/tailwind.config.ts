@@ -14,13 +14,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "aic-navy": "#0A111F",
-        "aic-navy-mid": "#0A111F",
-        "aic-gold": "#C17C4E",
-        "aic-gold-light": "#C17C4E",
-        "aic-paper": "#F9F7F2",
+        "aic-navy": "#0A1728",
+        "aic-navy-mid": "#0A1728",
+        "aic-gold": "#c36c32",
+        "aic-gold-light": "#c36c32",
+        "aic-paper": "#F9F8F4",
         // Add white explicitly for clarity, though it's a default Tailwind color
-        "aic-white": "#F9F7F2", 
+        "aic-white": "#F9F8F4", 
       },
       fontFamily: {
         sans: ["var(--font-space-grotesk)", "sans-serif"],

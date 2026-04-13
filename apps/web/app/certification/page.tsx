@@ -111,7 +111,7 @@ export default function CertificationPage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A111F]/95 via-[#0A111F]/90 to-[#1a3160]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1728]/95 via-[#0A1728]/90 to-[#1a3160]/85" />
         <div
           className="absolute inset-0 opacity-5"
           style={{
@@ -127,13 +127,13 @@ export default function CertificationPage() {
             className="max-w-3xl"
           >
             <div className="flex items-center gap-2 mb-6">
-              <span className="px-3 py-1 bg-[#C17C4E]/20 text-[#C17C4E] text-[10px] rounded-full border border-[#C17C4E]/30 uppercase tracking-[0.2em] font-mono">
+              <span className="px-3 py-1 bg-[#c36c32]/20 text-[#c36c32] text-[10px] rounded-full border border-[#c36c32]/30 uppercase tracking-[0.2em] font-mono">
                 AIC Five-Division Framework
               </span>
             </div>
             <h1 className="text-5xl md:text-6xl text-aic-paper mb-6 leading-tight" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
               Accountability<br />
-              <span className="text-[#C17C4E]">Calibrated to AI</span>
+              <span className="text-[#c36c32]">Calibrated to AI</span>
             </h1>
             <p className="text-xl text-aic-paper/70 leading-relaxed mb-10 max-w-2xl">
               AIC certification is structured around how your organisation actually relates to AI in consequential decisions — not a one-size-fits-all compliance checkbox. Choose the Division that reflects your reality.
@@ -141,7 +141,7 @@ export default function CertificationPage() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper px-8 py-4 rounded-lg transition-all text-sm font-medium shadow-lg shadow-[#C17C4E]/20"
+                className="inline-flex items-center gap-2 bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-8 py-4 rounded-lg transition-all text-sm font-medium shadow-lg shadow-[#c36c32]/20"
               >
                 Enquire About Certification <ArrowRight className="w-4 h-4" />
               </Link>
@@ -165,8 +165,8 @@ export default function CertificationPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <span className="text-[#C17C4E] text-sm uppercase tracking-widest font-medium">The Framework</span>
-              <h2 className="text-4xl text-[#0A111F] mt-3 mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">The Framework</span>
+              <h2 className="text-4xl text-[#0A1728] mt-3 mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
                 Your relationship with AI determines your certification path
               </h2>
               <p className="text-gray-600 leading-relaxed mb-6">
@@ -189,7 +189,7 @@ export default function CertificationPage() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className={`flex items-center gap-4 p-4 rounded-xl border ${div.accentBorderColor} bg-[#F9F7F2] hover:bg-[#f0f4f8] transition-colors`}
+                    className={`flex items-center gap-4 p-4 rounded-xl border ${div.accentBorderColor} bg-[#F9F8F4] hover:bg-[#f0f4f8] transition-colors`}
                   >
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-gray-100`}>
                       <Icon className={`w-5 h-5 ${div.accentText}`} />
@@ -197,7 +197,7 @@ export default function CertificationPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Division {div.number}</span>
-                        <span className="text-sm font-semibold text-[#0A111F]">{div.name}</span>
+                        <span className="text-sm font-semibold text-[#0A1728]">{div.name}</span>
                       </div>
                       <p className="text-xs text-gray-500 truncate">{div.tagline}</p>
                     </div>
@@ -211,7 +211,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Division Cards */}
-      <section id="divisions" className="py-20 bg-[#F9F7F2]">
+      <section id="divisions" className="py-20 bg-[#F9F8F4]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -219,8 +219,8 @@ export default function CertificationPage() {
             viewport={{ once: true }}
             className="text-center mb-14"
           >
-            <span className="text-[#C17C4E] text-sm uppercase tracking-widest font-medium">Full Detail</span>
-            <h2 className="text-4xl text-[#0A111F] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">Full Detail</span>
+            <h2 className="text-4xl text-[#0A1728] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               The Five Divisions
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto">
@@ -239,7 +239,7 @@ export default function CertificationPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="bg-[#0A111F] rounded-2xl overflow-hidden border border-aic-paper/10"
+                  className="bg-[#0A1728] rounded-2xl overflow-hidden border border-aic-paper/10"
                 >
                   {/* Colored top accent strip */}
                   <div className={`h-1 ${div.accentStripBg}`} />
@@ -289,8 +289,8 @@ export default function CertificationPage() {
                             <p className="text-aic-paper/80 text-xs leading-relaxed">{div.product}</p>
                           </div>
                           {div.valueProp && (
-                            <div className="flex-1 p-4 rounded-xl bg-[#C17C4E]/10 border border-[#C17C4E]/20">
-                              <div className="text-[10px] font-mono text-[#C17C4E]/70 uppercase tracking-widest mb-2">Value Proposition</div>
+                            <div className="flex-1 p-4 rounded-xl bg-[#c36c32]/10 border border-[#c36c32]/20">
+                              <div className="text-[10px] font-mono text-[#c36c32]/70 uppercase tracking-widest mb-2">Value Proposition</div>
                               <p className="text-aic-paper/80 text-xs leading-relaxed italic">{div.valueProp}</p>
                             </div>
                           )}
@@ -321,8 +321,8 @@ export default function CertificationPage() {
             viewport={{ once: true }}
             className="text-center mb-14"
           >
-            <span className="text-[#C17C4E] text-sm uppercase tracking-widest font-medium">How It Works</span>
-            <h2 className="text-4xl text-[#0A111F] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">How It Works</span>
+            <h2 className="text-4xl text-[#0A1728] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Your Certification Journey
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto">
@@ -340,9 +340,9 @@ export default function CertificationPage() {
                 transition={{ delay: i * 0.1 }}
                 className="relative"
               >
-                <div className="bg-[#F9F7F2] border border-gray-100 rounded-2xl p-6 h-full hover:border-[#C17C4E]/30 hover:shadow-md transition-all">
-                  <div className="text-[#C17C4E] text-2xl font-bold font-mono mb-4">{step.step}</div>
-                  <h3 className="text-[#0A111F] font-semibold mb-3 text-sm">{step.title}</h3>
+                <div className="bg-[#F9F8F4] border border-gray-100 rounded-2xl p-6 h-full hover:border-[#c36c32]/30 hover:shadow-md transition-all">
+                  <div className="text-[#c36c32] text-2xl font-bold font-mono mb-4">{step.step}</div>
+                  <h3 className="text-[#0A1728] font-semibold mb-3 text-sm">{step.title}</h3>
                   <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
                 </div>
                 {i < journeySteps.length - 1 && (
@@ -357,11 +357,11 @@ export default function CertificationPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-[#0A111F] to-[#0A111F] relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-[#0A1728] to-[#0A1728] relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-5"
           style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #C17C4E 0%, transparent 60%), radial-gradient(circle at 70% 50%, #1d4ed8 0%, transparent 60%)",
+            backgroundImage: "radial-gradient(circle at 30% 50%, #c36c32 0%, transparent 60%), radial-gradient(circle at 70% 50%, #1d4ed8 0%, transparent 60%)",
           }}
         />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
@@ -370,7 +370,7 @@ export default function CertificationPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="px-3 py-1 bg-[#C17C4E]/20 text-[#C17C4E] text-[10px] rounded-full border border-[#C17C4E]/30 uppercase tracking-[0.2em] font-mono mb-6 inline-block">
+            <span className="px-3 py-1 bg-[#c36c32]/20 text-[#c36c32] text-[10px] rounded-full border border-[#c36c32]/30 uppercase tracking-[0.2em] font-mono mb-6 inline-block">
               Get Certified
             </span>
             <h2 className="text-4xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
@@ -381,7 +381,7 @@ export default function CertificationPage() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#C17C4E]/25 text-sm"
+              className="inline-flex items-center gap-2 bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#c36c32]/25 text-sm"
             >
               Enquire About Certification
               <ArrowRight className="w-4 h-4" />

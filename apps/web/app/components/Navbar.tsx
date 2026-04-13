@@ -29,7 +29,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50">
       {/* Top utility bar — solid dark, no transparency */}
-      <div className="bg-[#0A111F] text-aic-paper/70 text-xs py-2">
+      <div className="bg-[#0A1728] text-aic-paper/70 text-xs py-2">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
@@ -57,11 +57,11 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-[#0A111F] rounded-lg flex items-center justify-center group-hover:bg-[#1a3160] transition-colors">
-                <Shield className="w-5 h-5 text-[#C17C4E]" />
+              <div className="w-10 h-10 bg-[#0A1728] rounded-lg flex items-center justify-center group-hover:bg-[#1a3160] transition-colors">
+                <Shield className="w-5 h-5 text-[#c36c32]" />
               </div>
               <div>
-                <div className="text-[#0A111F] font-bold text-lg leading-tight tracking-tight">AIC</div>
+                <div className="text-[#0A1728] font-bold text-lg leading-tight tracking-tight">AIC</div>
                 <div className="text-gray-500 text-[10px] leading-tight tracking-wider uppercase">AI Integrity Certification</div>
               </div>
             </Link>
@@ -74,13 +74,13 @@ export default function Navbar() {
                   href={item.href}
                   className={`px-3 py-2 rounded-md text-sm transition-colors relative ${
                     pathname === item.href
-                      ? "text-[#0A111F] bg-[#f0f4f8] font-medium"
-                      : "text-gray-600 hover:text-[#0A111F] hover:bg-[#f0f4f8]"
+                      ? "text-[#0A1728] bg-[#f0f4f8] font-medium"
+                      : "text-gray-600 hover:text-[#0A1728] hover:bg-[#f0f4f8]"
                   }`}
                 >
                   {item.label}
                   {pathname === item.href && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C17C4E] rounded-full" />
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#c36c32] rounded-full" />
                   )}
                 </Link>
               ))}
@@ -90,7 +90,7 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/contact"
-                className="text-sm text-[#0A111F] border border-[#0A111F] px-4 py-2 rounded-md hover:bg-[#0A111F] hover:text-aic-paper transition-all"
+                className="text-sm text-[#0A1728] border border-[#0A1728] px-4 py-2 rounded-md hover:bg-[#0A1728] hover:text-aic-paper transition-all"
               >
                 Get Certified
               </Link>
@@ -98,7 +98,7 @@ export default function Navbar() {
 
             {/* Mobile menu button */}
             <button
-              className="lg:hidden text-[#0A111F] p-2"
+              className="lg:hidden text-[#0A1728] p-2"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
@@ -124,12 +124,12 @@ export default function Navbar() {
                     href={item.href}
                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                       isActive
-                        ? "bg-[#0A111F] text-aic-paper"
+                        ? "bg-[#0A1728] text-aic-paper"
                         : "text-gray-700 hover:bg-[#f0f4f8]"
                     }`}
                     onClick={() => setMenuOpen(false)}
                   >
-                    <Icon className={`w-5 h-5 shrink-0 ${isActive ? "text-[#C17C4E]" : "text-gray-400"}`} />
+                    <Icon className={`w-5 h-5 shrink-0 ${isActive ? "text-[#c36c32]" : "text-gray-400"}`} />
                     <div>
                       <div className="text-sm font-medium">{item.label}</div>
                       <div className={`text-xs ${isActive ? "text-aic-paper/70" : "text-gray-500"}`}>{item.description}</div>
@@ -140,7 +140,7 @@ export default function Navbar() {
               <div className="pt-3 mt-2 border-t border-gray-100">
                 <Link
                   href="/contact"
-                  className="flex items-center justify-center text-sm text-[#0A111F] border border-[#0A111F] px-4 py-3 rounded-md hover:bg-[#0A111F] hover:text-aic-paper transition-all font-medium"
+                  className="flex items-center justify-center text-sm text-[#0A1728] border border-[#0A1728] px-4 py-3 rounded-md hover:bg-[#0A1728] hover:text-aic-paper transition-all font-medium"
                   onClick={() => setMenuOpen(false)}
                 >
                   Get Certified
