@@ -29,7 +29,7 @@ export default function Error({
 
         <button
           onClick={reset}
-          className="inline-block px-10 py-4 bg-aic-black text-white font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all duration-500 shadow-xl"
+          className="inline-block px-10 py-4 bg-aic-black text-aic-paper font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all duration-500 shadow-xl"
         >
           Try Again
         </button>

@@ -5,9 +5,9 @@ import { Shield, Lock, Eye, UserCheck, Mail } from "lucide-react";
 
 export default function PrivacyPolicy() {
   return (
-    <div className="bg-white min-h-screen font-sans">
+    <div className="bg-aic-paper min-h-screen font-sans">
       {/* Hero */}
-      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
+      <section className="bg-aic-navy text-aic-paper py-24 relative overflow-hidden">
         <div className="max-w-[1600px] mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-4">
@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
             <h1 className="text-5xl mb-6 font-serif italic">
               Privacy Policy
             </h1>
-            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
+            <p className="text-xl text-aic-paper/70 max-w-3xl leading-relaxed">
               AI Integrity Certification (Pty) Ltd is committed to the responsible, transparent,
               and lawful handling of personal information in accordance with the Protection of
               Personal Information Act 4 of 2013 (POPIA).
@@ -151,7 +151,7 @@ export default function PrivacyPolicy() {
             <div className="overflow-x-auto mb-8">
               <table className="w-full text-sm border-collapse">
                 <thead>
-                  <tr className="bg-aic-navy text-white">
+                  <tr className="bg-aic-navy text-aic-paper">
                     <th className="text-left p-4 font-mono font-bold">Data Category</th>
                     <th className="text-left p-4 font-mono font-bold">Retention Period</th>
                   </tr>
@@ -166,7 +166,7 @@ export default function PrivacyPolicy() {
                     ["Marketing consent records", "Until consent is withdrawn, then 2 years"],
                     ["Financial/invoicing records", "5 years (Companies Act requirement)"],
                   ].map(([cat, period], i) => (
-                    <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-aic-paper"}>
+                    <tr key={i} className={i % 2 === 0 ? "bg-aic-paper" : "bg-aic-paper"}>
                       <td className="p-4 text-gray-700">{cat}</td>
                       <td className="p-4 text-gray-700 font-mono text-xs">{period}</td>
                     </tr>
@@ -194,7 +194,7 @@ export default function PrivacyPolicy() {
                 { right: "Right to Restrict Processing", desc: "Request that we limit how we use your data while a dispute is resolved." },
                 { right: "Right to Complain", desc: "Lodge a complaint with the Information Regulator of South Africa if you believe we have violated POPIA." },
               ].map((item, i) => (
-                <div key={i} className="p-6 bg-white border border-gray-100 rounded-xl shadow-sm">
+                <div key={i} className="p-6 bg-aic-paper border border-gray-100 rounded-xl shadow-sm">
                   <p className="font-bold text-aic-navy mb-1 font-serif">{item.right}</p>
                   <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
                 </div>
@@ -246,7 +246,7 @@ export default function PrivacyPolicy() {
                   <p className="text-gray-600 mb-1">AI Integrity Certification (Pty) Ltd</p>
                   <p className="text-gray-600 mb-4">South Africa</p>
                   <a href="mailto:zander@ztoaholdings.co.za" className="text-aic-copper underline font-bold text-lg">
-                    zander@ztoaholdings.co.za
+                    zander@ztoaholdings.com
                   </a>
                   <p className="text-gray-500 text-sm mt-4 leading-relaxed">
                     All POPIA requests will be acknowledged within 5 business days and

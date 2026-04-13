@@ -5,9 +5,9 @@ import { Shield, Scale, CheckCircle, AlertCircle, Download, ExternalLink, Users,
 
 export default function ImpartialityStatement() {
   return (
-    <div className="bg-white min-h-screen font-sans">
+    <div className="bg-aic-paper min-h-screen font-sans">
       {/* Hero */}
-      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
+      <section className="bg-aic-navy text-aic-paper py-24 relative overflow-hidden">
         <div className="max-w-[1600px] mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-4">
@@ -17,7 +17,7 @@ export default function ImpartialityStatement() {
             <h1 className="text-5xl mb-6 font-serif italic">
               Statement of Impartiality
             </h1>
-            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
+            <p className="text-xl text-aic-paper/70 max-w-3xl leading-relaxed">
               Independence and objectivity are not aspirational values — they are operational
               requirements. This statement sets out AIC&apos;s binding commitments, prohibitions,
               and processes for maintaining impartiality in every certification decision.
@@ -48,13 +48,13 @@ export default function ImpartialityStatement() {
             </p>
 
             {/* The Arthur Andersen Rule */}
-            <div className="bg-aic-navy text-white rounded-2xl p-10 my-12">
+            <div className="bg-aic-navy text-aic-paper rounded-2xl p-10 my-12">
               <div className="flex items-start gap-6">
                 <Scale className="w-8 h-8 text-aic-copper shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-bold text-white mb-3 font-serif text-xl">The AIC Separation Rule</h3>
-                  <p className="text-white/80 leading-relaxed text-base mb-0">
-                    AIC will never consult <strong className="text-white">and</strong> certify the same client.
+                  <h3 className="font-bold text-aic-paper mb-3 font-serif text-xl">The AIC Separation Rule</h3>
+                  <p className="text-aic-paper/80 leading-relaxed text-base mb-0">
+                    AIC will never consult <strong className="text-aic-paper">and</strong> certify the same client.
                     Any organisation that has received consultancy services from AIC — or from
                     any person associated with AIC within the past three years — is ineligible to
                     be assessed by that same person or entity. This separation is absolute.
@@ -130,7 +130,7 @@ export default function ImpartialityStatement() {
                 { icon: <Users className="w-6 h-6 text-aic-copper mb-4" />, title: "Review", desc: "A second qualified reviewer examines the Evidence Record and auditor findings independently before a decision is made." },
                 { icon: <Scale className="w-6 h-6 text-aic-copper mb-4" />, title: "Decision", desc: "The certification decision is made by a senior AIC officer who has not participated in the assessment or review." },
               ].map((item, i) => (
-                <div key={i} className="p-8 bg-white border border-gray-100 rounded-2xl shadow-sm">
+                <div key={i} className="p-8 bg-aic-paper border border-gray-100 rounded-2xl shadow-sm">
                   {item.icon}
                   <h4 className="font-bold text-aic-navy mb-2 font-serif text-lg">{item.title}</h4>
                   <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
@@ -150,7 +150,7 @@ export default function ImpartialityStatement() {
                 { icon: <RefreshCw className="w-6 h-6 text-aic-copper mb-4" />, title: "Quarterly Review", desc: "The Impartiality Risk Register is reviewed every quarter. Any emerging risks are assessed and mitigated before the next certification cycle." },
                 { icon: <Shield className="w-6 h-6 text-aic-copper mb-4" />, title: "Public Disclosure", desc: "AIC publishes a summary of impartiality safeguards annually. Certificate holders and applicants may request a copy of the current risk register at any time." },
               ].map((item, i) => (
-                <div key={i} className="p-8 bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-aic-copper/30 transition-colors">
+                <div key={i} className="p-8 bg-aic-paper rounded-2xl border border-gray-100 shadow-sm hover:border-aic-copper/30 transition-colors">
                   {item.icon}
                   <h4 className="font-bold text-aic-navy mb-2 font-serif text-lg">{item.title}</h4>
                   <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
@@ -199,7 +199,7 @@ export default function ImpartialityStatement() {
               <a
                 href="/AIC-Declaration-of-Algorithmic-Rights.pdf"
                 download="AIC-Declaration-of-Algorithmic-Rights.pdf"
-                className="bg-aic-navy text-white px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-lg shadow-aic-navy/10 flex items-center gap-2"
+                className="bg-aic-navy text-aic-paper px-8 py-4 rounded-lg font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-lg shadow-aic-navy/10 flex items-center gap-2"
               >
                 <Download className="w-4 h-4" /> Download Declaration of Rights
               </a>

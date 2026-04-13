@@ -42,14 +42,14 @@ export default function AdminShell({ children }: AdminShellProps) {
   ]
 
   return (
-    <div className="flex h-screen bg-[#F9FAFB] text-[#0f1f3d] font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#F9FAFB] text-[#0A111F] font-sans overflow-hidden">
       {/* Sidebar - Compact & Dense */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col shrink-0">
+      <aside className="w-64 bg-aic-paper border-r border-gray-200 flex flex-col shrink-0">
         <div className="p-6 border-b border-gray-100 flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#0f1f3d] rounded flex items-center justify-center text-white font-bold text-xs">A</div>
+          <div className="w-8 h-8 bg-[#0A111F] rounded flex items-center justify-center text-aic-paper font-bold text-xs">A</div>
           <div>
             <h1 className="text-sm font-black tracking-tight leading-none">ADMIN CONTROL</h1>
-            <p className="text-[10px] text-[#c9920a] font-bold uppercase mt-1">Sovereign Layer</p>
+            <p className="text-[10px] text-[#C17C4E] font-bold uppercase mt-1">Sovereign Layer</p>
           </div>
         </div>
 
@@ -67,11 +67,11 @@ export default function AdminShell({ children }: AdminShellProps) {
                       className={cn(
                         "flex items-center gap-3 py-2 px-3 rounded-lg text-xs font-medium transition-all",
                         isActive 
-                          ? "bg-gray-100 text-[#0f1f3d] shadow-sm" 
-                          : "text-gray-500 hover:bg-gray-50 hover:text-[#0f1f3d]"
+                          ? "bg-gray-100 text-[#0A111F] shadow-sm" 
+                          : "text-gray-500 hover:bg-gray-50 hover:text-[#0A111F]"
                       )}
                     >
-                      <span className={cn(isActive ? "text-[#c9920a]" : "text-gray-400")}>
+                      <span className={cn(isActive ? "text-[#C17C4E]" : "text-gray-400")}>
                         {item.icon}
                       </span>
                       <span>{item.label}</span>
@@ -98,14 +98,14 @@ export default function AdminShell({ children }: AdminShellProps) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0">
+        <header className="h-16 bg-aic-paper border-b border-gray-200 flex items-center justify-between px-8 shrink-0">
           <div className="flex items-center gap-4 flex-1 max-w-xl">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input 
                 type="text" 
                 placeholder="Global Search (Omni-bar)..." 
-                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-2 focus:ring-[#c9920a]/20 outline-none"
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:ring-2 focus:ring-[#C17C4E]/20 outline-none"
               />
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function AdminShell({ children }: AdminShellProps) {
           <div className="flex items-center gap-4">
             <button className="p-2 text-gray-400 hover:bg-gray-50 rounded-lg relative">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-aic-paper"></span>
             </button>
             <div className="h-8 w-px bg-gray-200"></div>
             <div className="flex items-center gap-3 pl-2">
@@ -121,7 +121,7 @@ export default function AdminShell({ children }: AdminShellProps) {
                 <p className="text-xs font-bold text-gray-900 leading-none">Root Admin</p>
                 <p className="text-[10px] text-gray-400 uppercase font-bold mt-1">Privileged Account</p>
               </div>
-              <div className="w-8 h-8 rounded-lg bg-[#0f1f3d] flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-gray-200">
+              <div className="w-8 h-8 rounded-lg bg-[#0A111F] flex items-center justify-center text-aic-paper text-xs font-bold shadow-lg shadow-gray-200">
                 RA
               </div>
             </div>

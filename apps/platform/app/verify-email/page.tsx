@@ -95,7 +95,7 @@ function VerifyEmailContent() {
 export default function VerifyEmailPage() {
     return (
         <div className="min-h-screen bg-aic-paper flex items-center justify-center p-6">
-            <div className="w-full max-w-md bg-white border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl">
+            <div className="w-full max-w-md bg-aic-paper border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl">
                 <Suspense fallback={<div>Loading...</div>}>
                     <VerifyEmailContent />
                 </Suspense>

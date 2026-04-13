@@ -31,7 +31,7 @@ export function Drawer({ isOpen, onClose, title, children, className }: DrawerPr
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className={cn(
-              "fixed right-0 top-0 h-screen w-full max-w-md bg-white shadow-2xl z-[101] border-l border-gray-100 flex flex-col",
+              "fixed right-0 top-0 h-screen w-full max-w-md bg-aic-paper shadow-2xl z-[101] border-l border-gray-100 flex flex-col",
               className
             )}
           >

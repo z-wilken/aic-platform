@@ -40,7 +40,7 @@ export default function TrustRegistryPage() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.02 }}
-                            className="bg-white border border-aic-black/5 p-6 rounded-xl flex items-center justify-between group hover:border-aic-gold transition-colors"
+                            className="bg-aic-paper border border-aic-black/5 p-6 rounded-xl flex items-center justify-between group hover:border-aic-gold transition-colors"
                         >
                             <div className="flex items-center gap-8">
                                 <span className="font-mono text-[10px] text-gray-400 w-32">{new Date(log.created_at).toLocaleString()}</span>
@@ -65,7 +65,7 @@ export default function TrustRegistryPage() {
                     ))}
                 </div>
 
-                <div className="mt-12 p-12 bg-aic-black rounded-[3rem] text-white relative overflow-hidden">
+                <div className="mt-12 p-12 bg-aic-black rounded-[3rem] text-aic-paper relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-12 opacity-5 font-serif italic text-6xl">Immutable</div>
                     <h3 className="font-serif text-2xl mb-6">Auditor's Proof of Non-Repudiation</h3>
                     <p className="text-gray-400 font-serif text-sm leading-relaxed max-w-2xl italic">

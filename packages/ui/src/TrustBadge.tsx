@@ -20,7 +20,7 @@ export default function TrustBadge({ orgId }: { orgId: string }) {
   if (!status) return <div className="h-12 w-32 bg-gray-100 animate-pulse rounded-md"></div>;
 
   return (
-    <div className="inline-flex items-center gap-3 bg-white border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
+    <div className="inline-flex items-center gap-3 bg-aic-paper border border-gray-200 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
         <div className="relative">
             <div className={`h-3 w-3 rounded-full ${status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'}`}></div>
             <div className={`absolute inset-0 h-3 w-3 rounded-full ${status === 'ACTIVE' ? 'bg-green-500' : 'bg-red-500'} animate-ping opacity-75`}></div>
@@ -32,7 +32,7 @@ export default function TrustBadge({ orgId }: { orgId: string }) {
             </span>
         </div>
         {/* Verification Modal Trigger (Invisible Overlay) */}
-        <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-xl rounded-xl p-4 border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+        <div className="absolute top-full left-0 mt-2 w-64 bg-aic-paper shadow-xl rounded-xl p-4 border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
             <p className="text-xs text-gray-500 mb-2">Verified by AI Integrity Certification</p>
             <div className="flex justify-between text-xs font-bold border-t pt-2">
                 <span>License:</span>

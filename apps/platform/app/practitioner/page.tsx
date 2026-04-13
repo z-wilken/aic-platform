@@ -75,22 +75,22 @@ export default function PractitionerDashboard() {
     <DashboardShell>
       <div className="max-w-6xl mx-auto space-y-16">
         {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-white/5 pb-12">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-aic-paper/5 pb-12">
           <div className="space-y-6">
             <div className="flex items-center gap-3 text-aic-cyan font-mono text-[10px] font-bold uppercase tracking-[0.4em]">
               <Award className="w-4 h-4" />
               Certified Practitioner Portal
             </div>
-            <h1 className="text-6xl font-serif font-bold text-white tracking-tighter leading-none">
+            <h1 className="text-6xl font-serif font-bold text-aic-paper tracking-tighter leading-none">
               Professional Identity<span className="text-aic-cyan">.</span>
             </h1>
             <p className="text-xl text-aic-slate font-serif leading-relaxed italic max-w-2xl">
               ISO/IEC 17024 compliant professional development tracking. This is your Sovereign cryptographic proof of ethical competency.
             </p>
           </div>
-          <div className="bg-white/[0.03] border border-white/10 p-8 rounded-[2.5rem] shadow-2xl backdrop-blur-xl min-w-[260px] text-center group hover:border-aic-cyan transition-all">
+          <div className="bg-aic-paper/[0.03] border border-aic-paper/10 p-8 rounded-[2.5rem] shadow-2xl backdrop-blur-xl min-w-[260px] text-center group hover:border-aic-cyan transition-all">
             <span className="text-[9px] font-mono font-bold text-aic-cyan uppercase tracking-widest block mb-3 opacity-60">Identity Status</span>
-            <div className="text-2xl font-serif font-bold text-white tracking-tight">{data?.identity?.level || 'CANDIDATE'}</div>
+            <div className="text-2xl font-serif font-bold text-aic-paper tracking-tight">{data?.identity?.level || 'CANDIDATE'}</div>
             <div className="mt-4 flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity">
               {[...Array(5)].map((_, i) => <div key={i} className="h-1 w-4 bg-aic-cyan rounded-full" />)}
             </div>
@@ -120,13 +120,13 @@ export default function PractitionerDashboard() {
                       "p-8 rounded-[2.5rem] border transition-all duration-500",
                       exam.status === 'COMPLETED' 
                         ? "bg-aic-cyan/5 border-aic-cyan/20" 
-                        : "bg-white/[0.02] border-white/5 shadow-sm"
+                        : "bg-aic-paper/[0.02] border-aic-paper/5 shadow-sm"
                     )}
                   >
                     <div className="flex justify-between items-start mb-6">
                       <div className={cn(
                         "p-4 rounded-2xl",
-                        exam.status === 'LOCKED' ? "bg-white/5 text-aic-slate" : "bg-aic-cyan/10 text-aic-cyan"
+                        exam.status === 'LOCKED' ? "bg-aic-paper/5 text-aic-slate" : "bg-aic-cyan/10 text-aic-cyan"
                       )}>
                         {exam.status === 'LOCKED' ? <Lock className="w-5 h-5" /> : <BookOpen className="w-5 h-5" />}
                       </div>
@@ -134,13 +134,13 @@ export default function PractitionerDashboard() {
                         <span className="px-3 py-1 bg-aic-cyan text-black text-[8px] font-bold font-mono rounded uppercase tracking-widest">Verified</span>
                       )}
                     </div>
-                    <h4 className="font-serif text-xl font-bold mb-2 text-white">{exam.name}</h4>
+                    <h4 className="font-serif text-xl font-bold mb-2 text-aic-paper">{exam.name}</h4>
                     <p className="text-[9px] text-aic-slate font-mono uppercase tracking-widest leading-relaxed">
                       {exam.status === 'LOCKED' ? `Prerequisite: ${exam.requirement}` : exam.status === 'COMPLETED' ? `Earned: ${exam.date}` : 'Examination Session Ready'}
                     </p>
                     
                     {exam.status === 'AVAILABLE' && (
-                      <button className="mt-8 flex items-center gap-2 text-[10px] font-mono font-bold text-aic-cyan hover:text-white transition-all uppercase tracking-widest group">
+                      <button className="mt-8 flex items-center gap-2 text-[10px] font-mono font-bold text-aic-cyan hover:text-aic-paper transition-all uppercase tracking-widest group">
                         Enter Secure Gateway <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                       </button>
                     )}
@@ -181,7 +181,7 @@ export default function PractitionerDashboard() {
               </SovereignButton>
             </div>
 
-            <div className="p-10 bg-white/[0.02] border border-dashed border-white/10 rounded-[3rem] text-center group hover:border-aic-cyan/30 transition-all">
+            <div className="p-10 bg-aic-paper/[0.02] border border-dashed border-aic-paper/10 rounded-[3rem] text-center group hover:border-aic-cyan/30 transition-all">
               <Fingerprint className="w-10 h-10 text-aic-slate mx-auto mb-6 group-hover:text-aic-cyan transition-colors" />
               <p className="text-xs text-aic-slate font-serif italic leading-relaxed">
                 Your CPD telemetry is linked to the Sovereign Professional Registry. 

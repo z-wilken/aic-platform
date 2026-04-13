@@ -83,14 +83,14 @@ export default function CMSPage() {
                         </div>
                         <button 
                             onClick={() => setIsComposing(true)}
-                            className="bg-white text-black px-10 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold transition-all shadow-xl"
+                            className="bg-aic-paper text-black px-10 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold transition-all shadow-xl"
                         >
                             + COMPOSE NEW ARTICLE
                         </button>
                     </div>
 
-                    <div className="bg-black/40 border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
-                        <div className="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center">
+                    <div className="bg-black/40 border border-aic-paper/5 rounded-3xl overflow-hidden shadow-2xl">
+                        <div className="p-6 border-b border-aic-paper/5 bg-aic-paper/5 flex justify-between items-center">
                             <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Active Archive</span>
                             <div className="flex gap-4">
                                 <span className="text-[10px] font-mono text-green-400 uppercase tracking-widest">
@@ -102,7 +102,7 @@ export default function CMSPage() {
                             </div>
                         </div>
                         
-                        <div className="divide-y divide-white/5">
+                        <div className="divide-y divide-aic-paper/5">
                             {loading ? (
                                 <div className="p-12 text-center text-gray-500 font-serif italic">Syncing with content core...</div>
                             ) : posts.length === 0 ? (
@@ -113,7 +113,7 @@ export default function CMSPage() {
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: i * 0.05 }}
-                                    className="p-8 hover:bg-white/5 transition-all group flex justify-between items-center"
+                                    className="p-8 hover:bg-aic-paper/5 transition-all group flex justify-between items-center"
                                 >
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-4">
@@ -124,7 +124,7 @@ export default function CMSPage() {
                                             </span>
                                             <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{post.category}</span>
                                         </div>
-                                        <h3 className="text-xl font-serif text-white group-hover:text-aic-gold transition-colors">{post.title}</h3>
+                                        <h3 className="text-xl font-serif text-aic-paper group-hover:text-aic-gold transition-colors">{post.title}</h3>
                                         <p className="text-[10px] font-mono text-gray-600 uppercase tracking-widest">Modified: {new Date(post.updated_at).toLocaleDateString()}</p>
                                     </div>
                                     
@@ -132,12 +132,12 @@ export default function CMSPage() {
                                         <button 
                                             onClick={() => handlePublish(post.id, post.status)}
                                             className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-                                                post.status === 'PUBLISHED' ? 'text-aic-red hover:text-white' : 'text-green-400 hover:text-white'
+                                                post.status === 'PUBLISHED' ? 'text-aic-red hover:text-aic-paper' : 'text-green-400 hover:text-aic-paper'
                                             }`}
                                         >
                                             {post.status === 'PUBLISHED' ? 'Unpublish' : 'Publish Now'}
                                         </button>
-                                        <button className="text-[10px] font-mono font-bold uppercase text-gray-500 hover:text-white transition-colors tracking-widest">Edit</button>
+                                        <button className="text-[10px] font-mono font-bold uppercase text-gray-500 hover:text-aic-paper transition-colors tracking-widest">Edit</button>
                                     </div>
                                 </motion.div>
                             ))}
@@ -153,17 +153,17 @@ export default function CMSPage() {
                     className="grid grid-cols-1 lg:grid-cols-2 gap-12"
                 >
                     {/* Editor Form */}
-                    <div className="space-y-8 bg-[#141414] p-12 rounded-[3rem] border border-white/5">
+                    <div className="space-y-8 bg-[#141414] p-12 rounded-[3rem] border border-aic-paper/5">
                         <div className="flex justify-between items-center mb-8">
                             <h2 className="text-2xl font-serif font-bold">New Insight</h2>
-                            <button onClick={() => setIsComposing(false)} className="text-[10px] font-mono font-bold text-gray-500 hover:text-white uppercase tracking-widest">Discard</button>
+                            <button onClick={() => setIsComposing(false)} className="text-[10px] font-mono font-bold text-gray-500 hover:text-aic-paper uppercase tracking-widest">Discard</button>
                         </div>
 
                         <div className="space-y-6">
                             <div>
                                 <label className="block text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-3">Article Title</label>
                                 <input 
-                                    className="w-full bg-transparent border-b border-white/10 py-3 text-2xl font-serif text-white focus:border-aic-gold outline-none transition-colors"
+                                    className="w-full bg-transparent border-b border-aic-paper/10 py-3 text-2xl font-serif text-aic-paper focus:border-aic-gold outline-none transition-colors"
                                     placeholder="The Future of Human Oversight..."
                                     value={newPost.title}
                                     onChange={(e) => setNewPost({...newPost, title: e.target.value})}
@@ -173,7 +173,7 @@ export default function CMSPage() {
                                 <div>
                                     <label className="block text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-3">Category</label>
                                     <select 
-                                        className="w-full bg-transparent border-b border-white/10 py-2 font-mono text-xs focus:border-aic-gold outline-none"
+                                        className="w-full bg-transparent border-b border-aic-paper/10 py-2 font-mono text-xs focus:border-aic-gold outline-none"
                                         value={newPost.category}
                                         onChange={(e) => setNewPost({...newPost, category: e.target.value})}
                                     >
@@ -187,7 +187,7 @@ export default function CMSPage() {
                             <div>
                                 <label className="block text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-3">Content (Markdown)</label>
                                 <textarea 
-                                    className="w-full bg-black/40 border border-white/10 rounded-2xl p-6 font-mono text-xs text-white focus:border-aic-gold outline-none transition-all min-h-[400px]"
+                                    className="w-full bg-black/40 border border-aic-paper/10 rounded-2xl p-6 font-mono text-xs text-aic-paper focus:border-aic-gold outline-none transition-all min-h-[400px]"
                                     placeholder="# Write your pioneer thoughts here..."
                                     value={newPost.content}
                                     onChange={(e) => setNewPost({...newPost, content: e.target.value})}
@@ -197,7 +197,7 @@ export default function CMSPage() {
 
                         <button 
                             onClick={handleSavePost}
-                            className="w-full bg-white text-black py-5 font-mono font-bold text-xs uppercase tracking-[0.3em] hover:bg-aic-gold transition-all mt-8"
+                            className="w-full bg-aic-paper text-black py-5 font-mono font-bold text-xs uppercase tracking-[0.3em] hover:bg-aic-gold transition-all mt-8"
                         >
                             COMMIT TO DRAFT
                         </button>
@@ -217,7 +217,7 @@ export default function CMSPage() {
             )}
         </AnimatePresence>
 
-        <div className="p-12 border border-dashed border-white/10 rounded-3xl text-center">
+        <div className="p-12 border border-dashed border-aic-paper/10 rounded-3xl text-center">
             <span className="text-2xl block mb-4">🛡️</span>
             <p className="text-gray-500 font-serif italic text-sm">
                 Markdown Engine v2.0 <br />

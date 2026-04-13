@@ -56,9 +56,9 @@ export default function InternalDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto p-8 lg:p-12 space-y-12">
-      <header className="flex justify-between items-end border-b border-white/5 pb-8">
+      <header className="flex justify-between items-end border-b border-aic-paper/5 pb-8">
         <div>
-          <h1 className="text-5xl font-serif font-bold text-white tracking-tighter mb-4">Internal Command.</h1>
+          <h1 className="text-5xl font-serif font-bold text-aic-paper tracking-tighter mb-4">Internal Command.</h1>
           <p className="text-gray-500 font-serif italic text-lg">Logged in as {session?.user?.name || 'Administrator'} ({role})</p>
         </div>
         <div className="text-right">
@@ -70,7 +70,7 @@ export default function InternalDashboard() {
       {/* Metrics Section */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { l: 'Pending Apps', v: data?.stats?.pendingApplications || 0, c: 'text-white' },
+          { l: 'Pending Apps', v: data?.stats?.pendingApplications || 0, c: 'text-aic-paper' },
           { l: 'Active Certs', v: data?.stats?.activeCertifications || 0, c: 'text-aic-gold' },
           { l: 'Total Leads', v: data?.stats?.totalLeads || 0, c: 'text-blue-400' },
           { l: 'Audits Ran', v: data?.stats?.auditsTotal || 0, c: 'text-green-400' }
@@ -80,7 +80,7 @@ export default function InternalDashboard() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-[#080808] border border-white/5 p-8 rounded-3xl"
+            className="bg-[#080808] border border-aic-paper/5 p-8 rounded-3xl"
           >
             <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">{s.l}</p>
             <p className={`text-4xl font-serif font-medium ${s.c}`}>{s.v}</p>
@@ -93,15 +93,15 @@ export default function InternalDashboard() {
         {(role === 'ADMIN' || role === 'AUDITOR' || role === 'COMPLIANCE_OFFICER') && (
           <div className="lg:col-span-2 space-y-6">
             <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Certification Pipeline</h3>
-            <div className="bg-[#080808] border border-white/5 rounded-[2.5rem] p-8">
+            <div className="bg-[#080808] border border-aic-paper/5 rounded-[2.5rem] p-8">
               <div className="space-y-8">
                 {(data?.activeOrgs || []).map((org, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex justify-between items-end text-xs font-mono">
-                      <span className="text-white font-bold uppercase tracking-widest">{org.name}</span>
+                      <span className="text-aic-paper font-bold uppercase tracking-widest">{org.name}</span>
                       <span className="text-gray-500">{org.tier} — {org.integrity_score}%</span>
                     </div>
-                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-1 w-full bg-aic-paper/5 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
                         animate={{ width: `${org.integrity_score}%` }}
@@ -119,20 +119,20 @@ export default function InternalDashboard() {
         {((role as string) === 'AUDITOR' || (role as string) === 'ADMIN') && (
           <div className="space-y-6">
             <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Verification Feed</h3>
-            <div className="bg-[#080808] border border-white/5 rounded-[2.5rem] p-8">
+            <div className="bg-[#080808] border border-aic-paper/5 rounded-[2.5rem] p-8">
               <p className="text-xs text-gray-500 font-serif italic mb-8">Pending auditor sign-off on technical evidence.</p>
               <div className="space-y-4">
                 {/* Simulated alerts */}
-                <div className="p-4 bg-white/5 border border-white/5 rounded-xl border-l-aic-gold border-l-2">
-                  <p className="text-xs font-bold text-white uppercase tracking-tighter">Bias Audit Verification</p>
+                <div className="p-4 bg-aic-paper/5 border border-aic-paper/5 rounded-xl border-l-aic-gold border-l-2">
+                  <p className="text-xs font-bold text-aic-paper uppercase tracking-tighter">Bias Audit Verification</p>
                   <p className="text-[10px] text-gray-500 font-mono mt-1">STANDARD BANK • 2H AGO</p>
                 </div>
-                <div className="p-4 bg-white/5 border border-white/5 rounded-xl border-l-aic-gold border-l-2">
-                  <p className="text-xs font-bold text-white uppercase tracking-tighter">POPIA Section 71 Review</p>
+                <div className="p-4 bg-aic-paper/5 border border-aic-paper/5 rounded-xl border-l-aic-gold border-l-2">
+                  <p className="text-xs font-bold text-aic-paper uppercase tracking-tighter">POPIA Section 71 Review</p>
                   <p className="text-[10px] text-gray-500 font-mono mt-1">INVESTEC • 5H AGO</p>
                 </div>
               </div>
-              <Link href="/verification" className="block text-center mt-8 text-[10px] font-mono font-bold text-aic-gold hover:text-white transition-colors uppercase tracking-widest">
+              <Link href="/verification" className="block text-center mt-8 text-[10px] font-mono font-bold text-aic-gold hover:text-aic-paper transition-colors uppercase tracking-widest">
                 Access Gateway →
               </Link>
             </div>
@@ -175,8 +175,8 @@ function InternalLinkCard({ title, desc, href, allowedRoles, currentRole }: Inte
 
   return (
     <Link href={href} className="group">
-      <div className="bg-[#080808] border border-white/5 p-8 rounded-3xl group-hover:border-aic-gold transition-all">
-        <h4 className="font-serif text-xl font-bold text-white mb-2">{title}</h4>
+      <div className="bg-[#080808] border border-aic-paper/5 p-8 rounded-3xl group-hover:border-aic-gold transition-all">
+        <h4 className="font-serif text-xl font-bold text-aic-paper mb-2">{title}</h4>
         <p className="text-sm text-gray-500 font-serif italic">{desc}</p>
       </div>
     </Link>

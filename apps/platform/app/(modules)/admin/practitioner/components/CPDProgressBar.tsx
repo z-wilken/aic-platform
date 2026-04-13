@@ -17,7 +17,7 @@ interface CPDProgressBarProps {
 
 export const CPDProgressBar = ({ progress, label, sublabel }: CPDProgressBarProps) => {
   return (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-aic-black/5 shadow-lg">
+    <div className="bg-aic-paper p-8 rounded-[2.5rem] border border-aic-black/5 shadow-lg">
       <div className="flex justify-between items-end mb-6">
         <div>
           <span className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.3em]">

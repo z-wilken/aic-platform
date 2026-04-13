@@ -5,9 +5,9 @@ import { Scale, AlertTriangle, Ban, Globe } from "lucide-react";
 
 export default function TermsOfUse() {
   return (
-    <div className="bg-white min-h-screen font-sans">
+    <div className="bg-aic-paper min-h-screen font-sans">
       {/* Hero */}
-      <section className="bg-aic-navy text-white py-24 relative overflow-hidden">
+      <section className="bg-aic-navy text-aic-paper py-24 relative overflow-hidden">
         <div className="max-w-[1600px] mx-auto px-4 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-2 mb-4">
@@ -17,7 +17,7 @@ export default function TermsOfUse() {
             <h1 className="text-5xl mb-6 font-serif italic">
               Terms of Use
             </h1>
-            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
+            <p className="text-xl text-aic-paper/70 max-w-3xl leading-relaxed">
               These terms govern your access to the AIC website, certification platform, public
               registry, and all intellectual property relating to the AIC certification programme
               and the Declaration of Algorithmic Rights.

@@ -53,7 +53,7 @@ export default function CertificatePage() {
                 <button 
                     onClick={handleDownloadCert}
                     disabled={isGenerating}
-                    className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors disabled:opacity-50"
+                    className="bg-aic-black text-aic-paper px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors disabled:opacity-50"
                 >
                     {isGenerating ? 'PREPARING DOCUMENT...' : 'Download Official PDF'}
                 </button>
@@ -69,7 +69,7 @@ export default function CertificatePage() {
                             key="cert"
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="bg-white p-16 shadow-2xl relative overflow-hidden border border-gray-100 aspect-[1/1.414]"
+                            className="bg-aic-paper p-16 shadow-2xl relative overflow-hidden border border-gray-100 aspect-[1/1.414]"
                         >
                             <div className="border-4 border-double border-aic-gold p-12 h-full flex flex-col">
                                 <div className="text-center mb-16">
@@ -142,14 +142,14 @@ export default function CertificatePage() {
                     </p>
                 </div>
 
-                <div className="bg-aic-black p-8 rounded-2xl text-white">
+                <div className="bg-aic-black p-8 rounded-2xl text-aic-paper">
                     <h4 className="font-mono text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">Upcoming Milestones</h4>
                     <div className="space-y-6">
                         {[
                             { t: 'Bi-Annual Audit', d: 'Aug 2026' },
                             { t: 'SANAS Review', d: 'Jan 2027' }
                         ].map(m => (
-                            <div key={m.t} className="flex justify-between items-center border-b border-white/5 pb-4">
+                            <div key={m.t} className="flex justify-between items-center border-b border-aic-paper/5 pb-4">
                                 <span className="text-xs font-serif">{m.t}</span>
                                 <span className="text-[10px] font-mono text-aic-gold">{m.d}</span>
                             </div>

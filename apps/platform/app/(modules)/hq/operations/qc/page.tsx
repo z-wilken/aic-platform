@@ -12,7 +12,7 @@ export default function QualityControlPage() {
 
     return (
         <div className="space-y-12">
-            <div className="flex justify-between items-end border-b border-white/5 pb-12">
+            <div className="flex justify-between items-end border-b border-aic-paper/5 pb-12">
                 <div>
                     <h1 className="text-5xl font-serif font-medium tracking-tight tracking-tighter mb-4">Operations QC</h1>
                     <p className="text-gray-500 font-serif italic text-lg max-w-2xl">
@@ -21,13 +21,13 @@ export default function QualityControlPage() {
                 </div>
                 <div className="text-right">
                     <p className="text-[10px] font-mono font-bold text-blue-400 uppercase tracking-[0.4em] mb-2">Internal Health</p>
-                    <div className="text-2xl font-serif text-white">98.4% Accuracy</div>
+                    <div className="text-2xl font-serif text-aic-paper">98.4% Accuracy</div>
                 </div>
             </div>
 
-            <div className="bg-[#080808] border border-white/5 rounded-[2.5rem] overflow-hidden">
+            <div className="bg-[#080808] border border-aic-paper/5 rounded-[2.5rem] overflow-hidden">
                 <table className="w-full text-left">
-                    <thead className="bg-white/[0.02] border-b border-white/5 font-mono text-[9px] font-bold text-gray-500 uppercase tracking-[0.3em]">
+                    <thead className="bg-aic-paper/[0.02] border-b border-aic-paper/5 font-mono text-[9px] font-bold text-gray-500 uppercase tracking-[0.3em]">
                         <tr>
                             <th className="p-8 text-center">Reference</th>
                             <th className="p-8">Audit Entity</th>
@@ -36,17 +36,17 @@ export default function QualityControlPage() {
                             <th className="p-8 text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5 font-serif">
+                    <tbody className="divide-y divide-aic-paper/5 font-serif">
                         {tasks.map((task, i) => (
                             <motion.tr 
                                 key={task.id}
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: i * 0.05 }}
-                                className="hover:bg-white/[0.01] transition-colors group"
+                                className="hover:bg-aic-paper/[0.01] transition-colors group"
                             >
                                 <td className="p-8 text-center font-mono text-[10px] text-gray-600 group-hover:text-aic-gold transition-colors">{task.id}</td>
-                                <td className="p-8 text-white font-bold tracking-tight">
+                                <td className="p-8 text-aic-paper font-bold tracking-tight">
                                     {task.entity}
                                     <span className="block text-[8px] font-mono text-gray-600 uppercase tracking-widest mt-1">{task.type}</span>
                                 </td>
@@ -59,7 +59,7 @@ export default function QualityControlPage() {
                                     </span>
                                 </td>
                                 <td className="p-8 text-right">
-                                    <button className="bg-white text-black px-6 py-2 rounded-xl font-mono text-[9px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all shadow-xl">
+                                    <button className="bg-aic-paper text-black px-6 py-2 rounded-xl font-mono text-[9px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all shadow-xl">
                                         REVIEW_EVIDENCE
                                     </button>
                                 </td>
@@ -69,7 +69,7 @@ export default function QualityControlPage() {
                 </table>
             </div>
 
-            <div className="mt-12 p-12 bg-white/[0.01] border border-dashed border-white/5 rounded-[3rem] text-center">
+            <div className="mt-12 p-12 bg-aic-paper/[0.01] border border-dashed border-aic-paper/5 rounded-[3rem] text-center">
                 <p className="text-gray-600 font-serif italic text-sm mb-0 leading-relaxed">
                     Quality Control is mandatory for 10% of all Tier 3 audits and 100% of all Tier 1 audits prior to final registry anchoring.
                 </p>

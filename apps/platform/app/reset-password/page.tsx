@@ -111,7 +111,7 @@ function ResetPasswordForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-aic-black text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                        className="w-full bg-aic-black text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
                     >
                         {loading ? 'SECURING...' : 'FINALIZE_RESET'}
                     </button>
@@ -127,7 +127,7 @@ export default function ResetPassword() {
             <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-full max-w-md bg-white border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl"
+                className="w-full max-w-md bg-aic-paper border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl"
             >
                 <Suspense fallback={<div className="text-center py-10 font-serif italic text-gray-400 uppercase tracking-widest text-[10px]">Loading Security Context...</div>}>
                     <ResetPasswordForm />

@@ -104,7 +104,7 @@ export default function ProfessionalPortalPage() {
       {/* Hero */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f1f3d]/95 via-[#1a3160]/90 to-[#0a1628]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A111F]/95 via-[#1a3160]/90 to-[#0A111F]/85" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -112,20 +112,20 @@ export default function ProfessionalPortalPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <Award className="w-6 h-6 text-[#c9920a]" />
-              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">ISO/IEC 17024 Personnel Certification</span>
+              <Award className="w-6 h-6 text-[#C17C4E]" />
+              <span className="text-[#C17C4E] text-sm uppercase tracking-widest font-medium">ISO/IEC 17024 Personnel Certification</span>
             </div>
-            <h1 className="text-5xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h1 className="text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
               Professional Portal
             </h1>
-            <p className="text-xl text-white/70 max-w-3xl leading-relaxed">
+            <p className="text-xl text-aic-paper/70 max-w-3xl leading-relaxed">
               Earn your AIC credential — the globally recognized standard for AI Ethics Leads, Chief AI Officers, and governance professionals. ISO/IEC 17024 accredited and accepted in 100+ jurisdictions.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
-              <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-6 py-3">
+              <Button className="bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper px-6 py-3">
                 Start Your Certification Journey <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40 px-6 py-3">
+              <Button className="bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/40 px-6 py-3">
                 View Exam Schedule
               </Button>
             </div>
@@ -134,7 +134,7 @@ export default function ProfessionalPortalPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 bg-white border-b border-gray-100">
+      <section className="py-12 bg-aic-paper border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -153,8 +153,8 @@ export default function ProfessionalPortalPage() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <Icon className="w-5 h-5 text-[#c9920a] mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-[#0f1f3d]">{stat.value}</div>
+                  <Icon className="w-5 h-5 text-[#C17C4E] mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-[#0A111F]">{stat.value}</div>
                   <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
                 </motion.div>
               );
@@ -164,7 +164,7 @@ export default function ProfessionalPortalPage() {
       </section>
 
       {/* Main Content Tabs */}
-      <section className="py-16 bg-[#f8fafc]">
+      <section className="py-16 bg-[#F9F7F2]">
         <div className="max-w-7xl mx-auto px-4">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="mb-8">
@@ -179,7 +179,7 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="certifications">
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0f1f3d] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0A111F] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Certification Pathways
                   </h2>
                   <p className="text-gray-500 max-w-2xl mx-auto">
@@ -198,7 +198,7 @@ export default function ProfessionalPortalPage() {
                     <Card className={`p-8 border-2 ${cert.color} relative overflow-hidden`}>
                       {cert.popular && (
                         <div className="absolute top-4 right-4">
-                          <Badge className="bg-[#c9920a] text-white">Most Popular</Badge>
+                          <Badge className="bg-[#C17C4E] text-aic-paper">Most Popular</Badge>
                         </div>
                       )}
                       <div className="flex items-start gap-6">
@@ -207,14 +207,14 @@ export default function ProfessionalPortalPage() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-2xl font-semibold text-[#0f1f3d]">{cert.level}</h3>
+                            <h3 className="text-2xl font-semibold text-[#0A111F]">{cert.level}</h3>
                             <Badge variant="outline" className={cert.badge}>{cert.code}</Badge>
                           </div>
                           <p className="text-gray-600 mb-6">{cert.description}</p>
                           
                           <div className="grid md:grid-cols-2 gap-6">
                             <div>
-                              <h4 className="text-sm font-semibold text-[#0f1f3d] mb-3">Requirements</h4>
+                              <h4 className="text-sm font-semibold text-[#0A111F] mb-3">Requirements</h4>
                               <ul className="space-y-2">
                                 {cert.requirements.map((req, j) => (
                                   <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
@@ -225,18 +225,18 @@ export default function ProfessionalPortalPage() {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="text-sm font-semibold text-[#0f1f3d] mb-3">Certification Details</h4>
+                              <h4 className="text-sm font-semibold text-[#0A111F] mb-3">Certification Details</h4>
                               <div className="space-y-2 text-sm text-gray-600">
                                 <div className="flex items-center gap-2">
-                                  <Clock className="w-4 h-4 text-[#c9920a]" />
+                                  <Clock className="w-4 h-4 text-[#C17C4E]" />
                                   <span>Preparation Time: {cert.duration}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Target className="w-4 h-4 text-[#c9920a]" />
+                                  <Target className="w-4 h-4 text-[#C17C4E]" />
                                   <span>Exam Fee: {cert.examFee}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Globe className="w-4 h-4 text-[#c9920a]" />
+                                  <Globe className="w-4 h-4 text-[#C17C4E]" />
                                   <span>Valid: 3 years (renewal required)</span>
                                 </div>
                               </div>
@@ -244,7 +244,7 @@ export default function ProfessionalPortalPage() {
                           </div>
 
                           <div className="mt-6 flex gap-3">
-                            <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white">
+                            <Button className="bg-[#0A111F] hover:bg-[#1a3160] text-aic-paper">
                               Apply for {cert.code}
                             </Button>
                             <Button variant="outline">Download Requirements Guide</Button>
@@ -261,7 +261,7 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="exams">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0f1f3d] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0A111F] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Upcoming Examinations
                   </h2>
                   <p className="text-gray-500 max-w-2xl mx-auto">
@@ -274,15 +274,15 @@ export default function ProfessionalPortalPage() {
                     {upcomingExams.map((exam, i) => (
                       <div
                         key={i}
-                        className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white border border-gray-200 rounded-lg hover:border-[#c9920a] transition-colors"
+                        className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-aic-paper border border-gray-200 rounded-lg hover:border-[#C17C4E] transition-colors"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-[#0f1f3d] rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-12 h-12 bg-[#0A111F] rounded-lg flex items-center justify-center text-aic-paper font-bold text-sm">
                             {exam.date.split(" ")[1].replace(",", "")}
                           </div>
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="font-semibold text-[#0f1f3d]">{exam.date}</span>
+                              <span className="font-semibold text-[#0A111F]">{exam.date}</span>
                               <Badge variant="outline">{exam.code}</Badge>
                             </div>
                             <div className="text-sm text-gray-500">{exam.location}</div>
@@ -294,7 +294,7 @@ export default function ProfessionalPortalPage() {
                               {exam.seats}
                             </span>
                           </div>
-                          <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white">
+                          <Button className="bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper">
                             Register Now
                           </Button>
                         </div>
@@ -324,7 +324,7 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="competencies">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0f1f3d] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0A111F] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Competency Domains
                   </h2>
                   <p className="text-gray-500 max-w-2xl mx-auto">
@@ -343,13 +343,13 @@ export default function ProfessionalPortalPage() {
                     >
                       <Card className="p-6">
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-lg font-semibold text-[#0f1f3d]">{domain.name}</h3>
-                          <Badge className="bg-[#c9920a] text-white">{domain.weight}</Badge>
+                          <h3 className="text-lg font-semibold text-[#0A111F]">{domain.name}</h3>
+                          <Badge className="bg-[#C17C4E] text-aic-paper">{domain.weight}</Badge>
                         </div>
                         <p className="text-gray-600 text-sm mb-4">{domain.description}</p>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <div
-                            className="bg-[#c9920a] h-2 rounded-full"
+                            className="bg-[#C17C4E] h-2 rounded-full"
                             style={{ width: domain.weight }}
                           />
                         </div>
@@ -382,7 +382,7 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="resources">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0f1f3d] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0A111F] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Study Resources
                   </h2>
                   <p className="text-gray-500 max-w-2xl mx-auto">
@@ -404,11 +404,11 @@ export default function ProfessionalPortalPage() {
                         <Card className="p-5 hover:shadow-lg transition-shadow">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-3 flex-1">
-                              <div className="w-10 h-10 bg-[#0f1f3d] rounded-lg flex items-center justify-center shrink-0">
-                                <Icon className="w-5 h-5 text-[#c9920a]" />
+                              <div className="w-10 h-10 bg-[#0A111F] rounded-lg flex items-center justify-center shrink-0">
+                                <Icon className="w-5 h-5 text-[#C17C4E]" />
                               </div>
                               <div className="flex-1">
-                                <h4 className="font-semibold text-[#0f1f3d] mb-1">{resource.title}</h4>
+                                <h4 className="font-semibold text-[#0A111F] mb-1">{resource.title}</h4>
                                 <div className="text-sm text-gray-500">
                                   {resource.type} • {resource.size}
                                 </div>
@@ -425,24 +425,24 @@ export default function ProfessionalPortalPage() {
                 </div>
 
                 <div className="mt-8 grid md:grid-cols-2 gap-6">
-                  <Card className="p-6 bg-gradient-to-br from-[#0f1f3d] to-[#1a3160] text-white">
-                    <BookOpen className="w-8 h-8 text-[#c9920a] mb-3" />
+                  <Card className="p-6 bg-gradient-to-br from-[#0A111F] to-[#1a3160] text-aic-paper">
+                    <BookOpen className="w-8 h-8 text-[#C17C4E] mb-3" />
                     <h4 className="font-semibold text-lg mb-2">Accredited Training Providers</h4>
-                    <p className="text-white/70 text-sm mb-4">
+                    <p className="text-aic-paper/70 text-sm mb-4">
                       Instructor-led courses from AIC-approved training organizations. Includes live workshops and 1-on-1 mentorship.
                     </p>
-                    <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40">
+                    <Button className="bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/40">
                       Find Training Providers
                     </Button>
                   </Card>
 
-                  <Card className="p-6 bg-gradient-to-br from-[#c9920a] to-[#b07d08] text-white">
-                    <Users className="w-8 h-8 text-white mb-3" />
+                  <Card className="p-6 bg-gradient-to-br from-[#C17C4E] to-[#C17C4E] text-aic-paper">
+                    <Users className="w-8 h-8 text-aic-paper mb-3" />
                     <h4 className="font-semibold text-lg mb-2">Study Groups & Community</h4>
-                    <p className="text-white/90 text-sm mb-4">
+                    <p className="text-aic-paper/90 text-sm mb-4">
                       Join peer study groups, attend webinars, and connect with certified professionals preparing for exams.
                     </p>
-                    <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40">
+                    <Button className="bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/40">
                       Join Community
                     </Button>
                   </Card>
@@ -454,7 +454,7 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="directory">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0f1f3d] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0A111F] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Certified Professional Directory
                   </h2>
                   <p className="text-gray-500 max-w-2xl mx-auto">
@@ -473,7 +473,7 @@ export default function ProfessionalPortalPage() {
                         className="pl-10"
                       />
                     </div>
-                    <Button className="bg-[#0f1f3d] hover:bg-[#1a3160] text-white">
+                    <Button className="bg-[#0A111F] hover:bg-[#1a3160] text-aic-paper">
                       Search
                     </Button>
                   </div>
@@ -491,13 +491,13 @@ export default function ProfessionalPortalPage() {
                       <Card className="p-6">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 bg-[#0f1f3d] rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            <div className="w-14 h-14 bg-[#0A111F] rounded-full flex items-center justify-center text-aic-paper font-bold text-lg">
                               {professional.name.split(" ").map(n => n[0]).join("")}
                             </div>
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-semibold text-[#0f1f3d]">{professional.name}</h4>
-                                <Badge className="bg-[#c9920a] text-white">{professional.cert}</Badge>
+                                <h4 className="font-semibold text-[#0A111F]">{professional.name}</h4>
+                                <Badge className="bg-[#C17C4E] text-aic-paper">{professional.cert}</Badge>
                               </div>
                               <div className="text-sm text-gray-600">{professional.role}</div>
                               <div className="text-sm text-gray-500">{professional.company}</div>
@@ -527,20 +527,20 @@ export default function ProfessionalPortalPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-br from-[#c9920a] to-[#b07d08] text-white">
+      <section className="py-16 bg-gradient-to-br from-[#C17C4E] to-[#C17C4E] text-aic-paper">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <Award className="w-12 h-12 mx-auto mb-4 text-white" />
+          <Award className="w-12 h-12 mx-auto mb-4 text-aic-paper" />
           <h2 className="text-3xl mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
             Begin Your AIC Certification Journey
           </h2>
-          <p className="text-white/90 mb-8 text-lg">
+          <p className="text-aic-paper/90 mb-8 text-lg">
             Join the global community of certified AI governance professionals. Register for your first exam or schedule a consultation to discuss your certification pathway.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-white text-[#c9920a] hover:bg-white/90 px-8 py-3">
+            <Button className="bg-aic-paper text-[#C17C4E] hover:bg-aic-paper/90 px-8 py-3">
               Register for Exam
             </Button>
-            <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/40 px-8 py-3">
+            <Button className="bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/40 px-8 py-3">
               Schedule Consultation
             </Button>
           </div>

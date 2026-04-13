@@ -42,11 +42,11 @@ export default function EmpathyDemo() {
     <div className="min-h-screen bg-gray-50/50 p-8">
       <div className="max-w-[1600px] mx-auto">
         <header className="mb-12">
-          <div className="flex items-center gap-2 text-[#c9920a] mb-1">
+          <div className="flex items-center gap-2 text-[#C17C4E] mb-1">
             <Heart className="w-5 h-5 fill-current" />
             <span className="text-xs font-bold uppercase tracking-widest">Right to Empathy</span>
           </div>
-          <h1 className="text-3xl font-bold text-[#0f1f3d]">Empathy Scrutiny Engine (B0-2)</h1>
+          <h1 className="text-3xl font-bold text-[#0A111F]">Empathy Scrutiny Engine (B0-2)</h1>
           <p className="text-gray-500 max-w-2xl">Analyze automated rejection letters and AI-generated communications for violations of human dignity and emotional intelligence.</p>
         </header>
 
@@ -54,22 +54,22 @@ export default function EmpathyDemo() {
           {/* Input Area */}
           <div className="space-y-6">
             <Card className="p-6 border-none shadow-sm">
-              <h3 className="font-bold text-[#0f1f3d] mb-4 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-[#c9920a]" />
+              <h3 className="font-bold text-[#0A111F] mb-4 flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-[#C17C4E]" />
                 Communication Draft
               </h3>
               <textarea 
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Paste the automated rejection email or notification text here..."
-                className="w-full h-64 bg-gray-50 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#c9920a]/20 resize-none border-none"
+                className="w-full h-64 bg-gray-50 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 resize-none border-none"
               />
               <div className="mt-4 flex justify-between items-center">
                 <div className="text-xs text-gray-400">Supported standards: ISO/IEC 42001, POPIA Sec 71</div>
                 <Button 
                   onClick={analyzeEmpathy}
                   disabled={loading || !text}
-                  className="bg-[#0f1f3d] text-white px-8"
+                  className="bg-[#0A111F] text-aic-paper px-8"
                 >
                   {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Zap className="w-4 h-4 mr-2" />}
                   Analyze for Dignity
@@ -77,7 +77,7 @@ export default function EmpathyDemo() {
               </div>
             </Card>
 
-            <div className="p-6 bg-white rounded-2xl border border-blue-100 flex items-start gap-4 shadow-sm">
+            <div className="p-6 bg-aic-paper rounded-2xl border border-blue-100 flex items-start gap-4 shadow-sm">
               <ShieldAlert className="w-6 h-6 text-blue-600 shrink-0" />
               <div>
                 <h4 className="font-bold text-sm text-blue-900 mb-1">Why Empathy Matters</h4>
@@ -91,13 +91,13 @@ export default function EmpathyDemo() {
             {result ? (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                 <Card className="p-8 border-none shadow-md overflow-hidden relative">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-[#c9920a]"></div>
+                  <div className="absolute top-0 left-0 w-1 h-full bg-[#C17C4E]"></div>
                   
                   <div className="flex justify-between items-start mb-8">
                     <div>
                       <div className="text-xs font-bold text-gray-400 uppercase mb-1">Dignity Score</div>
-                      <div className="text-5xl font-black text-[#0f1f3d]">
-                        {Math.round(result.score * 100)}<span className="text-[#c9920a] font-normal text-2xl">%</span>
+                      <div className="text-5xl font-black text-[#0A111F]">
+                        {Math.round(result.score * 100)}<span className="text-[#C17C4E] font-normal text-2xl">%</span>
                       </div>
                     </div>
                     <Badge className={result.score > 0.7 ? "bg-green-500" : "bg-red-500"}>
@@ -107,7 +107,7 @@ export default function EmpathyDemo() {
 
                   <div className="space-y-6">
                     <div>
-                      <h4 className="font-bold text-sm text-[#0f1f3d] mb-3 uppercase tracking-tighter">AI Analysis Findings</h4>
+                      <h4 className="font-bold text-sm text-[#0A111F] mb-3 uppercase tracking-tighter">AI Analysis Findings</h4>
                       <div className="space-y-2">
                         {result.violations?.length > 0 ? (
                           result.violations.map((v: string, i: number) => (
@@ -128,7 +128,7 @@ export default function EmpathyDemo() {
                       <p className="text-sm text-gray-700 italic">"{result.suggestion}"</p>
                     </div>
 
-                    <Button variant="outline" className="w-full border-gray-200 text-[#0f1f3d] group">
+                    <Button variant="outline" className="w-full border-gray-200 text-[#0A111F] group">
                       Attach to Compliance Report <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>

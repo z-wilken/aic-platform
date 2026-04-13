@@ -57,14 +57,14 @@ export default function AdminShell({ children }: AdminShellProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-aic-navy text-white flex font-sans">
+    <div className="min-h-screen bg-aic-navy text-aic-paper flex font-sans">
       {/* Sidebar */}
-      <aside className="w-72 bg-aic-navy border-r border-white/5 p-6 flex flex-col fixed h-full z-20">
+      <aside className="w-72 bg-aic-navy border-r border-aic-paper/5 p-6 flex flex-col fixed h-full z-20">
         <div className="flex justify-between items-center mb-10 px-2">
           <Link href="/" className="flex items-center gap-3 group">
               <div className="h-8 w-8 rounded bg-red-900/20 border border-red-500/30 flex items-center justify-center text-red-500 font-mono font-bold text-lg group-hover:bg-red-900/30 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all">A</div>
               <div>
-                  <h1 className="font-sans text-lg font-bold tracking-tight text-white leading-none">AIC ADMIN</h1>
+                  <h1 className="font-sans text-lg font-bold tracking-tight text-aic-paper leading-none">AIC ADMIN</h1>
                   <p className="text-[9px] font-mono text-red-500 uppercase tracking-widest mt-1">Sovereign Control</p>
               </div>
           </Link>
@@ -81,8 +81,8 @@ export default function AdminShell({ children }: AdminShellProps) {
                     href={item.href}
                     className={`flex items-center gap-3 py-2.5 px-3 rounded-lg font-sans text-xs font-medium transition-all group relative overflow-hidden ${
                       pathname === item.href
-                        ? 'text-white bg-white/5 border border-white/5'
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        ? 'text-aic-paper bg-aic-paper/5 border border-aic-paper/5'
+                        : 'text-gray-400 hover:text-aic-paper hover:bg-aic-paper/5'
                     }`}
                   >
                     {pathname === item.href && (
@@ -99,12 +99,12 @@ export default function AdminShell({ children }: AdminShellProps) {
           ))}
         </nav>
 
-        <div className="mt-auto pt-6 border-t border-white/5">
-          <div className="p-3 rounded-lg bg-aic-navy-mid border border-white/5 flex items-center gap-3">
+        <div className="mt-auto pt-6 border-t border-aic-paper/5">
+          <div className="p-3 rounded-lg bg-aic-navy-mid border border-aic-paper/5 flex items-center gap-3">
             <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_#EF4444]"></div>
             <div className="flex-1">
               <p className="text-[9px] text-gray-400 font-mono uppercase tracking-widest">System Status</p>
-              <span className="text-[10px] font-bold text-white uppercase tracking-wide">Privileged Access</span>
+              <span className="text-[10px] font-bold text-aic-paper uppercase tracking-wide">Privileged Access</span>
             </div>
             <Server className="w-3 h-3 text-gray-600" />
           </div>
@@ -113,13 +113,13 @@ export default function AdminShell({ children }: AdminShellProps) {
 
       {/* Main Content */}
       <main className="flex-1 ml-72 min-h-screen bg-aic-navy">
-        <header className="sticky top-0 z-10 bg-aic-navy/80 backdrop-blur-xl border-b border-white/5 px-8 py-4">
+        <header className="sticky top-0 z-10 bg-aic-navy/80 backdrop-blur-xl border-b border-aic-paper/5 px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-6">
                 <div className="h-2 w-2 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
                 <div>
                     <p className="text-[8px] text-gray-600 uppercase tracking-[0.4em] mb-1">Authenticated Command</p>
-                    <h2 className="text-xs font-bold text-white tracking-[0.2em]">{navItems.find(i => i.href === pathname)?.label.toUpperCase() || 'CONSOLE'}</h2>
+                    <h2 className="text-xs font-bold text-aic-paper tracking-[0.2em]">{navItems.find(i => i.href === pathname)?.label.toUpperCase() || 'CONSOLE'}</h2>
                 </div>
             </div>
             <div className="flex items-center gap-8">
@@ -131,7 +131,7 @@ export default function AdminShell({ children }: AdminShellProps) {
               </div>
               <button 
                 onClick={handleExecuteAudit}
-                className="bg-red-600 text-white px-6 py-2 rounded-md text-[9px] font-bold hover:bg-red-500 transition-all shadow-lg shadow-red-900/20 active:scale-95 uppercase tracking-widest"
+                className="bg-red-600 text-aic-paper px-6 py-2 rounded-md text-[9px] font-bold hover:bg-red-500 transition-all shadow-lg shadow-red-900/20 active:scale-95 uppercase tracking-widest"
               >
                 Execute New Audit
               </button>
@@ -139,7 +139,7 @@ export default function AdminShell({ children }: AdminShellProps) {
           </div>
         </header>
 
-        <div className="p-8 text-white">
+        <div className="p-8 text-aic-paper">
           {children}
         </div>
       </main>

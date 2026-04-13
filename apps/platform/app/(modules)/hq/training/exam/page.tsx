@@ -79,11 +79,11 @@ export default function BoardExamPage() {
                     <div className="w-24 h-24 bg-aic-gold/10 border border-aic-gold/30 rounded-3xl flex items-center justify-center mx-auto mb-12">
                         <svg className="w-10 h-10 text-aic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                     </div>
-                    <h1 className="text-5xl font-serif font-bold text-white mb-6 tracking-tighter">Lead Auditor Board Exam</h1>
+                    <h1 className="text-5xl font-serif font-bold text-aic-paper mb-6 tracking-tighter">Lead Auditor Board Exam</h1>
                     <p className="text-gray-500 font-serif italic text-lg mb-12 leading-relaxed">
                         You are about to enter the high-stakes certification environment. Passing this exam authorizes you to represent AIC in institutional audits.
                     </p>
-                    <div className="bg-white/5 border border-white/10 p-8 rounded-2xl mb-12 text-left">
+                    <div className="bg-aic-paper/5 border border-aic-paper/10 p-8 rounded-2xl mb-12 text-left">
                         <h4 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest mb-4">Exam Protocols</h4>
                         <ul className="space-y-3 text-sm text-gray-400 font-serif italic">
                             <li>• Minimum pass rate: 80%</li>
@@ -93,7 +93,7 @@ export default function BoardExamPage() {
                     </div>
                     <button 
                         onClick={() => setStarted(true)}
-                        className="bg-white text-black px-12 py-5 font-mono text-xs font-bold uppercase tracking-[0.3em] hover:bg-aic-gold transition-all shadow-2xl"
+                        className="bg-aic-paper text-black px-12 py-5 font-mono text-xs font-bold uppercase tracking-[0.3em] hover:bg-aic-gold transition-all shadow-2xl"
                     >
                         INITIALIZE_EXAM_SESSION
                     </button>
@@ -122,7 +122,7 @@ export default function BoardExamPage() {
                                 />
                                 <button 
                                     onClick={() => setShowCert(false)}
-                                    className="mt-12 text-white font-mono text-[10px] font-bold uppercase tracking-[0.4em] hover:text-aic-gold transition-colors"
+                                    className="mt-12 text-aic-paper font-mono text-[10px] font-bold uppercase tracking-[0.4em] hover:text-aic-gold transition-colors"
                                 >
                                     CLOSE_PREVIEW
                                 </button>
@@ -135,11 +135,11 @@ export default function BoardExamPage() {
                     <div className={`text-6xl mb-8 ${pass ? 'text-green-500' : 'text-aic-red'}`}>
                         {pass ? '🏆' : '⚠️'}
                     </div>
-                    <h2 className="text-4xl font-serif font-bold text-white mb-4 tracking-tight">
+                    <h2 className="text-4xl font-serif font-bold text-aic-paper mb-4 tracking-tight">
                         {pass ? 'Certification Authorized' : 'Certification Denied'}
                     </h2>
                     <p className="text-gray-500 font-serif italic text-lg mb-12 leading-relaxed">
-                        Your final evaluation score: <span className="text-white font-bold">{Math.round((score / questions.length) * 100)}%</span>
+                        Your final evaluation score: <span className="text-aic-paper font-bold">{Math.round((score / questions.length) * 100)}%</span>
                     </p>
                     
                     {pass ? (
@@ -150,7 +150,7 @@ export default function BoardExamPage() {
                             </p>
                             <button 
                                 onClick={() => setShowCert(true)}
-                                className="bg-aic-gold text-black px-8 py-3 rounded-lg font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all shadow-xl"
+                                className="bg-aic-gold text-black px-8 py-3 rounded-lg font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-paper transition-all shadow-xl"
                             >
                                 View Institutional Certificate
                             </button>
@@ -164,7 +164,7 @@ export default function BoardExamPage() {
                         </div>
                     )}
 
-                    <Link href="/training" className="inline-block bg-white/5 border border-white/10 text-white px-10 py-4 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+                    <Link href="/training" className="inline-block bg-aic-paper/5 border border-aic-paper/10 text-aic-paper px-10 py-4 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-paper hover:text-black transition-all">
                         RETURN_TO_ACADEMY
                     </Link>
                 </motion.div>
@@ -176,7 +176,7 @@ export default function BoardExamPage() {
         <div className="max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-16">
                 <span className="text-[10px] font-mono font-bold text-gray-600 uppercase tracking-[0.4em]">Question 0{currentQuestion + 1} / 0{questions.length}</span>
-                <div className="h-1 w-64 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-1 w-64 bg-aic-paper/5 rounded-full overflow-hidden">
                     <motion.div 
                         className="h-full bg-aic-gold"
                         initial={{ width: 0 }}
@@ -186,7 +186,7 @@ export default function BoardExamPage() {
             </div>
 
             <div className="space-y-12">
-                <h3 className="text-4xl font-serif font-medium text-white tracking-tight leading-tight">
+                <h3 className="text-4xl font-serif font-medium text-aic-paper tracking-tight leading-tight">
                     {questions[currentQuestion].q}
                 </h3>
 
@@ -195,10 +195,10 @@ export default function BoardExamPage() {
                         <button 
                             key={i}
                             onClick={() => handleAnswer(i)}
-                            className="text-left p-8 rounded-2xl bg-[#080808] border border-white/5 hover:border-aic-gold/50 hover:bg-white/[0.02] transition-all group flex items-center gap-6"
+                            className="text-left p-8 rounded-2xl bg-[#080808] border border-aic-paper/5 hover:border-aic-gold/50 hover:bg-aic-paper/[0.02] transition-all group flex items-center gap-6"
                         >
-                            <span className="w-8 h-8 rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center font-mono text-[10px] text-gray-500 group-hover:text-aic-gold transition-colors">0{i+1}</span>
-                            <span className="text-lg text-gray-400 group-hover:text-white transition-colors font-serif italic leading-relaxed">{option}</span>
+                            <span className="w-8 h-8 rounded-lg bg-zinc-900 border border-aic-paper/10 flex items-center justify-center font-mono text-[10px] text-gray-500 group-hover:text-aic-gold transition-colors">0{i+1}</span>
+                            <span className="text-lg text-gray-400 group-hover:text-aic-paper transition-colors font-serif italic leading-relaxed">{option}</span>
                         </button>
                     ))}
                 </div>

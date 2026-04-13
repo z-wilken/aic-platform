@@ -72,7 +72,7 @@ export default function EvidenceModal({ isOpen, onClose, requirement, onSubmit }
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-aic-black/5"
+                    className="relative w-full max-w-lg bg-aic-paper rounded-3xl shadow-2xl overflow-hidden border border-aic-black/5"
                 >
                     <div className="p-8">
                         <div className="flex justify-between items-start mb-8">
@@ -101,7 +101,7 @@ export default function EvidenceModal({ isOpen, onClose, requirement, onSubmit }
 
                             <div className="relative py-2">
                                 <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-aic-black/5" /></div>
-                                <div className="relative flex justify-center text-[8px] font-mono font-bold uppercase"><span className="bg-white px-2 text-gray-300">OR</span></div>
+                                <div className="relative flex justify-center text-[8px] font-mono font-bold uppercase"><span className="bg-aic-paper px-2 text-gray-300">OR</span></div>
                             </div>
 
                             <div>
@@ -118,7 +118,7 @@ export default function EvidenceModal({ isOpen, onClose, requirement, onSubmit }
                             <button 
                                 type="submit" 
                                 disabled={isUploading}
-                                className="w-full bg-aic-black text-white py-4 rounded-xl font-mono font-bold text-xs uppercase tracking-[0.2em] hover:bg-aic-gold transition-colors disabled:opacity-50"
+                                className="w-full bg-aic-black text-aic-paper py-4 rounded-xl font-mono font-bold text-xs uppercase tracking-[0.2em] hover:bg-aic-gold transition-colors disabled:opacity-50"
                             >
                                 {isUploading ? 'TRANSMITTING EVIDENCE...' : 'CONFIRM SUBMISSION'}
                             </button>

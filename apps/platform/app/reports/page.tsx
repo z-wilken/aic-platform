@@ -71,17 +71,17 @@ export default function ReportsPage() {
                         <button 
                             onClick={handleGenerateReport}
                             disabled={isGenerating}
-                            className="border border-aic-black text-aic-black px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-black hover:text-white transition-all disabled:opacity-50"
+                            className="border border-aic-black text-aic-black px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-black hover:text-aic-paper transition-all disabled:opacity-50"
                         >
                             {isGenerating ? 'GENERATING...' : 'Generate Snapshot'}
                         </button>
-                        <button className="bg-aic-black text-white px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors">
+                        <button className="bg-aic-black text-aic-paper px-6 py-2 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors">
                             Download PDF
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-white border border-aic-black/5 rounded-3xl overflow-hidden shadow-sm">
+                <div className="bg-aic-paper border border-aic-black/5 rounded-3xl overflow-hidden shadow-sm">
                     <table className="w-full text-left text-sm font-serif">
                         <thead className="bg-aic-paper/50 border-b border-aic-black/5">
                             <tr>
@@ -155,12 +155,12 @@ export default function ReportsPage() {
                         </div>
                     </div>
                     
-                    <div className="bg-[#121212] p-8 rounded-3xl text-white">
+                    <div className="bg-[#121212] p-8 rounded-3xl text-aic-paper">
                         <h4 className="font-mono text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6 text-aic-gold">Executive Summary</h4>
                         <p className="font-serif text-sm leading-relaxed text-gray-400">
-                            Your Integrity Score has increased by <span className="text-white font-bold">2.4%</span> over the last 6 months. This trend correlates with the implementation of the POPIA Section 71 override interface in December.
+                            Your Integrity Score has increased by <span className="text-aic-paper font-bold">2.4%</span> over the last 6 months. This trend correlates with the implementation of the POPIA Section 71 override interface in December.
                         </p>
-                        <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">
+                        <div className="mt-8 pt-8 border-t border-aic-paper/5 flex justify-between items-center">
                             <span className="text-[10px] font-mono font-bold uppercase text-gray-500">Benchmark Rating</span>
                             <span className="text-xs font-mono font-bold text-green-400">ABOVE AVERAGE</span>
                         </div>

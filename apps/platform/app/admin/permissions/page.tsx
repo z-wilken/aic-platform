@@ -52,14 +52,14 @@ export default function AdminPermissions() {
       <div className="max-w-[1600px] mx-auto">
         <header className="mb-8 flex justify-between items-center">
           <div>
-            <div className="flex items-center gap-2 text-[#c9920a] mb-1">
+            <div className="flex items-center gap-2 text-[#C17C4E] mb-1">
               <Shield className="w-5 h-5" />
               <span className="text-xs font-bold uppercase tracking-widest">System Integrity</span>
             </div>
-            <h1 className="text-3xl font-bold text-[#0f1f3d]">God Mode: Permission Engine</h1>
+            <h1 className="text-3xl font-bold text-[#0A111F]">God Mode: Permission Engine</h1>
           </div>
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 bg-[#0f1f3d] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1a3160] transition-all">
+            <button className="flex items-center gap-2 bg-[#0A111F] text-aic-paper px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#1a3160] transition-all">
               <Plus className="w-4 h-4" /> Create Custom Role
             </button>
           </div>
@@ -67,7 +67,7 @@ export default function AdminPermissions() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-3">
-            <Loader2 className="w-10 h-10 animate-spin text-[#c9920a]" />
+            <Loader2 className="w-10 h-10 animate-spin text-[#C17C4E]" />
             <p className="text-gray-500">Initializing permission engine...</p>
           </div>
         ) : (
@@ -76,7 +76,7 @@ export default function AdminPermissions() {
             <div className="lg:col-span-3 space-y-2">
               <button 
                 onClick={() => setActiveTab('roles')}
-                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${activeTab === 'roles' ? 'bg-white shadow-md border-l-4 border-[#c9920a] text-[#0f1f3d]' : 'text-gray-500 hover:bg-gray-100'}`}
+                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${activeTab === 'roles' ? 'bg-aic-paper shadow-md border-l-4 border-[#C17C4E] text-[#0A111F]' : 'text-gray-500 hover:bg-gray-100'}`}
               >
                 <div className="flex items-center gap-3">
                   <Settings className="w-5 h-5" />
@@ -86,7 +86,7 @@ export default function AdminPermissions() {
               </button>
               <button 
                 onClick={() => setActiveTab('capabilities')}
-                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${activeTab === 'capabilities' ? 'bg-white shadow-md border-l-4 border-[#c9920a] text-[#0f1f3d]' : 'text-gray-500 hover:bg-gray-100'}`}
+                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${activeTab === 'capabilities' ? 'bg-aic-paper shadow-md border-l-4 border-[#C17C4E] text-[#0A111F]' : 'text-gray-500 hover:bg-gray-100'}`}
               >
                 <div className="flex items-center gap-3">
                   <Lock className="w-5 h-5" />
@@ -96,7 +96,7 @@ export default function AdminPermissions() {
               </button>
               <button 
                 onClick={() => setActiveTab('audit')}
-                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${activeTab === 'audit' ? 'bg-white shadow-md border-l-4 border-[#c9920a] text-[#0f1f3d]' : 'text-gray-500 hover:bg-gray-100'}`}
+                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${activeTab === 'audit' ? 'bg-aic-paper shadow-md border-l-4 border-[#C17C4E] text-[#0A111F]' : 'text-gray-500 hover:bg-gray-100'}`}
               >
                 <div className="flex items-center gap-3">
                   <History className="w-5 h-5" />
@@ -107,7 +107,7 @@ export default function AdminPermissions() {
             </div>
 
             {/* Main Workspace */}
-            <div className="lg:col-span-9 bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[600px] overflow-hidden">
+            <div className="lg:col-span-9 bg-aic-paper rounded-2xl shadow-sm border border-gray-100 min-h-[600px] overflow-hidden">
               {activeTab === 'roles' && (
                 <div className="flex h-full">
                   {/* Role List */}
@@ -121,9 +121,9 @@ export default function AdminPermissions() {
                         <button 
                           key={role.id}
                           onClick={() => setSelectedRole(role)}
-                          className={`w-full text-left p-4 rounded-xl border transition-all ${selectedRole?.id === role.id ? 'border-[#c9920a] bg-[#c9920a]/5 shadow-sm' : 'border-gray-50 hover:border-gray-200'}`}
+                          className={`w-full text-left p-4 rounded-xl border transition-all ${selectedRole?.id === role.id ? 'border-[#C17C4E] bg-[#C17C4E]/5 shadow-sm' : 'border-gray-50 hover:border-gray-200'}`}
                         >
-                          <div className="font-bold text-[#0f1f3d]">{role.name}</div>
+                          <div className="font-bold text-[#0A111F]">{role.name}</div>
                           <div className="text-[10px] text-gray-500 uppercase tracking-tighter">{role.slug}</div>
                         </button>
                       ))}
@@ -134,7 +134,7 @@ export default function AdminPermissions() {
                   <div className="flex-1 p-8 overflow-y-auto max-h-[800px]">
                     <div className="flex justify-between items-start mb-8">
                       <div>
-                        <h2 className="text-2xl font-bold text-[#0f1f3d]">{selectedRole?.name}</h2>
+                        <h2 className="text-2xl font-bold text-[#0A111F]">{selectedRole?.name}</h2>
                         <p className="text-gray-500 text-sm">Configure granular capabilities for this role.</p>
                       </div>
                       {selectedRole?.isCustom && (
@@ -154,14 +154,14 @@ export default function AdminPermissions() {
                               return (
                                 <div key={cap.slug} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 opacity-100">
                                   <div>
-                                    <div className="text-sm font-semibold text-[#0f1f3d]">{cap.name}</div>
+                                    <div className="text-sm font-semibold text-[#0A111F]">{cap.name}</div>
                                     <div className="text-[10px] text-gray-400 font-mono">{cap.slug}</div>
                                   </div>
                                   <button 
                                     disabled={selectedRole?.slug === 'super_admin'}
                                     className={`w-12 h-6 rounded-full relative transition-all ${isEnabled ? 'bg-green-500' : 'bg-gray-300'} ${selectedRole?.slug === 'super_admin' ? 'cursor-not-allowed' : ''}`}
                                   >
-                                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${isEnabled ? 'right-1' : 'left-1'}`} />
+                                    <div className={`absolute top-1 w-4 h-4 bg-aic-paper rounded-full transition-all ${isEnabled ? 'right-1' : 'left-1'}`} />
                                   </button>
                                 </div>
                               );
@@ -176,12 +176,12 @@ export default function AdminPermissions() {
 
               {activeTab === 'capabilities' && (
                 <div className="p-8">
-                  <h2 className="text-2xl font-bold text-[#0f1f3d] mb-6">Capability Directory</h2>
+                  <h2 className="text-2xl font-bold text-[#0A111F] mb-6">Capability Directory</h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {availableCapabilities.map(cap => (
                       <Card key={cap.id} className="p-4 border-gray-100 shadow-none bg-gray-50/50">
-                        <div className="text-xs font-bold text-[#c9920a] uppercase mb-1">{cap.category}</div>
-                        <div className="font-bold text-[#0f1f3d]">{cap.name}</div>
+                        <div className="text-xs font-bold text-[#C17C4E] uppercase mb-1">{cap.category}</div>
+                        <div className="font-bold text-[#0A111F]">{cap.name}</div>
                         <div className="text-[10px] text-gray-400 font-mono mt-1">{cap.slug}</div>
                       </Card>
                     ))}
@@ -192,7 +192,7 @@ export default function AdminPermissions() {
               {activeTab === 'audit' && (
                 <div className="p-8 text-center py-20">
                   <History className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                  <h2 className="text-xl font-bold text-[#0f1f3d] mb-2">Audit Ledger Coming Soon</h2>
+                  <h2 className="text-xl font-bold text-[#0A111F] mb-2">Audit Ledger Coming Soon</h2>
                   <p className="text-gray-500 text-sm max-w-sm mx-auto">Real-time immutable tracking of permission changes is currently being integrated with the Sovereign System Ledger.</p>
                 </div>
               )}

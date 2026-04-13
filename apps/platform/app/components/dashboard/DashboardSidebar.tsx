@@ -45,7 +45,7 @@ export function DashboardSidebar({
 }) {
   return (
     <motion.div
-      className={`w-72 bg-aic-navy border-r border-white/6 text-white p-6 flex flex-col fixed h-full z-40 transition-transform duration-300 md:translate-x-0 ${show ? 'translate-x-0' : '-translate-x-full md:flex'}`}
+      className={`w-72 bg-aic-navy border-r border-aic-paper/6 text-aic-paper p-6 flex flex-col fixed h-full z-40 transition-transform duration-300 md:translate-x-0 ${show ? 'translate-x-0' : '-translate-x-full md:flex'}`}
       initial={false}
     >
       {/* ── Logo ─────────────────────────────────────────────────── */}
@@ -53,7 +53,7 @@ export function DashboardSidebar({
         <Link href="/" className="flex items-center gap-3 group">
           <AICLogo variant="full" scheme="dark" size="sm" className="group-hover:opacity-80 transition-opacity" />
         </Link>
-        <button onClick={onClose} className="md:hidden text-white/30 hover:text-white">
+        <button onClick={onClose} className="md:hidden text-aic-paper/30 hover:text-aic-paper">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -64,7 +64,7 @@ export function DashboardSidebar({
       <div className="space-y-7 flex-1 overflow-y-auto pr-2">
         {['Command', 'Governance', 'Monitoring', 'Certification', 'Admin'].map((section) => (
           <div key={section}>
-            <div className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-3 px-3">
+            <div className="text-[9px] font-mono text-aic-paper/20 uppercase tracking-widest mb-3 px-3">
               {section}
             </div>
             <nav className="space-y-0.5">
@@ -77,8 +77,8 @@ export function DashboardSidebar({
                     onClick={onClose}
                     className={`flex items-center gap-3 py-2.5 px-3 rounded font-sans text-xs font-medium transition-all group relative overflow-hidden ${
                       isActive(item.href)
-                        ? 'text-white bg-white/5 border border-white/6'
-                        : 'text-white/35 hover:text-white hover:bg-white/4'
+                        ? 'text-aic-paper bg-aic-paper/5 border border-aic-paper/6'
+                        : 'text-aic-paper/35 hover:text-aic-paper hover:bg-aic-paper/4'
                     }`}
                   >
                     {isActive(item.href) && (
@@ -88,7 +88,7 @@ export function DashboardSidebar({
                       className={
                         isActive(item.href)
                           ? 'text-aic-copper'
-                          : 'text-white/25 group-hover:text-white/50'
+                          : 'text-aic-paper/25 group-hover:text-aic-paper/50'
                       }
                     >
                       {item.icon}
@@ -102,14 +102,14 @@ export function DashboardSidebar({
       </div>
 
       {/* ── Status bar ───────────────────────────────────────────── */}
-      <div className="mt-auto pt-6 border-t border-white/5">
-        <div className="p-3 rounded bg-white/3 border border-white/5 flex items-center gap-3">
+      <div className="mt-auto pt-6 border-t border-aic-paper/5">
+        <div className="p-3 rounded bg-aic-paper/3 border border-aic-paper/5 flex items-center gap-3">
           <div className="h-2 w-2 rounded-full bg-aic-copper animate-pulse" />
           <div className="flex-1">
-            <p className="text-[9px] text-white/30 font-mono uppercase tracking-widest">Network Status</p>
-            <span className="text-[10px] font-bold text-white uppercase tracking-wide">Secure Link</span>
+            <p className="text-[9px] text-aic-paper/30 font-mono uppercase tracking-widest">Network Status</p>
+            <span className="text-[10px] font-bold text-aic-paper uppercase tracking-wide">Secure Link</span>
           </div>
-          <Server className="w-3 h-3 text-white/20" />
+          <Server className="w-3 h-3 text-aic-paper/20" />
         </div>
       </div>
     </motion.div>

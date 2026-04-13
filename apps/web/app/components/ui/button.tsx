@@ -10,10 +10,10 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-aic-gold text-aic-navy hover:bg-aic-gold-hover shadow-lg shadow-aic-gold/30",
-        destructive: "bg-red-500 text-white hover:bg-red-500/90",
-        outline: "border border-aic-navy bg-transparent text-aic-navy hover:bg-aic-navy-mid hover:text-aic-white",
-        secondary: "bg-aic-navy-mid text-aic-white hover:bg-aic-navy/80",
-        ghost: "hover:bg-aic-navy-mid/50 hover:text-aic-white",
+        destructive: "bg-red-500 text-aic-paper hover:bg-red-500/90",
+        outline: "border border-aic-navy bg-transparent text-aic-navy hover:bg-aic-navy-mid hover:text-aic-paper",
+        secondary: "bg-aic-navy-mid text-aic-paper hover:bg-aic-navy/80",
+        ghost: "hover:bg-aic-navy-mid/50 hover:text-aic-paper",
         link: "text-aic-gold underline-offset-4 hover:underline hover:text-aic-gold-light",
       },
       size: {

@@ -76,13 +76,13 @@ export function DashboardHeader({
             <div className="relative">
                 <button 
                     onClick={() => setShowNotifs(!showNotifs)}
-                    className={`relative p-2.5 rounded-xl transition-all ${showNotifs ? 'bg-aic-black text-white' : 'text-gray-400 hover:bg-aic-paper hover:text-aic-black'}`}
+                    className={`relative p-2.5 rounded-xl transition-all ${showNotifs ? 'bg-aic-black text-aic-paper' : 'text-gray-400 hover:bg-aic-paper hover:text-aic-black'}`}
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
                     {unreadCount > 0 && (
-                        <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-aic-red ring-4 ring-white"></span>
+                        <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-aic-red ring-4 ring-aic-paper"></span>
                     )}
                 </button>
 
@@ -94,7 +94,7 @@ export function DashboardHeader({
                                 initial={{ opacity: 0, y: 15, scale: 0.98 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 15, scale: 0.98 }}
-                                className="absolute right-0 mt-6 w-96 bg-white border border-aic-black/5 shadow-2xl rounded-[2rem] overflow-hidden z-20"
+                                className="absolute right-0 mt-6 w-96 bg-aic-paper border border-aic-black/5 shadow-2xl rounded-[2rem] overflow-hidden z-20"
                             >
                                 <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-aic-paper/30">
                                     <h4 className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Registry Alerts</h4>
@@ -131,7 +131,7 @@ export function DashboardHeader({
                     <p className="text-xs font-bold text-gray-900 font-serif leading-none tracking-tight">Institutional Account</p>
                     <p className="text-[9px] text-aic-gold font-mono uppercase tracking-[0.2em] mt-1.5 font-bold">Principal Officer</p>
                 </div>
-                <div className="h-12 w-12 rounded-2xl bg-aic-black border-2 border-white shadow-xl shadow-black/10 flex items-center justify-center text-aic-gold font-serif font-bold">
+                <div className="h-12 w-12 rounded-2xl bg-aic-black border-2 border-aic-paper shadow-xl shadow-black/10 flex items-center justify-center text-aic-gold font-serif font-bold">
                     SK
                 </div>
             </div>

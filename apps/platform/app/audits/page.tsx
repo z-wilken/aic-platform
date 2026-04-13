@@ -113,7 +113,7 @@ function AuditsContent() {
                         <button 
                             onClick={handleVerifyChain}
                             disabled={isVerifying}
-                            className="bg-white text-aic-black border border-aic-black/10 px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:border-aic-black transition-all shadow-xl disabled:opacity-50 flex items-center gap-2"
+                            className="bg-aic-paper text-aic-black border border-aic-black/10 px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:border-aic-black transition-all shadow-xl disabled:opacity-50 flex items-center gap-2"
                         >
                             {isVerifying ? (
                                 <>
@@ -125,7 +125,7 @@ function AuditsContent() {
                         <button 
                             onClick={handleRunAudit}
                             disabled={isRunning}
-                            className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all shadow-xl disabled:opacity-50"
+                            className="bg-aic-black text-aic-paper px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all shadow-xl disabled:opacity-50"
                         >
                             {isRunning ? 'ANALYZING...' : 'RUN BIAS AUDIT'}
                         </button>
@@ -151,7 +151,7 @@ function AuditsContent() {
                                 } finally { setIsRunning(false); }
                             }}
                             disabled={isRunning}
-                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:text-white transition-all disabled:opacity-50"
+                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:text-aic-paper transition-all disabled:opacity-50"
                         >
                             RUN ADVANCED ODDS AUDIT
                         </button>
@@ -171,7 +171,7 @@ function AuditsContent() {
                                 } finally { setIsRunning(false); }
                             }}
                             disabled={isRunning}
-                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:text-white transition-all disabled:opacity-50"
+                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red hover:text-aic-paper transition-all disabled:opacity-50"
                         >
                             RUN PRIVACY AUDIT
                         </button>
@@ -193,14 +193,14 @@ function AuditsContent() {
                                 } finally { setIsRunning(false); }
                             }}
                             disabled={isRunning}
-                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all disabled:opacity-50"
+                            className="border border-aic-black text-aic-black px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-green-600 hover:text-aic-paper transition-all disabled:opacity-50"
                         >
                             RUN LABOR AGENCY AUDIT
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-white border border-aic-black/5 rounded-3xl overflow-hidden shadow-sm">
+                <div className="bg-aic-paper border border-aic-black/5 rounded-3xl overflow-hidden shadow-sm">
                     {q && (
                         <div className="bg-aic-paper p-4 border-b border-aic-black/5 flex justify-between items-center">
                             <span className="text-[10px] font-mono text-gray-500 uppercase">Search Results for: <strong className="text-aic-black">{q}</strong></span>
@@ -266,14 +266,14 @@ function AuditsContent() {
                                 <button 
                                     onClick={() => fetchLogs(pagination.page - 1)}
                                     disabled={pagination.page <= 1}
-                                    className="px-4 py-2 border border-aic-black/10 rounded-lg font-mono text-[10px] font-bold uppercase hover:bg-aic-black hover:text-white transition-all disabled:opacity-30"
+                                    className="px-4 py-2 border border-aic-black/10 rounded-lg font-mono text-[10px] font-bold uppercase hover:bg-aic-black hover:text-aic-paper transition-all disabled:opacity-30"
                                 >
                                     Previous
                                 </button>
                                 <button 
                                     onClick={() => fetchLogs(pagination.page + 1)}
                                     disabled={pagination.page >= pagination.pages}
-                                    className="px-4 py-2 border border-aic-black/10 rounded-lg font-mono text-[10px] font-bold uppercase hover:bg-aic-black hover:text-white transition-all disabled:opacity-30"
+                                    className="px-4 py-2 border border-aic-black/10 rounded-lg font-mono text-[10px] font-bold uppercase hover:bg-aic-black hover:text-aic-paper transition-all disabled:opacity-30"
                                 >
                                     Next
                                 </button>
@@ -282,7 +282,7 @@ function AuditsContent() {
                     )}
                 </div>
 
-                <div className="mt-12 p-8 bg-aic-black rounded-3xl text-white flex items-center justify-between border border-white/5 shadow-2xl">
+                <div className="mt-12 p-8 bg-aic-black rounded-3xl text-aic-paper flex items-center justify-between border border-aic-paper/5 shadow-2xl">
                     <div>
                         <h4 className="font-serif text-xl mb-2 italic text-aic-gold">Evidence Hardening</h4>
                         <p className="text-gray-400 text-sm font-serif">Every audit log is cryptographically hashed. This provides tamper-proof evidence for your Lead Auditor during certification review.</p>

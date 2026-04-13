@@ -29,17 +29,17 @@ export default async function ArticlePage({
           alt={article.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-[#0a1628]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A111F] via-[#0A111F]/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8">
           <div className="max-w-4xl mx-auto">
             <Link
               href="/articles"
-              className="inline-flex items-center gap-2 text-white/70 hover:text-[#c9920a] mb-6 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 text-aic-paper/70 hover:text-[#C17C4E] mb-6 transition-colors text-sm font-medium"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Articles
             </Link>
-            <div className="flex items-center gap-3 text-xs text-white/70 mb-4 uppercase tracking-widest font-mono">
-              <span className="px-2 py-1 bg-[#c9920a] text-white rounded font-medium">
+            <div className="flex items-center gap-3 text-xs text-aic-paper/70 mb-4 uppercase tracking-widest font-mono">
+              <span className="px-2 py-1 bg-[#C17C4E] text-aic-paper rounded font-medium">
                 {article.category}
               </span>
               <span className="flex items-center gap-1">
@@ -52,7 +52,7 @@ export default async function ArticlePage({
               </span>
             </div>
             <h1
-              className="text-4xl md:text-5xl lg:text-6xl text-white font-bold leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl text-aic-paper font-bold leading-tight"
               style={{ fontFamily: "'Merriweather', serif" }}
             >
               {article.title}
@@ -64,25 +64,25 @@ export default async function ArticlePage({
       <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-10">
         <Card className="p-8 md:p-12 shadow-2xl border-none">
           <div className="flex items-center gap-4 mb-10 pb-8 border-b border-gray-100">
-            <div className="w-12 h-12 rounded-full bg-[#0f1f3d] flex items-center justify-center text-white">
+            <div className="w-12 h-12 rounded-full bg-[#0A111F] flex items-center justify-center text-aic-paper">
               <User className="w-6 h-6" />
             </div>
             <div>
               <div className="text-sm text-gray-400 uppercase tracking-widest font-mono">Author</div>
-              <div className="font-semibold text-[#0f1f3d]">{article.author}</div>
+              <div className="font-semibold text-[#0A111F]">{article.author}</div>
             </div>
           </div>
 
           {/* Article Content */}
-          <article className="prose prose-lg max-w-none prose-slate prose-headings:font-serif prose-headings:text-[#0f1f3d] prose-a:text-[#c9920a] prose-strong:text-[#0f1f3d]">
+          <article className="prose prose-lg max-w-none prose-slate prose-headings:font-serif prose-headings:text-[#0A111F] prose-a:text-[#C17C4E] prose-strong:text-[#0A111F]">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {article.content}
             </ReactMarkdown>
           </article>
 
           <div className="mt-16 pt-10 border-t border-gray-100 flex flex-col items-center text-center">
-            <Shield className="w-10 h-10 text-[#c9920a] mb-4" />
-            <h3 className="text-xl font-bold text-[#0f1f3d] mb-2 font-serif">
+            <Shield className="w-10 h-10 text-[#C17C4E] mb-4" />
+            <h3 className="text-xl font-bold text-[#0A111F] mb-2 font-serif">
               Built for Algorithmic Accountability
             </h3>
             <p className="text-gray-500 max-w-md mx-auto mb-6">
@@ -90,7 +90,7 @@ export default async function ArticlePage({
             </p>
             <Link
               href="/contact"
-              className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-8 py-3 rounded-lg font-medium transition-all shadow-lg shadow-[#c9920a]/20"
+              className="bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper px-8 py-3 rounded-lg font-medium transition-all shadow-lg shadow-[#C17C4E]/20"
             >
               Get Certified
             </Link>

@@ -13,27 +13,27 @@ const standards = [
 
 export default function Footer() {
   return (
-    <footer id="contact" className="bg-aic-navy text-white overflow-hidden relative">
+    <footer id="contact" className="bg-aic-navy text-aic-paper overflow-hidden relative">
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-aic-copper via-transparent to-transparent" />
       </div>
 
       {/* Manifesto band */}
-      <div className="relative z-10 border-b border-white/10">
+      <div className="relative z-10 border-b border-aic-paper/10">
         <div className="max-w-[1600px] mx-auto px-6 sm:px-8 py-16 sm:py-20">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
             <div className="max-w-3xl">
               <div className="text-aic-gold text-[10px] uppercase tracking-[0.3em] font-mono font-bold mb-5">
                 Our Mission
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white font-serif italic leading-relaxed">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl text-aic-paper font-serif italic leading-relaxed">
                 Certifying that a named human remains accountable for every decision that matters.
               </h2>
             </div>
             <Link
               href="/contact"
-              className="shrink-0 inline-flex items-center gap-2 bg-aic-gold hover:bg-[#b07d08] text-white px-7 py-4 rounded-xl transition-all text-xs font-bold uppercase tracking-widest font-sans shadow-xl shadow-aic-gold/20 self-start lg:self-auto"
+              className="shrink-0 inline-flex items-center gap-2 bg-aic-gold hover:bg-[#C17C4E] text-aic-paper px-7 py-4 rounded-xl transition-all text-xs font-bold uppercase tracking-widest font-sans shadow-xl shadow-aic-gold/20 self-start lg:self-auto"
             >
               Become a Founding Partner
               <ChevronRight className="w-4 h-4" />
@@ -51,7 +51,7 @@ export default function Footer() {
             <Link href="/" className="inline-block group">
               <AICLogo variant="full" scheme="dark" size="md" className="group-hover:opacity-80 transition-opacity" />
             </Link>
-            <p className="text-white/50 text-sm leading-relaxed">
+            <p className="text-aic-paper/50 text-sm leading-relaxed">
               The global standard for certifying the humans accountable for AI systems — ensuring transparency, accountability, and trust in the age of artificial intelligence.
             </p>
             <div className="pt-2 flex items-center gap-2 text-[10px] text-aic-gold font-mono uppercase tracking-widest">
@@ -62,7 +62,7 @@ export default function Footer() {
 
           {/* Portals */}
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-7 font-mono">
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-aic-paper/30 mb-7 font-mono">
               Portals
             </h4>
             <ul className="space-y-4">
@@ -70,7 +70,7 @@ export default function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-white/60 hover:text-aic-gold text-xs transition-colors font-mono uppercase tracking-widest flex items-center gap-2 group"
+                    className="text-aic-paper/60 hover:text-aic-gold text-xs transition-colors font-mono uppercase tracking-widest flex items-center gap-2 group"
                   >
                     <ChevronRight className="w-3 h-3 text-aic-gold opacity-0 group-hover:opacity-100 transition-opacity -ml-1" />
                     {item.label}
@@ -82,10 +82,10 @@ export default function Footer() {
 
           {/* Standards */}
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-7 font-mono">
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-aic-paper/30 mb-7 font-mono">
               Standards
             </h4>
-            <ul className="space-y-4 text-xs text-white/60 font-mono uppercase tracking-widest">
+            <ul className="space-y-4 text-xs text-aic-paper/60 font-mono uppercase tracking-widest">
               {standards.map((std) => (
                 <li key={std.label}>
                   <a
@@ -104,40 +104,40 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-white/30 mb-7 font-mono">
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-aic-paper/30 mb-7 font-mono">
               Contact
             </h4>
-            <ul className="space-y-5 text-sm text-white/60">
+            <ul className="space-y-5 text-sm text-aic-paper/60">
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-aic-paper/5 flex items-center justify-center shrink-0 mt-0.5">
                   <MapPin className="w-4 h-4 text-aic-gold" />
                 </div>
                 <div className="leading-relaxed">
                   <div>Johannesburg, South Africa</div>
-                  <div className="text-white/40 text-xs mt-1">
-                    15 Smit Street, Johannesburg<br />
+                  <div className="text-aic-paper/40 text-xs mt-1">
+                    15 Smit Street, Johannesburg,<br />
                     Gauteng, 2000                  </div>
                 </div>
               </li>
               <li className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 group">
-                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-aic-paper/5 flex items-center justify-center shrink-0">
                     <Mail className="w-4 h-4 text-aic-gold" />
                   </div>
                   <a
                     href="mailto:zander@ztoaholdings.com"
-                    className="hover:text-white transition-colors break-all"
+                    className="hover:text-aic-paper transition-colors break-all"
                   >
                     zander@ztoaholdings.com
                   </a>
                 </div>
                 <div className="flex items-center gap-3 group ml-0 sm:ml-0">
-                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-aic-paper/5 flex items-center justify-center shrink-0">
                     <Mail className="w-4 h-4 text-aic-gold" />
                   </div>
                   <a
                     href="mailto:albert@ztoaholdings.com"
-                    className="hover:text-white transition-colors break-all"
+                    className="hover:text-aic-paper transition-colors break-all"
                   >
                     albert@ztoaholdings.com
                   </a>
@@ -148,11 +148,11 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
-          <p className="text-white/20 text-[10px] font-mono uppercase tracking-widest text-center sm:text-left">
+        <div className="mt-16 pt-8 border-t border-aic-paper/5 flex flex-col sm:flex-row justify-between items-center gap-6">
+          <p className="text-aic-paper/20 text-[10px] font-mono uppercase tracking-widest text-center sm:text-left">
             © 2026 AI Integrity Certification (Pty) Ltd. All rights reserved. Accredited under IAF MLA.
           </p>
-          <div className="flex gap-6 sm:gap-8 text-[10px] text-white/20 font-mono uppercase tracking-widest">
+          <div className="flex gap-6 sm:gap-8 text-[10px] text-aic-paper/20 font-mono uppercase tracking-widest">
             <Link href="/privacy" className="hover:text-aic-gold transition-colors">
               Privacy Policy
             </Link>

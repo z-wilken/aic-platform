@@ -36,9 +36,9 @@ export const SovereignButton = ({
   
   const variants = {
     primary: "bg-aic-cyan/10 border-aic-cyan text-aic-cyan hover:bg-aic-cyan/20 hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]",
-    secondary: "bg-white/5 border-white/10 text-gray-400 hover:text-white hover:border-white/30",
+    secondary: "bg-aic-paper/5 border-aic-paper/10 text-gray-400 hover:text-aic-paper hover:border-aic-paper/30",
     danger: "bg-red-500/10 border-red-500/50 text-red-500 hover:bg-red-500/20 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]",
-    ghost: "border-transparent text-gray-500 hover:text-aic-cyan hover:bg-white/5",
+    ghost: "border-transparent text-gray-500 hover:text-aic-cyan hover:bg-aic-paper/5",
   };
 
   const stateStyles = {
@@ -110,7 +110,7 @@ export const SovereignButton = ({
 
       {/* Scanline Effect for Primary Buttons */}
       {variant === 'primary' && state === 'idle' && (
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-aic-paper/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
       )}
     </button>
   );

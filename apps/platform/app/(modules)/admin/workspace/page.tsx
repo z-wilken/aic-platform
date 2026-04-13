@@ -128,7 +128,7 @@ export default function GovernanceWorkspace() {
     <div 
       className={cn(
         "min-h-screen transition-colors duration-1000 ease-in-out p-8 md:p-12",
-        isFocusMode ? "fixed inset-0 z-50 bg-white overflow-y-auto" : ""
+        isFocusMode ? "fixed inset-0 z-50 bg-aic-paper overflow-y-auto" : ""
       )}
       style={{ backgroundColor: getBackgroundColor() }}
     >
@@ -147,7 +147,7 @@ export default function GovernanceWorkspace() {
             </h1>
             
             {/* System Selector */}
-            <div className="flex items-center gap-4 p-2 bg-white/50 backdrop-blur-sm rounded-2xl border border-aic-black/5 w-fit shadow-sm">
+            <div className="flex items-center gap-4 p-2 bg-aic-paper/50 backdrop-blur-sm rounded-2xl border border-aic-black/5 w-fit shadow-sm">
               <Box className="w-4 h-4 text-aic-gold ml-2" />
               <select 
                 value={selectedSystemId || ''} 
@@ -165,7 +165,7 @@ export default function GovernanceWorkspace() {
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsFocusMode(!isFocusMode)}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-aic-black/5 rounded-2xl text-[10px] font-mono font-bold uppercase tracking-widest hover:border-aic-gold transition-all shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-aic-paper border border-aic-black/5 rounded-2xl text-[10px] font-mono font-bold uppercase tracking-widest hover:border-aic-gold transition-all shadow-sm"
             >
               {isFocusMode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               {isFocusMode ? 'Exit Focus' : 'Focus Mode'}
@@ -173,7 +173,7 @@ export default function GovernanceWorkspace() {
             <button 
               onClick={saveWorkspace}
               disabled={isSaving || !selectedSystemId}
-              className="flex items-center gap-2 px-6 py-2 bg-aic-black text-white rounded-2xl text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-aic-gold transition-all disabled:opacity-50 shadow-lg"
+              className="flex items-center gap-2 px-6 py-2 bg-aic-black text-aic-paper rounded-2xl text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-aic-gold transition-all disabled:opacity-50 shadow-lg"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {isSaving ? 'Securing...' : 'Commit Block'}
@@ -237,14 +237,14 @@ export default function GovernanceWorkspace() {
               <motion.footer 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-8 bg-red-700 text-white rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row items-center gap-8"
+                className="p-8 bg-red-700 text-aic-paper rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row items-center gap-8"
               >
-                <div className="p-4 bg-white/10 rounded-2xl">
+                <div className="p-4 bg-aic-paper/10 rounded-2xl">
                   <UserCheck className="w-8 h-8" />
                 </div>
                 <div className="text-center md:text-left">
                   <h4 className="font-serif text-2xl font-bold mb-1">Human-In-The-Loop Enforcement Active</h4>
-                  <p className="text-sm text-white/80 italic font-serif">
+                  <p className="text-sm text-aic-paper/80 italic font-serif">
                     This audit session is now in "High Magnitude" mode. ISO 42001 certification requires verified human qualitative rationale before this trail can be finalized.
                   </p>
                 </div>

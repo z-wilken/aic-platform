@@ -24,9 +24,9 @@ export function AICLogo({
   };
 
   const { w, h } = sizes[size];
-  const gold = "#c9920a";
-  const navy = "#0f1f3d";
-  const primaryColor = scheme === "dark" ? "white" : navy;
+  const gold = "#C17C4E";
+  const navy = "#0A111F";
+  const primaryColor = scheme === "dark" ? "var(--aic-paper)" : navy;
 
   return (
     <div className={`inline-flex items-center ${className}`}>
@@ -102,14 +102,14 @@ export function AICLogoShowcase() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <h3 className="text-sm font-mono text-gray-400 uppercase tracking-widest">On Light Background</h3>
-          <div className="p-8 bg-white border border-gray-100 rounded-xl flex flex-col gap-8 items-center">
+          <div className="p-8 bg-aic-paper border border-gray-100 rounded-xl flex flex-col gap-8 items-center">
             <AICLogo variant="full" scheme="light" size="lg" />
             <AICLogo variant="icon" scheme="light" size="md" />
           </div>
         </div>
         <div className="space-y-4">
           <h3 className="text-sm font-mono text-gray-400 uppercase tracking-widest">On Dark Background</h3>
-          <div className="p-8 bg-[#0f1f3d] rounded-xl flex flex-col gap-8 items-center">
+          <div className="p-8 bg-[#0A111F] rounded-xl flex flex-col gap-8 items-center">
             <AICLogo variant="full" scheme="dark" size="lg" />
             <AICLogo variant="icon" scheme="dark" size="md" />
           </div>

@@ -11,9 +11,9 @@ export default function RegulatorRelationsPage() {
 
     return (
         <div className="space-y-12">
-            <div className="flex justify-between items-end border-b border-white/5 pb-12">
+            <div className="flex justify-between items-end border-b border-aic-paper/5 pb-12">
                 <div>
-                    <h1 className="text-5xl font-serif font-medium tracking-tight mb-4 tracking-tighter text-white">Information Regulator</h1>
+                    <h1 className="text-5xl font-serif font-medium tracking-tight mb-4 tracking-tighter text-aic-paper">Information Regulator</h1>
                     <p className="text-gray-500 font-serif italic text-lg max-w-2xl">
                         Formalizing the institutional relationship between AIC and the POPIA enforcement authority.
                     </p>
@@ -26,16 +26,16 @@ export default function RegulatorRelationsPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 {/* MoU Draft Section */}
-                <div className="bg-[#080808] border border-white/5 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
+                <div className="bg-[#080808] border border-aic-paper/5 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-12 opacity-5 font-serif italic text-6xl">DRAFT</div>
-                    <h3 className="font-serif text-2xl mb-8 text-white">Memorandum of Understanding (MoU)</h3>
+                    <h3 className="font-serif text-2xl mb-8 text-aic-paper">Memorandum of Understanding (MoU)</h3>
                     <div className="prose prose-invert prose-sm font-serif italic text-gray-400 space-y-6">
                         <p>1. **Objective:** To establish a voluntary certification mechanism that demonstrates compliance with POPIA Section 71.</p>
                         <p>2. **Data Sharing:** AIC to provide aggregated, de-identified bias reports to the Regulator to inform national AI policy.</p>
                         <p>3. **Referral Mechanism:** The Regulator may refer organizations seeking technical compliance verification to AIC-Accredited Lead Auditors.</p>
                         <p>4. **Joint Standards:** Co-development of "Meaningful Human Intervention" benchmarks for high-risk automated systems.</p>
                     </div>
-                    <button className="mt-12 w-full bg-white text-black py-4 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all shadow-xl">
+                    <button className="mt-12 w-full bg-aic-paper text-black py-4 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all shadow-xl">
                         DOWNLOAD FULL PROPOSAL
                     </button>
                 </div>
@@ -50,7 +50,7 @@ export default function RegulatorRelationsPage() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.1 }}
-                                className="bg-white/[0.02] border border-white/5 p-6 rounded-2xl flex justify-between items-center group hover:border-aic-gold/20 transition-all"
+                                className="bg-aic-paper/[0.02] border border-aic-paper/5 p-6 rounded-2xl flex justify-between items-center group hover:border-aic-gold/20 transition-all"
                             >
                                 <div className="max-w-md">
                                     <p className="text-[9px] font-mono text-gray-600 mb-2 uppercase">{log.date}</p>

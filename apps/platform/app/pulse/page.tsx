@@ -67,7 +67,7 @@ export default function PulsePage() {
                 </div>
 
                 {/* Empathy Auditor - NEW SECTION */}
-                <div className="mb-12 bg-white border border-aic-black/5 rounded-[2.5rem] p-12 shadow-sm">
+                <div className="mb-12 bg-aic-paper border border-aic-black/5 rounded-[2.5rem] p-12 shadow-sm">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         <div>
                             <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-6">Empathy Auditor</h3>
@@ -81,7 +81,7 @@ export default function PulsePage() {
                             />
                             <button 
                                 onClick={handleEmpathyCheck}
-                                className="mt-6 bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
+                                className="mt-6 bg-aic-black text-aic-paper px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
                             >
                                 ANALYZE TONE
                             </button>
@@ -186,14 +186,14 @@ export default function PulsePage() {
                 </div>
 
                 {/* Live Stream Section */}
-                <div className="bg-[#121212] rounded-[2.5rem] p-12 text-white overflow-hidden relative border border-white/5">
+                <div className="bg-[#121212] rounded-[2.5rem] p-12 text-aic-paper overflow-hidden relative border border-aic-paper/5">
                     <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
                         <div className="text-[15vw] font-bold leading-none">PULSE</div>
                     </div>
                     
                     <div className="relative z-10">
-                        <div className="flex justify-between items-center mb-12 border-b border-white/10 pb-8">
-                            <h3 className="font-serif text-2xl tracking-tight text-white">Live Accountability Stream</h3>
+                        <div className="flex justify-between items-center mb-12 border-b border-aic-paper/10 pb-8">
+                            <h3 className="font-serif text-2xl tracking-tight text-aic-paper">Live Accountability Stream</h3>
                             <div className="flex items-center gap-3 px-4 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                                 <span className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">Active Monitoring</span>
@@ -212,12 +212,12 @@ export default function PulsePage() {
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
-                                        className="flex items-center justify-between p-6 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/[0.06] transition-all group"
+                                        className="flex items-center justify-between p-6 bg-aic-paper/[0.03] border border-aic-paper/5 rounded-2xl hover:bg-aic-paper/[0.06] transition-all group"
                                     >
                                         <div className="flex items-center gap-8">
                                             <span className="font-mono text-[9px] text-gray-500 w-20 tracking-tighter">{new Date(log.created_at).toLocaleTimeString()}</span>
                                             <div>
-                                                <span className="font-serif text-lg block text-white group-hover:text-aic-gold transition-colors">{log.event_type}</span>
+                                                <span className="font-serif text-lg block text-aic-paper group-hover:text-aic-gold transition-colors">{log.event_type}</span>
                                                 <span className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">{log.system_name}</span>
                                             </div>
                                         </div>

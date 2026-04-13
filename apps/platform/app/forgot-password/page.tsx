@@ -41,7 +41,7 @@ export default function ForgotPassword() {
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md bg-white border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl"
+                className="w-full max-w-md bg-aic-paper border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl"
             >
                 <div className="text-center mb-10">
                     <Link href="/login" className="font-serif text-3xl font-bold text-aic-black">
@@ -82,7 +82,7 @@ export default function ForgotPassword() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-aic-black text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                            className="w-full bg-aic-black text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
                         >
                             {loading ? 'PROCESSING...' : 'SEND_RECOVERY_LINK'}
                         </button>

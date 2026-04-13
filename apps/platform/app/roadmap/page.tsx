@@ -115,7 +115,7 @@ export default function RoadmapPage() {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.1 }}
-                                        className="bg-white border border-aic-black/5 p-6 rounded-xl hover:shadow-md transition-all group"
+                                        className="bg-aic-paper border border-aic-black/5 p-6 rounded-xl hover:shadow-md transition-all group"
                                     >
                                         <div className={`inline-block px-2 py-0.5 rounded text-[9px] font-mono font-bold border mb-4 ${getStatusColor(req.status)}`}>
                                             {req.status}
@@ -134,7 +134,7 @@ export default function RoadmapPage() {
 
                                         <button 
                                             onClick={() => req.status === 'PENDING' || req.status === 'REJECTED' ? openUploadModal(req) : null}
-                                            className="w-full py-2 border border-aic-black/10 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-black hover:text-white transition-colors disabled:opacity-50"
+                                            className="w-full py-2 border border-aic-black/10 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-black hover:text-aic-paper transition-colors disabled:opacity-50"
                                         >
                                             {req.status === 'PENDING' || req.status === 'REJECTED' ? (req.status === 'REJECTED' ? 'Resubmit Evidence' : 'Submit Evidence') : 'Under Review'}
                                         </button>
@@ -146,12 +146,12 @@ export default function RoadmapPage() {
                 </div>
 
                 {/* Timeline Visualization */}
-                <div className="bg-aic-black text-white p-12 rounded-3xl relative overflow-hidden">
+                <div className="bg-aic-black text-aic-paper p-12 rounded-3xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-aic-gold/10 rounded-full blur-3xl -mr-32 -mt-32" />
                     <h3 className="font-serif text-2xl mb-12">The Journey to AIC Certified</h3>
                     
                     <div className="relative">
-                        <div className="absolute top-1/2 left-0 w-full h-px bg-white/10 -translate-y-1/2" />
+                        <div className="absolute top-1/2 left-0 w-full h-px bg-aic-paper/10 -translate-y-1/2" />
                         <div className="grid grid-cols-4 gap-4 relative z-10">
                             {[
                                 { step: 'Foundation', status: 'COMPLETE', icon: '01' },
@@ -162,13 +162,13 @@ export default function RoadmapPage() {
                                 <div key={i} className="text-center">
                                     <div className={`w-10 h-10 rounded-full mx-auto flex items-center justify-center font-mono text-xs mb-4 border ${
                                         item.status === 'COMPLETE' ? 'bg-aic-gold border-aic-gold text-aic-black' :
-                                        item.status === 'ACTIVE' ? 'bg-white text-aic-black border-white' :
-                                        'bg-transparent border-white/20 text-white/40'
+                                        item.status === 'ACTIVE' ? 'bg-aic-paper text-aic-black border-aic-paper' :
+                                        'bg-transparent border-aic-paper/20 text-aic-paper/40'
                                     }`}>
                                         {item.icon}
                                     </div>
                                     <p className={`text-xs font-mono font-bold uppercase tracking-widest ${
-                                        item.status === 'PENDING' ? 'text-white/20' : 'text-white'
+                                        item.status === 'PENDING' ? 'text-aic-paper/20' : 'text-aic-paper'
                                     }`}>
                                         {item.step}
                                     </p>

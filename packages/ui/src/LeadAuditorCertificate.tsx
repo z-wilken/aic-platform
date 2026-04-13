@@ -14,8 +14,8 @@ export const LeadAuditorCertificate = ({ candidateName, completionDate, certific
         <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-4xl aspect-[1.414/1] bg-white border-[12px] border-aic-black p-12 relative overflow-hidden shadow-2xl"
-            style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #FAF9F6 0%, #FFFFFF 100%)' }}
+            className="w-full max-w-4xl aspect-[1.414/1] bg-aic-paper border-[12px] border-aic-black p-12 relative overflow-hidden shadow-2xl"
+            style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #FAF9F6 0%, #F9F7F2 100%)' }}
         >
             {/* Guilloche-style corner accents */}
             <div className="absolute top-0 left-0 w-32 h-32 border-t-2 border-l-2 border-aic-gold/30 m-4" />
@@ -38,7 +38,7 @@ export const LeadAuditorCertificate = ({ candidateName, completionDate, certific
                     <p className="text-sm font-serif italic text-gray-500 max-w-lg mx-auto leading-relaxed">
                         has successfully completed the AIC Institutional Board Examination and is hereby recognized as a
                     </p>
-                    <div className="px-8 py-3 bg-aic-black text-white font-mono text-xs font-bold tracking-[0.3em] inline-block rounded-lg uppercase">
+                    <div className="px-8 py-3 bg-aic-black text-aic-paper font-mono text-xs font-bold tracking-[0.3em] inline-block rounded-lg uppercase">
                         Certified AIC Lead Auditor
                     </div>
                 </div>

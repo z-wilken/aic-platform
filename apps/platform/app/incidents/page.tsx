@@ -73,7 +73,7 @@ export default function IncidentsPage() {
                                 key={inc.id}
                                 layoutId={inc.id}
                                 onClick={() => setSelectedIncident(inc)}
-                                className={`p-8 bg-white border rounded-[2rem] cursor-pointer transition-all hover:shadow-xl ${
+                                className={`p-8 bg-aic-paper border rounded-[2rem] cursor-pointer transition-all hover:shadow-xl ${
                                     selectedIncident?.id === inc.id ? 'border-aic-gold shadow-lg' : 'border-aic-black/5'
                                 }`}
                             >
@@ -107,7 +107,7 @@ export default function IncidentsPage() {
                                     initial={{ opacity: 0, x: 20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
-                                    className="bg-aic-black text-white p-12 rounded-[2.5rem] shadow-2xl h-fit border border-white/5"
+                                    className="bg-aic-black text-aic-paper p-12 rounded-[2.5rem] shadow-2xl h-fit border border-aic-paper/5"
                                 >
                                     <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-8">Incident Detail</h3>
                                     <div className="space-y-6 mb-12">
@@ -123,7 +123,7 @@ export default function IncidentsPage() {
 
                                     <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-6">Human Review Findings</h3>
                                     <textarea 
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 font-serif text-sm text-white focus:border-aic-gold outline-none transition-all mb-6"
+                                        className="w-full bg-aic-paper/5 border border-aic-paper/10 rounded-2xl p-6 font-serif text-sm text-aic-paper focus:border-aic-gold outline-none transition-all mb-6"
                                         rows={4}
                                         placeholder="Document your investigation and resolution..."
                                         value={resolution}
@@ -134,7 +134,7 @@ export default function IncidentsPage() {
                                         {selectedIncident.status === 'OPEN' && (
                                             <button 
                                                 onClick={() => handleResolve(selectedIncident.id, 'INVESTIGATING')}
-                                                className="w-full bg-aic-gold text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all"
+                                                className="w-full bg-aic-gold text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-paper transition-all"
                                             >
                                                 START INVESTIGATION
                                             </button>
@@ -144,13 +144,13 @@ export default function IncidentsPage() {
                                             <>
                                                 <button 
                                                     onClick={() => handleResolve(selectedIncident.id, 'RESOLVED')}
-                                                    className="w-full bg-white text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all"
+                                                    className="w-full bg-aic-paper text-black py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all"
                                                 >
                                                     MARK AS RESOLVED
                                                 </button>
                                                 <button 
                                                     onClick={() => handleResolve(selectedIncident.id, 'DISMISSED')}
-                                                    className="w-full border border-white/20 text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all"
+                                                    className="w-full border border-aic-paper/20 text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all"
                                                 >
                                                     DISMISS APPEAL
                                                 </button>
@@ -160,7 +160,7 @@ export default function IncidentsPage() {
                                         {selectedIncident.status === 'RESOLVED' && (
                                             <button 
                                                 onClick={() => handleResolve(selectedIncident.id, 'CLOSED')}
-                                                className="w-full bg-gray-800 text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-gray-700 transition-all"
+                                                className="w-full bg-gray-800 text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-gray-700 transition-all"
                                             >
                                                 ARCHIVE & CLOSE
                                             </button>

@@ -81,7 +81,7 @@ export default function LeadsPage() {
           <div className="flex items-center gap-6">
             <button 
                 onClick={handleAddLead}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-blue-500 transition-all"
+                className="bg-blue-600 text-aic-paper px-4 py-2 rounded-lg text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-blue-500 transition-all"
             >
                 + Add Outreach Target
             </button>
@@ -121,7 +121,7 @@ export default function LeadsPage() {
               ) : (
                 leads.map((lead) => (
                   <tr key={lead.id} className="hover:bg-gray-800/30 transition-colors group">
-                    <td className="p-4 font-medium text-white">{lead.email}</td>
+                    <td className="p-4 font-medium text-aic-paper">{lead.email}</td>
                     <td className="p-4 text-gray-400">{lead.company || '—'}</td>
                     <td className="p-4">
                       {lead.score ? (
@@ -152,7 +152,7 @@ export default function LeadsPage() {
                         {lead.status !== 'ALPHA_ENROLLED' && (
                             <button 
                                 onClick={() => handleEnroll(lead)}
-                                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 transition-all text-[10px] font-bold uppercase tracking-widest"
+                                className="bg-blue-600 text-aic-paper px-3 py-1 rounded hover:bg-blue-500 transition-all text-[10px] font-bold uppercase tracking-widest"
                             >
                                 Enroll
                             </button>
@@ -160,7 +160,7 @@ export default function LeadsPage() {
                         <button className="text-blue-400 hover:text-blue-300 text-xs">
                           Email
                         </button>
-                        <button className="text-gray-500 hover:text-white text-xs">
+                        <button className="text-gray-500 hover:text-aic-paper text-xs">
                           Detail
                         </button>
                       </div>

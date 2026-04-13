@@ -44,13 +44,13 @@ export default function GlobalLeaderboard() {
     <DashboardShell>
       <div className="max-w-6xl mx-auto space-y-16">
         {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-white/5 pb-12">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-aic-paper/5 pb-12">
           <div className="space-y-6">
             <div className="flex items-center gap-3 text-aic-cyan font-mono text-[10px] font-bold uppercase tracking-[0.4em]">
               <Globe className="w-4 h-4" />
               Global AI Integrity Index
             </div>
-            <h1 className="text-6xl font-serif font-bold text-white tracking-tighter leading-none">
+            <h1 className="text-6xl font-serif font-bold text-aic-paper tracking-tighter leading-none">
               Accountability Leaders<span className="text-aic-cyan">.</span>
             </h1>
             <p className="text-xl text-aic-slate font-serif leading-relaxed italic max-w-2xl">
@@ -67,25 +67,25 @@ export default function GlobalLeaderboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white/[0.02] p-10 rounded-[3rem] border border-white/5 shadow-2xl relative overflow-hidden group hover:border-aic-cyan/30 transition-all"
+              className="bg-aic-paper/[0.02] p-10 rounded-[3rem] border border-aic-paper/5 shadow-2xl relative overflow-hidden group hover:border-aic-cyan/30 transition-all"
             >
               <div className="p-4 bg-aic-cyan/5 rounded-2xl mb-8 w-fit group-hover:bg-aic-cyan/10 transition-colors">
                 <s.icon className="w-6 h-6 text-aic-cyan" />
               </div>
               <p className="text-[10px] font-mono font-bold text-aic-slate uppercase tracking-widest mb-3">{s.label}</p>
-              <p className="text-5xl font-serif font-bold text-white tracking-tighter">{s.value}</p>
+              <p className="text-5xl font-serif font-bold text-aic-paper tracking-tighter">{s.value}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Rankings Table */}
-        <section className="bg-white/[0.01] border border-white/5 p-12 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
+        <section className="bg-aic-paper/[0.01] border border-aic-paper/5 p-12 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 p-12 opacity-[0.02] font-serif italic text-9xl select-none pointer-events-none uppercase tracking-tighter">Maturity</div>
           
           <div className="flex items-center justify-between mb-12 relative z-10">
             <div className="flex items-center gap-4">
               <Trophy className="w-8 h-8 text-aic-gold" />
-              <h3 className="font-serif text-3xl font-bold text-white">Institutional Standings</h3>
+              <h3 className="font-serif text-3xl font-bold text-aic-paper">Institutional Standings</h3>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-aic-cyan/5 border border-aic-cyan/20 rounded-full text-[10px] font-mono font-bold text-aic-cyan uppercase">
               <Zap className="w-3 h-3 fill-aic-cyan" /> Live Telemetry Active
@@ -99,14 +99,14 @@ export default function GlobalLeaderboard() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + (i * 0.05) }}
-                className="flex items-center justify-between p-8 bg-white/[0.02] border border-white/5 rounded-3xl hover:bg-white/[0.04] hover:border-aic-cyan/20 transition-all group"
+                className="flex items-center justify-between p-8 bg-aic-paper/[0.02] border border-aic-paper/5 rounded-3xl hover:bg-aic-paper/[0.04] hover:border-aic-cyan/20 transition-all group"
               >
                 <div className="flex items-center gap-8">
                   <span className="font-mono text-lg font-bold text-aic-slate w-8">{String(i + 1).padStart(2, '0')}</span>
                   <div>
-                    <span className="font-serif text-2xl block text-white group-hover:text-aic-cyan transition-colors">{org.name}</span>
+                    <span className="font-serif text-2xl block text-aic-paper group-hover:text-aic-cyan transition-colors">{org.name}</span>
                     <div className="flex items-center gap-3 mt-2">
-                      <span className="text-[9px] font-mono text-aic-slate uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded">{org.tier}</span>
+                      <span className="text-[9px] font-mono text-aic-slate uppercase tracking-widest bg-aic-paper/5 px-2 py-0.5 rounded">{org.tier}</span>
                       <span className="text-[9px] font-mono text-green-500 uppercase tracking-widest">{org.formalAudits} Formal Audits</span>
                     </div>
                   </div>
@@ -114,7 +114,7 @@ export default function GlobalLeaderboard() {
                 
                 <div className="flex items-center gap-12 text-right">
                   <div>
-                    <span className="text-3xl font-serif font-bold text-white group-hover:text-aic-cyan transition-colors">{org.maturityScore}</span>
+                    <span className="text-3xl font-serif font-bold text-aic-paper group-hover:text-aic-cyan transition-colors">{org.maturityScore}</span>
                     <span className="text-[8px] font-mono text-aic-slate block uppercase tracking-widest mt-1">Maturity Score</span>
                   </div>
                   <div className="hidden md:block">

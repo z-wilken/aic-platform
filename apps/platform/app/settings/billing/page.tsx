@@ -67,7 +67,7 @@ export default function BillingSettings() {
                         <motion.div 
                             key={tier.name}
                             whileHover={{ y: -5 }}
-                            className="bg-white border border-aic-black/5 rounded-[2.5rem] p-10 shadow-xl flex flex-col"
+                            className="bg-aic-paper border border-aic-black/5 rounded-[2.5rem] p-10 shadow-xl flex flex-col"
                         >
                             <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-6">{tier.name}</h3>
                             <div className="mb-10">
@@ -87,7 +87,7 @@ export default function BillingSettings() {
                             <button 
                                 onClick={() => handleSubscribe(tier.id)}
                                 disabled={!!loading}
-                                className="w-full bg-aic-black text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                                className="w-full bg-aic-black text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
                             >
                                 {loading === tier.id ? 'CONNECTING...' : `SELECT_${tier.name.toUpperCase()}_TIER`}
                             </button>
@@ -95,7 +95,7 @@ export default function BillingSettings() {
                     ))}
                 </div>
 
-                <div className="bg-[#080808] text-white p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+                <div className="bg-[#080808] text-aic-paper p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-12 opacity-5 font-serif italic text-6xl select-none uppercase">Billing</div>
                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
                         <div>
@@ -104,7 +104,7 @@ export default function BillingSettings() {
                                 For high-frequency trading platforms, sovereign government systems, or multinational deployments requiring custom regulatory mapping.
                             </p>
                         </div>
-                        <button className="bg-white text-black px-10 py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all">
+                        <button className="bg-aic-white text-aic-navy px-10 py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold transition-all">
                             Contact Lead Auditor
                         </button>
                     </div>

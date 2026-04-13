@@ -55,7 +55,7 @@ function OnboardContent() {
 
     return (
         <div className="min-h-screen bg-aic-paper flex items-center justify-center p-6">
-            <div className="max-w-md w-full bg-white border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl">
+            <div className="max-w-md w-full bg-aic-paper border border-aic-black/5 rounded-[2.5rem] p-12 shadow-2xl">
                 <div className="mb-12 text-center">
                     <span className="text-4xl block mb-6">🥂</span>
                     <h1 className="text-3xl font-serif font-bold text-aic-black">Alpha Welcome.</h1>
@@ -102,7 +102,7 @@ function OnboardContent() {
                         <button 
                             type="submit"
                             disabled={loading || !code}
-                            className="w-full bg-aic-black text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                            className="w-full bg-aic-black text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
                         >
                             {loading ? 'INITIALIZING...' : 'CLAIM ACCESS'}
                         </button>

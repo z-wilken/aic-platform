@@ -7,31 +7,31 @@
   --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
 
   /* ─── AIC Brand Palette — Navy + Copper (Dark Mode) ─────────── */
-  --color-aic-navy:         #0a1628;
-  --color-aic-navy-mid:     #0f2044;
+  --color-aic-navy:         #0A111F;
+  --color-aic-navy-mid:     #0A111F;
   --color-aic-navy-light:   #1a3060;
-  --color-aic-copper:       #c87941;
-  --color-aic-copper-light: #e09a62;
-  --color-aic-copper-dim:   rgba(200, 121, 65, 0.15);
-  --color-aic-paper:        #faf8f5;
-  --color-aic-parchment:    #f0ece4;
-  --color-aic-black:        #0a1628;
-  --color-aic-white:        #ffffff;
+  --color-aic-copper:       #C17C4E;
+  --color-aic-copper-light: #C17C4E;
+  --color-aic-copper-dim:   rgba(193, 124, 78, 0.15);
+  --color-aic-paper:        #F9F7F2;
+  --color-aic-parchment:    #F9F7F2;
+  --color-aic-black:        #000000;
+  --color-aic-white:        #F9F7F2;
   --color-aic-muted:        #6b7895;
   --color-aic-border-dark:  rgba(255, 255, 255, 0.07);
 
   /* Legacy */
-  --color-aic-obsidian: #0a1628;
-  --color-aic-cyan:     #c87941;   /* maps to copper */
+  --color-aic-obsidian: #0A111F;
+  --color-aic-cyan:     #C17C4E;   /* maps to copper */
   --color-aic-slate:    #6b7895;
-  --color-aic-gold:     #c87941;
-  --color-aic-red:      #c87941;
-  --color-aic-bg:       #0a1628;
+  --color-aic-gold:     #C17C4E;
+  --color-aic-red:      #C17C4E;
+  --color-aic-bg:       #0A111F;
 }
 
 body {
   background-color: var(--color-aic-navy);
-  color: #ffffff;
+  color: #F9F7F2;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   background-image:

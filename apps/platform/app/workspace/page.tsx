@@ -187,18 +187,18 @@ export default function GovernanceWorkspace() {
                 ISO 42001 Governance Workspace
               </span>
             </div>
-            <h1 className="text-6xl font-serif font-bold text-white tracking-tighter leading-none">
+            <h1 className="text-6xl font-serif font-bold text-aic-paper tracking-tighter leading-none">
               Algorithm Audit Trail<span className={getAccentColor()}>.</span>
             </h1>
             
             <div className="flex items-center gap-4">
               {/* System Selector */}
-              <div className="flex items-center gap-4 p-2 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 w-fit shadow-sm">
+              <div className="flex items-center gap-4 p-2 bg-aic-paper/5 backdrop-blur-sm rounded-xl border border-aic-paper/10 w-fit shadow-sm">
                 <Box className="w-4 h-4 text-aic-cyan ml-2" />
                 <select 
                   value={selectedSystemId || ''} 
                   onChange={(e) => setSelectedSystemId(e.target.value)}
-                  className="bg-transparent border-none text-[10px] font-mono font-bold uppercase tracking-widest outline-none py-2 pr-8 cursor-pointer text-white"
+                  className="bg-transparent border-none text-[10px] font-mono font-bold uppercase tracking-widest outline-none py-2 pr-8 cursor-pointer text-aic-paper"
                 >
                   {systems.map(s => (
                     <option key={s.id} value={s.id} className="bg-aic-obsidian">{s.name}</option>
@@ -262,10 +262,10 @@ export default function GovernanceWorkspace() {
         ) : (
           <>
             {/* Empathy Controller */}
-            <section className="border-t border-white/5 py-10">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-12 bg-white/[0.02] p-8 rounded-3xl border border-white/5">
+            <section className="border-t border-aic-paper/5 py-10">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-12 bg-aic-paper/[0.02] p-8 rounded-3xl border border-aic-paper/5">
                 <div className="max-w-sm text-center md:text-left">
-                  <h3 className="font-serif text-2xl font-bold mb-3 text-white">Human Impact Context</h3>
+                  <h3 className="font-serif text-2xl font-bold mb-3 text-aic-paper">Human Impact Context</h3>
                   <p className="text-sm text-aic-slate italic">
                     Increasing magnitude enforces stricter HITL (Human-in-the-loop) requirements for ISO 42001 certification.
                   </p>
@@ -292,13 +292,13 @@ export default function GovernanceWorkspace() {
               <div className="pt-12 flex items-center justify-center gap-6">
                 <button 
                   onClick={() => addBlock('text')}
-                  className="group flex items-center gap-3 px-6 py-3 border border-dashed border-white/10 rounded-2xl text-[10px] font-mono font-bold uppercase text-aic-slate hover:border-aic-cyan hover:text-aic-cyan transition-all"
+                  className="group flex items-center gap-3 px-6 py-3 border border-dashed border-aic-paper/10 rounded-2xl text-[10px] font-mono font-bold uppercase text-aic-slate hover:border-aic-cyan hover:text-aic-cyan transition-all"
                 >
                   <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" /> Add Rationale
                 </button>
                 <button 
                   onClick={() => addBlock('model-card')}
-                  className="group flex items-center gap-3 px-6 py-3 border border-dashed border-white/10 rounded-2xl text-[10px] font-mono font-bold uppercase text-aic-slate hover:border-aic-cyan hover:text-aic-cyan transition-all"
+                  className="group flex items-center gap-3 px-6 py-3 border border-dashed border-aic-paper/10 rounded-2xl text-[10px] font-mono font-bold uppercase text-aic-slate hover:border-aic-cyan hover:text-aic-cyan transition-all"
                 >
                   <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" /> Model Artifact
                 </button>
@@ -310,7 +310,7 @@ export default function GovernanceWorkspace() {
               <motion.footer 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-10 bg-aic-red/10 border border-aic-red/30 text-white rounded-[3rem] shadow-2xl flex flex-col md:flex-row items-center gap-10 overflow-hidden relative group"
+                className="p-10 bg-aic-red/10 border border-aic-red/30 text-aic-paper rounded-[3rem] shadow-2xl flex flex-col md:flex-row items-center gap-10 overflow-hidden relative group"
               >
                 <div className="absolute inset-0 bg-aic-red/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="p-5 bg-aic-red/20 rounded-2xl relative z-10">
@@ -318,7 +318,7 @@ export default function GovernanceWorkspace() {
                 </div>
                 <div className="text-center md:text-left relative z-10">
                   <h4 className="font-serif text-3xl font-bold mb-2">Human-In-The-Loop Enforcement</h4>
-                  <p className="text-base text-white/70 italic font-serif max-w-2xl">
+                  <p className="text-base text-aic-paper/70 italic font-serif max-w-2xl">
                     High magnitude detected. The sovereign ledger now requires verified qualitative rationale. Substantive review mode is active.
                   </p>
                 </div>

@@ -136,7 +136,7 @@ export default function CertificationsPage() {
               onClick={() => setSelectedTier(tier)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 selectedTier === tier
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-aic-paper'
                   : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
               }`}
             >
@@ -189,7 +189,7 @@ export default function CertificationsPage() {
 
               <div className="flex items-center justify-between text-sm border-t border-gray-800 pt-4">
                 <div className="text-gray-500">
-                  Valid until: <span className="text-white">{cert.expires_at}</span>
+                  Valid until: <span className="text-aic-paper">{cert.expires_at}</span>
                 </div>
                 <div className="flex gap-3">
                   <button className="text-blue-400 hover:text-blue-300">View Details</button>

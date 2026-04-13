@@ -53,7 +53,7 @@ export default function PractitionerDashboard() {
               Credentialing for the world&apos;s most accountable AI practitioners. ISO 17024 compliant professional development and exam repository.
             </p>
           </div>
-          <div className="bg-aic-black text-white p-6 rounded-[2rem] shadow-xl text-center min-w-[200px]">
+          <div className="bg-aic-black text-aic-paper p-6 rounded-[2rem] shadow-xl text-center min-w-[200px]">
             <span className="text-[9px] font-mono font-bold text-aic-gold uppercase tracking-widest block mb-2 text-center">Status</span>
             <div className="text-2xl font-serif font-bold">{data?.identity?.level || 'CANDIDATE'}</div>
           </div>
@@ -77,13 +77,13 @@ export default function PractitionerDashboard() {
                     whileHover={{ scale: 1.02 }}
                     className={cn(
                       "p-6 rounded-[2rem] border transition-all",
-                      exam.status === 'COMPLETED' ? "bg-aic-paper/50 border-aic-green/20" : "bg-white border-aic-black/5 shadow-sm"
+                      exam.status === 'COMPLETED' ? "bg-aic-paper/50 border-aic-green/20" : "bg-aic-paper border-aic-black/5 shadow-sm"
                     )}
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div className={cn(
                         "p-3 rounded-xl",
-                        exam.status === 'LOCKED' ? "bg-gray-100 text-gray-400" : "bg-aic-black text-white"
+                        exam.status === 'LOCKED' ? "bg-gray-100 text-gray-400" : "bg-aic-black text-aic-paper"
                       )}>
                         {exam.status === 'LOCKED' ? <Lock className="w-4 h-4" /> : <BookOpen className="w-4 h-4" />}
                       </div>
@@ -109,7 +109,7 @@ export default function PractitionerDashboard() {
 
           {/* Verification Sidebar */}
           <div className="space-y-8">
-            <div className="bg-aic-black text-white p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+            <div className="bg-aic-black text-aic-paper p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-10 opacity-5 font-serif italic text-6xl select-none uppercase pointer-events-none">Shield</div>
               <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-8 relative z-10">Institutional Shield</h3>
               <div className="space-y-6 relative z-10">
@@ -126,7 +126,7 @@ export default function PractitionerDashboard() {
                   <span className="text-xs font-serif italic text-gray-300">Encrypted Item Bank Protection</span>
                 </div>
               </div>
-              <button className="w-full mt-12 py-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-mono font-bold uppercase tracking-widest transition-all">
+              <button className="w-full mt-12 py-4 bg-aic-paper/10 hover:bg-aic-paper/20 border border-aic-paper/10 rounded-2xl text-[10px] font-mono font-bold uppercase tracking-widest transition-all">
                 Download Practitioner License
               </button>
             </div>

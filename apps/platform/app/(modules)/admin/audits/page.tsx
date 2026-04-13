@@ -164,7 +164,7 @@ export default function AuditsPage() {
             <button
               onClick={() => setView('list')}
               className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                view === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'
+                view === 'list' ? 'bg-blue-600 text-aic-paper' : 'bg-gray-800 text-gray-400'
               }`}
             >
               List View
@@ -172,7 +172,7 @@ export default function AuditsPage() {
             <button
               onClick={() => setView('calendar')}
               className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                view === 'calendar' ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400'
+                view === 'calendar' ? 'bg-blue-600 text-aic-paper' : 'bg-gray-800 text-gray-400'
               }`}
             >
               Calendar View
@@ -180,7 +180,7 @@ export default function AuditsPage() {
           </div>
           <button 
             onClick={() => setIsScheduling(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500"
+            className="bg-blue-600 text-aic-paper px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500"
           >
             + Schedule New Audit
           </button>
@@ -243,13 +243,13 @@ export default function AuditsPage() {
                   <button 
                     type="button"
                     onClick={() => setIsScheduling(false)}
-                    className="text-gray-400 hover:text-white px-4 py-2 text-sm"
+                    className="text-gray-400 hover:text-aic-paper px-4 py-2 text-sm"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit"
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-blue-500 transition-colors"
+                    className="bg-blue-600 text-aic-paper px-6 py-2 rounded-lg text-sm font-bold hover:bg-blue-500 transition-colors"
                   >
                     CONFIRM_SCHEDULE
                   </button>
@@ -295,7 +295,7 @@ export default function AuditsPage() {
                     <div className="mt-4 flex gap-3">
                       <button 
                         onClick={() => handleStatusChange(audit.id, 'COMPLETED')}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-500"
+                        className="bg-green-600 text-aic-paper px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-500"
                       >
                         Complete Audit
                       </button>
@@ -371,7 +371,7 @@ export default function AuditsPage() {
                     <tr><td colSpan={4} className="p-12 text-center text-gray-500 italic">No completed audits in historical registry.</td></tr>
                   ) : completed.map((audit) => (
                     <tr key={audit.id} className="hover:bg-gray-800/30">
-                      <td className="p-4 font-medium text-white">{audit.org_name}</td>
+                      <td className="p-4 font-medium text-aic-paper">{audit.org_name}</td>
                       <td className="p-4 text-sm">{audit.auditor_name}</td>
                       <td className="p-4 text-sm font-mono">{new Date(audit.updated_at || audit.created_at).toLocaleDateString()}</td>
                       <td className="p-4">

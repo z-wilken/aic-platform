@@ -58,10 +58,10 @@ export default function LoginPage() {
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass-panel p-12 rounded-[2.5rem] shadow-2xl border border-white/10 bg-black/40 backdrop-blur-xl"
+                className="glass-panel p-12 rounded-[2.5rem] shadow-2xl border border-aic-paper/10 bg-black/40 backdrop-blur-xl"
             >
                 <div className="text-center mb-12">
-                    <h1 className="font-serif text-3xl font-bold text-white mb-2 tracking-tight">AIC PULSE<span className="text-aic-gold">.</span></h1>
+                    <h1 className="font-serif text-3xl font-bold text-aic-paper mb-2 tracking-tight">AIC PULSE<span className="text-aic-gold">.</span></h1>
                     <p className="text-gray-500 font-mono text-[10px] uppercase tracking-[0.3em]">Secure Client Access</p>
                 </div>
 
@@ -84,7 +84,7 @@ export default function LoginPage() {
                         <button
                             type="button"
                             onClick={() => signIn('google', { callbackUrl: '/' })}
-                            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3 rounded-xl hover:bg-white/10 transition-all group"
+                            className="flex items-center justify-center gap-3 bg-aic-paper/5 border border-aic-paper/10 py-3 rounded-xl hover:bg-aic-paper/10 transition-all group"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -92,12 +92,12 @@ export default function LoginPage() {
                                 <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.16H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.84l3.66-2.75z" />
                                 <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.16l3.66 2.75c.87-2.6 3.3-4.53 6.16-4.53z" />
                             </svg>
-                            <span className="text-[10px] font-bold font-mono text-white uppercase tracking-widest">Google</span>
+                            <span className="text-[10px] font-bold font-mono text-aic-paper uppercase tracking-widest">Google</span>
                         </button>
                         <button
                             type="button"
                             onClick={() => signIn('microsoft-entra-id', { callbackUrl: '/' })}
-                            className="flex items-center justify-center gap-3 bg-white/5 border border-white/10 py-3 rounded-xl hover:bg-white/10 transition-all group"
+                            className="flex items-center justify-center gap-3 bg-aic-paper/5 border border-aic-paper/10 py-3 rounded-xl hover:bg-aic-paper/10 transition-all group"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 23 23">
                                 <path fill="#f3f3f3" d="M0 0h11v11H0z" />
@@ -105,12 +105,12 @@ export default function LoginPage() {
                                 <path fill="#f3f3f3" d="M0 12h11v11H0z" />
                                 <path fill="#f3f3f3" d="M12 12h11v11H12z" />
                             </svg>
-                            <span className="text-[10px] font-bold font-mono text-white uppercase tracking-widest">Office 365</span>
+                            <span className="text-[10px] font-bold font-mono text-aic-paper uppercase tracking-widest">Office 365</span>
                         </button>
                     </div>
 
                     <div className="relative py-4">
-                        <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-white/5" /></div>
+                        <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-aic-paper/5" /></div>
                         <div className="relative flex justify-center text-[8px] font-mono font-bold uppercase"><span className="bg-[#0a0a0a] px-2 text-gray-600">Institutional Relay</span></div>
                     </div>
 
@@ -121,7 +121,7 @@ export default function LoginPage() {
                             name="email" 
                             type="email" 
                             required 
-                            className="w-full bg-white/5 border-b border-white/10 py-3 text-white focus:border-aic-gold outline-none font-serif text-sm transition-all"
+                            className="w-full bg-aic-paper/5 border-b border-aic-paper/10 py-3 text-aic-paper focus:border-aic-gold outline-none font-serif text-sm transition-all"
                             placeholder="compliance@bank.co.za"
                         />
                     </div>
@@ -138,7 +138,7 @@ export default function LoginPage() {
                             name="password" 
                             type="password" 
                             required 
-                            className="w-full bg-white/5 border-b border-white/10 py-3 text-white focus:border-aic-gold outline-none font-serif text-sm transition-all"
+                            className="w-full bg-aic-paper/5 border-b border-aic-paper/10 py-3 text-aic-paper focus:border-aic-gold outline-none font-serif text-sm transition-all"
                             placeholder="••••••••"
                         />
                     </div>
@@ -159,7 +159,7 @@ export default function LoginPage() {
                                     name="mfaToken" 
                                     type="text" 
                                     required={isMfaRequired}
-                                    className="w-full bg-aic-gold/5 border-b border-aic-gold/30 py-3 text-white focus:border-aic-gold outline-none font-mono text-lg tracking-[0.5em] text-center transition-all"
+                                    className="w-full bg-aic-gold/5 border-b border-aic-gold/30 py-3 text-aic-paper focus:border-aic-gold outline-none font-mono text-lg tracking-[0.5em] text-center transition-all"
                                     placeholder="000000"
                                     maxLength={6}
                                     pattern="\d{6}"
@@ -175,7 +175,7 @@ export default function LoginPage() {
                     <button 
                         type="submit" 
                         disabled={isLoading}
-                        className="w-full bg-aic-gold text-aic-black py-4 font-mono font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-white transition-all duration-300 disabled:opacity-50 shadow-xl"
+                        className="w-full bg-aic-gold text-aic-black py-4 font-mono font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-aic-paper transition-all duration-300 disabled:opacity-50 shadow-xl"
                     >
                         {isLoading ? 'AUTHORIZING...' : 'INITIALIZE SESSION'}
                     </button>

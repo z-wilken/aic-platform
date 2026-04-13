@@ -29,13 +29,13 @@ export default function InsuranceRiskPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                    <div className="bg-white border border-aic-black/5 p-12 rounded-[2.5rem] shadow-sm flex flex-col items-center justify-center text-center">
+                    <div className="bg-aic-paper border border-aic-black/5 p-12 rounded-[2.5rem] shadow-sm flex flex-col items-center justify-center text-center">
                         <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-4">Current Integrity Score</span>
                         <div className="text-7xl font-serif font-bold text-aic-black mb-2">{riskData.assessment.integrity_score}</div>
                         <span className="text-xs font-mono text-aic-gold font-bold">VERIFIED BY AIC PULSE</span>
                     </div>
 
-                    <div className="bg-aic-black text-white p-12 rounded-[2.5rem] shadow-xl flex flex-col items-center justify-center text-center relative overflow-hidden">
+                    <div className="bg-aic-black text-aic-paper p-12 rounded-[2.5rem] shadow-xl flex flex-col items-center justify-center text-center relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-8 opacity-10 font-serif italic text-4xl italic">Actuarial</div>
                         <span className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">Projected Risk Rating</span>
                         <div className="text-7xl font-serif font-bold text-aic-gold mb-2">{riskData.assessment.insurance_risk_rating}</div>
@@ -55,7 +55,7 @@ export default function InsuranceRiskPage() {
                             { label: 'AIC Integrity Discount', value: riskData.assessment.integrity_score > 80 ? '- R 45,000' : '- R 0', status: riskData.assessment.integrity_score > 80 ? 'QUALIFIED' : 'PENDING' },
                             { label: 'Projected Net Premium', value: riskData.assessment.integrity_score > 80 ? 'R 205,000' : 'R 250,000', status: 'ESTIMATE', highlight: true }
                         ].map((item, i) => (
-                            <div key={i} className={`flex justify-between items-center p-6 rounded-2xl border ${item.highlight ? 'bg-white border-aic-gold shadow-md' : 'border-aic-black/5'}`}>
+                            <div key={i} className={`flex justify-between items-center p-6 rounded-2xl border ${item.highlight ? 'bg-aic-paper border-aic-gold shadow-md' : 'border-aic-black/5'}`}>
                                 <div>
                                     <p className="text-xs font-mono font-bold text-gray-400 uppercase tracking-widest mb-1">{item.label}</p>
                                     <p className={`font-serif text-lg ${item.highlight ? 'font-bold' : ''}`}>{item.value}</p>

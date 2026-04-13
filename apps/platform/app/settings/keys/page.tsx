@@ -49,7 +49,7 @@ export default function APIKeysPage() {
                     </div>
                     <button 
                         onClick={handleGenerateKey}
-                        className="bg-aic-black text-white px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all shadow-xl"
+                        className="bg-aic-black text-aic-paper px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all shadow-xl"
                     >
                         Generate Integration Key
                     </button>
@@ -63,7 +63,7 @@ export default function APIKeysPage() {
                             className="bg-aic-gold/10 border-2 border-aic-gold p-8 rounded-3xl"
                         >
                             <p className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest mb-4">CRITICAL: Save this key now</p>
-                            <div className="flex items-center gap-4 bg-white/50 p-4 rounded-xl border border-aic-gold/20">
+                            <div className="flex items-center gap-4 bg-aic-paper/50 p-4 rounded-xl border border-aic-gold/20">
                                 <code className="flex-1 font-mono text-xs font-bold break-all">{newKey}</code>
                                 <button 
                                     onClick={() => {
@@ -81,7 +81,7 @@ export default function APIKeysPage() {
                     )}
                 </AnimatePresence>
 
-                <div className="bg-white border border-aic-black/5 rounded-[2.5rem] overflow-hidden shadow-sm">
+                <div className="bg-aic-paper border border-aic-black/5 rounded-[2.5rem] overflow-hidden shadow-sm">
                     <table className="w-full text-left text-sm font-serif">
                         <thead className="bg-aic-paper/50 border-b border-aic-black/5">
                             <tr>
@@ -109,7 +109,7 @@ export default function APIKeysPage() {
                                         {k.last_used_at ? new Date(k.last_used_at).toLocaleString() : 'Never'}
                                     </td>
                                     <td className="p-6 text-right">
-                                        <button className="text-[10px] font-mono font-bold uppercase text-gray-400 hover:text-aic-red transition-colors">Revoke</button>
+                                        <button className="text-aic-gold hover:text-aic-paper transition-colors">Revoke</button>
                                     </td>
                                 </motion.tr>
                             ))}
@@ -118,20 +118,20 @@ export default function APIKeysPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12">
-                    <div className="bg-aic-black p-12 rounded-[3rem] text-white">
+                    <div className="bg-aic-black p-12 rounded-[3rem] text-aic-paper">
                         <span className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-8 block">Developer Documentation</span>
                         <h3 className="font-serif text-3xl mb-6 tracking-tight">Direct Engine API</h3>
                         <p className="text-gray-400 font-serif leading-relaxed mb-12">
                             Integrate our Four-Fifths analysis directly into your CI/CD pipeline. Every API call generates an immutable audit record in your AIC Roadmap.
                         </p>
-                        <code className="block bg-white/5 p-4 rounded-xl border border-white/10 text-[10px] font-mono text-aic-gold mb-8">
+                        <code className="block bg-aic-paper/5 p-4 rounded-xl border border-aic-paper/10 text-[10px] font-mono text-aic-gold mb-8">
                             POST /api/audit-logs <br />
                             Authorization: Bearer {'<your_key>'}
                         </code>
                         <a href="#" className="font-mono text-[10px] font-bold uppercase tracking-widest underline decoration-aic-gold">View Technical Docs</a>
                     </div>
                     
-                    <div className="p-12 border border-aic-black/5 rounded-[3rem] bg-white flex flex-col justify-center text-center">
+                    <div className="p-12 border border-aic-black/5 rounded-[3rem] bg-aic-paper flex flex-col justify-center text-center">
                         <div className="w-16 h-16 rounded-full bg-aic-gold/10 flex items-center justify-center mx-auto mb-8">
                             <span className="text-2xl">⚡</span>
                         </div>

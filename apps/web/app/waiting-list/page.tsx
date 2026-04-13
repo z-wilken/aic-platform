@@ -107,7 +107,7 @@ export default function WaitingListPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0f1f3d] via-[#1a3160] to-[#0a1628] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#0A111F] via-[#1a3160] to-[#0A111F] flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -118,14 +118,14 @@ export default function WaitingListPage() {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl font-bold text-[#0A111F] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               You're on the List!
             </h2>
             <p className="text-gray-600 text-lg mb-6 leading-relaxed">
               Thank you for joining the AIC waiting list, <strong>{formData.firstName}</strong>. We've sent a confirmation email to <strong>{formData.email}</strong>.
             </p>
             <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 mb-8 text-left">
-              <h3 className="font-semibold text-[#0f1f3d] mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-[#0A111F] mb-3 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-600" />
                 What Happens Next?
               </h3>
@@ -151,13 +151,13 @@ export default function WaitingListPage() {
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => setSubmitted(false)}
-                className="bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                className="bg-aic-paper border border-gray-200 text-gray-700 hover:bg-gray-50"
               >
                 Submit Another
               </Button>
               <Button
                 onClick={() => router.push("/")}
-                className="bg-[#c9920a] hover:bg-[#b07d08] text-white"
+                className="bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper"
               >
                 Return Home
               </Button>
@@ -169,14 +169,14 @@ export default function WaitingListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-aic-paper">
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628]/95 via-[#0f1f3d]/90 to-[#1a3160]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A111F]/95 via-[#0A111F]/90 to-[#1a3160]/85" />
         
         {/* Grid overlay */}
         <div
@@ -194,15 +194,15 @@ export default function WaitingListPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="flex items-center justify-center gap-2 mb-6">
-              <Shield className="w-5 h-5 text-[#c9920a]" />
-              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
+              <Shield className="w-5 h-5 text-[#C17C4E]" />
+              <span className="text-[#C17C4E] text-sm uppercase tracking-widest font-medium">
                 Join the Waiting List
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h1 className="text-4xl md:text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
               Be First in Line for AIC Certification
             </h1>
-            <p className="text-xl text-white/70 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xl text-aic-paper/70 leading-relaxed max-w-2xl mx-auto">
               Registration opens soon. Join our waiting list to receive priority access, exclusive discounts, and early learning resources.
             </p>
           </motion.div>
@@ -210,7 +210,7 @@ export default function WaitingListPage() {
       </section>
 
       {/* Stats Bar */}
-      <section className="bg-[#0f1f3d] border-b border-white/10">
+      <section className="bg-[#0A111F] border-b border-aic-paper/10">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
@@ -226,8 +226,8 @@ export default function WaitingListPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="text-white text-3xl font-bold">{stat.value}</div>
-                <div className="text-white/50 text-sm mt-0.5">{stat.label}</div>
+                <div className="text-aic-paper text-3xl font-bold">{stat.value}</div>
+                <div className="text-aic-paper/50 text-sm mt-0.5">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -243,7 +243,7 @@ export default function WaitingListPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl text-[#0A111F] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Why Join the Waiting List?
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -263,10 +263,10 @@ export default function WaitingListPage() {
                   transition={{ delay: i * 0.1 }}
                 >
                   <Card className="p-6 text-center h-full hover:shadow-lg transition-shadow">
-                    <div className="w-12 h-12 bg-[#0f1f3d]/5 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-6 h-6 text-[#0f1f3d]" />
+                    <div className="w-12 h-12 bg-[#0A111F]/5 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Icon className="w-6 h-6 text-[#0A111F]" />
                     </div>
-                    <h3 className="font-semibold text-[#0f1f3d] mb-2">{benefit.title}</h3>
+                    <h3 className="font-semibold text-[#0A111F] mb-2">{benefit.title}</h3>
                     <p className="text-gray-600 text-sm">{benefit.description}</p>
                   </Card>
                 </motion.div>
@@ -277,7 +277,7 @@ export default function WaitingListPage() {
       </section>
 
       {/* Form Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-aic-paper">
         <div className="max-w-3xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -285,7 +285,7 @@ export default function WaitingListPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl text-[#0A111F] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Reserve Your Spot
             </h2>
             <p className="text-gray-600">
@@ -308,7 +308,7 @@ export default function WaitingListPage() {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 focus:border-[#C17C4E]"
                     placeholder="John"
                   />
                 </div>
@@ -322,7 +322,7 @@ export default function WaitingListPage() {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 focus:border-[#C17C4E]"
                     placeholder="Doe"
                   />
                 </div>
@@ -340,7 +340,7 @@ export default function WaitingListPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 focus:border-[#C17C4E]"
                   placeholder="john.doe@company.com"
                 />
               </div>
@@ -358,7 +358,7 @@ export default function WaitingListPage() {
                     value={formData.organization}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 focus:border-[#C17C4E]"
                     placeholder="Company Name"
                   />
                 </div>
@@ -373,7 +373,7 @@ export default function WaitingListPage() {
                     value={formData.role}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 focus:border-[#C17C4E]"
                     placeholder="Chief Risk Officer"
                   />
                 </div>
@@ -391,7 +391,7 @@ export default function WaitingListPage() {
                   value={formData.country}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C17C4E]/20 focus:border-[#C17C4E]"
                   placeholder="United States"
                 />
               </div>
@@ -415,10 +415,10 @@ export default function WaitingListPage() {
                         checked={formData.certificationType === type.value}
                         onChange={handleChange}
                         required
-                        className="mt-1 w-4 h-4 text-[#c9920a] focus:ring-[#c9920a]"
+                        className="mt-1 w-4 h-4 text-[#C17C4E] focus:ring-[#C17C4E]"
                       />
                       <div>
-                        <div className="font-medium text-[#0f1f3d]">{type.label}</div>
+                        <div className="font-medium text-[#0A111F]">{type.label}</div>
                         <div className="text-sm text-gray-500">{type.description}</div>
                       </div>
                     </label>
@@ -428,14 +428,14 @@ export default function WaitingListPage() {
 
               {/* Privacy Notice */}
               <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-gray-600">
-                <strong className="text-[#0f1f3d]">Privacy Notice:</strong> Your information will only be used to communicate certification updates and early access opportunities. We never share your data with third parties. See our privacy policy for details.
+                <strong className="text-[#0A111F]">Privacy Notice:</strong> Your information will only be used to communicate certification updates and early access opportunities. We never share your data with third parties. See our privacy policy for details.
               </div>
 
               {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#c9920a] hover:bg-[#b07d08] text-white py-4 text-base font-medium disabled:opacity-60"
+                className="w-full bg-[#C17C4E] hover:bg-[#C17C4E] text-aic-paper py-4 text-base font-medium disabled:opacity-60"
               >
                 {isSubmitting ? 'Submitting...' : 'Join Waiting List'} <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -448,18 +448,18 @@ export default function WaitingListPage() {
       </section>
 
       {/* Social Proof */}
-      <section className="py-16 bg-gradient-to-br from-[#0f1f3d] to-[#1a3160]">
+      <section className="py-16 bg-gradient-to-br from-[#0A111F] to-[#1a3160]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Users className="w-12 h-12 text-[#c9920a] mx-auto mb-6" />
-            <h2 className="text-3xl text-white mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <Users className="w-12 h-12 text-[#C17C4E] mx-auto mb-6" />
+            <h2 className="text-3xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Join Thousands of AI Leaders
             </h2>
-            <p className="text-white/70 text-lg leading-relaxed">
+            <p className="text-aic-paper/70 text-lg leading-relaxed">
               Professionals from Fortune 500 companies, government agencies, and leading research institutions are already on the waiting list. Position yourself at the forefront of AI governance.
             </p>
           </motion.div>

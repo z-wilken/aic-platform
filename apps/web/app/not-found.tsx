@@ -29,13 +29,13 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/"
-              className="inline-flex items-center justify-center gap-2 bg-aic-navy text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-lg shadow-aic-navy/10"
+              className="inline-flex items-center justify-center gap-2 bg-aic-navy text-aic-paper px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-navy-mid transition-all shadow-lg shadow-aic-navy/10"
             >
               <Home className="w-4 h-4" /> Return Home
             </Link>
             <button
               onClick={() => window.history.back()}
-              className="inline-flex items-center justify-center gap-2 border-2 border-aic-navy text-aic-navy px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-widest font-mono hover:bg-white transition-all"
+              className="inline-flex items-center justify-center gap-2 border-2 border-aic-navy text-aic-navy px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-widest font-mono hover:bg-aic-paper transition-all"
             >
               <ArrowLeft className="w-4 h-4" /> Go Back
             </button>

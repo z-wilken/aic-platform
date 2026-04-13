@@ -34,7 +34,7 @@ export default function AppealPortal() {
 
     return (
         <div className="min-h-screen bg-aic-paper flex flex-col items-center justify-center p-6">
-            <div className="max-w-2xl w-full bg-white border border-aic-black/5 rounded-[3rem] p-12 shadow-2xl">
+            <div className="max-w-2xl w-full bg-aic-paper border border-aic-black/5 rounded-[3rem] p-12 shadow-2xl">
                 <div className="mb-12 text-center">
                     <span className="text-4xl block mb-6">⚖️</span>
                     <h1 className="text-3xl font-serif font-bold text-aic-black">Citizen Appeal Portal</h1>
@@ -71,7 +71,7 @@ export default function AppealPortal() {
                                 </div>
                                 <button 
                                     onClick={() => setStep(2)}
-                                    className="w-full bg-aic-black text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
+                                    className="w-full bg-aic-black text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
                                 >
                                     PROCEED TO APPEAL
                                 </button>
@@ -116,7 +116,7 @@ export default function AppealPortal() {
                                     <button 
                                         type="submit"
                                         disabled={loading}
-                                        className="flex-[2] bg-aic-black text-white py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
+                                        className="flex-[2] bg-aic-black text-aic-paper py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
                                     >
                                         {loading ? 'SUBMITTING...' : 'SUBMIT APPEAL'}
                                     </button>

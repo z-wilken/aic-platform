@@ -22,17 +22,17 @@ export default function UnauthorizedPage() {
               />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Access Denied</h1>
+          <h1 className="text-3xl font-bold text-aic-paper mb-2">Access Denied</h1>
           <p className="text-gray-400">
             You don&apos;t have permission to access this resource.
           </p>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 mb-6">
+        <div className="bg-aic-paper/5 backdrop-blur-xl rounded-2xl p-6 border border-aic-paper/10 mb-6">
           <h2 className="text-sm font-mono text-gray-400 uppercase tracking-wider mb-4">
             Your Current Role
           </h2>
-          <p className="text-white text-lg">
+          <p className="text-aic-paper text-lg">
             Contact your administrator if you believe this is an error.
           </p>
         </div>
@@ -40,13 +40,13 @@ export default function UnauthorizedPage() {
         <div className="space-y-3">
           <Link
             href="/"
-            className="block w-full py-3 px-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+            className="block w-full py-3 px-4 bg-aic-paper text-black font-semibold rounded-lg hover:bg-gray-100 transition-colors"
           >
             Return to Dashboard
           </Link>
           <Link
             href="/login"
-            className="block w-full py-3 px-4 bg-transparent text-white border border-white/20 rounded-lg hover:bg-white/5 transition-colors"
+            className="block w-full py-3 px-4 bg-transparent text-aic-paper border border-aic-paper/20 rounded-lg hover:bg-aic-paper/5 transition-colors"
           >
             Sign in with different account
           </Link>

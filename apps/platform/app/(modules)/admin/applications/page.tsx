@@ -52,7 +52,7 @@ export default function ApplicationsPage() {
                 applications.map((app) => (
                   <tr key={app.id} className="hover:bg-gray-800/30 transition-colors">
                     <td className="p-4">
-                      <p className="font-medium text-white">{app.first_name} {app.last_name}</p>
+                      <p className="font-medium text-aic-paper">{app.first_name} {app.last_name}</p>
                       <p className="text-xs text-gray-500 font-mono">{app.email}</p>
                     </td>
                     <td className="p-4">{app.company}</td>
@@ -67,7 +67,7 @@ export default function ApplicationsPage() {
                         <button className="text-blue-400 hover:text-blue-300 text-xs">
                           Review
                         </button>
-                        <button className="text-gray-500 hover:text-white text-xs">
+                        <button className="text-gray-500 hover:text-aic-paper text-xs">
                           Archive
                         </button>
                       </div>

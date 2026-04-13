@@ -29,7 +29,7 @@ export const EmpathySlider = ({ value, onChange }: EmpathySliderProps) => {
   };
 
   return (
-    <div className="flex flex-col space-y-4 w-full max-w-md bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+    <div className="flex flex-col space-y-4 w-full max-w-md bg-aic-paper/10 backdrop-blur-md p-6 rounded-2xl border border-aic-paper/20">
       <div className="flex justify-between items-center">
         <span className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">
           Human Impact Magnitude
@@ -39,7 +39,7 @@ export const EmpathySlider = ({ value, onChange }: EmpathySliderProps) => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className={cn(
-            "px-3 py-1 rounded-full text-white text-[10px] font-bold font-mono transition-colors duration-500",
+            "px-3 py-1 rounded-full text-aic-paper text-[10px] font-bold font-mono transition-colors duration-500",
             getThemeColor(value)
           )}
         >

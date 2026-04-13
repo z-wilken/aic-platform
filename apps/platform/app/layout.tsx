@@ -42,9 +42,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body
-        className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-white text-[#0f1f3d] font-sans`}
-      >
+      <body className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-navy text-aic-paper font-sans`}>
         <Providers>
           <div className="flex">
             <Sidebar navItems={navItems} />

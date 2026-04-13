@@ -155,7 +155,7 @@ export default function OrganizationalSettings() {
                 ) : (
                 <div className="grid grid-cols-1 gap-12">
                     {/* Institutional Profile */}
-                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                    <section className="bg-aic-paper border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
                         <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Institutional Profile</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
@@ -168,7 +168,7 @@ export default function OrganizationalSettings() {
                             </div>
                             <div>
                                 <label className="block text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-3">Compliance Tier</label>
-                                <div className="px-4 py-3 bg-aic-black text-white font-mono text-[10px] font-bold rounded-xl inline-block">
+                                <div className="px-4 py-3 bg-aic-black text-aic-paper font-mono text-[10px] font-bold rounded-xl inline-block">
                                     {settings.tier}
                                 </div>
                             </div>
@@ -184,19 +184,19 @@ export default function OrganizationalSettings() {
                     </section>
 
                     {/* Team Management */}
-                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                    <section className="bg-aic-paper border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
                         <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Team Management</h3>
                         
                         {generatedInvite && (
-                            <div className="mb-10 p-6 bg-aic-black text-white rounded-2xl border border-white/10">
+                            <div className="mb-10 p-6 bg-aic-black text-aic-paper rounded-2xl border border-aic-paper/10">
                                 <p className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest mb-3">INVITATION LINK READY</p>
                                 <div className="flex items-center gap-4">
-                                    <code className="flex-1 bg-white/5 border border-white/10 p-4 rounded-xl font-mono text-xs break-all">
+                                    <code className="flex-1 bg-aic-paper/5 border border-aic-paper/10 p-4 rounded-xl font-mono text-xs break-all">
                                         {generatedInvite}
                                     </code>
                                     <button 
                                         onClick={() => setGeneratedInvite(null)}
-                                        className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest hover:text-white"
+                                        className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest hover:text-aic-paper"
                                     >
                                         Dismiss
                                     </button>
@@ -267,7 +267,7 @@ export default function OrganizationalSettings() {
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="bg-aic-black text-white px-8 py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all disabled:opacity-50"
+                                    className="bg-aic-black text-aic-paper px-8 py-4 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-all disabled:opacity-50"
                                 >
                                     INVITE_TEAM_MEMBER
                                 </button>
@@ -276,22 +276,22 @@ export default function OrganizationalSettings() {
                     </section>
 
                     {/* Security Protocol */}
-                    <section className="bg-[#080808] text-white p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+                    <section className="bg-[#080808] text-aic-paper p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-10 opacity-5 font-serif italic text-6xl select-none uppercase">Security</div>
                         <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10 relative z-10">Security Protocol</h3>
 
                         <div className="space-y-8 relative z-10">
-                            <div className="p-6 bg-white/5 border border-white/10 rounded-2xl">
+                            <div className="p-6 bg-aic-paper/5 border border-aic-paper/10 rounded-2xl">
                                 <div className="flex justify-between items-center mb-4">
                                     <div>
-                                        <p className="text-sm font-serif font-bold text-white mb-1">Multi-Factor Authentication (MFA)</p>
+                                        <p className="text-sm font-serif font-bold text-aic-paper mb-1">Multi-Factor Authentication (MFA)</p>
                                         <p className="text-[10px] font-mono text-gray-500 uppercase">Mandatory for {settings.tier} Organizations</p>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         {settings.twoFactorEnabled && <span className="text-[8px] font-mono font-bold text-aic-gold bg-aic-gold/10 px-2 py-1 rounded">ACTIVE</span>}
                                         <button 
                                             onClick={startMfaSetup}
-                                            className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg font-mono text-[10px] font-bold uppercase transition-all"
+                                            className="bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper px-4 py-2 rounded-lg font-mono text-[10px] font-bold uppercase transition-all"
                                         >
                                             {settings.twoFactorEnabled ? 'Reset MFA' : 'Configure MFA'}
                                         </button>
@@ -302,10 +302,10 @@ export default function OrganizationalSettings() {
                                     <motion.div 
                                         initial={{ opacity: 0, height: 0 }}
                                         animate={{ opacity: 1, height: 'auto' }}
-                                        className="mt-6 pt-6 border-t border-white/10 space-y-6"
+                                        className="mt-6 pt-6 border-t border-aic-paper/10 space-y-6"
                                     >
                                         <div className="flex flex-col md:flex-row gap-8 items-center">
-                                            <div className="bg-white p-4 rounded-2xl">
+                                            <div className="bg-aic-paper p-4 rounded-2xl">
                                                 <img src={mfaSetup.qrCode} alt="MFA QR Code" className="w-32 h-32" />
                                             </div>
                                             <div className="flex-1 space-y-4">
@@ -320,18 +320,18 @@ export default function OrganizationalSettings() {
                                                         placeholder="000000"
                                                         value={mfaToken}
                                                         onChange={e => setMfaToken(e.target.value)}
-                                                        className="bg-white/5 border border-white/10 rounded-xl p-3 font-mono text-center tracking-[0.5em] focus:border-aic-gold outline-none w-32"
+                                                        className="bg-aic-paper/5 border border-aic-paper/10 rounded-xl p-3 font-mono text-center tracking-[0.5em] focus:border-aic-gold outline-none w-32"
                                                     />
                                                     <button 
                                                         onClick={completeMfaSetup}
                                                         disabled={isMfaEnabling || mfaToken.length !== 6}
-                                                        className="bg-aic-gold text-aic-black px-6 py-3 rounded-xl font-mono text-[10px] font-bold uppercase hover:bg-white transition-all disabled:opacity-50"
+                                                        className="bg-aic-gold text-aic-black px-6 py-3 rounded-xl font-mono text-[10px] font-bold uppercase hover:bg-aic-paper transition-all disabled:opacity-50"
                                                     >
                                                         {isMfaEnabling ? 'Verifying...' : 'Enable MFA'}
                                                     </button>
                                                     <button 
                                                         onClick={() => setMfaSetup(null)}
-                                                        className="text-[10px] font-mono font-bold text-gray-500 uppercase hover:text-white"
+                                                        className="text-[10px] font-mono font-bold text-gray-500 uppercase hover:text-aic-paper"
                                                     >
                                                         Cancel
                                                     </button>
@@ -342,9 +342,9 @@ export default function OrganizationalSettings() {
                                 )}
                             </div>
 
-                            <div className="flex justify-between items-center p-6 bg-white/5 border border-white/10 rounded-2xl">
+                            <div className="flex justify-between items-center p-6 bg-aic-paper/5 border border-aic-paper/10 rounded-2xl">
                                 <div>
-                                    <p className="text-sm font-serif font-bold text-white mb-1">Audit Trail Cryptographic Signing</p>
+                                    <p className="text-sm font-serif font-bold text-aic-paper mb-1">Audit Trail Cryptographic Signing</p>
                                     <p className="text-[10px] font-mono text-gray-500 uppercase tracking-tighter italic">SHA-256 Chain Verification active</p>
                                 </div>
                                 <span className="text-[8px] font-mono font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded">SECURE</span>
@@ -353,10 +353,10 @@ export default function OrganizationalSettings() {
                     </section>
 
                     {/* Data Residency */}
-                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                    <section className="bg-aic-paper border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
                         <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Jurisdiction & Residency</h3>
                         <div className="flex items-center gap-6 p-6 bg-aic-paper/50 rounded-2xl border border-aic-black/5">
-                            <div className="w-12 h-12 rounded-xl bg-white border border-aic-black/5 flex items-center justify-center text-2xl font-serif font-bold">ZA</div>
+                            <div className="w-12 h-12 rounded-xl bg-aic-paper border border-aic-black/5 flex items-center justify-center text-2xl font-serif font-bold">ZA</div>
                             <div>
                                 <p className="text-sm font-serif font-bold text-aic-black mb-1">Sovereign Data Storage</p>
                                 <p className="text-[10px] font-mono text-gray-500 uppercase leading-relaxed italic">
@@ -367,14 +367,14 @@ export default function OrganizationalSettings() {
                     </section>
 
                     {/* Developer API Access */}
-                    <section className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+                    <section className="bg-aic-paper border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
                         <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-10">Developer API Access</h3>
                         
                         {generatedKey && (
                             <div className="mb-10 p-6 bg-green-50 border border-green-100 rounded-2xl">
                                 <p className="text-[10px] font-mono font-bold text-green-600 uppercase tracking-widest mb-3">NEW API KEY GENERATED</p>
                                 <div className="flex items-center gap-4">
-                                    <code className="flex-1 bg-white border border-green-200 p-4 rounded-xl font-mono text-sm break-all">
+                                    <code className="flex-1 bg-aic-paper border border-green-200 p-4 rounded-xl font-mono text-sm break-all">
                                         {generatedKey}
                                     </code>
                                     <button 
@@ -428,7 +428,7 @@ export default function OrganizationalSettings() {
                                     <button 
                                         type="submit"
                                         disabled={saving}
-                                        className="bg-aic-black text-white px-8 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
+                                        className="bg-aic-black text-aic-paper px-8 rounded-xl font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all disabled:opacity-50"
                                     >
                                         Generate New Key
                                     </button>
@@ -443,7 +443,7 @@ export default function OrganizationalSettings() {
                     <button
                         onClick={handleSave}
                         disabled={saving || loading}
-                        className="bg-aic-black text-white px-12 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all shadow-xl active:scale-95 disabled:opacity-50"
+                        className="bg-aic-black text-aic-paper px-12 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold hover:text-black transition-all shadow-xl active:scale-95 disabled:opacity-50"
                     >
                         {saving ? 'SAVING...' : 'SAVE_PROTOCOL_CHANGES'}
                     </button>

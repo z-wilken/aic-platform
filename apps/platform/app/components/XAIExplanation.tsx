@@ -20,7 +20,7 @@ export default function XAIExplanation({ explanation }: XAIExplanationProps) {
         .slice(0, 10);
 
     return (
-        <div className="bg-white border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
+        <div className="bg-aic-paper border border-aic-black/5 p-10 rounded-[2.5rem] shadow-xl">
             <div className="flex justify-between items-start mb-12">
                 <div>
                     <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-4">Explainability Engine</h3>
@@ -28,7 +28,7 @@ export default function XAIExplanation({ explanation }: XAIExplanationProps) {
                 </div>
                 <div className="text-right">
                     <span className="text-[8px] font-mono text-gray-400 uppercase tracking-widest block mb-1">Methodology</span>
-                    <span className="px-3 py-1 bg-aic-black text-white font-mono text-[9px] font-bold rounded-full uppercase">{explanation.method}</span>
+                    <span className="px-3 py-1 bg-aic-black text-aic-paper font-mono text-[9px] font-bold rounded-full uppercase">{explanation.method}</span>
                 </div>
             </div>
 
@@ -51,7 +51,7 @@ export default function XAIExplanation({ explanation }: XAIExplanationProps) {
                                 if (active && payload && payload.length) {
                                     const val = payload[0].value as number;
                                     return (
-                                        <div className="bg-aic-black text-white p-4 rounded-xl shadow-2xl font-mono text-[10px]">
+                                        <div className="bg-aic-black text-aic-paper p-4 rounded-xl shadow-2xl font-mono text-[10px]">
                                             <p className="uppercase tracking-widest mb-1">{payload[0].payload.name}</p>
                                             <p className={val > 0 ? 'text-green-400' : 'text-aic-red'}>
                                                 IMPACT: {val > 0 ? '+' : ''}{val.toFixed(4)}
