@@ -132,8 +132,16 @@ export default function Footer() {
                     albert@ztoaholdings.com
                   </a>
                 </div>
-                <div className="text-xs text-[#7A2535] font-medium pt-2">
-                  Questions? Reach Albert directly — albert@ztoaholdings.com
+                <div className="flex items-center gap-3 group">
+                  <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4 text-[#7A2535]" />
+                  </div>
+                  <a
+                    href="mailto:zander@ztoaholdings.com"
+                    className="hover:text-white transition-colors break-all"
+                  >
+                    zander@ztoaholdings.com
+                  </a>
                 </div>
               </li>
             </ul>
