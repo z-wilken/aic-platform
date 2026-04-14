@@ -38,7 +38,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         {/* Shield Background */}
         <path
           d="M50 5L15 20V45C15 65 30 82 50 95C70 82 85 65 85 45V20L50 5Z"
-          fill="#1B2632"
+          fill="#0a1628"
         />
         
         {/* Inner Shield Accent */}
@@ -48,19 +48,19 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         />
         
         {/* Human Silhouette - Head */}
-        <circle cx="50" cy="35" r="8" fill="#A35139" />
+        <circle cx="50" cy="35" r="8" fill="#c9920a" />
         
         {/* Human Silhouette - Body */}
         <path
           d="M50 45C42 45 36 50 36 56V68C36 70 37 72 39 72H61C63 72 64 70 64 68V56C64 50 58 45 50 45Z"
-          fill="#A35139"
+          fill="#c9920a"
         />
         
         {/* AI Circuit Pattern */}
-        <circle cx="35" cy="50" r="2" fill="#A35139" opacity="0.4" />
-        <circle cx="65" cy="50" r="2" fill="#A35139" opacity="0.4" />
-        <line x1="37" y1="50" x2="42" y2="52" stroke="#A35139" strokeWidth="1" opacity="0.4" />
-        <line x1="63" y1="50" x2="58" y2="52" stroke="#A35139" strokeWidth="1" opacity="0.4" />
+        <circle cx="35" cy="50" r="2" fill="#c9920a" opacity="0.4" />
+        <circle cx="65" cy="50" r="2" fill="#c9920a" opacity="0.4" />
+        <line x1="37" y1="50" x2="42" y2="52" stroke="#c9920a" strokeWidth="1" opacity="0.4" />
+        <line x1="63" y1="50" x2="58" y2="52" stroke="#c9920a" strokeWidth="1" opacity="0.4" />
       </svg>
     );
   }
@@ -78,7 +78,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         <text
           x="0"
           y="42"
-          fill="#1B2632"
+          fill="#0a1628"
           fontSize="44"
           fontWeight="700"
           fontFamily="'Space Grotesk', sans-serif"
@@ -89,7 +89,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         <text
           x="0"
           y="56"
-          fill="#A35139"
+          fill="#c9920a"
           fontSize="9"
           fontWeight="500"
           fontFamily="'Space Grotesk', sans-serif"
@@ -116,7 +116,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         {/* Shield Background */}
         <path
           d="M35 5L12 14V30C12 42 20 52 35 60C50 52 58 42 58 30V14L35 5Z"
-          fill="#1B2632"
+          fill="#0a1628"
         />
         
         {/* Inner Shield */}
@@ -126,19 +126,19 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         />
         
         {/* Human Silhouette - Head */}
-        <circle cx="35" cy="24" r="5" fill="#A35139" />
+        <circle cx="35" cy="24" r="5" fill="#c9920a" />
         
         {/* Human Silhouette - Body */}
         <path
           d="M35 30C30 30 26 33 26 37V45C26 46 27 47 28 47H42C43 47 44 46 44 45V37C44 33 40 30 35 30Z"
-          fill="#A35139"
+          fill="#c9920a"
         />
         
         {/* AI Circuit Dots */}
-        <circle cx="25" cy="35" r="1.5" fill="#A35139" opacity="0.4" />
-        <circle cx="45" cy="35" r="1.5" fill="#A35139" opacity="0.4" />
-        <line x1="26.5" y1="35" x2="30" y2="36" stroke="#A35139" strokeWidth="0.8" opacity="0.4" />
-        <line x1="43.5" y1="35" x2="40" y2="36" stroke="#A35139" strokeWidth="0.8" opacity="0.4" />
+        <circle cx="25" cy="35" r="1.5" fill="#c9920a" opacity="0.4" />
+        <circle cx="45" cy="35" r="1.5" fill="#c9920a" opacity="0.4" />
+        <line x1="26.5" y1="35" x2="30" y2="36" stroke="#c9920a" strokeWidth="0.8" opacity="0.4" />
+        <line x1="43.5" y1="35" x2="40" y2="36" stroke="#c9920a" strokeWidth="0.8" opacity="0.4" />
       </g>
       
       {/* Text */}
@@ -147,7 +147,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         <text
           x="0"
           y="42"
-          fill="#1B2632"
+          fill="#0a1628"
           fontSize="36"
           fontWeight="700"
           fontFamily="'Space Grotesk', sans-serif"
@@ -170,7 +170,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         </text>
         
         {/* Accent Line */}
-        <line x1="0" y1="62" x2="180" y2="62" stroke="#A35139" strokeWidth="1.5" opacity="0.3" />
+        <line x1="0" y1="62" x2="180" y2="62" stroke="#c9920a" strokeWidth="1.5" opacity="0.3" />
       </g>
     </svg>
   );

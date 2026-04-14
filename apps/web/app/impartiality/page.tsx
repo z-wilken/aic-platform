@@ -30,17 +30,17 @@ export default function ImpartialityStatement() {
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-4">
           <div className="prose prose-aic prose-lg max-w-none">
-            <p className="text-[#6B6458]/60 mb-12 italic font-mono text-sm uppercase tracking-widest">Last Updated: April 2026 — Version 1.0</p>
+            <p className="text-[#6b7280]/60 mb-12 italic font-mono text-sm uppercase tracking-widest">Last Updated: April 2026 — Version 1.0</p>
 
             {/* Commitment */}
             <h2 className="text-aic-navy font-serif italic text-3xl mb-4">1. Our Commitment</h2>
-            <p className="text-[#6B6458] mb-6 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-6 text-lg leading-relaxed">
               AI Integrity Certification (Pty) Ltd (&ldquo;AIC&rdquo;) is committed to impartiality in all
               its certification activities. Impartiality means that AIC&apos;s certification decisions
               are based solely on objective evidence, assessed by competent and independent
               personnel, and are not influenced by commercial, financial, or personal interests.
             </p>
-            <p className="text-[#6B6458] mb-8 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-8 text-lg leading-relaxed">
               AIC will not allow commercial pressure, applicant relationships, or external
               influences to compromise the integrity of any assessment or certification decision.
               This commitment applies to all directors, employees, contractors, and auditors
@@ -66,12 +66,12 @@ export default function ImpartialityStatement() {
 
             {/* Conflict Prohibitions */}
             <h2 className="text-aic-navy font-serif italic text-3xl mb-4 mt-16">2. Conflict of Interest Prohibitions</h2>
-            <p className="text-[#6B6458] mb-6 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-6 text-lg leading-relaxed">
               AIC prohibits its personnel from engaging in any activity that creates, or could
               reasonably be perceived to create, a conflict of interest. Specifically, AIC
               personnel may not:
             </p>
-            <div className="bg-aic-paper border border-[#DDD3C0] rounded-2xl p-10 my-8 shadow-sm">
+            <div className="bg-aic-paper border border-[#e5e7eb] rounded-2xl p-10 my-8 shadow-sm">
               <div className="flex items-start gap-6">
                 <AlertCircle className="w-8 h-8 text-aic-copper shrink-0 mt-1" />
                 <div className="space-y-4 w-full">
@@ -86,7 +86,7 @@ export default function ImpartialityStatement() {
                   ].map((item, i) => (
                     <div key={i} className="flex gap-3 items-start">
                       <CheckCircle className="w-5 h-5 text-aic-copper shrink-0 mt-0.5" />
-                      <p className="text-[#1B2632] text-sm leading-relaxed">{item.prohibition}</p>
+                      <p className="text-[#0f1f3d] text-sm leading-relaxed">{item.prohibition}</p>
                     </div>
                   ))}
                 </div>
@@ -95,7 +95,7 @@ export default function ImpartialityStatement() {
 
             {/* Declaration requirement */}
             <h2 className="text-aic-navy font-serif italic text-3xl mb-4 mt-16">3. Conflict Declaration Obligations</h2>
-            <p className="text-[#6B6458] mb-6 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-6 text-lg leading-relaxed">
               All AIC personnel — including contracted auditors and external reviewers — are
               required to:
             </p>
@@ -106,11 +106,11 @@ export default function ImpartialityStatement() {
                 { step: "03", title: "Declare ongoing changes", desc: "Notify AIC&apos;s impartiality oversight function within 5 business days of any new relationship, employment offer, or financial interest that could affect impartiality." },
                 { step: "04", title: "Accept recusal", desc: "Where a declared conflict cannot be adequately managed, the individual must recuse themselves from the engagement entirely. The applicant will be reassigned without prejudice." },
               ].map((item, i) => (
-                <div key={i} className="flex gap-6 items-start border border-[#DDD3C0] rounded-xl p-6">
+                <div key={i} className="flex gap-6 items-start border border-[#e5e7eb] rounded-xl p-6">
                   <span className="font-mono text-aic-copper font-bold text-2xl shrink-0">{item.step}</span>
                   <div>
                     <p className="font-bold text-aic-navy mb-1 font-serif">{item.title}</p>
-                    <p className="text-[#6B6458] text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: item.desc }} />
+                    <p className="text-[#6b7280] text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: item.desc }} />
                   </div>
                 </div>
               ))}
@@ -118,7 +118,7 @@ export default function ImpartialityStatement() {
 
             {/* Decision-making independence */}
             <h2 className="text-aic-navy font-serif italic text-3xl mb-4 mt-16">4. Independent Decision-Making</h2>
-            <p className="text-[#6B6458] mb-6 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-6 text-lg leading-relaxed">
               AIC certification decisions follow a separation-of-duties model. The person who
               conducts the assessment and the person who approves the certification decision
               are always different individuals. This separation cannot be waived for any
@@ -130,17 +130,17 @@ export default function ImpartialityStatement() {
                 { icon: <Users className="w-6 h-6 text-aic-copper mb-4" />, title: "Review", desc: "A second qualified reviewer examines the Evidence Record and auditor findings independently before a decision is made." },
                 { icon: <Scale className="w-6 h-6 text-aic-copper mb-4" />, title: "Decision", desc: "The certification decision is made by a senior AIC officer who has not participated in the assessment or review." },
               ].map((item, i) => (
-                <div key={i} className="p-8 bg-aic-paper border border-[#DDD3C0] rounded-2xl shadow-sm">
+                <div key={i} className="p-8 bg-aic-paper border border-[#e5e7eb] rounded-2xl shadow-sm">
                   {item.icon}
                   <h4 className="font-bold text-aic-navy mb-2 font-serif text-lg">{item.title}</h4>
-                  <p className="text-sm text-[#6B6458]/80 leading-relaxed">{item.desc}</p>
+                  <p className="text-sm text-[#6b7280]/80 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
 
             {/* Risk identification */}
             <h2 className="text-aic-navy font-serif italic text-3xl mb-4 mt-16">5. Ongoing Risk Identification</h2>
-            <p className="text-[#6B6458] mb-6 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-6 text-lg leading-relaxed">
               AIC maintains an active Impartiality Risk Register. Threats to impartiality
               arising from relationships, financial dependencies, commercial arrangements, or
               personnel changes are identified, logged, and assessed at least quarterly.
@@ -150,23 +150,23 @@ export default function ImpartialityStatement() {
                 { icon: <RefreshCw className="w-6 h-6 text-aic-copper mb-4" />, title: "Quarterly Review", desc: "The Impartiality Risk Register is reviewed every quarter. Any emerging risks are assessed and mitigated before the next certification cycle." },
                 { icon: <Shield className="w-6 h-6 text-aic-copper mb-4" />, title: "Public Disclosure", desc: "AIC publishes a summary of impartiality safeguards annually. Certificate holders and applicants may request a copy of the current risk register at any time." },
               ].map((item, i) => (
-                <div key={i} className="p-8 bg-aic-paper rounded-2xl border border-[#DDD3C0] shadow-sm hover:border-[#A35139]/30 transition-colors">
+                <div key={i} className="p-8 bg-aic-paper rounded-2xl border border-[#e5e7eb] shadow-sm hover:border-[#c9920a]/30 transition-colors">
                   {item.icon}
                   <h4 className="font-bold text-aic-navy mb-2 font-serif text-lg">{item.title}</h4>
-                  <p className="text-sm text-[#6B6458]/80 leading-relaxed">{item.desc}</p>
+                  <p className="text-sm text-[#6b7280]/80 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
 
             {/* Complaints */}
             <h2 className="text-aic-navy font-serif italic text-3xl mb-4 mt-16">6. Raising Impartiality Concerns</h2>
-            <p className="text-[#6B6458] mb-6 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-6 text-lg leading-relaxed">
               Any applicant, certificate holder, or third party who believes that AIC&apos;s
               impartiality has been compromised may raise a concern at any time. AIC treats
               impartiality complaints with the same seriousness as complaints about incorrect
               assessment decisions.
             </p>
-            <div className="bg-aic-paper border border-[#DDD3C0] rounded-2xl p-10 mb-8 shadow-sm">
+            <div className="bg-aic-paper border border-[#e5e7eb] rounded-2xl p-10 mb-8 shadow-sm">
               <h3 className="font-bold text-aic-navy mb-4 font-serif text-xl">Complaints Process</h3>
               <div className="space-y-4">
                 {[
@@ -178,7 +178,7 @@ export default function ImpartialityStatement() {
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4 items-start">
                     <span className="font-mono text-aic-copper font-bold text-sm shrink-0 mt-0.5">{String(i + 1).padStart(2, "0")}</span>
-                    <p className="text-[#1B2632] text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: item }} />
+                    <p className="text-[#0f1f3d] text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: item }} />
                   </div>
                 ))}
               </div>
@@ -186,7 +186,7 @@ export default function ImpartialityStatement() {
 
             {/* Annual review */}
             <h2 className="text-aic-navy font-serif italic text-3xl mb-4 mt-16">7. Annual Review and Governance</h2>
-            <p className="text-[#6B6458] mb-8 text-lg leading-relaxed">
+            <p className="text-[#6b7280] mb-8 text-lg leading-relaxed">
               This Statement of Impartiality is reviewed annually by AIC&apos;s directors. Any
               material changes to AIC&apos;s operations, ownership, or personnel structure that
               could affect impartiality are assessed against this statement and, where necessary,

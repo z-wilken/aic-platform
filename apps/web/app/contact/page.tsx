@@ -54,7 +54,7 @@ export default function ContactPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#FAF6EF] pt-24 pb-16 px-4 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-[#f0f4f8] pt-24 pb-16 px-4 flex flex-col items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -62,35 +62,35 @@ export default function ContactPage() {
           className="max-w-2xl w-full"
         >
           <Card className="p-12 text-center">
-            <div className="w-20 h-20 bg-[#A35139]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-[#A35139]" />
+            <div className="w-20 h-20 bg-[#c9920a]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-[#c9920a]" />
             </div>
-            <h2 className="text-3xl font-bold text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl font-bold text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               You&apos;re on the List!
             </h2>
-            <p className="text-[#6B6458] text-lg mb-6 leading-relaxed">
+            <p className="text-[#6b7280] text-lg mb-6 leading-relaxed">
               Thank you for joining the AIC waiting list, <strong>{formData.firstName}</strong>. We&apos;ve received your application.
             </p>
-            <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-lg p-6 mb-8 text-left">
-              <h3 className="font-semibold text-[#1B2632] mb-3 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-[#A35139]" />
+            <div className="bg-[#f0f4f8] border border-[#e5e7eb] rounded-lg p-6 mb-8 text-left">
+              <h3 className="font-semibold text-[#0f1f3d] mb-3 flex items-center gap-2">
+                <Clock className="w-5 h-5 text-[#c9920a]" />
                 What Happens Next?
               </h3>
-              <ul className="space-y-2 text-sm text-[#1B2632]">
+              <ul className="space-y-2 text-sm text-[#0f1f3d]">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#A35139] font-bold">1.</span>
+                  <span className="text-[#c9920a] font-bold">1.</span>
                   <span>You&apos;ll receive exclusive pre-launch updates and study materials</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#A35139] font-bold">2.</span>
+                  <span className="text-[#c9920a] font-bold">2.</span>
                   <span>Get notified 48 hours before registration opens to the public</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#A35139] font-bold">3.</span>
+                  <span className="text-[#c9920a] font-bold">3.</span>
                   <span>Access your exclusive 25% early bird discount code</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#A35139] font-bold">4.</span>
+                  <span className="text-[#c9920a] font-bold">4.</span>
                   <span>Join our private pre-certification community forum</span>
                 </li>
               </ul>
@@ -98,7 +98,7 @@ export default function ContactPage() {
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => setSubmitted(false)}
-                className="bg-[#A35139] hover:bg-[#A35139] text-aic-paper px-8"
+                className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-8"
               >
                 Back to Portal
               </Button>
@@ -112,7 +112,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-aic-paper">
       {/* Header */}
-      <section className="bg-[#1B2632] pt-32 pb-20">
+      <section className="bg-[#0a1628] pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -120,7 +120,7 @@ export default function ContactPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Join the <span className="text-[#A35139]">Aic Waiting List</span>
+              Join the <span className="text-[#c9920a]">Aic Waiting List</span>
             </h1>
             <p className="text-aic-paper/70 text-lg max-w-2xl mx-auto">
               Secure your place in the upcoming certification cohort. Professionals who join the waiting list receive early access, exclusive study materials, and a 25% discount.
@@ -136,46 +136,46 @@ export default function ContactPage() {
             {/* Left Column: Info */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-[#1B2632] mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+                <h2 className="text-2xl font-bold text-[#0f1f3d] mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
                   Contact Information
                 </h2>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#EEE9DF] rounded-lg flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5 text-[#A35139]" />
+                    <div className="w-10 h-10 bg-[#f0f4f8] rounded-lg flex items-center justify-center shrink-0">
+                      <Mail className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">General Inquiries</div>
-                      <div className="text-[#1B2632]">contact@aiccertified.cloud</div>
+                      <div className="text-sm text-[#6b7280] uppercase tracking-wider font-semibold">General Inquiries</div>
+                      <div className="text-[#0f1f3d]">contact@aiccertified.cloud</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#EEE9DF] rounded-lg flex items-center justify-center shrink-0">
-                      <Shield className="w-5 h-5 text-[#A35139]" />
+                    <div className="w-10 h-10 bg-[#f0f4f8] rounded-lg flex items-center justify-center shrink-0">
+                      <Shield className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">Certification Support</div>
-                      <div className="text-[#1B2632]">support@aiccertified.cloud</div>
+                      <div className="text-sm text-[#6b7280] uppercase tracking-wider font-semibold">Certification Support</div>
+                      <div className="text-[#0f1f3d]">support@aiccertified.cloud</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#EEE9DF] rounded-lg flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-[#A35139]" />
+                    <div className="w-10 h-10 bg-[#f0f4f8] rounded-lg flex items-center justify-center shrink-0">
+                      <MapPin className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">Headquarters</div>
-                      <div className="text-[#1B2632]">London, United Kingdom<br />Global Remote Operations</div>
+                      <div className="text-sm text-[#6b7280] uppercase tracking-wider font-semibold">Headquarters</div>
+                      <div className="text-[#0f1f3d]">London, United Kingdom<br />Global Remote Operations</div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="p-6 bg-[#FAF6EF] rounded-xl border border-[#DDD3C0]">
-                <h3 className="font-semibold text-[#1B2632] mb-4">Enterprise Solutions</h3>
-                <p className="text-sm text-[#6B6458] mb-4">
+              <div className="p-6 bg-[#f0f4f8] rounded-xl border border-[#e5e7eb]">
+                <h3 className="font-semibold text-[#0f1f3d] mb-4">Enterprise Solutions</h3>
+                <p className="text-sm text-[#6b7280] mb-4">
                   Interested in certifying your entire team or organization? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
-                <a href="#" className="text-[#A35139] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+                <a href="#" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                   Contact Enterprise Sales <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -183,13 +183,13 @@ export default function ContactPage() {
 
             {/* Right Column: Form */}
             <div className="lg:col-span-2">
-              <Card className="p-8 md:p-10 shadow-xl border-[#DDD3C0] relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EEE9DF] rounded-bl-full -mr-10 -mt-10 opacity-50" />
+              <Card className="p-8 md:p-10 shadow-xl border-[#e5e7eb] relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#f0f4f8] rounded-bl-full -mr-10 -mt-10 opacity-50" />
                 
                 <form onSubmit={handleSubmit} className="space-y-6 relative">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="firstName" className="text-sm font-medium text-[#1B2632]">First Name</label>
+                      <label htmlFor="firstName" className="text-sm font-medium text-[#0f1f3d]">First Name</label>
                       <Input
                         id="firstName"
                         name="firstName"
@@ -197,11 +197,11 @@ export default function ContactPage() {
                         value={formData.firstName}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
+                        className="bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="lastName" className="text-sm font-medium text-[#1B2632]">Last Name</label>
+                      <label htmlFor="lastName" className="text-sm font-medium text-[#0f1f3d]">Last Name</label>
                       <Input
                         id="lastName"
                         name="lastName"
@@ -209,13 +209,13 @@ export default function ContactPage() {
                         value={formData.lastName}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
+                        className="bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium text-[#1B2632]">Professional Email</label>
+                    <label htmlFor="email" className="text-sm font-medium text-[#0f1f3d]">Professional Email</label>
                     <Input
                       id="email"
                       name="email"
@@ -224,13 +224,13 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
+                      className="bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="company" className="text-sm font-medium text-[#1B2632]">Company / Organization</label>
+                      <label htmlFor="company" className="text-sm font-medium text-[#0f1f3d]">Company / Organization</label>
                       <Input
                         id="company"
                         name="company"
@@ -238,11 +238,11 @@ export default function ContactPage() {
                         value={formData.company}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
+                        className="bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="jobTitle" className="text-sm font-medium text-[#1B2632]">Job Title</label>
+                      <label htmlFor="jobTitle" className="text-sm font-medium text-[#0f1f3d]">Job Title</label>
                       <Input
                         id="jobTitle"
                         name="jobTitle"
@@ -250,15 +250,15 @@ export default function ContactPage() {
                         value={formData.jobTitle}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
+                        className="bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="country" className="text-sm font-medium text-[#1B2632]">Country</label>
+                    <label htmlFor="country" className="text-sm font-medium text-[#0f1f3d]">Country</label>
                     <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6458]/60" />
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6b7280]/60" />
                       <Input
                         id="country"
                         name="country"
@@ -266,14 +266,14 @@ export default function ContactPage() {
                         value={formData.country}
                         onChange={handleChange}
                         required
-                        className="pl-10 bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
+                        className="pl-10 bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a]"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-4 pt-2">
-                    <label className="text-sm font-medium text-[#1B2632] block flex items-center gap-2">
-                      <Award className="w-4 h-4 text-[#A35139]" />
+                    <label className="text-sm font-medium text-[#0f1f3d] block flex items-center gap-2">
+                      <Award className="w-4 h-4 text-[#c9920a]" />
                       I&apos;m Interested In
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -282,8 +282,8 @@ export default function ContactPage() {
                           key={type.value}
                           className={`flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
                             formData.certificationType === type.value
-                              ? "border-[#A35139] bg-[#A35139]/5 ring-1 ring-[#A35139]"
-                              : "border-[#DDD3C0] hover:border-[#DDD3C0] hover:bg-[#FAF6EF]"
+                              ? "border-[#c9920a] bg-[#c9920a]/5 ring-1 ring-[#c9920a]"
+                              : "border-[#e5e7eb] hover:border-[#e5e7eb] hover:bg-[#f0f4f8]"
                           }`}
                         >
                           <input
@@ -292,12 +292,12 @@ export default function ContactPage() {
                             value={type.value}
                             checked={formData.certificationType === type.value}
                             onChange={handleChange}
-                            className="mt-1 w-4 h-4 text-[#A35139] border-[#DDD3C0] focus:ring-[#A35139]"
+                            className="mt-1 w-4 h-4 text-[#c9920a] border-[#e5e7eb] focus:ring-[#c9920a]"
                             required
                           />
                           <div>
-                            <div className="font-semibold text-[#1B2632] text-sm">{type.label}</div>
-                            <div className="text-xs text-[#6B6458] leading-snug mt-0.5">{type.description}</div>
+                            <div className="font-semibold text-[#0f1f3d] text-sm">{type.label}</div>
+                            <div className="text-xs text-[#6b7280] leading-snug mt-0.5">{type.description}</div>
                           </div>
                         </label>
                       ))}
@@ -305,25 +305,25 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2 pt-2">
-                    <label htmlFor="message" className="text-sm font-medium text-[#1B2632]">Message (Optional)</label>
+                    <label htmlFor="message" className="text-sm font-medium text-[#0f1f3d]">Message (Optional)</label>
                     <Textarea
                       id="message"
                       name="message"
                       placeholder="Tell us about your background or specific requirements..."
                       value={formData.message}
                       onChange={handleChange}
-                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139] min-h-[120px]"
+                      className="bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a] min-h-[120px]"
                     />
                   </div>
 
                   <div className="pt-4">
                     <Button
                       type="submit"
-                      className="w-full bg-[#A35139] hover:bg-[#A35139] text-aic-paper py-6 text-lg font-bold shadow-lg shadow-[#A35139]/20 transition-all"
+                      className="w-full bg-[#c9920a] hover:bg-[#b07d08] text-white py-6 text-lg font-bold shadow-lg shadow-[#c9920a]/20 transition-all"
                     >
                       Join the Waiting List
                     </Button>
-                    <p className="text-center text-xs text-[#6B6458]/60 mt-4">
+                    <p className="text-center text-xs text-[#6b7280]/60 mt-4">
                       By submitting this form, you agree to our privacy policy and terms of service. We will only contact you regarding AIC certification updates.
                     </p>
                   </div>
@@ -335,18 +335,18 @@ export default function ContactPage() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-20 bg-[#EEE9DF] border-t border-[#DDD3C0]">
+      <section className="py-20 bg-white border-t border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Users className="w-12 h-12 text-[#A35139] mx-auto mb-6" />
-            <h2 className="text-3xl text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <Users className="w-12 h-12 text-[#c9920a] mx-auto mb-6" />
+            <h2 className="text-3xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Join Thousands of AI Leaders
             </h2>
-            <p className="text-[#6B6458] text-lg leading-relaxed max-w-2xl mx-auto">
+            <p className="text-[#6b7280] text-lg leading-relaxed max-w-2xl mx-auto">
               Professionals from Fortune 500 companies, government agencies, and leading research institutions are already on the waiting list. Position yourself at the forefront of AI governance.
             </p>
           </motion.div>

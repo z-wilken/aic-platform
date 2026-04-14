@@ -22,7 +22,7 @@ export default function Error({
           Something went wrong.
         </h2>
 
-        <p className="text-[#6B6458] font-serif leading-relaxed mb-12 italic">
+        <p className="text-[#6b7280] font-serif leading-relaxed mb-12 italic">
           An unexpected error occurred. Our integrity systems have logged this
           incident for review.
         </p>
@@ -35,7 +35,7 @@ export default function Error({
         </button>
       </div>
 
-      <div className="absolute bottom-12 left-12 text-[10px] font-mono text-[#6B6458]/40 uppercase tracking-widest hidden lg:block">
+      <div className="absolute bottom-12 left-12 text-[10px] font-mono text-[#6b7280]/40 uppercase tracking-widest hidden lg:block">
         AI Integrity Certification
       </div>
     </div>

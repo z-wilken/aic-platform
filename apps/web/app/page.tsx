@@ -53,13 +53,13 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-[#1B2632]">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-[#0a1628]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
         {/* Overlay with 0.55 opacity */}
-        <div className="absolute inset-0 bg-[#1B2632]/40" />
+        <div className="absolute inset-0 bg-[#0a1628]/40" />
 
         {/* Subtle grid overlay */}
         <div
@@ -78,7 +78,7 @@ export default function Home() {
             className="max-w-4xl"
           >
             <div className="flex items-center gap-2 mb-8">
-              <span className="px-3 py-1 bg-[#A35139]/20 text-[#A35139] text-[0.7rem] font-medium rounded border border-[#A35139]/30 uppercase tracking-[0.15em]">
+              <span className="px-3 py-1 bg-[#c9920a]/20 text-[#c9920a] text-[0.7rem] font-medium rounded border border-[#c9920a]/30 uppercase tracking-[0.15em]">
                 IAF MLA Accredited · ISO/IEC 17024
               </span>
             </div>
@@ -87,7 +87,7 @@ export default function Home() {
               style={{ fontFamily: "'Merriweather', serif" }}
             >
               Certifying the{" "}
-              <span className="text-[#A35139]">Human</span>{" "}
+              <span className="text-[#c9920a]">Human</span>{" "}
               Behind the Algorithm
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl leading-[1.65]">
@@ -96,7 +96,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/certification"
-                className="inline-flex items-center gap-2 bg-[#A35139] hover:bg-[#8B422E] text-white px-8 py-4 rounded transition-all text-sm font-semibold shadow-lg shadow-[#A35139]/20"
+                className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-8 py-4 rounded transition-all text-sm font-semibold shadow-lg shadow-[#c9920a]/20"
               >
                 See how certification works <ArrowRight className="w-4 h-4" />
               </Link>
@@ -112,34 +112,34 @@ export default function Home() {
       </section>
 
       {/* Trust Bar */}
-      <section className="bg-[#FAF6EF] py-6 border-b border-[#DDD3C0]">
+      <section className="bg-[#f0f4f8] py-6 border-b border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#A35139]" />
-              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#1B2632]">POPIA §71 Aligned</span>
+              <Shield className="w-4 h-4 text-[#c9920a]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0f1f3d]">POPIA §71 Aligned</span>
             </div>
-            <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
+            <div className="hidden md:block w-px h-4 bg-[#e5e7eb]" />
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#A35139]" />
-              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#1B2632]">EU AI Act Ready</span>
+              <Shield className="w-4 h-4 text-[#c9920a]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0f1f3d]">EU AI Act Ready</span>
             </div>
-            <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
+            <div className="hidden md:block w-px h-4 bg-[#e5e7eb]" />
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#A35139]" />
-              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#1B2632]">FSCA Compliant</span>
+              <Shield className="w-4 h-4 text-[#c9920a]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0f1f3d]">FSCA Compliant</span>
             </div>
-            <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
+            <div className="hidden md:block w-px h-4 bg-[#e5e7eb]" />
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#A35139]" />
-              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#1B2632]">SANAS Accreditation Pathway</span>
+              <Shield className="w-4 h-4 text-[#c9920a]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0f1f3d]">SANAS Accreditation Pathway</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Declaration of Algorithmic Rights */}
-      <section className="py-24 bg-[#EEE9DF]">
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -147,14 +147,14 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-[#A35139] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Why It Matters</span>
+            <span className="text-[#c9920a] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Why It Matters</span>
             <h2 
-              className="text-4xl md:text-5xl text-[#1B2632] mt-3 mb-6 leading-[1.1] tracking-[-0.03em] font-bold"
+              className="text-4xl md:text-5xl text-[#0f1f3d] mt-3 mb-6 leading-[1.1] tracking-[-0.03em] font-bold"
               style={{ fontFamily: "'Merriweather', serif" }}
             >
               Your AI makes decisions about people. Here&apos;s what they&apos;re entitled to.
             </h2>
-            <p className="text-[#6B6458] max-w-2xl mx-auto text-lg leading-[1.65]">
+            <p className="text-[#6b7280] max-w-2xl mx-auto text-lg leading-[1.65]">
               Regulators in South Africa, the UK, and the EU are codifying five rights that apply when algorithms affect human outcomes. AIC certification maps your systems against every one of them.
             </p>
           </motion.div>
@@ -170,14 +170,14 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-[#f0f4f8] border border-[#e5e7eb] rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="w-12 h-12 rounded bg-[#A35139]/10 flex items-center justify-center mb-6">
-                    <Icon className="w-6 h-6 text-[#A35139]" />
+                  <div className="w-12 h-12 rounded bg-[#c9920a]/10 flex items-center justify-center mb-6">
+                    <Icon className="w-6 h-6 text-[#c9920a]" />
                   </div>
-                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#A35139] font-bold mb-2">Article {i + 1}</div>
-                  <h3 className="text-xl font-bold mb-3 text-[#1B2632]">{right.title}</h3>
-                  <p className="text-[#6B6458] text-sm leading-[1.65]">{right.description}</p>
+                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#c9920a] font-bold mb-2">Article {i + 1}</div>
+                  <h3 className="text-xl font-bold mb-3 text-[#0f1f3d]">{right.title}</h3>
+                  <p className="text-[#6b7280] text-sm leading-[1.65]">{right.description}</p>
                 </motion.div>
               );
             })}
@@ -193,14 +193,14 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: (i + 3) * 0.1 }}
-                  className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-[#f0f4f8] border border-[#e5e7eb] rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="w-12 h-12 rounded bg-[#A35139]/10 flex items-center justify-center mb-6">
-                    <Icon className="w-6 h-6 text-[#A35139]" />
+                  <div className="w-12 h-12 rounded bg-[#c9920a]/10 flex items-center justify-center mb-6">
+                    <Icon className="w-6 h-6 text-[#c9920a]" />
                   </div>
-                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#A35139] font-bold mb-2">Article {i + 4}</div>
-                  <h3 className="text-xl font-bold mb-3 text-[#1B2632]">{right.title}</h3>
-                  <p className="text-[#6B6458] text-sm leading-[1.65]">{right.description}</p>
+                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#c9920a] font-bold mb-2">Article {i + 4}</div>
+                  <h3 className="text-xl font-bold mb-3 text-[#0f1f3d]">{right.title}</h3>
+                  <p className="text-[#6b7280] text-sm leading-[1.65]">{right.description}</p>
                 </motion.div>
               );
             })}
@@ -209,7 +209,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Link
               href="/governance-hub"
-              className="inline-flex items-center gap-2 text-[#1B2632] border border-[#1B2632] px-8 py-4 rounded hover:bg-[#1B2632] hover:text-white transition-all text-sm font-bold uppercase tracking-widest"
+              className="inline-flex items-center gap-2 text-[#0f1f3d] border border-[#0f1f3d] px-8 py-4 rounded hover:bg-[#0f1f3d] hover:text-white transition-all text-sm font-bold uppercase tracking-widest"
             >
               Read the Full Declaration <ArrowRight className="w-4 h-4" />
             </Link>
@@ -218,7 +218,7 @@ export default function Home() {
       </section>
 
       {/* Standards Section */}
-      <section className="py-24 bg-[#EEE9DF] relative overflow-hidden">
+      <section className="py-24 bg-white relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -226,14 +226,14 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-[#A35139] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Professional Standards</span>
+            <span className="text-[#c9920a] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Professional Standards</span>
             <h2 
-              className="text-4xl md:text-5xl text-[#1B2632] mt-3 mb-6 leading-[1.05] tracking-[-0.03em] font-bold"
+              className="text-4xl md:text-5xl text-[#0f1f3d] mt-3 mb-6 leading-[1.05] tracking-[-0.03em] font-bold"
               style={{ fontFamily: "'Merriweather', serif" }}
             >
               Built on International Frameworks
             </h2>
-            <p className="text-[#6B6458] max-w-2xl mx-auto text-lg leading-[1.65]">
+            <p className="text-[#6b7280] max-w-2xl mx-auto text-lg leading-[1.65]">
               All AIC certification programs are rigorously aligned with the most authoritative international standards in AI governance and personnel certification.
             </p>
           </motion.div>
@@ -246,12 +246,12 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="border border-[#DDD3C0] rounded-xl p-8 bg-[#FAF6EF] shadow-sm hover:shadow-md transition-shadow"
+                className="border border-[#e5e7eb] rounded-xl p-8 bg-[#f0f4f8] shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="text-[#A35139] font-bold text-lg mb-2">{std.code}</div>
-                <div className="text-[#1B2632] text-base font-bold mb-3">{std.name}</div>
-                <p className="text-[#6B6458] text-sm leading-[1.65]">{std.desc}</p>
-                <div className="mt-6 flex items-center gap-2 text-[#A35139] text-[0.7rem] font-bold uppercase tracking-wider">
+                <div className="text-[#c9920a] font-bold text-lg mb-2">{std.code}</div>
+                <div className="text-[#0f1f3d] text-base font-bold mb-3">{std.name}</div>
+                <p className="text-[#6b7280] text-sm leading-[1.65]">{std.desc}</p>
+                <div className="mt-6 flex items-center gap-2 text-[#c9920a] text-[0.7rem] font-bold uppercase tracking-wider">
                   <CheckCircle className="w-4 h-4" />
                   <span>AIC Aligned</span>
                 </div>
@@ -262,7 +262,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-[#A35139]">
+      <section className="py-24 bg-[#c9920a]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -281,7 +281,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-4 justify-center">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-white text-[#A35139] px-8 py-4 rounded font-bold hover:bg-[#EEE9DF] transition-all"
+                className="inline-flex items-center gap-2 bg-white text-[#c9920a] px-8 py-4 rounded font-bold hover:bg-[#f0f4f8] transition-all"
               >
                 Start Certification Process <ArrowRight className="w-4 h-4" />
               </Link>

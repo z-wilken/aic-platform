@@ -22,7 +22,7 @@ export default function NotFound() {
           <h1 className="text-6xl font-bold text-aic-navy mb-4 font-mono">404</h1>
           <h2 className="text-3xl font-serif italic text-aic-navy mb-6">Page Not Found</h2>
           
-          <p className="text-[#6B6458] mb-10 text-lg leading-relaxed">
+          <p className="text-[#6b7280] mb-10 text-lg leading-relaxed">
             The resource you are looking for does not exist or has been moved within our accountability registry.
           </p>
 

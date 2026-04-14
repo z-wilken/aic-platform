@@ -19,10 +19,10 @@ const divisions = [
     name: "Sovereign",
     tagline: "We make decisions. Humans make them.",
     who: "Organisations making no use of AI in consequential decisions.",
-    accentBg: "bg-[#DDD3C0]",
-    accentText: "text-[#6B6458]",
-    accentBorderColor: "border-[#DDD3C0]/40",
-    accentStripBg: "bg-[#DDD3C0]",
+    accentBg: "bg-[#f0f4f8]",
+    accentText: "text-[#6b7280]",
+    accentBorderColor: "border-[#e5e7eb]",
+    accentStripBg: "bg-[#e5e7eb]",
     icon: Shield,
     what: "Human accountability structures documented, no undisclosed AI in use, POPIA-compliant human data processing. Shadow AI audit confirms no automated decision systems.",
     product: "Sovereign Assessment — point-in-time audit + annual renewal.",
@@ -34,10 +34,10 @@ const divisions = [
     name: "Supervised",
     tagline: "AI assists. Humans decide.",
     who: "AI generates recommendations; a named human makes every consequential decision.",
-    accentBg: "bg-[#A35139]",
-    accentText: "text-[#A35139]",
-    accentBorderColor: "border-[#A35139]/40",
-    accentStripBg: "bg-[#A35139]",
+    accentBg: "bg-[#c9920a]",
+    accentText: "text-[#c9920a]",
+    accentBorderColor: "border-[#c9920a]/40",
+    accentStripBg: "bg-[#c9920a]",
     icon: Users,
     examples: "Bank using AI credit model where loan officer decides. Hospital using AI diagnostic where clinician signs off. Employer using AI CV screening where recruiter approves shortlist.",
     what: "Every AI system registered. Override process tested and evidenced. Decision records include both AI recommendation and human decision. Explanation mechanisms exist. Rejection communications meet dignity standards. Appeal processes functional. AI involvement disclosed to affected persons.",
@@ -49,10 +49,10 @@ const divisions = [
     name: "Reviewed",
     tagline: "AI decides. Humans review patterns and cases.",
     who: "AI makes operational decisions; humans conduct periodic reviews and investigate flagged cases.",
-    accentBg: "bg-[#2C3B4D]",
-    accentText: "text-[#2C3B4D]",
-    accentBorderColor: "border-[#2C3B4D]/40",
-    accentStripBg: "bg-[#2C3B4D]",
+    accentBg: "bg-[#1a3160]",
+    accentText: "text-[#1a3160]",
+    accentBorderColor: "border-[#1a3160]/40",
+    accentStripBg: "bg-[#1a3160]",
     icon: Eye,
     examples: "Lender with automated credit decisions + compliance officer reviewing weekly flags. HR tech platform auto-screening applications + recruiter reviewing rejected candidates weekly.",
     what: "AI systems registered with documented risk categories. Periodic human review schedules documented and evidenced. Escalation protocols for flagged decisions functional. Bias testing conducted quarterly. Correction SLA ≤ 10 business days. Full transparency to users.",
@@ -64,10 +64,10 @@ const divisions = [
     name: "Monitored",
     tagline: "AI operates. Systems and humans monitor outcomes.",
     who: "AI operates autonomously with continuous technical monitoring; humans monitor aggregate metrics and investigate anomalies.",
-    accentBg: "bg-[#1B2632]",
-    accentText: "text-[#1B2632]",
-    accentBorderColor: "border-[#1B2632]/40",
-    accentStripBg: "bg-[#1B2632]",
+    accentBg: "bg-[#0a1628]",
+    accentText: "text-[#0a1628]",
+    accentBorderColor: "border-[#0a1628]/40",
+    accentStripBg: "bg-[#0a1628]",
     icon: Activity,
     examples: "E-commerce AI recommendations monitored by algorithm team. AI fraud detection monitored by security team. AI route optimisation monitored by operations management.",
     what: "All AI systems registered with documented purpose and risk category. Continuous technical monitoring in place (drift detection, performance metrics). Annual human review documented. Users informed they are interacting with AI. Anomaly escalation path exists.",
@@ -79,10 +79,10 @@ const divisions = [
     name: "Artificial",
     tagline: "We build AI. Others use it to make decisions.",
     who: "Organisations that develop, train, and sell AI systems or models to other organisations. Their accountability is upstream — they are responsible for the accountability architecture their customers' decisions rest on.",
-    accentBg: "bg-[#1B2632]",
-    accentText: "text-[#1B2632]",
-    accentBorderColor: "border-[#1B2632]/40",
-    accentStripBg: "bg-[#1B2632]",
+    accentBg: "bg-[#0a1628]",
+    accentText: "text-[#0a1628]",
+    accentBorderColor: "border-[#0a1628]/40",
+    accentStripBg: "bg-[#0a1628]",
     icon: Code2,
     examples: "SA LLM company selling to banks. Credit scoring SaaS selling to lenders. AI-powered medical diagnostic tool provider. HR tech company selling AI hiring tools.",
     what: "AI product has documented accountability architecture for downstream users. Product includes human override capabilities. Explanation mechanisms built into the product. Bias testing conducted on training data and documented. Transparency disclosure published for each product. Process exists for receiving and responding to downstream incident reports.",
@@ -104,14 +104,14 @@ const heroBg = "https://images.unsplash.com/photo-1683447551794-1c287cd42675?cro
 
 export default function CertificationPage() {
   return (
-    <div className="bg-[#EEE9DF] min-h-screen">
+    <div className="bg-white min-h-screen">
       {/* Hero */}
       <section className="relative py-12 lg:py-24 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-[#1B2632]/40" />
+        <div className="absolute inset-0 bg-[#0a1628]/40" />
         <div className="absolute inset-0 subtle-grid opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
@@ -121,13 +121,13 @@ export default function CertificationPage() {
             className="max-w-3xl"
           >
             <div className="flex items-center gap-2 mb-6">
-              <span className="eyebrow px-3 py-1 bg-[#A35139]/10 rounded-full border border-[#A35139]/20">
+              <span className="eyebrow px-3 py-1 bg-[#c9920a]/10 rounded-full border border-[#c9920a]/20">
                 AIC Five-Division Framework
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl text-white mb-6">
               Accountability<br />
-              <span className="text-[#A35139]">Calibrated to AI</span>
+              <span className="text-[#c9920a]">Calibrated to AI</span>
             </h1>
             <p className="text-xl text-white/80 leading-[1.65] mb-10 max-w-2xl">
               AIC certification is structured around how your organisation actually relates to AI in consequential decisions — not a one-size-fits-all compliance checkbox. Choose the Division that reflects your reality.
@@ -135,7 +135,7 @@ export default function CertificationPage() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-[#A35139] hover:bg-[#A35139]/90 text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#A35139]/20"
+                className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#c9920a]/20"
               >
                 Enquire About Certification <ArrowRight className="w-4 h-4" />
               </Link>
@@ -145,7 +145,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Intro — accountability calibrated */}
-      <section className="py-12 lg:py-24 bg-[#EEE9DF]">
+      <section className="py-12 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div
@@ -154,13 +154,13 @@ export default function CertificationPage() {
               viewport={{ once: true }}
             >
               <span className="eyebrow">The Framework</span>
-              <h2 className="text-[#1B2632] mt-3 mb-6">
+              <h2 className="text-[#0f1f3d] mt-3 mb-6">
                 Your relationship with AI determines your certification path
               </h2>
-              <p className="text-[#6B6458] mb-6">
+              <p className="text-[#6b7280] mb-6">
                 The AIC Five-Division Framework recognises that organisations sit at very different points on the human-AI accountability spectrum. A hospital where clinicians sign off every AI diagnostic is fundamentally different from a platform where algorithms operate autonomously with periodic human review.
               </p>
-              <p className="text-[#6B6458]">
+              <p className="text-[#6b7280]">
                 AIC certification is calibrated to your actual relationship with AI. Each Division has distinct requirements, monitoring obligations, and primary accountability KPIs — because generic compliance frameworks miss the nuance that matters.
               </p>
             </motion.div>
@@ -177,19 +177,19 @@ export default function CertificationPage() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className={`flex items-center gap-4 p-4 rounded border border-[#DDD3C0] bg-[#FAF6EF] hover:bg-[#EEE9DF] transition-colors`}
+                    className={`flex items-center gap-4 p-4 rounded border border-[#e5e7eb] bg-[#f0f4f8] hover:bg-white transition-colors`}
                   >
-                    <div className={`w-10 h-10 rounded flex items-center justify-center shrink-0 bg-[#EEE9DF]`}>
+                    <div className={`w-10 h-10 rounded flex items-center justify-center shrink-0 bg-white`}>
                       <Icon className={`w-5 h-5 ${div.accentText}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-[10px] font-mono text-[#6B6458] uppercase tracking-widest">Division {div.number}</span>
-                        <span className="text-sm font-semibold text-[#1B2632]">{div.name}</span>
+                        <span className="text-[10px] font-mono text-[#6b7280] uppercase tracking-widest">Division {div.number}</span>
+                        <span className="text-sm font-semibold text-[#0f1f3d]">{div.name}</span>
                       </div>
-                      <p className="text-xs text-[#6B6458] truncate">{div.tagline}</p>
+                      <p className="text-xs text-[#6b7280] truncate">{div.tagline}</p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-[#DDD3C0] shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-[#e5e7eb] shrink-0" />
                   </motion.a>
                 );
               })}
@@ -199,7 +199,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Division Cards */}
-      <section id="divisions" className="py-12 lg:py-24 bg-[#FAF6EF]">
+      <section id="divisions" className="py-12 lg:py-24 bg-[#f0f4f8]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -208,10 +208,10 @@ export default function CertificationPage() {
             className="text-center mb-14"
           >
             <span className="eyebrow">Full Detail</span>
-            <h2 className="text-[#1B2632] mt-3 mb-4">
+            <h2 className="text-[#0f1f3d] mt-3 mb-4">
               The Five Divisions
             </h2>
-            <p className="text-[#6B6458] max-w-2xl mx-auto">
+            <p className="text-[#6b7280] max-w-2xl mx-auto">
               Each Division maps to a distinct accountability model. Find yours and see exactly what AIC certifies.
             </p>
           </motion.div>
@@ -227,7 +227,7 @@ export default function CertificationPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="bg-[#1B2632] rounded overflow-hidden border border-white/10 shadow-2xl"
+                  className="bg-[#0a1628] rounded overflow-hidden border border-white/10 shadow-2xl"
                 >
                   {/* Colored top accent strip */}
                   <div className={`h-1 ${div.accentStripBg}`} />
@@ -277,8 +277,8 @@ export default function CertificationPage() {
                             <p className="text-white/80 text-xs leading-relaxed">{div.product}</p>
                           </div>
                           {div.valueProp && (
-                            <div className="flex-1 p-4 rounded bg-[#A35139]/10 border border-[#A35139]/20">
-                              <div className="text-[10px] font-mono text-[#A35139]/70 uppercase tracking-widest mb-2">Value Proposition</div>
+                            <div className="flex-1 p-4 rounded bg-[#c9920a]/10 border border-[#c9920a]/20">
+                              <div className="text-[10px] font-mono text-[#c9920a]/70 uppercase tracking-widest mb-2">Value Proposition</div>
                               <p className="text-white/80 text-xs leading-relaxed italic">{div.valueProp}</p>
                             </div>
                           )}
@@ -301,7 +301,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Certification Journey */}
-      <section className="py-12 lg:py-24 bg-[#EEE9DF]">
+      <section className="py-12 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -310,10 +310,10 @@ export default function CertificationPage() {
             className="text-center mb-14"
           >
             <span className="eyebrow">How It Works</span>
-            <h2 className="text-[#1B2632] mt-3 mb-4">
+            <h2 className="text-[#0f1f3d] mt-3 mb-4">
               Your Certification Journey
             </h2>
-            <p className="text-[#6B6458] max-w-2xl mx-auto">
+            <p className="text-[#6b7280] max-w-2xl mx-auto">
               Five steps from self-assessment to certified — with ongoing Pulse monitoring for organisations in Divisions 2, 3, and 4.
             </p>
           </motion.div>
@@ -328,14 +328,14 @@ export default function CertificationPage() {
                 transition={{ delay: i * 0.1 }}
                 className="relative"
               >
-                <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded p-6 h-full hover:border-[#A35139]/30 hover:shadow-md transition-all">
-                  <div className="text-[#A35139] text-2xl font-bold font-mono mb-4">{step.step}</div>
-                  <h3 className="text-[#1B2632] font-semibold mb-3 text-sm">{step.title}</h3>
-                  <p className="text-[#6B6458] text-xs leading-relaxed">{step.desc}</p>
+                <div className="bg-[#f0f4f8] border border-[#e5e7eb] rounded p-6 h-full hover:border-[#c9920a]/30 hover:shadow-md transition-all">
+                  <div className="text-[#c9920a] text-2xl font-bold font-mono mb-4">{step.step}</div>
+                  <h3 className="text-[#0f1f3d] font-semibold mb-3 text-sm">{step.title}</h3>
+                  <p className="text-[#6b7280] text-xs leading-relaxed">{step.desc}</p>
                 </div>
                 {i < journeySteps.length - 1 && (
                   <div className="hidden md:flex absolute top-1/2 -right-3 z-10 items-center justify-center">
-                    <ChevronRight className="w-5 h-5 text-[#DDD3C0]" />
+                    <ChevronRight className="w-5 h-5 text-[#e5e7eb]" />
                   </div>
                 )}
               </motion.div>
@@ -345,11 +345,11 @@ export default function CertificationPage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="py-12 lg:py-24 bg-[#1B2632] relative overflow-hidden">
+      <section className="py-12 lg:py-24 bg-[#0a1628] relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #A35139 0%, transparent 60%)",
+            backgroundImage: "radial-gradient(circle at 30% 50%, #c9920a 0%, transparent 60%)",
           }}
         />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
@@ -358,7 +358,7 @@ export default function CertificationPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="eyebrow text-[#A35139] bg-[#A35139]/10 px-3 py-1 rounded-full inline-block mb-6">
+            <span className="eyebrow text-[#c9920a] bg-[#c9920a]/10 px-3 py-1 rounded-full inline-block mb-6">
               Get Certified
             </span>
             <h2 className="text-white mb-4">
@@ -369,7 +369,7 @@ export default function CertificationPage() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 bg-[#A35139] hover:bg-[#A35139]/90 text-white px-10 py-4 rounded font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#A35139]/25 text-sm"
+              className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-10 py-4 rounded font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#c9920a]/25 text-sm"
             >
               Enquire About Certification
               <ArrowRight className="w-4 h-4" />

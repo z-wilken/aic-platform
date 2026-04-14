@@ -200,11 +200,11 @@ const companies: CompanyData[] = [
 ];
 
 const maturityLevelColors: Record<MaturityLevel, { bg: string; text: string; border: string }> = {
-  Leading: { bg: "bg-[#EEE9DF]", text: "text-[#1B2632]", border: "border-[#DDD3C0]" },
-  Established: { bg: "bg-[#FAF6EF]", text: "text-[#1B2632]", border: "border-[#DDD3C0]" },
-  Developing: { bg: "bg-[#A35139]/10", text: "text-[#A35139]", border: "border-[#A35139]/20" },
-  Emerging: { bg: "bg-[#2C3B4D]/10", text: "text-[#2C3B4D]", border: "border-[#DDD3C0]" },
-  Basic: { bg: "bg-[#1B2632]/5", text: "text-[#1B2632]", border: "border-[#DDD3C0]" },
+  Leading: { bg: "bg-white", text: "text-[#0f1f3d]", border: "border-[#e5e7eb]" },
+  Established: { bg: "bg-[#f0f4f8]", text: "text-[#0f1f3d]", border: "border-[#e5e7eb]" },
+  Developing: { bg: "bg-[#c9920a]/10", text: "text-[#c9920a]", border: "border-[#c9920a]/20" },
+  Emerging: { bg: "bg-[#1a3160]/10", text: "text-[#1a3160]", border: "border-[#e5e7eb]" },
+  Basic: { bg: "bg-[#0a1628]/5", text: "text-[#0a1628]", border: "border-[#e5e7eb]" },
 };
 
 const industries = ["all", ...Array.from(new Set(companies.map((c) => c.industry)))];
@@ -235,29 +235,29 @@ export default function AIGovernanceIndexPage() {
     });
 
   const getTrendIcon = (trend: TrendDirection) => {
-    if (trend === "up") return <TrendingUp className="w-4 h-4 text-[#A35139]" />;
+    if (trend === "up") return <TrendingUp className="w-4 h-4 text-[#c9920a]" />;
     if (trend === "down") return <TrendingDown className="w-4 h-4 text-[#d4183d]" />;
-    return <Minus className="w-4 h-4 text-[#6B6458]/60" />;
+    return <Minus className="w-4 h-4 text-[#6b7280]/60" />;
   };
 
   const getRankChangeDisplay = (change: number) => {
-    if (change === 0) return <span className="text-[#6B6458]/60">—</span>;
-    if (change > 0) return <span className="text-[#A35139]">+{change}</span>;
+    if (change === 0) return <span className="text-[#6b7280]/60">—</span>;
+    if (change > 0) return <span className="text-[#c9920a]">+{change}</span>;
     return <span className="text-[#d4183d]">{change}</span>;
   };
 
   return (
-    <div className="bg-[#EEE9DF] min-h-screen">
+    <div className="bg-white min-h-screen">
       {/* Hero */}
       <section className="relative py-12 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-[#1B2632]/40" />
+        <div className="absolute inset-0 bg-[#0a1628]/40" />
         <div className="absolute inset-0 subtle-grid opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-6 h-6 text-[#A35139]" />
-              <span className="eyebrow text-[#A35139]">
+              <BarChart3 className="w-6 h-6 text-[#c9920a]" />
+              <span className="eyebrow text-[#c9920a]">
                 Fortune 500 AI Maturity Rankings
               </span>
             </div>
@@ -269,7 +269,7 @@ export default function AIGovernanceIndexPage() {
               compliance, and human accountability. Updated quarterly.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
-              <Button className="bg-[#A35139] hover:bg-[#A35139]/90 text-white px-7 py-3">
+              <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-7 py-3">
                 <Download className="w-4 h-4 mr-2" />
                 Download Full Report (Q1 2026)
               </Button>
@@ -279,7 +279,7 @@ export default function AIGovernanceIndexPage() {
       </section>
 
       {/* Stats Overview */}
-      <section className="py-12 bg-[#FAF6EF] border-b border-[#DDD3C0]">
+      <section className="py-12 bg-[#f0f4f8] border-b border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -298,9 +298,9 @@ export default function AIGovernanceIndexPage() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <Icon className="w-5 h-5 text-[#A35139] mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-[#1B2632]">{stat.value}</div>
-                  <div className="text-sm text-[#6B6458] mt-1">{stat.label}</div>
+                  <Icon className="w-5 h-5 text-[#c9920a] mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-[#0f1f3d]">{stat.value}</div>
+                  <div className="text-sm text-[#6b7280] mt-1">{stat.label}</div>
                 </motion.div>
               );
             })}
@@ -309,23 +309,23 @@ export default function AIGovernanceIndexPage() {
       </section>
 
       {/* Filters & Search */}
-      <section className="py-8 bg-[#EEE9DF] border-b border-[#DDD3C0]">
+      <section className="py-8 bg-white border-b border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6458]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6b7280]" />
               <Input
                 placeholder="Search companies..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-[#FAF6EF] border-[#DDD3C0]"
+                className="pl-10 bg-[#f0f4f8] border-[#e5e7eb]"
               />
             </div>
             <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
-              <SelectTrigger className="w-full md:w-64 bg-[#FAF6EF] border-[#DDD3C0]">
+              <SelectTrigger className="w-full md:w-64 bg-[#f0f4f8] border-[#e5e7eb]">
                 <SelectValue placeholder="Filter by Industry" />
               </SelectTrigger>
-              <SelectContent className="bg-[#FAF6EF]">
+              <SelectContent className="bg-[#f0f4f8]">
                 <SelectItem value="all">All Industries</SelectItem>
                 {industries.slice(1).map((industry) => (
                   <SelectItem key={industry} value={industry}>
@@ -335,10 +335,10 @@ export default function AIGovernanceIndexPage() {
               </SelectContent>
             </Select>
             <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
-              <SelectTrigger className="w-full md:w-64 bg-[#FAF6EF] border-[#DDD3C0]">
+              <SelectTrigger className="w-full md:w-64 bg-[#f0f4f8] border-[#e5e7eb]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
-              <SelectContent className="bg-[#FAF6EF]">
+              <SelectContent className="bg-[#f0f4f8]">
                 <SelectItem value="rank">Rank (Default)</SelectItem>
                 <SelectItem value="maturity">Maturity Score</SelectItem>
                 <SelectItem value="board">Board Oversight</SelectItem>
@@ -350,14 +350,14 @@ export default function AIGovernanceIndexPage() {
       </section>
 
       {/* Main Index Table */}
-      <section className="py-12 lg:py-24 bg-[#EEE9DF]">
+      <section className="py-12 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h2 className="text-[#1B2632]">Top 10 Rankings</h2>
-              <p className="text-sm text-[#6B6458] mt-1">Based on Q1 2026 assessment cycle</p>
+              <h2 className="text-[#0f1f3d]">Top 10 Rankings</h2>
+              <p className="text-sm text-[#6b7280] mt-1">Based on Q1 2026 assessment cycle</p>
             </div>
-            <div className="flex items-center gap-2 text-sm text-[#6B6458]">
+            <div className="flex items-center gap-2 text-sm text-[#6b7280]">
               <Info className="w-4 h-4" />
               <span>Click row to expand details</span>
             </div>
@@ -376,8 +376,8 @@ export default function AIGovernanceIndexPage() {
                   transition={{ delay: i * 0.05 }}
                 >
                   <Card
-                    className={`overflow-hidden transition-all cursor-pointer hover:shadow-lg bg-[#FAF6EF] border-[#DDD3C0] ${
-                      isExpanded ? "ring-2 ring-[#A35139]" : ""
+                    className={`overflow-hidden transition-all cursor-pointer hover:shadow-lg bg-[#f0f4f8] border-[#e5e7eb] ${
+                      isExpanded ? "ring-2 ring-[#c9920a]" : ""
                     }`}
                     onClick={() => setExpandedRow(isExpanded ? null : company.rank)}
                   >
@@ -386,8 +386,8 @@ export default function AIGovernanceIndexPage() {
                       <div className="flex items-center gap-4">
                         {/* Rank */}
                         <div className="w-12 text-center">
-                          <div className="text-2xl font-bold text-[#1B2632]">#{company.rank}</div>
-                          <div className="text-xs text-[#6B6458] mt-0.5">
+                          <div className="text-2xl font-bold text-[#0f1f3d]">#{company.rank}</div>
+                          <div className="text-xs text-[#6b7280] mt-0.5">
                             {getRankChangeDisplay(company.rankChange)}
                           </div>
                         </div>
@@ -395,25 +395,25 @@ export default function AIGovernanceIndexPage() {
                         {/* Company Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-semibold text-[#1B2632] truncate m-0">{company.company}</h3>
+                            <h3 className="text-xl font-semibold text-[#0f1f3d] truncate m-0">{company.company}</h3>
                             {company.hasAICertification && (
-                              <Badge className="bg-[#A35139] text-white shrink-0 rounded">
+                              <Badge className="bg-[#c9920a] text-white shrink-0 rounded">
                                 <Shield className="w-3 h-3 mr-1" />
                                 AIC Certified
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-[#6B6458]">
+                          <div className="flex items-center gap-2 text-sm text-[#6b7280]">
                             <span>{company.industry}</span>
-                            <span className="w-1 h-1 rounded-full bg-[#DDD3C0]"></span>
+                            <span className="w-1 h-1 rounded-full bg-[#e5e7eb]"></span>
                             <span>{company.certifiedProfessionals} certified professionals</span>
                           </div>
                         </div>
 
                         {/* Maturity Score */}
                         <div className="text-center hidden sm:block">
-                          <div className="text-2xl font-bold text-[#1B2632]">{company.maturityScore}</div>
-                          <div className="text-xs text-[#6B6458]">Maturity</div>
+                          <div className="text-2xl font-bold text-[#0f1f3d]">{company.maturityScore}</div>
+                          <div className="text-xs text-[#6b7280]">Maturity</div>
                         </div>
 
                         {/* Maturity Level */}
@@ -429,7 +429,7 @@ export default function AIGovernanceIndexPage() {
                         <div className="flex items-center gap-1">
                           {getTrendIcon(company.trend)}
                           <ChevronDown
-                            className={`w-5 h-5 text-[#DDD3C0] transition-transform ${
+                            className={`w-5 h-5 text-[#e5e7eb] transition-transform ${
                               isExpanded ? "rotate-180" : ""
                             }`}
                           />
@@ -443,7 +443,7 @@ export default function AIGovernanceIndexPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="border-t border-[#DDD3C0] bg-[#EEE9DF] p-6"
+                        className="border-t border-[#e5e7eb] bg-white p-6"
                       >
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                           {[
@@ -451,38 +451,38 @@ export default function AIGovernanceIndexPage() {
                               label: "Board Oversight",
                               score: company.boardOversight,
                               icon: Users,
-                              color: "text-[#A35139]",
+                              color: "text-[#c9920a]",
                             },
                             {
                               label: "Rights Compliance",
                               score: company.rightsCompliance,
                               icon: Shield,
-                              color: "text-[#A35139]",
+                              color: "text-[#c9920a]",
                             },
                             {
                               label: "Transparency",
                               score: company.transparency,
                               icon: Globe,
-                              color: "text-[#A35139]",
+                              color: "text-[#c9920a]",
                             },
                             {
                               label: "Risk Management",
                               score: company.riskManagement,
                               icon: AlertTriangle,
-                              color: "text-[#A35139]",
+                              color: "text-[#c9920a]",
                             },
                           ].map((metric, j) => {
                             const Icon = metric.icon;
                             return (
-                              <div key={j} className="bg-[#FAF6EF] border border-[#DDD3C0] rounded p-4">
+                              <div key={j} className="bg-[#f0f4f8] border border-[#e5e7eb] rounded p-4">
                                 <div className="flex items-center gap-2 mb-2">
                                   <Icon className={`w-4 h-4 ${metric.color}`} />
-                                  <span className="text-sm text-[#6B6458]">{metric.label}</span>
+                                  <span className="text-sm text-[#6b7280]">{metric.label}</span>
                                 </div>
-                                <div className="text-2xl font-bold text-[#1B2632] mb-2">{metric.score}</div>
-                                <div className="w-full bg-[#DDD3C0] rounded-full h-2">
+                                <div className="text-2xl font-bold text-[#0f1f3d] mb-2">{metric.score}</div>
+                                <div className="w-full bg-[#e5e7eb] rounded-full h-2">
                                   <div
-                                    className="bg-[#A35139] h-2 rounded-full transition-all"
+                                    className="bg-[#c9920a] h-2 rounded-full transition-all"
                                     style={{ width: `${metric.score}%` }}
                                   />
                                 </div>
@@ -491,21 +491,21 @@ export default function AIGovernanceIndexPage() {
                           })}
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-[#DDD3C0] flex items-center justify-between">
-                          <div className="flex items-center gap-4 text-sm text-[#6B6458]">
+                        <div className="mt-4 pt-4 border-t border-[#e5e7eb] flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-sm text-[#6b7280]">
                             {company.hasAICertification ? (
-                              <div className="flex items-center gap-1 text-[#A35139]">
+                              <div className="flex items-center gap-1 text-[#c9920a]">
                                 <CheckCircle className="w-4 h-4" />
                                 <span>ISO/IEC 42001 Certified</span>
                               </div>
                             ) : (
-                              <div className="flex items-center gap-1 text-[#A35139]">
+                              <div className="flex items-center gap-1 text-[#c9920a]">
                                 <AlertTriangle className="w-4 h-4" />
                                 <span>Certification Recommended</span>
                               </div>
                             )}
                           </div>
-                          <Button size="sm" variant="outline" className="border-[#1B2632] text-[#1B2632] rounded">
+                          <Button size="sm" variant="outline" className="border-[#0a1628] text-[#0a1628] rounded">
                             View Full Profile
                           </Button>
                         </div>
@@ -518,20 +518,20 @@ export default function AIGovernanceIndexPage() {
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-[#6B6458] mb-4">Showing top 10 of 500 companies</p>
-            <Button variant="outline" className="border-[#1B2632] text-[#1B2632] rounded">View Full Index (500 Companies)</Button>
+            <p className="text-sm text-[#6b7280] mb-4">Showing top 10 of 500 companies</p>
+            <Button variant="outline" className="border-[#0a1628] text-[#0a1628] rounded">View Full Index (500 Companies)</Button>
           </div>
         </div>
       </section>
 
       {/* Methodology */}
-      <section className="py-12 lg:py-24 bg-[#FAF6EF]">
+      <section className="py-12 lg:py-24 bg-[#f0f4f8]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-[#1B2632] mb-3">
+            <h2 className="text-[#0f1f3d] mb-3">
               Assessment Methodology
             </h2>
-            <p className="text-[#6B6458] max-w-2xl mx-auto">
+            <p className="text-[#6b7280] max-w-2xl mx-auto">
               Our index uses a rigorous, multi-dimensional framework aligned with international standards and the Declaration of Algorithmic Rights.
             </p>
           </div>
@@ -566,15 +566,15 @@ export default function AIGovernanceIndexPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="p-6 h-full bg-[#FAF6EF] border-[#DDD3C0] rounded">
+                <Card className="p-6 h-full bg-white border-[#e5e7eb] rounded">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-[#1B2632] m-0">{method.category}</h3>
-                    <Badge className="bg-[#A35139] text-white rounded">{method.weight}</Badge>
+                    <h3 className="text-lg font-semibold text-[#0f1f3d] m-0">{method.category}</h3>
+                    <Badge className="bg-[#c9920a] text-white rounded">{method.weight}</Badge>
                   </div>
                   <ul className="space-y-2">
                     {method.criteria.map((criterion, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-[#6B6458]">
-                        <CheckCircle className="w-4 h-4 text-[#A35139] shrink-0 mt-0.5" />
+                      <li key={j} className="flex items-start gap-2 text-sm text-[#6b7280]">
+                        <CheckCircle className="w-4 h-4 text-[#c9920a] shrink-0 mt-0.5" />
                         <span>{criterion}</span>
                       </li>
                     ))}
@@ -584,12 +584,12 @@ export default function AIGovernanceIndexPage() {
             ))}
           </div>
 
-          <div className="mt-8 p-6 bg-[#EEE9DF] border border-[#DDD3C0] rounded">
+          <div className="mt-8 p-6 bg-white border border-[#e5e7eb] rounded">
             <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-[#1B2632] shrink-0 mt-0.5" />
+              <Info className="w-5 h-5 text-[#0f1f3d] shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-[#1B2632] mb-2">Data Sources & Verification</h4>
-                <p className="text-sm text-[#6B6458] leading-relaxed">
+                <h4 className="font-semibold text-[#0f1f3d] mb-2">Data Sources & Verification</h4>
+                <p className="text-sm text-[#6b7280] leading-relaxed">
                   Rankings are based on publicly available disclosures, regulatory filings, third-party audits, and
                   direct company submissions. All data is independently verified by AIC&apos;s Research Division and updated
                   quarterly. Companies may dispute rankings through our formal appeals process.
@@ -601,15 +601,15 @@ export default function AIGovernanceIndexPage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="py-12 lg:py-24 bg-[#1B2632] text-white relative overflow-hidden">
+      <section className="py-12 lg:py-24 bg-[#0a1628] text-white relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #A35139 0%, transparent 60%)",
+            backgroundImage: "radial-gradient(circle at 30% 50%, #c9920a 0%, transparent 60%)",
           }}
         />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <BarChart3 className="w-12 h-12 mx-auto mb-4 text-[#A35139]" />
+          <BarChart3 className="w-12 h-12 mx-auto mb-4 text-[#c9920a]" />
           <h2 className="text-white mb-4">
             Improve Your Organization&apos;s Ranking
           </h2>
@@ -618,7 +618,7 @@ export default function AIGovernanceIndexPage() {
             maturity score. Schedule a gap analysis to identify opportunities for improvement.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-[#A35139] hover:bg-[#A35139]/90 text-white px-8 py-3 rounded">
+            <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-8 py-3 rounded">
               Request Gap Analysis
             </Button>
           </div>

@@ -130,12 +130,12 @@ export default function DisclosuresPage() {
       {/* Hero */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1B2632]/80 via-[#2C3B4D]/75 to-[#1B2632]/70" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628]/80 via-[#0f1f3d]/75 to-[#0a1628]/70" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">
-              <FileText className="w-6 h-6 text-[#A35139]" />
-              <span className="text-[#A35139] text-sm uppercase tracking-widest font-medium">
+              <FileText className="w-6 h-6 text-[#c9920a]" />
+              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
                 IAF MLA Mandatory Disclosures
               </span>
             </div>
@@ -151,7 +151,7 @@ export default function DisclosuresPage() {
       </section>
 
       {/* Trust Indicators */}
-      <section className="py-12 bg-aic-paper border-b border-[#DDD3C0]">
+      <section className="py-12 bg-aic-paper border-b border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -170,9 +170,9 @@ export default function DisclosuresPage() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <Icon className="w-6 h-6 text-[#A35139] mx-auto mb-2" />
-                  <div className="text-sm text-[#6B6458]/80 mb-1">{item.label}</div>
-                  <div className="text-2xl font-bold text-[#1B2632]">{item.value}</div>
+                  <Icon className="w-6 h-6 text-[#c9920a] mx-auto mb-2" />
+                  <div className="text-sm text-[#6b7280]/80 mb-1">{item.label}</div>
+                  <div className="text-2xl font-bold text-[#0f1f3d]">{item.value}</div>
                 </motion.div>
               );
             })}
@@ -181,7 +181,7 @@ export default function DisclosuresPage() {
       </section>
 
       {/* Main Content */}
-      <section className="py-16 bg-[#EEE9DF]">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="mb-8">
@@ -200,20 +200,20 @@ export default function DisclosuresPage() {
               >
                 <Card className="p-8">
                   <div className="flex items-start gap-4 mb-6">
-                    <div className="w-12 h-12 bg-[#1B2632] rounded-lg flex items-center justify-center shrink-0">
-                      <Scale className="w-6 h-6 text-[#A35139]" />
+                    <div className="w-12 h-12 bg-[#0a1628] rounded-lg flex items-center justify-center shrink-0">
+                      <Scale className="w-6 h-6 text-[#c9920a]" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-semibold text-[#1B2632] mb-2">
+                      <h2 className="text-2xl font-semibold text-[#0f1f3d] mb-2">
                         Statement of Impartiality and Independence
                       </h2>
-                      <p className="text-sm text-[#6B6458]/80">Last updated: February 1, 2026</p>
+                      <p className="text-sm text-[#6b7280]/80">Last updated: February 1, 2026</p>
                     </div>
                   </div>
 
-                  <div className="space-y-6 text-[#1B2632] leading-relaxed">
+                  <div className="space-y-6 text-[#0f1f3d] leading-relaxed">
                     <div>
-                      <h3 className="font-semibold text-[#1B2632] mb-2">Core Principle</h3>
+                      <h3 className="font-semibold text-[#0f1f3d] mb-2">Core Principle</h3>
                       <p>
                         The AI Certification Institute (AIC) operates as an independent, third-party accreditation and
                         certification body. We maintain strict impartiality in all certification activities and do not
@@ -221,16 +221,16 @@ export default function DisclosuresPage() {
                       </p>
                     </div>
 
-                    <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-lg p-6">
+                    <div className="bg-[#f0f4f8] border border-[#e5e7eb] rounded-lg p-6">
                       <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-[#A35139] shrink-0 mt-0.5" />
+                        <AlertCircle className="w-5 h-5 text-[#c9920a] shrink-0 mt-0.5" />
                         <div>
-                          <h4 className="font-semibold text-[#1B2632] mb-2">Conflicts of Interest</h4>
-                          <p className="text-sm text-[#6B6458]">
+                          <h4 className="font-semibold text-[#0f1f3d] mb-2">Conflicts of Interest</h4>
+                          <p className="text-sm text-[#6b7280]">
                             AIC does <strong>not</strong> provide any of the following services to organizations it
                             certifies:
                           </p>
-                          <ul className="mt-2 space-y-1 text-sm text-[#6B6458] list-disc list-inside">
+                          <ul className="mt-2 space-y-1 text-sm text-[#6b7280] list-disc list-inside">
                             <li>Management system implementation consulting</li>
                             <li>Internal audit services</li>
                             <li>Risk assessment design or execution</li>
@@ -242,7 +242,7 @@ export default function DisclosuresPage() {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-[#1B2632] mb-2">Independence Safeguards</h3>
+                      <h3 className="font-semibold text-[#0f1f3d] mb-2">Independence Safeguards</h3>
                       <div className="grid md:grid-cols-2 gap-4">
                         {[
                           {
@@ -262,11 +262,11 @@ export default function DisclosuresPage() {
                             desc: "Annual impartiality report published and audited by accreditation body.",
                           },
                         ].map((safeguard, i) => (
-                          <div key={i} className="flex items-start gap-3 p-4 bg-aic-paper rounded-lg border border-[#DDD3C0]">
-                            <CheckCircle className="w-5 h-5 text-[#A35139] shrink-0 mt-0.5" />
+                          <div key={i} className="flex items-start gap-3 p-4 bg-aic-paper rounded-lg border border-[#e5e7eb]">
+                            <CheckCircle className="w-5 h-5 text-[#c9920a] shrink-0 mt-0.5" />
                             <div>
-                              <div className="font-medium text-[#1B2632] mb-1">{safeguard.title}</div>
-                              <p className="text-sm text-[#6B6458]">{safeguard.desc}</p>
+                              <div className="font-medium text-[#0f1f3d] mb-1">{safeguard.title}</div>
+                              <p className="text-sm text-[#6b7280]">{safeguard.desc}</p>
                             </div>
                           </div>
                         ))}
@@ -274,11 +274,11 @@ export default function DisclosuresPage() {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-[#1B2632] mb-2">Reporting Concerns</h3>
+                      <h3 className="font-semibold text-[#0f1f3d] mb-2">Reporting Concerns</h3>
                       <p className="mb-3">
                         If you believe AIC has violated its impartiality commitments, you may report concerns confidentially to:
                       </p>
-                      <div className="bg-aic-paper border border-[#DDD3C0] rounded-lg p-4">
+                      <div className="bg-aic-paper border border-[#e5e7eb] rounded-lg p-4">
                         <div className="text-sm space-y-2">
                           <div>
                             <strong>Ethics Hotline:</strong> +1 (202) 555-0199 (24/7 voicemail)
@@ -293,8 +293,8 @@ export default function DisclosuresPage() {
                       </div>
                     </div>
 
-                    <div className="pt-6 border-t border-[#DDD3C0] flex gap-3">
-                      <Button className="bg-[#1B2632] hover:bg-[#2C3B4D] text-aic-paper">
+                    <div className="pt-6 border-t border-[#e5e7eb] flex gap-3">
+                      <Button className="bg-[#0a1628] hover:bg-[#0f1f3d] text-white">
                         <Download className="w-4 h-4 mr-2" />
                         Download Full Impartiality Policy (PDF)
                       </Button>
@@ -318,15 +318,15 @@ export default function DisclosuresPage() {
                 <div className="space-y-6">
                   <Card className="p-8">
                     <div className="flex items-start gap-4 mb-6">
-                      <div className="w-12 h-12 bg-[#A35139]/10 rounded-lg flex items-center justify-center shrink-0">
-                        <Shield className="w-6 h-6 text-[#A35139]" />
+                      <div className="w-12 h-12 bg-[#c9920a]/10 rounded-lg flex items-center justify-center shrink-0">
+                        <Shield className="w-6 h-6 text-[#c9920a]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h2 className="text-2xl font-semibold text-[#1B2632]">Current Accreditation Status</h2>
-                          <Badge className="bg-[#A35139]/10 text-[#A35139]">Active</Badge>
+                          <h2 className="text-2xl font-semibold text-[#0f1f3d]">Current Accreditation Status</h2>
+                          <Badge className="bg-[#c9920a]/10 text-[#c9920a]">Active</Badge>
                         </div>
-                        <p className="text-sm text-[#6B6458]/80">Last verified: February 20, 2026</p>
+                        <p className="text-sm text-[#6b7280]/80">Last verified: February 20, 2026</p>
                       </div>
                     </div>
 
@@ -365,11 +365,11 @@ export default function DisclosuresPage() {
                       ].map((item, i) => {
                         const Icon = item.icon;
                         return (
-                          <div key={i} className="flex items-start gap-3 p-4 bg-[#EEE9DF] rounded-lg">
-                            <Icon className="w-5 h-5 text-[#A35139] shrink-0 mt-0.5" />
+                          <div key={i} className="flex items-start gap-3 p-4 bg-[#f0f4f8] rounded-lg">
+                            <Icon className="w-5 h-5 text-[#c9920a] shrink-0 mt-0.5" />
                             <div>
-                              <div className="text-sm text-[#6B6458]/80 mb-1">{item.label}</div>
-                              <div className="font-medium text-[#1B2632]">{item.value}</div>
+                              <div className="text-sm text-[#6b7280]/80 mb-1">{item.label}</div>
+                              <div className="font-medium text-[#0f1f3d]">{item.value}</div>
                             </div>
                           </div>
                         );
@@ -378,8 +378,8 @@ export default function DisclosuresPage() {
                   </Card>
 
                   <Card className="p-8">
-                    <h3 className="font-semibold text-[#1B2632] mb-4">What IAF MLA Recognition Means</h3>
-                    <p className="text-[#1B2632] mb-6 leading-relaxed">
+                    <h3 className="font-semibold text-[#0f1f3d] mb-4">What IAF MLA Recognition Means</h3>
+                    <p className="text-[#0f1f3d] mb-6 leading-relaxed">
                       The International Accreditation Forum (IAF) Multilateral Recognition Arrangement (MLA) ensures that
                       certificates issued by AIC are recognized globally. This means organizations certified by AIC do not
                       need additional certifications when operating in other countries within the MLA network.
@@ -393,17 +393,17 @@ export default function DisclosuresPage() {
                         { region: "Africa", signatories: "14" },
                         { region: "Middle East", signatories: "10" },
                       ].map((region, i) => (
-                        <div key={i} className="text-center p-4 bg-[#EEE9DF] rounded-lg border border-[#DDD3C0]">
-                          <Globe className="w-6 h-6 text-[#A35139] mx-auto mb-2" />
-                          <div className="font-semibold text-[#1B2632]">{region.region}</div>
-                          <div className="text-sm text-[#6B6458]/80">{region.signatories} MLA Signatories</div>
+                        <div key={i} className="text-center p-4 bg-[#f0f4f8] rounded-lg border border-[#e5e7eb]">
+                          <Globe className="w-6 h-6 text-[#c9920a] mx-auto mb-2" />
+                          <div className="font-semibold text-[#0f1f3d]">{region.region}</div>
+                          <div className="text-sm text-[#6b7280]/80">{region.signatories} MLA Signatories</div>
                         </div>
                       ))}
                     </div>
                   </Card>
 
                   <div className="flex gap-3">
-                    <Button className="bg-[#1B2632] hover:bg-[#2C3B4D] text-aic-paper">
+                    <Button className="bg-[#0a1628] hover:bg-[#0f1f3d] text-white">
                       <Download className="w-4 h-4 mr-2" />
                       Download Accreditation Certificate
                     </Button>
@@ -426,10 +426,10 @@ export default function DisclosuresPage() {
                 <Card className="p-8 mb-6">
                   <div className="flex items-start justify-between mb-6">
                     <div>
-                      <h2 className="text-2xl font-semibold text-[#1B2632] mb-2">
+                      <h2 className="text-2xl font-semibold text-[#0f1f3d] mb-2">
                         ISO/IEC 42001 Certified Organizations
                       </h2>
-                      <p className="text-sm text-[#6B6458]/80">
+                      <p className="text-sm text-[#6b7280]/80">
                         Public registry of all organizations with active AIC certifications. Updated daily.
                       </p>
                     </div>
@@ -440,7 +440,7 @@ export default function DisclosuresPage() {
                   </div>
 
                   <div className="relative mb-6">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6458]/60" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6b7280]/60" />
                     <Input
                       placeholder="Search by organization name, industry, or certificate number..."
                       value={searchQuery}
@@ -456,25 +456,25 @@ export default function DisclosuresPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.05 }}
-                        className="border border-[#DDD3C0] rounded-lg p-5 bg-aic-paper hover:shadow-md transition-shadow"
+                        className="border border-[#e5e7eb] rounded-lg p-5 bg-aic-paper hover:shadow-md transition-shadow"
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <div className="flex items-center gap-3 mb-2">
-                              <h3 className="font-semibold text-[#1B2632] text-lg">{org.name}</h3>
+                              <h3 className="font-semibold text-[#0f1f3d] text-lg">{org.name}</h3>
                               <Badge
                                 className={
                                   org.status === "Active"
-                                    ? "bg-[#A35139]/10 text-[#A35139]"
+                                    ? "bg-[#c9920a]/10 text-[#c9920a]"
                                     : org.status === "Suspended"
-                                    ? "bg-[#A35139]/10 text-[#A35139]"
+                                    ? "bg-[#c9920a]/10 text-[#c9920a]"
                                     : "bg-[#d4183d]/10 text-[#d4183d]"
                                 }
                               >
                                 {org.status}
                               </Badge>
                             </div>
-                            <div className="text-sm text-[#6B6458]/80">
+                            <div className="text-sm text-[#6b7280]/80">
                               {org.industry} • {org.country}
                             </div>
                           </div>
@@ -485,18 +485,18 @@ export default function DisclosuresPage() {
 
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           <div>
-                            <div className="text-[#6B6458]/80 mb-1">Certificate Number</div>
-                            <div className="font-mono text-[#1B2632]">{org.certNumber}</div>
+                            <div className="text-[#6b7280]/80 mb-1">Certificate Number</div>
+                            <div className="font-mono text-[#0f1f3d]">{org.certNumber}</div>
                           </div>
                           <div>
-                            <div className="text-[#6B6458]/80 mb-1">Validity Period</div>
-                            <div className="text-[#1B2632]">
+                            <div className="text-[#6b7280]/80 mb-1">Validity Period</div>
+                            <div className="text-[#0f1f3d]">
                               {org.issueDate} — {org.expiryDate}
                             </div>
                           </div>
                           <div className="md:col-span-2">
-                            <div className="text-[#6B6458]/80 mb-1">Certification Scope</div>
-                            <div className="text-[#1B2632]">{org.scope}</div>
+                            <div className="text-[#6b7280]/80 mb-1">Certification Scope</div>
+                            <div className="text-[#0f1f3d]">{org.scope}</div>
                           </div>
                         </div>
                       </motion.div>
@@ -504,7 +504,7 @@ export default function DisclosuresPage() {
                   </div>
 
                   <div className="mt-6 text-center">
-                    <p className="text-sm text-[#6B6458]/80 mb-3">Showing 5 of 340+ certified organizations</p>
+                    <p className="text-sm text-[#6b7280]/80 mb-3">Showing 5 of 340+ certified organizations</p>
                     <Button variant="outline">Load More Organizations</Button>
                   </div>
                 </Card>
@@ -521,20 +521,20 @@ export default function DisclosuresPage() {
                 <div className="space-y-6">
                   <Card className="p-8">
                     <div className="flex items-start gap-4 mb-6">
-                      <div className="w-12 h-12 bg-[#1B2632] rounded-lg flex items-center justify-center shrink-0">
-                        <Scale className="w-6 h-6 text-[#A35139]" />
+                      <div className="w-12 h-12 bg-[#0a1628] rounded-lg flex items-center justify-center shrink-0">
+                        <Scale className="w-6 h-6 text-[#c9920a]" />
                       </div>
                       <div>
-                      <h2 className="text-2xl font-semibold text-[#1B2632] mb-2">Appeals and Dispute Resolution</h2>
-                        <p className="text-sm text-[#6B6458]/80">
+                      <h2 className="text-2xl font-semibold text-[#0f1f3d] mb-2">Appeals and Dispute Resolution</h2>
+                        <p className="text-sm text-[#6b7280]/80">
                           Fair, transparent process for challenging certification decisions
                         </p>
                       </div>
                     </div>
 
-                    <div className="space-y-6 text-[#1B2632] leading-relaxed">
+                    <div className="space-y-6 text-[#0f1f3d] leading-relaxed">
                       <div>
-                        <h3 className="font-semibold text-[#1B2632] mb-3">Grounds for Appeal</h3>
+                        <h3 className="font-semibold text-[#0f1f3d] mb-3">Grounds for Appeal</h3>
                         <p className="mb-3">You may file an appeal if you believe:</p>
                         <ul className="space-y-2">
                           {[
@@ -544,15 +544,15 @@ export default function DisclosuresPage() {
                             "The certification decision is inconsistent with international standards",
                           ].map((ground, i) => (
                             <li key={i} className="flex items-start gap-2 text-sm">
-                              <CheckCircle className="w-4 h-4 text-[#A35139] shrink-0 mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-[#c9920a] shrink-0 mt-0.5" />
                               <span>{ground}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
 
-                      <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-lg p-6">
-                        <h4 className="font-semibold text-[#1B2632] mb-3">Appeal Process Timeline</h4>
+                      <div className="bg-[#f0f4f8] border border-[#e5e7eb] rounded-lg p-6">
+                        <h4 className="font-semibold text-[#0f1f3d] mb-3">Appeal Process Timeline</h4>
                         <div className="space-y-3">
                           {[
                             { step: "1", title: "Submit Appeal", time: "Within 30 days of decision" },
@@ -561,12 +561,12 @@ export default function DisclosuresPage() {
                             { step: "4", title: "Final Decision", time: "Within 60 days of submission" },
                           ].map((item, i) => (
                             <div key={i} className="flex items-center gap-4">
-                              <div className="w-8 h-8 bg-[#1B2632] text-aic-paper rounded-full flex items-center justify-center font-semibold text-sm shrink-0">
+                              <div className="w-8 h-8 bg-[#0a1628] text-white rounded-full flex items-center justify-center font-semibold text-sm shrink-0">
                                 {item.step}
                               </div>
                               <div className="flex-1">
-                                <div className="font-medium text-[#1B2632]">{item.title}</div>
-                                <div className="text-sm text-[#6B6458]">{item.time}</div>
+                                <div className="font-medium text-[#0f1f3d]">{item.title}</div>
+                                <div className="text-sm text-[#6b7280]">{item.time}</div>
                               </div>
                             </div>
                           ))}
@@ -574,15 +574,15 @@ export default function DisclosuresPage() {
                       </div>
 
                       <div>
-                        <h3 className="font-semibold text-[#1B2632] mb-3">How to File an Appeal</h3>
-                        <div className="bg-aic-paper border border-[#DDD3C0] rounded-lg p-5">
+                        <h3 className="font-semibold text-[#0f1f3d] mb-3">How to File an Appeal</h3>
+                        <div className="bg-aic-paper border border-[#e5e7eb] rounded-lg p-5">
                           <div className="space-y-3 text-sm">
                             <div>
                               <strong>Email:</strong> appeals@aic-cert.org
                             </div>
                             <div>
                               <strong>Online Portal:</strong>{" "}
-                              <a href="#" className="text-[#A35139] hover:underline">
+                              <a href="#" className="text-[#c9920a] hover:underline">
                                 aic-cert.org/appeals
                               </a>
                             </div>
@@ -590,7 +590,7 @@ export default function DisclosuresPage() {
                               <strong>Postal Mail:</strong> AIC Appeals Committee, 1225 Eye Street NW, Suite 550,
                               Washington, DC 20005
                             </div>
-                            <div className="pt-3 border-t border-[#DDD3C0]">
+                            <div className="pt-3 border-t border-[#e5e7eb]">
                               <strong>Required Information:</strong> Certificate number (if applicable), detailed
                               description of grounds for appeal, supporting documentation, and contact information.
                             </div>
@@ -599,8 +599,8 @@ export default function DisclosuresPage() {
                       </div>
                     </div>
 
-                    <div className="mt-6 pt-6 border-t border-[#DDD3C0] flex gap-3">
-                      <Button className="bg-[#1B2632] hover:bg-[#2C3B4D] text-aic-paper">
+                    <div className="mt-6 pt-6 border-t border-[#e5e7eb] flex gap-3">
+                      <Button className="bg-[#0a1628] hover:bg-[#0f1f3d] text-white">
                         <Download className="w-4 h-4 mr-2" />
                         Download Appeals Form
                       </Button>
@@ -609,8 +609,8 @@ export default function DisclosuresPage() {
                   </Card>
 
                   <Card className="p-8">
-                    <h3 className="font-semibold text-[#1B2632] mb-4">Recent Appeals Activity</h3>
-                    <p className="text-sm text-[#6B6458]/80 mb-6">
+                    <h3 className="font-semibold text-[#0f1f3d] mb-4">Recent Appeals Activity</h3>
+                    <p className="text-sm text-[#6b7280]/80 mb-6">
                       Transparency report showing recent appeals filed and their outcomes (anonymized per confidentiality
                       requirements).
                     </p>
@@ -618,15 +618,15 @@ export default function DisclosuresPage() {
                       {appealCases.map((appeal, i) => (
                         <div
                           key={i}
-                          className="flex items-center justify-between p-4 bg-[#EEE9DF] rounded-lg border border-[#DDD3C0]"
+                          className="flex items-center justify-between p-4 bg-[#f0f4f8] rounded-lg border border-[#e5e7eb]"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-[#1B2632] rounded-lg flex items-center justify-center text-aic-paper font-mono text-xs">
+                            <div className="w-10 h-10 bg-[#0a1628] rounded-lg flex items-center justify-center text-white font-mono text-xs">
                               {appeal.caseId.split("-")[2]}
                             </div>
                             <div>
-                              <div className="font-medium text-[#1B2632]">{appeal.organization}</div>
-                              <div className="text-sm text-[#6B6458]/80">
+                              <div className="font-medium text-[#0f1f3d]">{appeal.organization}</div>
+                              <div className="text-sm text-[#6b7280]/80">
                                 {appeal.issue} • Submitted {appeal.dateSubmitted}
                               </div>
                             </div>
@@ -634,8 +634,8 @@ export default function DisclosuresPage() {
                           <Badge
                             className={
                               appeal.status === "Resolved"
-                                ? "bg-[#A35139]/10 text-[#A35139]"
-                                : "bg-[#A35139]/10 text-[#A35139]"
+                                ? "bg-[#c9920a]/10 text-[#c9920a]"
+                                : "bg-[#c9920a]/10 text-[#c9920a]"
                             }
                           >
                             {appeal.status}
@@ -652,16 +652,16 @@ export default function DisclosuresPage() {
       </section>
 
       {/* Contact CTA */}
-      <section className="py-16 bg-aic-paper border-t border-[#DDD3C0]">
+      <section className="py-16 bg-aic-paper border-t border-[#e5e7eb]">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+          <h2 className="text-3xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
             Questions About Our Processes?
           </h2>
-          <p className="text-[#6B6458] mb-8">
+          <p className="text-[#6b7280] mb-8">
             Our compliance team is available to answer questions about impartiality, accreditation, or appeals procedures.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-[#1B2632] hover:bg-[#2C3B4D] text-aic-paper px-8 py-3">Contact Compliance Team</Button>
+            <Button className="bg-[#0a1628] hover:bg-[#0f1f3d] text-white px-8 py-3">Contact Compliance Team</Button>
             <Button variant="outline" className="px-8 py-3">
               <ExternalLink className="w-4 h-4 mr-2" />
               IAF Public Registry
