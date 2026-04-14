@@ -21,7 +21,7 @@ export default async function ArticlePage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-[#FAF6EF] pb-20">
       {/* Hero Header */}
       <div className="relative h-[400px] w-full overflow-hidden">
         <img
@@ -29,17 +29,17 @@ export default async function ArticlePage({
           alt={article.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1728] via-[#0A1728]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0C1B2E] via-[#0C1B2E]/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8">
           <div className="max-w-4xl mx-auto">
             <Link
               href="/articles"
-              className="inline-flex items-center gap-2 text-aic-paper/70 hover:text-[#c36c32] mb-6 transition-colors text-sm font-medium"
+              className="inline-flex items-center gap-2 text-aic-paper/70 hover:text-[#C07830] mb-6 transition-colors text-sm font-medium"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Articles
             </Link>
             <div className="flex items-center gap-3 text-xs text-aic-paper/70 mb-4 uppercase tracking-widest font-mono">
-              <span className="px-2 py-1 bg-[#c36c32] text-aic-paper rounded font-medium">
+              <span className="px-2 py-1 bg-[#C07830] text-aic-paper rounded font-medium">
                 {article.category}
               </span>
               <span className="flex items-center gap-1">
@@ -63,34 +63,34 @@ export default async function ArticlePage({
 
       <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-10">
         <Card className="p-8 md:p-12 shadow-2xl border-none">
-          <div className="flex items-center gap-4 mb-10 pb-8 border-b border-gray-100">
-            <div className="w-12 h-12 rounded-full bg-[#0A1728] flex items-center justify-center text-aic-paper">
+          <div className="flex items-center gap-4 mb-10 pb-8 border-b border-[#DDD3C0]">
+            <div className="w-12 h-12 rounded-full bg-[#0C1B2E] flex items-center justify-center text-aic-paper">
               <User className="w-6 h-6" />
             </div>
             <div>
-              <div className="text-sm text-gray-400 uppercase tracking-widest font-mono">Author</div>
-              <div className="font-semibold text-[#0A1728]">{article.author}</div>
+              <div className="text-sm text-[#6B6458]/60 uppercase tracking-widest font-mono">Author</div>
+              <div className="font-semibold text-[#0C1B2E]">{article.author}</div>
             </div>
           </div>
 
           {/* Article Content */}
-          <article className="prose prose-lg max-w-none prose-slate prose-headings:font-serif prose-headings:text-[#0A1728] prose-a:text-[#c36c32] prose-strong:text-[#0A1728]">
+          <article className="prose prose-lg max-w-none prose-slate prose-headings:font-serif prose-headings:text-[#0C1B2E] prose-a:text-[#C07830] prose-strong:text-[#0C1B2E]">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {article.content}
             </ReactMarkdown>
           </article>
 
-          <div className="mt-16 pt-10 border-t border-gray-100 flex flex-col items-center text-center">
-            <Shield className="w-10 h-10 text-[#c36c32] mb-4" />
-            <h3 className="text-xl font-bold text-[#0A1728] mb-2 font-serif">
+          <div className="mt-16 pt-10 border-t border-[#DDD3C0] flex flex-col items-center text-center">
+            <Shield className="w-10 h-10 text-[#C07830] mb-4" />
+            <h3 className="text-xl font-bold text-[#0C1B2E] mb-2 font-serif">
               Built for Algorithmic Accountability
             </h3>
-            <p className="text-gray-500 max-w-md mx-auto mb-6">
+            <p className="text-[#6B6458] max-w-md mx-auto mb-6">
               AIC provides the world's most rigorous certification for AI professionals and organizations.
             </p>
             <Link
               href="/contact"
-              className="bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-8 py-3 rounded-lg font-medium transition-all shadow-lg shadow-[#c36c32]/20"
+              className="bg-[#C07830] hover:bg-[#C07830] text-aic-paper px-8 py-3 rounded-lg font-medium transition-all shadow-lg shadow-[#C07830]/20"
             >
               Get Certified
             </Link>

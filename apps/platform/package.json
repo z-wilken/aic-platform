@@ -23,7 +23,7 @@
     "bullmq": "^5.69.2",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.1",
-    "framer-motion": "^10.18.0",
+    "framer-motion": "^12.38.0",
     "ioredis": "^5.9.3",
     "jspdf": "^4.1.0",
     "lucide-react": "^0.575.0",

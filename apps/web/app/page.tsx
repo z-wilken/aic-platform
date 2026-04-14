@@ -26,36 +26,26 @@ const algorithmicRights = [
     icon: Eye,
     title: "Algorithmic Transparency",
     description: "Every individual has the right to know when an AI system is making decisions that affect them and to understand the logic behind those decisions.",
-    color: "bg-aic-paper text-aic-navy border-aic-navy/10",
-    iconBg: "bg-aic-navy/5",
   },
   {
     icon: MessageSquare,
     title: "Algorithmic Explainability",
     description: "Individuals have the right to receive meaningful, human-readable explanations of automated outcomes that affect their rights, welfare, or opportunities.",
-    color: "bg-aic-paper text-aic-navy border-aic-navy/10",
-    iconBg: "bg-aic-navy/5",
   },
   {
     icon: Bell,
     title: "Right to be Informed",
     description: "All persons must be notified whenever they are interacting with or being evaluated by an automated system, prior to the interaction taking place.",
-    color: "bg-aic-paper text-aic-navy border-aic-navy/10",
-    iconBg: "bg-aic-navy/5",
   },
   {
     icon: RefreshCw,
     title: "Decision Recourse",
     description: "No individual shall be subject to a decision based solely on automated processing that significantly affects their legal rights or personal circumstances.",
-    color: "bg-aic-paper text-aic-navy border-aic-navy/10",
-    iconBg: "bg-aic-navy/5",
   },
   {
     icon: UserCheck,
     title: "Human Interaction Choice",
     description: "Every person retains the fundamental right to opt out of AI-mediated services and request human service in any context affecting their material interests.",
-    color: "bg-aic-paper text-aic-navy border-aic-navy/10",
-    iconBg: "bg-aic-navy/5",
   },
 ];
 
@@ -73,7 +63,7 @@ const portals = [
     label: "Corporate Portal",
     href: "/corporate-portal",
     description: "ISO/IEC 42001 certification services, AI risk templates, and gap analysis tools for Chief Risk Officers.",
-    accent: "#0A1728",
+    accent: "#0C1B2E",
     tag: "Enterprise",
   },
   /*
@@ -82,7 +72,7 @@ const portals = [
     label: "Professional Portal",
     href: "/professional-portal",
     description: "ISO/IEC 17024 personnel certification, exam scheduling, and competency development guides.",
-    accent: "#c36c32",
+    accent: "#C07830",
     tag: "Individual Certification",
   },
   {
@@ -113,95 +103,93 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-[#0C1B2E]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1728]/95 via-[#0A1728]/90 to-[#1a3160]/80" />
+        {/* Overlay with 0.55 opacity */}
+        <div className="absolute inset-0 bg-[#0C1B2E]/55" />
 
         {/* Subtle grid overlay */}
         <div
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
             backgroundSize: "60px 60px",
           }}
         />
 
-        <div className="relative max-w-7xl mx-auto px-4 py-24">
+        <div className="relative max-w-7xl mx-auto px-4 py-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="max-w-4xl"
           >
-            <div className="flex items-center gap-2 mb-6">
-              <span className="px-3 py-1 bg-[#c36c32]/20 text-[#c36c32] text-xs rounded-full border border-[#c36c32]/30 uppercase tracking-wider">
+            <div className="flex items-center gap-2 mb-8">
+              <span className="px-3 py-1 bg-[#C07830]/20 text-[#C07830] text-[0.7rem] font-medium rounded border border-[#C07830]/30 uppercase tracking-[0.15em]">
                 IAF MLA Accredited · ISO/IEC 17024
               </span>
             </div>
-            <h1 className="text-5xl md:text-7xl text-aic-paper mb-6 leading-tight" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
+            <h1 
+              className="text-5xl md:text-7xl text-white mb-6 leading-[1.05] tracking-[-0.03em] font-bold"
+              style={{ fontFamily: "'Merriweather', serif" }}
+            >
               Certifying the{" "}
-              <span className="text-[#c36c32]">Human</span>{" "}
+              <span className="text-[#C07830]">Human</span>{" "}
               Behind the Algorithm
             </h1>
-            <p className="text-xl text-aic-paper/70 mb-10 max-w-2xl leading-relaxed">
-              AIC is the world's premier accreditation body focused on certifying the professionals accountable for AI — not just the machines. We establish the global standard for AI governance, ethics, and human responsibility.
+            <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl leading-[1.65]">
+              If your company uses AI to make decisions about people, you have a regulatory exposure that needs mapping.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
-                href="/waiting-list"
-                className="inline-flex items-center gap-2 bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-8 py-4 rounded-lg transition-all text-sm font-medium shadow-lg shadow-[#c36c32]/20"
+                href="/certification"
+                className="inline-flex items-center gap-2 bg-[#C07830] hover:bg-[#A66628] text-white px-8 py-4 rounded transition-all text-sm font-semibold shadow-lg shadow-[#C07830]/20"
               >
-                Get Certified Now <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/governance-hub"
-                className="inline-flex items-center gap-2 bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/20 px-8 py-4 rounded-lg transition-all text-sm font-medium backdrop-blur-sm"
-              >
-                Explore Algorithmic Rights <ChevronRight className="w-4 h-4" />
+                See how certification works <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </motion.div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-aic-paper/40 text-xs">
-          <span>Scroll to explore</span>
-          <div className="w-px h-8 bg-gradient-to-b from-aic-paper/40 to-transparent"></div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 text-xs">
+          <span className="uppercase tracking-widest text-[0.6rem]">Scroll to explore</span>
+          <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent"></div>
         </div>
       </section>
 
-      {/* Stats bar */}
-      <section className="bg-[#0A1728] border-b border-aic-paper/10">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, i) => {
-              const Icon = stat.icon;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="text-center"
-                >
-                  <div className="flex justify-center mb-2">
-                    <Icon className="w-5 h-5 text-[#c36c32]" />
-                  </div>
-                  <div className="text-aic-paper text-3xl font-bold">{stat.value}</div>
-                  <div className="text-aic-paper/50 text-sm mt-0.5">{stat.label}</div>
-                </motion.div>
-              );
-            })}
+      {/* Trust Bar */}
+      <section className="bg-[#FAF6EF] py-6 border-b border-[#DDD3C0]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+            <div className="flex items-center gap-2 px-8">
+              <Shield className="w-4 h-4 text-[#C07830]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">POPIA §71 Aligned</span>
+            </div>
+            <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
+            <div className="flex items-center gap-2 px-8">
+              <Shield className="w-4 h-4 text-[#C07830]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">EU AI Act Ready</span>
+            </div>
+            <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
+            <div className="flex items-center gap-2 px-8">
+              <Shield className="w-4 h-4 text-[#C07830]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">FSCA Compliant</span>
+            </div>
+            <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
+            <div className="flex items-center gap-2 px-8">
+              <Shield className="w-4 h-4 text-[#C07830]" />
+              <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">SANAS Accreditation Pathway</span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Declaration of Algorithmic Rights */}
-      <section className="py-24 bg-[#F9F8F4]">
+      <section className="py-24 bg-[#F0E8D6]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -209,16 +197,19 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">Universal Standard</span>
-            <h2 className="text-4xl text-[#0A1728] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
-              Declaration of Algorithmic Rights
+            <span className="text-[#C07830] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Why It Matters</span>
+            <h2 
+              className="text-4xl md:text-5xl text-[#0C1B2E] mt-3 mb-6 leading-[1.1] tracking-[-0.03em] font-bold"
+              style={{ fontFamily: "'Merriweather', serif" }}
+            >
+              Your AI makes decisions about people. Here&apos;s what they&apos;re entitled to.
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-base leading-relaxed">
-              AIC&apos;s foundational framework establishing the inalienable rights of every individual interacting with automated systems. These five rights form the basis for all AIC certification assessments.
+            <p className="text-[#6B6458] max-w-2xl mx-auto text-lg leading-[1.65]">
+              Regulators in South Africa, the UK, and the EU are codifying five rights that apply when algorithms affect human outcomes. AIC certification maps your systems against every one of them.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {algorithmicRights.map((right, i) => {
               const Icon = right.icon;
               return (
@@ -228,23 +219,23 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className={`border rounded-xl p-6 ${right.color} ${i === 4 ? "md:col-span-2 lg:col-span-1" : ""}`}
+                  className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className={`w-10 h-10 rounded-lg ${right.iconBg} flex items-center justify-center mb-4`}>
-                    <Icon className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded bg-[#C07830]/10 flex items-center justify-center mb-6">
+                    <Icon className="w-6 h-6 text-[#C07830]" />
                   </div>
-                  <div className="text-[10px] uppercase tracking-widest opacity-60 mb-1">Article {i + 1}</div>
-                  <h3 className="text-base font-semibold mb-2">{right.title}</h3>
-                  <p className="text-sm leading-relaxed opacity-80">{right.description}</p>
+                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#C07830] font-bold mb-2">Article {i + 1}</div>
+                  <h3 className="text-xl font-bold mb-3 text-[#0C1B2E]">{right.title}</h3>
+                  <p className="text-[#6B6458] text-sm leading-[1.65]">{right.description}</p>
                 </motion.div>
               );
             })}
           </div>
 
-          <div className="text-center mt-10">
+          <div className="text-center mt-12">
             <Link
               href="/governance-hub"
-              className="inline-flex items-center gap-2 text-[#0A1728] border border-[#0A1728] px-6 py-3 rounded-lg hover:bg-[#0A1728] hover:text-aic-paper transition-all text-sm font-medium"
+              className="inline-flex items-center gap-2 text-[#0C1B2E] border border-[#0C1B2E] px-8 py-4 rounded hover:bg-[#0C1B2E] hover:text-white transition-all text-sm font-bold uppercase tracking-widest"
             >
               Read the Full Declaration <ArrowRight className="w-4 h-4" />
             </Link>
@@ -252,75 +243,56 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Portals */}
-      <section className="py-24 bg-aic-paper">
+      {/* How It Works - 4 Step Process */}
+      <section className="py-24 bg-[#FAF6EF]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">Our Portals</span>
-            <h2 className="text-4xl text-[#0A1728] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
-              Serve Your Stakeholder Role
+            <span className="text-[#C07830] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">The Process</span>
+            <h2 
+              className="text-4xl md:text-5xl text-[#0C1B2E] mt-3 mb-6 font-bold"
+              style={{ fontFamily: "'Merriweather', serif" }}
+            >
+              How It Works
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-base">
-              AIC's multi-portal architecture ensures targeted resources for every type of stakeholder in the AI governance ecosystem.
+            <p className="text-[#6B6458] max-w-2xl mx-auto text-lg leading-[1.65]">
+              A streamlined, rigorous pathway to demonstrating algorithmic accountability.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {portals.map((portal, i) => {
-              const Icon = portal.icon;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Link
-                    href={portal.href}
-                    className="group block border border-gray-100 rounded-2xl p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-aic-paper overflow-hidden relative"
-                  >
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity"
-                      style={{ background: portal.accent }}
-                    />
-                    <div className="flex items-start justify-between mb-4">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: portal.accent + "15" }}
-                      >
-                        <Icon className="w-6 h-6" style={{ color: portal.accent }} />
-                      </div>
-                      <span className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-500 font-medium">
-                        {portal.tag}
-                      </span>
-                    </div>
-                    <h3 className="text-xl text-[#0A1728] mb-2 font-semibold">{portal.label}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-4">{portal.description}</p>
-                    <div className="flex items-center gap-1 text-sm font-medium" style={{ color: portal.accent }}>
-                      Enter Portal <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              { step: "Step 1", label: "Apply", desc: "Submit your organisation's AI inventory" },
+              { step: "Step 2", label: "Assess", desc: "Our methodology team audits your systems against the five rights" },
+              { step: "Step 3", label: "Certify", desc: "Receive your AIC certification mark and digital badge" },
+              { step: "Step 4", label: "Maintain", desc: "Annual review keeps your certification current" },
+            ].map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="relative"
+              >
+                <div className="text-4xl font-bold text-[#C07830] mb-4">{s.step.split(' ')[1]}</div>
+                <h3 className="text-xl font-bold text-[#0C1B2E] mb-3">{s.label}</h3>
+                <p className="text-[#6B6458] text-sm leading-[1.65]">{s.desc}</p>
+                {i < 3 && (
+                  <div className="hidden md:block absolute top-6 left-full w-full border-t-2 border-dotted border-[#DDD3C0] -z-10" />
+                )}
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Standards Section */}
-      <section className="py-24 bg-[#0A1728] relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #c36c32 0%, transparent 60%), radial-gradient(circle at 70% 50%, #1d4ed8 0%, transparent 60%)",
-          }}
-        />
+      <section className="py-24 bg-[#F0E8D6] relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -328,16 +300,19 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">Professional Standards</span>
-            <h2 className="text-4xl text-aic-paper mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <span className="text-[#C07830] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Professional Standards</span>
+            <h2 
+              className="text-4xl md:text-5xl text-[#0C1B2E] mt-3 mb-6 leading-[1.05] tracking-[-0.03em] font-bold"
+              style={{ fontFamily: "'Merriweather', serif" }}
+            >
               Built on International Frameworks
             </h2>
-            <p className="text-aic-paper/50 max-w-2xl mx-auto text-base">
+            <p className="text-[#6B6458] max-w-2xl mx-auto text-lg leading-[1.65]">
               All AIC certification programs are rigorously aligned with the most authoritative international standards in AI governance and personnel certification.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {standards.map((std, i) => (
               <motion.div
                 key={i}
@@ -345,12 +320,12 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="border border-aic-paper/10 rounded-2xl p-8 bg-aic-paper/5 backdrop-blur-sm hover:border-[#c36c32]/40 transition-colors"
+                className="border border-[#DDD3C0] rounded-xl p-8 bg-[#FAF6EF] shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="text-[#c36c32] font-bold text-lg mb-1">{std.code}</div>
-                <div className="text-aic-paper text-base font-medium mb-3">{std.name}</div>
-                <p className="text-aic-paper/50 text-sm leading-relaxed">{std.desc}</p>
-                <div className="mt-5 flex items-center gap-1 text-[#c36c32] text-sm">
+                <div className="text-[#C07830] font-bold text-lg mb-2">{std.code}</div>
+                <div className="text-[#0C1B2E] text-base font-bold mb-3">{std.name}</div>
+                <p className="text-[#6B6458] text-sm leading-[1.65]">{std.desc}</p>
+                <div className="mt-6 flex items-center gap-2 text-[#C07830] text-[0.7rem] font-bold uppercase tracking-wider">
                   <CheckCircle className="w-4 h-4" />
                   <span>AIC Aligned</span>
                 </div>
@@ -360,53 +335,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Banner */}
-      <section className="py-16 bg-aic-paper border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-center md:text-left">
-              <h3 className="text-2xl font-semibold text-[#0A1728] mb-2">
-                Recognized by the International Accreditation Forum
-              </h3>
-              <p className="text-gray-500 text-sm">
-                AIC operates under the IAF Multilateral Recognition Arrangement (MLA), providing internationally recognized certifications accepted in 100+ jurisdictions.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-4 justify-center shrink-0">
-              {["IAF MLA", "ISO/IEC 17011", "ILAC MRA", "APAC MLA", "EA MLA"].map((badge) => (
-                <div key={badge} className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 font-medium bg-gray-50">
-                  {badge}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
-      <section className="py-24 bg-gradient-to-br from-[#c36c32] to-[#c36c32]">
+      <section className="py-24 bg-[#C07830]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 
+              className="text-4xl md:text-5xl text-white mb-6 leading-[1.05] tracking-[-0.03em] font-bold"
+              style={{ fontFamily: "'Merriweather', serif" }}
+            >
               Ready to Lead Responsible AI?
             </h2>
-            <p className="text-aic-paper/80 mb-10 text-lg">
+            <p className="text-white/90 mb-10 text-lg md:text-xl leading-[1.65] max-w-[65ch] mx-auto">
               Join thousands of AI Ethics Leads, Chief AI Officers, and governance professionals who carry the AIC credential — the gold standard in human AI accountability.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link
-                href="/waiting-list"
-                className="inline-flex items-center gap-2 bg-aic-paper text-[#c36c32] px-8 py-4 rounded-lg font-medium hover:bg-aic-paper/90 transition-all"
+                href="/contact"
+                className="inline-flex items-center gap-2 bg-white text-[#C07830] px-8 py-4 rounded font-bold hover:bg-[#FAF6EF] transition-all"
               >
                 Start Certification Process <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/corporate-portal"
-                className="inline-flex items-center gap-2 border border-aic-paper/40 text-aic-paper px-8 py-4 rounded-lg hover:bg-aic-paper/10 transition-all font-medium"
+                href="/contact"
+                className="inline-flex items-center gap-2 border-2 border-white/40 text-white px-8 py-4 rounded hover:bg-white/10 transition-all font-bold"
               >
                 Corporate Inquiry
               </Link>

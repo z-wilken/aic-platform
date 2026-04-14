@@ -104,7 +104,7 @@ export default function ProfessionalPortalPage() {
       {/* Hero */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1728]/95 via-[#1a3160]/90 to-[#0A1728]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0C1B2E]/95 via-[#1a3160]/90 to-[#0C1B2E]/85" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -112,8 +112,8 @@ export default function ProfessionalPortalPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <Award className="w-6 h-6 text-[#c36c32]" />
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">ISO/IEC 17024 Personnel Certification</span>
+              <Award className="w-6 h-6 text-[#C07830]" />
+              <span className="text-[#C07830] text-sm uppercase tracking-widest font-medium">ISO/IEC 17024 Personnel Certification</span>
             </div>
             <h1 className="text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
               Professional Portal
@@ -122,7 +122,7 @@ export default function ProfessionalPortalPage() {
               Earn your AIC credential — the globally recognized standard for AI Ethics Leads, Chief AI Officers, and governance professionals. ISO/IEC 17024 accredited and accepted in 100+ jurisdictions.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
-              <Button className="bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-6 py-3">
+              <Button className="bg-[#C07830] hover:bg-[#C07830] text-aic-paper px-6 py-3">
                 Start Your Certification Journey <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <Button className="bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/40 px-6 py-3">
@@ -153,9 +153,9 @@ export default function ProfessionalPortalPage() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <Icon className="w-5 h-5 text-[#c36c32] mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-[#0A1728]">{stat.value}</div>
-                  <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
+                  <Icon className="w-5 h-5 text-[#C07830] mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-[#0C1B2E]">{stat.value}</div>
+                  <div className="text-sm text-[#6B6458] mt-1">{stat.label}</div>
                 </motion.div>
               );
             })}
@@ -179,10 +179,10 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="certifications">
               <div className="space-y-6">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0A1728] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0C1B2E] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Certification Pathways
                   </h2>
-                  <p className="text-gray-500 max-w-2xl mx-auto">
+                  <p className="text-[#6B6458] max-w-2xl mx-auto">
                     AIC offers three levels of ISO/IEC 17024 accredited personnel certification, designed to match your career stage and governance responsibilities.
                   </p>
                 </div>
@@ -198,7 +198,7 @@ export default function ProfessionalPortalPage() {
                     <Card className={`p-8 border-2 ${cert.color} relative overflow-hidden`}>
                       {cert.popular && (
                         <div className="absolute top-4 right-4">
-                          <Badge className="bg-[#c36c32] text-aic-paper">Most Popular</Badge>
+                          <Badge className="bg-[#C07830] text-aic-paper">Most Popular</Badge>
                         </div>
                       )}
                       <div className="flex items-start gap-6">
@@ -207,17 +207,17 @@ export default function ProfessionalPortalPage() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-2xl font-semibold text-[#0A1728]">{cert.level}</h3>
+                            <h3 className="text-2xl font-semibold text-[#0C1B2E]">{cert.level}</h3>
                             <Badge variant="outline" className={cert.badge}>{cert.code}</Badge>
                           </div>
-                          <p className="text-gray-600 mb-6">{cert.description}</p>
+                          <p className="text-[#6B6458] mb-6">{cert.description}</p>
                           
                           <div className="grid md:grid-cols-2 gap-6">
                             <div>
-                              <h4 className="text-sm font-semibold text-[#0A1728] mb-3">Requirements</h4>
+                              <h4 className="text-sm font-semibold text-[#0C1B2E] mb-3">Requirements</h4>
                               <ul className="space-y-2">
                                 {cert.requirements.map((req, j) => (
-                                  <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
+                                  <li key={j} className="flex items-start gap-2 text-sm text-[#6B6458]">
                                     <Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
                                     <span>{req}</span>
                                   </li>
@@ -225,18 +225,18 @@ export default function ProfessionalPortalPage() {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="text-sm font-semibold text-[#0A1728] mb-3">Certification Details</h4>
-                              <div className="space-y-2 text-sm text-gray-600">
+                              <h4 className="text-sm font-semibold text-[#0C1B2E] mb-3">Certification Details</h4>
+                              <div className="space-y-2 text-sm text-[#6B6458]">
                                 <div className="flex items-center gap-2">
-                                  <Clock className="w-4 h-4 text-[#c36c32]" />
+                                  <Clock className="w-4 h-4 text-[#C07830]" />
                                   <span>Preparation Time: {cert.duration}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Target className="w-4 h-4 text-[#c36c32]" />
+                                  <Target className="w-4 h-4 text-[#C07830]" />
                                   <span>Exam Fee: {cert.examFee}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Globe className="w-4 h-4 text-[#c36c32]" />
+                                  <Globe className="w-4 h-4 text-[#C07830]" />
                                   <span>Valid: 3 years (renewal required)</span>
                                 </div>
                               </div>
@@ -244,7 +244,7 @@ export default function ProfessionalPortalPage() {
                           </div>
 
                           <div className="mt-6 flex gap-3">
-                            <Button className="bg-[#0A1728] hover:bg-[#1a3160] text-aic-paper">
+                            <Button className="bg-[#0C1B2E] hover:bg-[#1a3160] text-aic-paper">
                               Apply for {cert.code}
                             </Button>
                             <Button variant="outline">Download Requirements Guide</Button>
@@ -261,10 +261,10 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="exams">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0A1728] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0C1B2E] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Upcoming Examinations
                   </h2>
-                  <p className="text-gray-500 max-w-2xl mx-auto">
+                  <p className="text-[#6B6458] max-w-2xl mx-auto">
                     All exams are proctored in accordance with ISO/IEC 17024 standards. Online and in-person options available.
                   </p>
                 </div>
@@ -274,18 +274,18 @@ export default function ProfessionalPortalPage() {
                     {upcomingExams.map((exam, i) => (
                       <div
                         key={i}
-                        className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-aic-paper border border-gray-200 rounded-lg hover:border-[#c36c32] transition-colors"
+                        className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-aic-paper border border-[#DDD3C0] rounded-lg hover:border-[#C07830] transition-colors"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-[#0A1728] rounded-lg flex items-center justify-center text-aic-paper font-bold text-sm">
+                          <div className="w-12 h-12 bg-[#0C1B2E] rounded-lg flex items-center justify-center text-aic-paper font-bold text-sm">
                             {exam.date.split(" ")[1].replace(",", "")}
                           </div>
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="font-semibold text-[#0A1728]">{exam.date}</span>
+                              <span className="font-semibold text-[#0C1B2E]">{exam.date}</span>
                               <Badge variant="outline">{exam.code}</Badge>
                             </div>
-                            <div className="text-sm text-gray-500">{exam.location}</div>
+                            <div className="text-sm text-[#6B6458]">{exam.location}</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
@@ -294,7 +294,7 @@ export default function ProfessionalPortalPage() {
                               {exam.seats}
                             </span>
                           </div>
-                          <Button className="bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper">
+                          <Button className="bg-[#C07830] hover:bg-[#C07830] text-aic-paper">
                             Register Now
                           </Button>
                         </div>
@@ -324,10 +324,10 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="competencies">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0A1728] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0C1B2E] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Competency Domains
                   </h2>
-                  <p className="text-gray-500 max-w-2xl mx-auto">
+                  <p className="text-[#6B6458] max-w-2xl mx-auto">
                     All AIC exams assess competency across six core domains, weighted according to their importance in real-world governance practice.
                   </p>
                 </div>
@@ -343,13 +343,13 @@ export default function ProfessionalPortalPage() {
                     >
                       <Card className="p-6">
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="text-lg font-semibold text-[#0A1728]">{domain.name}</h3>
-                          <Badge className="bg-[#c36c32] text-aic-paper">{domain.weight}</Badge>
+                          <h3 className="text-lg font-semibold text-[#0C1B2E]">{domain.name}</h3>
+                          <Badge className="bg-[#C07830] text-aic-paper">{domain.weight}</Badge>
                         </div>
-                        <p className="text-gray-600 text-sm mb-4">{domain.description}</p>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <p className="text-[#6B6458] text-sm mb-4">{domain.description}</p>
+                        <div className="w-full bg-[#DDD3C0] rounded-full h-2">
                           <div
-                            className="bg-[#c36c32] h-2 rounded-full"
+                            className="bg-[#C07830] h-2 rounded-full"
                             style={{ width: domain.weight }}
                           />
                         </div>
@@ -382,10 +382,10 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="resources">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0A1728] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0C1B2E] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Study Resources
                   </h2>
-                  <p className="text-gray-500 max-w-2xl mx-auto">
+                  <p className="text-[#6B6458] max-w-2xl mx-auto">
                     Free preparation materials for all AIC certification candidates. Additional paid courses available through accredited training providers.
                   </p>
                 </div>
@@ -404,12 +404,12 @@ export default function ProfessionalPortalPage() {
                         <Card className="p-5 hover:shadow-lg transition-shadow">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-3 flex-1">
-                              <div className="w-10 h-10 bg-[#0A1728] rounded-lg flex items-center justify-center shrink-0">
-                                <Icon className="w-5 h-5 text-[#c36c32]" />
+                              <div className="w-10 h-10 bg-[#0C1B2E] rounded-lg flex items-center justify-center shrink-0">
+                                <Icon className="w-5 h-5 text-[#C07830]" />
                               </div>
                               <div className="flex-1">
-                                <h4 className="font-semibold text-[#0A1728] mb-1">{resource.title}</h4>
-                                <div className="text-sm text-gray-500">
+                                <h4 className="font-semibold text-[#0C1B2E] mb-1">{resource.title}</h4>
+                                <div className="text-sm text-[#6B6458]">
                                   {resource.type} • {resource.size}
                                 </div>
                               </div>
@@ -425,8 +425,8 @@ export default function ProfessionalPortalPage() {
                 </div>
 
                 <div className="mt-8 grid md:grid-cols-2 gap-6">
-                  <Card className="p-6 bg-gradient-to-br from-[#0A1728] to-[#1a3160] text-aic-paper">
-                    <BookOpen className="w-8 h-8 text-[#c36c32] mb-3" />
+                  <Card className="p-6 bg-gradient-to-br from-[#0C1B2E] to-[#1a3160] text-aic-paper">
+                    <BookOpen className="w-8 h-8 text-[#C07830] mb-3" />
                     <h4 className="font-semibold text-lg mb-2">Accredited Training Providers</h4>
                     <p className="text-aic-paper/70 text-sm mb-4">
                       Instructor-led courses from AIC-approved training organizations. Includes live workshops and 1-on-1 mentorship.
@@ -436,7 +436,7 @@ export default function ProfessionalPortalPage() {
                     </Button>
                   </Card>
 
-                  <Card className="p-6 bg-gradient-to-br from-[#c36c32] to-[#c36c32] text-aic-paper">
+                  <Card className="p-6 bg-gradient-to-br from-[#C07830] to-[#C07830] text-aic-paper">
                     <Users className="w-8 h-8 text-aic-paper mb-3" />
                     <h4 className="font-semibold text-lg mb-2">Study Groups & Community</h4>
                     <p className="text-aic-paper/90 text-sm mb-4">
@@ -454,10 +454,10 @@ export default function ProfessionalPortalPage() {
             <TabsContent value="directory">
               <div>
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl text-[#0A1728] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+                  <h2 className="text-3xl text-[#0C1B2E] mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                     Certified Professional Directory
                   </h2>
-                  <p className="text-gray-500 max-w-2xl mx-auto">
+                  <p className="text-[#6B6458] max-w-2xl mx-auto">
                     Search our public directory of AIC-certified professionals. All certifications are independently verified and maintained in our ISO/IEC 17024 registry.
                   </p>
                 </div>
@@ -473,7 +473,7 @@ export default function ProfessionalPortalPage() {
                         className="pl-10"
                       />
                     </div>
-                    <Button className="bg-[#0A1728] hover:bg-[#1a3160] text-aic-paper">
+                    <Button className="bg-[#0C1B2E] hover:bg-[#1a3160] text-aic-paper">
                       Search
                     </Button>
                   </div>
@@ -491,16 +491,16 @@ export default function ProfessionalPortalPage() {
                       <Card className="p-6">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 bg-[#0A1728] rounded-full flex items-center justify-center text-aic-paper font-bold text-lg">
+                            <div className="w-14 h-14 bg-[#0C1B2E] rounded-full flex items-center justify-center text-aic-paper font-bold text-lg">
                               {professional.name.split(" ").map(n => n[0]).join("")}
                             </div>
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <h4 className="font-semibold text-[#0A1728]">{professional.name}</h4>
-                                <Badge className="bg-[#c36c32] text-aic-paper">{professional.cert}</Badge>
+                                <h4 className="font-semibold text-[#0C1B2E]">{professional.name}</h4>
+                                <Badge className="bg-[#C07830] text-aic-paper">{professional.cert}</Badge>
                               </div>
-                              <div className="text-sm text-gray-600">{professional.role}</div>
-                              <div className="text-sm text-gray-500">{professional.company}</div>
+                              <div className="text-sm text-[#6B6458]">{professional.role}</div>
+                              <div className="text-sm text-[#6B6458]">{professional.company}</div>
                             </div>
                           </div>
                           <div className="text-right">
@@ -508,7 +508,7 @@ export default function ProfessionalPortalPage() {
                               <CheckCircle className="w-4 h-4" />
                               <span>Verified</span>
                             </div>
-                            <div className="text-xs text-gray-500">Certified {professional.year}</div>
+                            <div className="text-xs text-[#6B6458]">Certified {professional.year}</div>
                           </div>
                         </div>
                       </Card>
@@ -517,7 +517,7 @@ export default function ProfessionalPortalPage() {
                 </div>
 
                 <div className="mt-6 text-center">
-                  <p className="text-sm text-gray-500 mb-3">Showing 4 of 4,200+ certified professionals</p>
+                  <p className="text-sm text-[#6B6458] mb-3">Showing 4 of 4,200+ certified professionals</p>
                   <Button variant="outline">Load More Results</Button>
                 </div>
               </div>
@@ -527,7 +527,7 @@ export default function ProfessionalPortalPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-br from-[#c36c32] to-[#c36c32] text-aic-paper">
+      <section className="py-16 bg-gradient-to-br from-[#C07830] to-[#C07830] text-aic-paper">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Award className="w-12 h-12 mx-auto mb-4 text-aic-paper" />
           <h2 className="text-3xl mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
@@ -537,7 +537,7 @@ export default function ProfessionalPortalPage() {
             Join the global community of certified AI governance professionals. Register for your first exam or schedule a consultation to discuss your certification pathway.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-aic-paper text-[#c36c32] hover:bg-aic-paper/90 px-8 py-3">
+            <Button className="bg-aic-paper text-[#C07830] hover:bg-aic-paper/90 px-8 py-3">
               Register for Exam
             </Button>
             <Button className="bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/40 px-8 py-3">

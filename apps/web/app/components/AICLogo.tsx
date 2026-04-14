@@ -24,8 +24,8 @@ export function AICLogo({
   };
 
   const { w, h } = sizes[size];
-  const gold = "#c36c32";
-  const navy = "#0A1728";
+  const gold = "#C07830";
+  const navy = "#0C1B2E";
   const primaryColor = scheme === "dark" ? "var(--aic-paper)" : navy;
 
   return (
@@ -109,7 +109,7 @@ export function AICLogoShowcase() {
         </div>
         <div className="space-y-4">
           <h3 className="text-sm font-mono text-gray-400 uppercase tracking-widest">On Dark Background</h3>
-          <div className="p-8 bg-[#0A1728] rounded-xl flex flex-col gap-8 items-center">
+          <div className="p-8 bg-[#0C1B2E] rounded-xl flex flex-col gap-8 items-center">
             <AICLogo variant="full" scheme="dark" size="lg" />
             <AICLogo variant="icon" scheme="dark" size="md" />
           </div>

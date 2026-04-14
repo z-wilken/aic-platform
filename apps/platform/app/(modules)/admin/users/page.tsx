@@ -8,6 +8,7 @@ import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Drawer } from "@/app/components/ui/drawer";
+import { cn } from "@/lib/utils";
 import { 
   UserPlus, 
   Search, 

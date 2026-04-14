@@ -51,6 +51,60 @@ export function getTenantDb(orgId: string) {
         await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
         return await callback(tx);
       });
+    },
+    execute: async (query: any): Promise<any> => {
+      return await rawDb.transaction(async (tx) => {
+        await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
+        return await tx.execute(query);
+      });
+    },
+    select: (...args: any[]) => {
+      // Create a proxy that wraps the actual execution in a transaction
+      const selectBase = rawDb.select(...args);
+      const originalThen = selectBase.then.bind(selectBase);
+      selectBase.then = (onfulfilled?: any, onrejected?: any) => {
+        return rawDb.transaction(async (tx) => {
+          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
+          return await (tx.select(...args) as any).then(onfulfilled, onrejected);
+        });
+      };
+      return selectBase;
+    },
+    insert: (...args: any[]) => {
+      const insertBase = rawDb.insert(...args);
+      insertBase.then = (onfulfilled?: any, onrejected?: any) => {
+        return rawDb.transaction(async (tx) => {
+          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
+          return await (tx.insert(...args) as any).then(onfulfilled, onrejected);
+        });
+      };
+      return insertBase;
+    },
+    update: (...args: any[]) => {
+      const updateBase = rawDb.update(...args);
+      updateBase.then = (onfulfilled?: any, onrejected?: any) => {
+        return rawDb.transaction(async (tx) => {
+          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
+          return await (tx.update(...args) as any).then(onfulfilled, onrejected);
+        });
+      };
+      return updateBase;
+    },
+    delete: (...args: any[]) => {
+      const deleteBase = rawDb.delete(...args);
+      deleteBase.then = (onfulfilled?: any, onrejected?: any) => {
+        return rawDb.transaction(async (tx) => {
+          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
+          return await (tx.delete(...args) as any).then(onfulfilled, onrejected);
+        });
+      };
+      return deleteBase;
+    },
+    transaction: async <T>(callback: (tx: TenantTransaction) => Promise<T>): Promise<T> => {
+      return await rawDb.transaction(async (tx) => {
+        await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
+        return await callback(tx);
+      });
     }
   };
 }
@@ -69,4 +123,4 @@ export * from './schema';
 export { schema }; 
 export type { PgTransaction, PgQueryResultHKT };
 export { pool }; // Note: This will be null until first DB access
-export { sql, eq, and, or, desc, asc, like, gte, lt } from 'drizzle-orm';
+export { sql, eq, and, or, desc, asc, like, gte, lt, avg, count, sum, min, max, isNull, isNotNull } from 'drizzle-orm';

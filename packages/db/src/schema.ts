@@ -1,10 +1,10 @@
-﻿import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum, index, type AnyPgColumn } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, boolean, timestamp, jsonb, text, pgEnum, index, type AnyPgColumn } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 // Enums
 export const tierEnum = pgEnum('tier_enum', ['TIER_1', 'TIER_2', 'TIER_3']);
 export const userRoleEnum = pgEnum('user_role_enum', ['ADMIN', 'AUDITOR', 'COMPLIANCE_OFFICER', 'VIEWER']);
-export const auditStatusEnum = pgEnum('audit_status_enum', ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FLAGGED']);
+export const auditStatusEnum = pgEnum('audit_status_enum', ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'FLAGGED', 'VERIFIED']);
 export const incidentStatusEnum = pgEnum('incident_status_enum', ['OPEN', 'INVESTIGATING', 'RESOLVED', 'DISMISSED', 'CLOSED']);
 export const auditScheduledStatusEnum = pgEnum('audit_scheduled_status_enum', ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']);
 export const correctionStatusEnum = pgEnum('correction_status_enum', ['SUBMITTED', 'UNDER_REVIEW', 'RESOLVED', 'REJECTED']);
@@ -212,6 +212,7 @@ export const auditLedger = pgTable('audit_ledger', {
   currentHash: varchar('current_hash', { length: 64 }).notNull(),
   previousHash: varchar('previous_hash', { length: 64 }),
   timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow(),
+  signature: text('signature'),
 });
 
 // Audit Logs (General activity)
@@ -506,5 +507,100 @@ export const publicIndexRankings = pgTable('public_index_rankings', {
   isClient: boolean('is_client').default(false), // True if they have a linked orgId
   linkedOrgId: uuid('linked_org_id').references(() => organizations.id, { onDelete: 'set null' }),
   lastAssessedAt: timestamp('last_assessed_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Governance Blocks (Human Accountability Mapping)
+export const governanceBlocks = pgTable('governance_blocks', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  systemId: uuid('system_id').notNull(),
+  type: varchar('type', { length: 50 }).notNull(), // 'INPUT', 'PROCESS', 'OUTPUT', 'HUMAN'
+  content: text('content').notNull(),
+  sequence: integer('sequence').notNull(),
+  impact: varchar('impact', { length: 20 }).default('LOW'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Invite Codes (Provisioning)
+export const inviteCodes = pgTable('invite_codes', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  code: varchar('code', { length: 50 }).unique().notNull(),
+  role: userRoleEnum('role').default('VIEWER'),
+  orgId: uuid('org_id').references(() => organizations.id),
+  maxUses: integer('max_uses').default(1),
+  uses: integer('uses').default(0),
+  expiresAt: timestamp('expires_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// AI Systems Registry
+export const aiSystems = pgTable('ai_systems', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  version: varchar('version', { length: 50 }).default('1.0.0'),
+  purpose: text('purpose'),
+  division: integer('division').default(5),
+  riskTier: integer('risk_tier').default(1),
+  lifecycleStage: varchar('lifecycle_stage', { length: 50 }).default('DEVELOPMENT'),
+  status: varchar('status', { length: 20 }).default('DRAFT'),
+  isSandbox: boolean('is_sandbox').default(true),
+  isActive: boolean('is_active').default(true),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// AIMS (AI Integrity Management System) Assessments
+export const aimsAssessments = pgTable('aims_assessments', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  status: varchar('status', { length: 50 }).default('IN_PROGRESS'),
+  notes: text('notes'),
+  readinessScore: integer('readiness_score').default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+});
+
+// Conflict Checks (Auditor Independence)
+export const conflictChecks = pgTable('conflict_checks', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  auditorId: uuid('auditor_id').references(() => users.id),
+  declaration: text('declaration').notNull(),
+  status: varchar('status', { length: 20 }).default('PENDING'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Practitioner Certifications (Personnel)
+export const practitionerCertifications = pgTable('practitioner_certifications', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  certLevelId: uuid('cert_level_id').notNull(),
+  status: varchar('status', { length: 20 }).default('ACTIVE'),
+  issueDate: timestamp('issue_date', { withTimezone: true }).defaultNow(),
+  expiryDate: timestamp('expiry_date', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// CPD Logs (Continuing Professional Development)
+export const cpdLogs = pgTable('cpd_logs', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  hours: integer('hours').notNull(),
+  date: timestamp('date', { withTimezone: true }).notNull(),
+  status: varchar('status', { length: 20 }).default('PENDING'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+});
+
+// Exam Questions (Registry)
+export const examQuestions = pgTable('exam_questions', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  certLevelId: uuid('cert_level_id').notNull(),
+  question: text('question').notNull(),
+  options: jsonb('options').notNull(), // Array of choices
+  correctOptionIndex: integer('correct_option_index').notNull(),
+  explanation: text('explanation'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });

@@ -104,21 +104,15 @@ const heroBg = "https://images.unsplash.com/photo-1683447551794-1c287cd42675?cro
 
 export default function CertificationPage() {
   return (
-    <div>
+    <div className="bg-[#F0E8D6] min-h-screen">
       {/* Hero */}
-      <section className="relative py-24 overflow-hidden">
+      <section className="relative py-12 lg:py-24 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1728]/95 via-[#0A1728]/90 to-[#1a3160]/85" />
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+        <div className="absolute inset-0 bg-[#0C1B2E]/55" />
+        <div className="absolute inset-0 subtle-grid opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -127,37 +121,31 @@ export default function CertificationPage() {
             className="max-w-3xl"
           >
             <div className="flex items-center gap-2 mb-6">
-              <span className="px-3 py-1 bg-[#c36c32]/20 text-[#c36c32] text-[10px] rounded-full border border-[#c36c32]/30 uppercase tracking-[0.2em] font-mono">
+              <span className="eyebrow px-3 py-1 bg-[#C07830]/10 rounded-full border border-[#C07830]/20">
                 AIC Five-Division Framework
               </span>
             </div>
-            <h1 className="text-5xl md:text-6xl text-aic-paper mb-6 leading-tight" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
+            <h1 className="text-5xl md:text-7xl text-white mb-6">
               Accountability<br />
-              <span className="text-[#c36c32]">Calibrated to AI</span>
+              <span className="text-[#C07830]">Calibrated to AI</span>
             </h1>
-            <p className="text-xl text-aic-paper/70 leading-relaxed mb-10 max-w-2xl">
+            <p className="text-xl text-white/80 leading-[1.65] mb-10 max-w-2xl">
               AIC certification is structured around how your organisation actually relates to AI in consequential decisions — not a one-size-fits-all compliance checkbox. Choose the Division that reflects your reality.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-8 py-4 rounded-lg transition-all text-sm font-medium shadow-lg shadow-[#c36c32]/20"
+                className="inline-flex items-center gap-2 bg-[#C07830] hover:bg-[#C07830]/90 text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#C07830]/20"
               >
                 Enquire About Certification <ArrowRight className="w-4 h-4" />
               </Link>
-              <a
-                href="#divisions"
-                className="inline-flex items-center gap-2 bg-aic-paper/10 hover:bg-aic-paper/20 text-aic-paper border border-aic-paper/20 px-8 py-4 rounded-lg transition-all text-sm font-medium"
-              >
-                Explore the Five Divisions <ChevronRight className="w-4 h-4" />
-              </a>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Intro — accountability calibrated */}
-      <section className="py-20 bg-aic-paper">
+      <section className="py-12 lg:py-24 bg-[#F0E8D6]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div
@@ -165,14 +153,14 @@ export default function CertificationPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">The Framework</span>
-              <h2 className="text-4xl text-[#0A1728] mt-3 mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="eyebrow">The Framework</span>
+              <h2 className="text-[#0C1B2E] mt-3 mb-6">
                 Your relationship with AI determines your certification path
               </h2>
-              <p className="text-gray-600 leading-relaxed mb-6">
+              <p className="text-[#6B6458] mb-6">
                 The AIC Five-Division Framework recognises that organisations sit at very different points on the human-AI accountability spectrum. A hospital where clinicians sign off every AI diagnostic is fundamentally different from a platform where algorithms operate autonomously with periodic human review.
               </p>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-[#6B6458]">
                 AIC certification is calibrated to your actual relationship with AI. Each Division has distinct requirements, monitoring obligations, and primary accountability KPIs — because generic compliance frameworks miss the nuance that matters.
               </p>
             </motion.div>
@@ -189,19 +177,19 @@ export default function CertificationPage() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className={`flex items-center gap-4 p-4 rounded-xl border ${div.accentBorderColor} bg-[#F9F8F4] hover:bg-[#f0f4f8] transition-colors`}
+                    className={`flex items-center gap-4 p-4 rounded border border-[#DDD3C0] bg-[#FAF6EF] hover:bg-[#F0E8D6] transition-colors`}
                   >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-gray-100`}>
+                    <div className={`w-10 h-10 rounded flex items-center justify-center shrink-0 bg-[#F0E8D6]`}>
                       <Icon className={`w-5 h-5 ${div.accentText}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Division {div.number}</span>
-                        <span className="text-sm font-semibold text-[#0A1728]">{div.name}</span>
+                        <span className="text-[10px] font-mono text-[#6B6458] uppercase tracking-widest">Division {div.number}</span>
+                        <span className="text-sm font-semibold text-[#0C1B2E]">{div.name}</span>
                       </div>
-                      <p className="text-xs text-gray-500 truncate">{div.tagline}</p>
+                      <p className="text-xs text-[#6B6458] truncate">{div.tagline}</p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-[#DDD3C0] shrink-0" />
                   </motion.a>
                 );
               })}
@@ -211,7 +199,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Division Cards */}
-      <section id="divisions" className="py-20 bg-[#F9F8F4]">
+      <section id="divisions" className="py-12 lg:py-24 bg-[#FAF6EF]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -219,11 +207,11 @@ export default function CertificationPage() {
             viewport={{ once: true }}
             className="text-center mb-14"
           >
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">Full Detail</span>
-            <h2 className="text-4xl text-[#0A1728] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <span className="eyebrow">Full Detail</span>
+            <h2 className="text-[#0C1B2E] mt-3 mb-4">
               The Five Divisions
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
+            <p className="text-[#6B6458] max-w-2xl mx-auto">
               Each Division maps to a distinct accountability model. Find yours and see exactly what AIC certifies.
             </p>
           </motion.div>
@@ -239,7 +227,7 @@ export default function CertificationPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="bg-[#0A1728] rounded-2xl overflow-hidden border border-aic-paper/10"
+                  className="bg-[#0C1B2E] rounded overflow-hidden border border-white/10 shadow-2xl"
                 >
                   {/* Colored top accent strip */}
                   <div className={`h-1 ${div.accentStripBg}`} />
@@ -248,58 +236,58 @@ export default function CertificationPage() {
                     <div className="flex flex-col lg:flex-row gap-8">
                       {/* Left — identity */}
                       <div className="lg:w-64 shrink-0">
-                        <div className={`w-14 h-14 rounded-xl bg-aic-paper/10 flex items-center justify-center mb-4`}>
+                        <div className={`w-14 h-14 rounded bg-white/5 flex items-center justify-center mb-4`}>
                           <Icon className={`w-7 h-7 ${div.accentText}`} />
                         </div>
-                        <div className="text-[10px] font-mono text-aic-paper/40 uppercase tracking-widest mb-1">Division {div.number}</div>
-                        <h3 className="text-2xl text-aic-paper font-bold mb-2" style={{ fontFamily: "'Merriweather', serif" }}>
+                        <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-1">Division {div.number}</div>
+                        <h3 className="text-2xl text-white font-bold mb-2">
                           {div.name}
                         </h3>
                         <p className={`text-sm font-medium italic mb-4 ${div.accentText}`}>
                           &ldquo;{div.tagline}&rdquo;
                         </p>
-                        <div className="p-4 rounded-xl bg-aic-paper/5 border border-aic-paper/10">
-                          <div className="text-[10px] font-mono text-aic-paper/40 uppercase tracking-widest mb-2">Primary KPI</div>
-                          <p className="text-aic-paper/80 text-xs leading-relaxed">{div.kpi}</p>
+                        <div className="p-4 rounded bg-white/5 border border-white/10">
+                          <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">Primary KPI</div>
+                          <p className="text-white/80 text-xs leading-relaxed">{div.kpi}</p>
                         </div>
                       </div>
 
                       {/* Right — detail */}
                       <div className="flex-1 space-y-5">
                         <div>
-                          <div className="text-[10px] font-mono text-aic-paper/40 uppercase tracking-widest mb-2">Who This Is</div>
-                          <p className="text-aic-paper/80 text-sm leading-relaxed">{div.who}</p>
+                          <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">Who This Is</div>
+                          <p className="text-white/80 text-sm leading-relaxed">{div.who}</p>
                         </div>
 
                         {div.examples && (
                           <div>
-                            <div className="text-[10px] font-mono text-aic-paper/40 uppercase tracking-widest mb-2">Examples</div>
-                            <p className="text-aic-paper/60 text-sm leading-relaxed">{div.examples}</p>
+                            <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">Examples</div>
+                            <p className="text-white/60 text-sm leading-relaxed">{div.examples}</p>
                           </div>
                         )}
 
                         <div>
-                          <div className="text-[10px] font-mono text-aic-paper/40 uppercase tracking-widest mb-2">What AIC Certifies</div>
-                          <p className="text-aic-paper/80 text-sm leading-relaxed">{div.what}</p>
+                          <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">What AIC Certifies</div>
+                          <p className="text-white/80 text-sm leading-relaxed">{div.what}</p>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                          <div className="flex-1 p-4 rounded-xl bg-aic-paper/5 border border-aic-paper/10">
-                            <div className="text-[10px] font-mono text-aic-paper/40 uppercase tracking-widest mb-2">AIC Product</div>
-                            <p className="text-aic-paper/80 text-xs leading-relaxed">{div.product}</p>
+                          <div className="flex-1 p-4 rounded bg-white/5 border border-white/10">
+                            <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">AIC Product</div>
+                            <p className="text-white/80 text-xs leading-relaxed">{div.product}</p>
                           </div>
                           {div.valueProp && (
-                            <div className="flex-1 p-4 rounded-xl bg-[#c36c32]/10 border border-[#c36c32]/20">
-                              <div className="text-[10px] font-mono text-[#c36c32]/70 uppercase tracking-widest mb-2">Value Proposition</div>
-                              <p className="text-aic-paper/80 text-xs leading-relaxed italic">{div.valueProp}</p>
+                            <div className="flex-1 p-4 rounded bg-[#C07830]/10 border border-[#C07830]/20">
+                              <div className="text-[10px] font-mono text-[#C07830]/70 uppercase tracking-widest mb-2">Value Proposition</div>
+                              <p className="text-white/80 text-xs leading-relaxed italic">{div.valueProp}</p>
                             </div>
                           )}
                         </div>
 
                         {div.note && (
-                          <div className="p-4 rounded-xl bg-aic-paper/5 border border-aic-paper/10 flex items-start gap-3">
+                          <div className="p-4 rounded bg-white/5 border border-white/10 flex items-start gap-3">
                             <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${div.accentText}`} />
-                            <p className="text-aic-paper/60 text-xs leading-relaxed">{div.note}</p>
+                            <p className="text-white/60 text-xs leading-relaxed">{div.note}</p>
                           </div>
                         )}
                       </div>
@@ -313,7 +301,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Certification Journey */}
-      <section className="py-20 bg-aic-paper">
+      <section className="py-12 lg:py-24 bg-[#F0E8D6]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -321,11 +309,11 @@ export default function CertificationPage() {
             viewport={{ once: true }}
             className="text-center mb-14"
           >
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">How It Works</span>
-            <h2 className="text-4xl text-[#0A1728] mt-3 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <span className="eyebrow">How It Works</span>
+            <h2 className="text-[#0C1B2E] mt-3 mb-4">
               Your Certification Journey
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
+            <p className="text-[#6B6458] max-w-2xl mx-auto">
               Five steps from self-assessment to certified — with ongoing Pulse monitoring for organisations in Divisions 2, 3, and 4.
             </p>
           </motion.div>
@@ -340,14 +328,14 @@ export default function CertificationPage() {
                 transition={{ delay: i * 0.1 }}
                 className="relative"
               >
-                <div className="bg-[#F9F8F4] border border-gray-100 rounded-2xl p-6 h-full hover:border-[#c36c32]/30 hover:shadow-md transition-all">
-                  <div className="text-[#c36c32] text-2xl font-bold font-mono mb-4">{step.step}</div>
-                  <h3 className="text-[#0A1728] font-semibold mb-3 text-sm">{step.title}</h3>
-                  <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
+                <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded p-6 h-full hover:border-[#C07830]/30 hover:shadow-md transition-all">
+                  <div className="text-[#C07830] text-2xl font-bold font-mono mb-4">{step.step}</div>
+                  <h3 className="text-[#0C1B2E] font-semibold mb-3 text-sm">{step.title}</h3>
+                  <p className="text-[#6B6458] text-xs leading-relaxed">{step.desc}</p>
                 </div>
                 {i < journeySteps.length - 1 && (
                   <div className="hidden md:flex absolute top-1/2 -right-3 z-10 items-center justify-center">
-                    <ChevronRight className="w-5 h-5 text-gray-300" />
+                    <ChevronRight className="w-5 h-5 text-[#DDD3C0]" />
                   </div>
                 )}
               </motion.div>
@@ -356,12 +344,12 @@ export default function CertificationPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-[#0A1728] to-[#0A1728] relative overflow-hidden">
+      {/* CTA Banner */}
+      <section className="py-12 lg:py-24 bg-[#0C1B2E] relative overflow-hidden">
         <div
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #c36c32 0%, transparent 60%), radial-gradient(circle at 70% 50%, #1d4ed8 0%, transparent 60%)",
+            backgroundImage: "radial-gradient(circle at 30% 50%, #C07830 0%, transparent 60%)",
           }}
         />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
@@ -370,18 +358,18 @@ export default function CertificationPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="px-3 py-1 bg-[#c36c32]/20 text-[#c36c32] text-[10px] rounded-full border border-[#c36c32]/30 uppercase tracking-[0.2em] font-mono mb-6 inline-block">
+            <span className="eyebrow text-[#C07830] bg-[#C07830]/10 px-3 py-1 rounded-full inline-block mb-6">
               Get Certified
             </span>
-            <h2 className="text-4xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-white mb-4">
               Ready to Certify Your Accountability?
             </h2>
-            <p className="text-aic-paper/70 mb-10 text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-white/70 mb-10 text-lg max-w-2xl mx-auto">
               Start with a diagnostic conversation. AIC will help you identify the right Division, understand the gap, and design a certification pathway that fits your organisation.
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-10 py-4 rounded-xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#c36c32]/25 text-sm"
+              className="inline-flex items-center gap-2 bg-[#C07830] hover:bg-[#C07830]/90 text-white px-10 py-4 rounded font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#C07830]/25 text-sm"
             >
               Enquire About Certification
               <ArrowRight className="w-4 h-4" />

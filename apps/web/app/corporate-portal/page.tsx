@@ -41,7 +41,7 @@ const certificationTiers = [
     code: "ISO/IEC 42001 – Level 2",
     price: "$38,000",
     duration: "8–12 weeks",
-    color: "#c36c32",
+    color: "#C07830",
     featured: true,
     features: [
       "Full AIMS Implementation Audit",
@@ -59,7 +59,7 @@ const certificationTiers = [
     code: "ISO/IEC 42001 – Level 3",
     price: "Custom",
     duration: "12–24 weeks",
-    color: "#0A1728",
+    color: "#0C1B2E",
     features: [
       "Multi-site AIMS Certification",
       "Board-level AI Governance Assessment",
@@ -117,15 +117,15 @@ export default function CorporatePortalPage() {
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A1728]/97 to-[#0A1728]/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0C1B2E]/97 to-[#0C1B2E]/80" />
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-2 mb-4">
-            <Shield className="w-4 h-4 text-[#c36c32]" />
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest">Corporate Portal</span>
+            <Shield className="w-4 h-4 text-[#C07830]" />
+            <span className="text-[#C07830] text-sm uppercase tracking-widest">Corporate Portal</span>
           </div>
           <h1 className="text-5xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
             ISO/IEC 42001 Certification<br />
-            <span className="text-[#c36c32]">for Your Organization</span>
+            <span className="text-[#C07830]">for Your Organization</span>
           </h1>
           <p className="text-aic-paper/70 text-lg max-w-2xl mb-8">
             Achieve internationally recognized AI Management System certification. AIC&apos;s conformity assessment services help Chief Risk Officers build defensible, auditable AI governance programs.
@@ -133,7 +133,7 @@ export default function CorporatePortalPage() {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setActiveTab("certification")}
-              className="bg-[#c36c32] text-aic-paper px-6 py-3 rounded-lg text-sm font-medium hover:bg-[#c36c32] transition-colors"
+              className="bg-[#C07830] text-aic-paper px-6 py-3 rounded-lg text-sm font-medium hover:bg-[#C07830] transition-colors"
             >
               View Certification Tiers
             </button>
@@ -162,8 +162,8 @@ export default function CorporatePortalPage() {
                 onClick={() => setActiveTab(id)}
                 className={`flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                   activeTab === id
-                    ? "border-[#c36c32] text-[#0A1728]"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? "border-[#C07830] text-[#0C1B2E]"
+                    : "border-transparent text-[#6B6458] hover:text-[#0D0D0D] hover:border-[#C4B8A8]"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -179,11 +179,11 @@ export default function CorporatePortalPage() {
         {activeTab === "certification" && (
           <div>
             <div className="text-center mb-12">
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest">ISO/IEC 42001</span>
-              <h2 className="text-3xl text-[#0A1728] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#C07830] text-sm uppercase tracking-widest">ISO/IEC 42001</span>
+              <h2 className="text-3xl text-[#0C1B2E] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                 AI Management System Certification
               </h2>
-              <p className="text-gray-500 max-w-2xl mx-auto text-sm">
+              <p className="text-[#6B6458] max-w-2xl mx-auto text-sm">
                 Select the certification tier that matches your organization's AI deployment scale, regulatory exposure, and governance maturity.
               </p>
             </div>
@@ -210,16 +210,16 @@ export default function CorporatePortalPage() {
                       <Shield className="w-5 h-5" style={{ color: tier.color }} />
                     </div>
                     <div className="text-xs uppercase tracking-wider text-gray-400 mb-1">{tier.code}</div>
-                    <h3 className="text-xl font-bold text-[#0A1728] mb-1">{tier.tier}</h3>
+                    <h3 className="text-xl font-bold text-[#0C1B2E] mb-1">{tier.tier}</h3>
                     <div className="text-2xl font-bold mb-1" style={{ color: tier.color }}>{tier.price}</div>
                     <div className="flex items-center gap-1 text-xs text-gray-400 mb-5">
                       <Clock className="w-3 h-3" />
                       {tier.duration} timeline
                     </div>
-                    <p className="text-xs text-gray-500 mb-5 italic">{tier.audience}</p>
+                    <p className="text-xs text-[#6B6458] mb-5 italic">{tier.audience}</p>
                     <ul className="space-y-2.5 mb-8">
                       {tier.features.map((f, j) => (
-                        <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
+                        <li key={j} className="flex items-start gap-2 text-sm text-[#6B6458]">
                           <CheckCircle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: tier.color }} />
                           {f}
                         </li>
@@ -251,9 +251,9 @@ export default function CorporatePortalPage() {
                 const Icon = item.icon;
                 return (
                   <div key={i} className="flex items-center gap-3 p-4 bg-[#F9F8F4] rounded-xl border border-gray-100">
-                    <Icon className="w-8 h-8 text-[#c36c32] shrink-0" />
+                    <Icon className="w-8 h-8 text-[#C07830] shrink-0" />
                     <div>
-                      <div className="font-semibold text-[#0A1728] text-sm">{item.label}</div>
+                      <div className="font-semibold text-[#0C1B2E] text-sm">{item.label}</div>
                       <div className="text-gray-400 text-xs">{item.sub}</div>
                     </div>
                   </div>
@@ -267,23 +267,23 @@ export default function CorporatePortalPage() {
         {activeTab === "gap" && (
           <div>
             <div className="mb-10">
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest">Free Tool</span>
-              <h2 className="text-3xl text-[#0A1728] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#C07830] text-sm uppercase tracking-widest">Free Tool</span>
+              <h2 className="text-3xl text-[#0C1B2E] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                 ISO/IEC 42001 Gap Analysis Dashboard
               </h2>
-              <p className="text-gray-500 max-w-2xl text-sm">
+              <p className="text-[#6B6458] max-w-2xl text-sm">
                 This indicative gap analysis shows control coverage across eight key ISO/IEC 42001 domains. Use AIC&apos;s full assessment service for a defensible, audited baseline.
               </p>
             </div>
 
             {/* Overall score */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
-              <div className="md:col-span-1 bg-[#0A1728] rounded-2xl p-6 text-aic-paper text-center">
-                <div className="text-5xl font-bold text-[#c36c32]">61%</div>
+              <div className="md:col-span-1 bg-[#0C1B2E] rounded-2xl p-6 text-aic-paper text-center">
+                <div className="text-5xl font-bold text-[#C07830]">61%</div>
                 <div className="text-aic-paper/70 text-sm mt-1">Overall Readiness</div>
                 <div className="text-aic-paper/40 text-xs mt-2">vs. 78% industry avg.</div>
                 <div className="mt-4 h-2 bg-aic-paper/10 rounded-full">
-                  <div className="h-2 rounded-full bg-[#c36c32]" style={{ width: "61%" }}></div>
+                  <div className="h-2 rounded-full bg-[#C07830]" style={{ width: "61%" }}></div>
                 </div>
               </div>
               <div className="md:col-span-3 grid grid-cols-3 gap-4">
@@ -297,7 +297,7 @@ export default function CorporatePortalPage() {
                 ].map((item, i) => (
                   <div key={i} className={`border rounded-xl p-4 ${item.bg}`}>
                     <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">{item.label}</div>
+                    <div className="text-xs text-[#6B6458] mt-0.5">{item.label}</div>
                   </div>
                 ))}
               </div>
@@ -322,7 +322,7 @@ export default function CorporatePortalPage() {
                             control.risk === "Medium" ? "bg-amber-500" : "bg-green-500"
                           }`}
                         ></span>
-                        <span className="font-medium text-[#0A1728] text-sm">{control.domain}</span>
+                        <span className="font-medium text-[#0C1B2E] text-sm">{control.domain}</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
@@ -336,7 +336,7 @@ export default function CorporatePortalPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 bg-gray-100 rounded-full h-2">
+                      <div className="flex-1 bg-[#DDD3C0]/30 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all ${
                             pct >= 80 ? "bg-green-500" : pct >= 60 ? "bg-amber-500" : "bg-red-500"
@@ -355,12 +355,12 @@ export default function CorporatePortalPage() {
               })}
             </div>
 
-            <div className="mt-8 p-6 bg-[#0A1728] rounded-2xl text-center">
+            <div className="mt-8 p-6 bg-[#0C1B2E] rounded-2xl text-center">
               <h3 className="text-aic-paper text-lg font-semibold mb-2">Get Your Official Gap Analysis Report</h3>
               <p className="text-aic-paper/60 text-sm mb-5 max-w-xl mx-auto">
                 This dashboard is illustrative. AIC's certified assessors will conduct a rigorous, defensible gap analysis across all 108 ISO/IEC 42001 controls.
               </p>
-              <button className="bg-[#c36c32] text-aic-paper px-8 py-3 rounded-lg text-sm font-medium hover:bg-[#c36c32] transition-colors">
+              <button className="bg-[#C07830] text-aic-paper px-8 py-3 rounded-lg text-sm font-medium hover:bg-[#C07830] transition-colors">
                 Schedule a Formal Assessment
               </button>
             </div>
@@ -371,11 +371,11 @@ export default function CorporatePortalPage() {
         {activeTab === "templates" && (
           <div>
             <div className="mb-10">
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest">Resources</span>
-              <h2 className="text-3xl text-[#0A1728] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#C07830] text-sm uppercase tracking-widest">Resources</span>
+              <h2 className="text-3xl text-[#0C1B2E] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                 AI Risk Management Templates
               </h2>
-              <p className="text-gray-500 max-w-2xl text-sm">
+              <p className="text-[#6B6458] max-w-2xl text-sm">
                 AIC-developed tools and templates to accelerate your AI governance implementation. All templates are aligned to ISO/IEC 42001 and NIST AI RMF.
               </p>
             </div>
@@ -389,17 +389,17 @@ export default function CorporatePortalPage() {
                   transition={{ delay: i * 0.08 }}
                   className="border border-gray-100 rounded-xl p-6 bg-aic-paper hover:shadow-md transition-all group"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-[#0A1728]/5 flex items-center justify-center mb-4">
-                    <FileText className="w-5 h-5 text-[#0A1728]" />
+                  <div className="w-10 h-10 rounded-lg bg-[#0C1B2E]/5 flex items-center justify-center mb-4">
+                    <FileText className="w-5 h-5 text-[#0C1B2E]" />
                   </div>
-                  <h3 className="font-semibold text-[#0A1728] mb-2 text-sm">{template.title}</h3>
+                  <h3 className="font-semibold text-[#0C1B2E] mb-2 text-sm">{template.title}</h3>
                   <p className="text-gray-400 text-xs leading-relaxed mb-4">{template.desc}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs px-2 py-0.5 bg-gray-100 rounded text-gray-500">{template.type}</span>
+                      <span className="text-xs px-2 py-0.5 bg-[#DDD3C0]/30 rounded text-[#6B6458]">{template.type}</span>
                       <span className="text-xs text-gray-400">{template.size}</span>
                     </div>
-                    <button className="flex items-center gap-1 text-xs text-[#c36c32] font-medium hover:gap-2 transition-all">
+                    <button className="flex items-center gap-1 text-xs text-[#C07830] font-medium hover:gap-2 transition-all">
                       <Download className="w-3.5 h-3.5" /> Download
                     </button>
                   </div>
@@ -423,11 +423,11 @@ export default function CorporatePortalPage() {
         {activeTab === "directory" && (
           <div>
             <div className="mb-10">
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest">Public Directory</span>
-              <h2 className="text-3xl text-[#0A1728] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#C07830] text-sm uppercase tracking-widest">Public Directory</span>
+              <h2 className="text-3xl text-[#0C1B2E] mt-2 mb-3" style={{ fontFamily: "'Merriweather', serif" }}>
                 Certified Organizations
               </h2>
-              <p className="text-gray-500 max-w-2xl text-sm">
+              <p className="text-[#6B6458] max-w-2xl text-sm">
                 Publicly searchable registry of ISO/IEC 42001-certified organizations. This directory is maintained per IAF MLA public disclosure requirements.
               </p>
             </div>
@@ -437,16 +437,16 @@ export default function CorporatePortalPage() {
               <input
                 type="text"
                 placeholder="Search organizations or sector..."
-                className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0A1728]/20"
+                className="w-full pl-9 pr-4 py-2.5 border border-[#DDD3C0] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0C1B2E]/20"
                 value={searchOrg}
                 onChange={(e) => setSearchOrg(e.target.value)}
               />
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-gray-200">
+            <div className="overflow-hidden rounded-xl border border-[#DDD3C0]">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-[#0A1728] text-aic-paper/70 text-xs uppercase tracking-wider">
+                  <tr className="bg-[#0C1B2E] text-aic-paper/70 text-xs uppercase tracking-wider">
                     <th className="text-left px-5 py-3">Organization</th>
                     <th className="text-left px-5 py-3">Sector</th>
                     <th className="text-left px-5 py-3">Tier</th>
@@ -457,28 +457,28 @@ export default function CorporatePortalPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 bg-aic-paper">
                   {filteredOrgs.map((org, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="px-5 py-4 font-medium text-[#0A1728] flex items-center gap-2">
-                        <Building2 className="w-4 h-4 text-[#c36c32]" />
+                    <tr key={i} className="hover:bg-[#FAF6EF]">
+                      <td className="px-5 py-4 font-medium text-[#0C1B2E] flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-[#C07830]" />
                         {org.name}
                       </td>
-                      <td className="px-5 py-4 text-gray-500">{org.sector}</td>
+                      <td className="px-5 py-4 text-[#6B6458]">{org.sector}</td>
                       <td className="px-5 py-4">
                         <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          org.tier === "Enterprise" ? "bg-[#0A1728] text-aic-paper" :
-                          org.tier === "Professional" ? "bg-[#c36c32]/10 text-[#c36c32]" :
+                          org.tier === "Enterprise" ? "bg-[#0C1B2E] text-aic-paper" :
+                          org.tier === "Professional" ? "bg-[#C07830]/10 text-[#C07830]" :
                           "bg-blue-50 text-blue-700"
                         }`}>
                           {org.tier}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-gray-500 hidden md:table-cell">{org.since}</td>
+                      <td className="px-5 py-4 text-[#6B6458] hidden md:table-cell">{org.since}</td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-16 bg-gray-100 rounded-full h-1.5">
-                            <div className="h-1.5 rounded-full bg-[#c36c32]" style={{ width: `${org.score}%` }}></div>
+                          <div className="w-16 bg-[#DDD3C0]/30 rounded-full h-1.5">
+                            <div className="h-1.5 rounded-full bg-[#C07830]" style={{ width: `${org.score}%` }}></div>
                           </div>
-                          <span className="text-xs font-medium text-gray-700">{org.score}/100</span>
+                          <span className="text-xs font-medium text-[#0D0D0D]">{org.score}/100</span>
                         </div>
                       </td>
                       <td className="px-5 py-4 hidden lg:table-cell">

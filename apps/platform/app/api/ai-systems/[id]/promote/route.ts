@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, aiSystems, auditLedger, HashChainService, eq, and } from '@aic/db';
+import { getTenantDb, aiSystems, auditLedger, HashChainService, eq, and, desc } from '@aic/db';
 import { auth } from '@aic/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
   if (!session?.user?.orgId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const systemId = params.id;
+  const { id: systemId } = await params;
   const orgId = session.user.orgId;
   const db = getTenantDb(orgId);
 

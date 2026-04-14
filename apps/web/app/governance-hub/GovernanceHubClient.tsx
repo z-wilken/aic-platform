@@ -164,15 +164,15 @@ export default function GovernanceHubClient({
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A1728]/95 to-[#0A1728]/85" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0C1B2E]/95 to-[#0C1B2E]/85" />
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-2 mb-4">
-            <BookOpen className="w-4 h-4 text-[#c36c32]" />
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest">Governance Hub</span>
+            <BookOpen className="w-4 h-4 text-[#C07830]" />
+            <span className="text-[#C07830] text-sm uppercase tracking-widest">Governance Hub</span>
           </div>
           <h1 className="text-5xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
             The Global Standard for<br />
-            <span className="text-[#c36c32]">Algorithmic Rights</span>
+            <span className="text-[#C07830]">Algorithmic Rights</span>
           </h1>
           <p className="text-aic-paper/70 text-lg max-w-2xl mb-8">
             Access AIC&apos;s foundational Declaration of Algorithmic Rights, global standards maps, and real-time policy intelligence for researchers, regulators, and policymakers.
@@ -180,7 +180,7 @@ export default function GovernanceHubClient({
           <div className="flex gap-4">
             <a
               href="#declaration"
-              className="inline-flex items-center gap-2 bg-[#c36c32] text-aic-paper px-6 py-3 rounded-lg text-sm font-medium hover:bg-[#c36c32] transition-colors"
+              className="inline-flex items-center gap-2 bg-[#C07830] text-aic-paper px-6 py-3 rounded-lg text-sm font-medium hover:bg-[#C07830] transition-colors"
             >
               <Scale className="w-4 h-4" /> Declaration of Rights
             </a>
@@ -199,25 +199,25 @@ export default function GovernanceHubClient({
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-12 items-start">
             <div className="lg:w-1/3 lg:sticky lg:top-24">
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest">Universal Standard</span>
-              <h2 className="text-3xl text-[#0A1728] mt-2 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#C07830] text-sm uppercase tracking-widest">Universal Standard</span>
+              <h2 className="text-3xl text-[#0C1B2E] mt-2 mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
                 Declaration of Algorithmic Rights
               </h2>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
+              <p className="text-[#6B6458] text-sm leading-relaxed mb-6">
                 Adopted by the AIC General Assembly in 2023, the Declaration of Algorithmic Rights establishes five fundamental entitlements for every person interacting with automated systems. These rights form the cornerstone of all AIC certification assessments.
               </p>
-              <div className="bg-[#F9F8F4] rounded-xl p-5 border border-gray-100">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Document Reference</div>
+              <div className="bg-[#F9F8F4] rounded-xl p-5 border border-[#DDD3C0]">
+                <div className="text-xs text-[#6B6458] uppercase tracking-wider mb-3">Document Reference</div>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-gray-500">Version</span><span className="font-medium text-[#0A1728]">3.1 (2025)</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Languages</span><span className="font-medium text-[#0A1728]">24 Official</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Signatories</span><span className="font-medium text-[#0A1728]">67 Nations</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Last Amended</span><span className="font-medium text-[#0A1728]">Oct 2025</span></div>
+                  <div className="flex justify-between"><span className="text-[#6B6458]">Version</span><span className="font-medium text-[#0C1B2E]">3.1 (2025)</span></div>
+                  <div className="flex justify-between"><span className="text-[#6B6458]">Languages</span><span className="font-medium text-[#0C1B2E]">24 Official</span></div>
+                  <div className="flex justify-between"><span className="text-[#6B6458]">Signatories</span><span className="font-medium text-[#0C1B2E]">67 Nations</span></div>
+                  <div className="flex justify-between"><span className="text-[#6B6458]">Last Amended</span><span className="font-medium text-[#0C1B2E]">Oct 2025</span></div>
                 </div>
                 <a 
                   href="/AIC-Declaration-of-Algorithmic-Rights.pdf" 
                   download 
-                  className="mt-4 w-full flex items-center justify-center gap-2 bg-[#0A1728] text-aic-paper text-sm py-2.5 rounded-lg hover:bg-[#1a3160] transition-colors"
+                  className="mt-4 w-full flex items-center justify-center gap-2 bg-[#C07830] text-white text-sm py-2.5 rounded-lg hover:bg-[#A66628] transition-colors"
                 >
                   <Download className="w-4 h-4" /> Download PDF
                 </a>
@@ -289,28 +289,28 @@ export default function GovernanceHubClient({
       <section id="standards-map" className="py-20 bg-[#F9F8F4]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-10">
-            <span className="text-[#c36c32] text-sm uppercase tracking-widest">Global Overview</span>
-            <h2 className="text-3xl text-[#0A1728] mt-2 mb-2" style={{ fontFamily: "'Merriweather', serif" }}>
+            <span className="text-[#C07830] text-sm uppercase tracking-widest">Global Overview</span>
+            <h2 className="text-3xl text-[#0C1B2E] mt-2 mb-2" style={{ fontFamily: "'Merriweather', serif" }}>
               AI Regulatory Standards Map
             </h2>
-            <p className="text-gray-500 text-sm max-w-2xl">
+            <p className="text-[#6B6458] text-sm max-w-2xl">
               Track the status of AI governance legislation and voluntary frameworks across major jurisdictions, and see how they align with AIC&apos;s Declaration of Algorithmic Rights.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6458]/60" />
               <input
                 type="text"
                 placeholder="Search regions or frameworks..."
-                className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-aic-paper text-sm focus:outline-none focus:ring-2 focus:ring-[#0A1728]/20"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-[#DDD3C0] bg-aic-paper text-sm focus:outline-none focus:ring-2 focus:ring-[#0C1B2E]/20"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <select
-              className="px-4 py-2.5 rounded-lg border border-gray-200 bg-aic-paper text-sm focus:outline-none"
+              className="px-4 py-2.5 rounded-lg border border-[#DDD3C0] bg-aic-paper text-sm focus:outline-none"
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
             >
@@ -319,10 +319,10 @@ export default function GovernanceHubClient({
             </select>
           </div>
 
-          <div className="overflow-hidden rounded-xl border border-gray-200 bg-aic-paper">
+          <div className="overflow-hidden rounded-xl border border-[#DDD3C0] bg-aic-paper">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#0A1728] text-aic-paper/70 text-xs uppercase tracking-wider">
+                <tr className="bg-[#0C1B2E] text-aic-paper/70 text-xs uppercase tracking-wider">
                   <th className="text-left px-5 py-3">Region</th>
                   <th className="text-left px-5 py-3">Framework</th>
                   <th className="text-left px-5 py-3">Status</th>
@@ -333,12 +333,12 @@ export default function GovernanceHubClient({
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredStandards.map((s, i) => (
-                  <tr key={i} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-4 font-medium text-[#0A1728] flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-[#c36c32]" />
+                  <tr key={i} className="hover:bg-[#FAF6EF] transition-colors">
+                    <td className="px-5 py-4 font-medium text-[#0C1B2E] flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-[#C07830]" />
                       {s.region}
                     </td>
-                    <td className="px-5 py-4 text-gray-600">{s.framework}</td>
+                    <td className="px-5 py-4 text-[#6B6458]">{s.framework}</td>
                     <td className="px-5 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                         s.status === "Enacted" ? "bg-green-100 text-green-700" :
@@ -359,16 +359,16 @@ export default function GovernanceHubClient({
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-gray-100 rounded-full h-1.5 max-w-[100px]">
+                        <div className="flex-1 bg-[#DDD3C0]/30 rounded-full h-1.5 max-w-[100px]">
                           <div
-                            className="h-1.5 rounded-full bg-[#c36c32]"
+                            className="h-1.5 rounded-full bg-[#C07830]"
                             style={{ width: `${s.alignment}%` }}
                           ></div>
                         </div>
-                        <span className="text-xs text-gray-500 shrink-0">{s.alignment}%</span>
+                        <span className="text-xs text-[#6B6458] shrink-0">{s.alignment}%</span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-gray-500 hidden lg:table-cell">{s.year}</td>
+                    <td className="px-5 py-4 text-[#6B6458] hidden lg:table-cell">{s.year}</td>
                   </tr>
                 ))}
               </tbody>
@@ -382,12 +382,12 @@ export default function GovernanceHubClient({
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest">Intelligence</span>
-              <h2 className="text-3xl text-[#0A1728] mt-2" style={{ fontFamily: "'Merriweather', serif" }}>
+              <span className="text-[#C07830] text-sm uppercase tracking-widest">Intelligence</span>
+              <h2 className="text-3xl text-[#0C1B2E] mt-2" style={{ fontFamily: "'Merriweather', serif" }}>
                 Policy Updates
               </h2>
             </div>
-            <button className="flex items-center gap-2 text-sm text-[#0A1728] border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50">
+            <button className="flex items-center gap-2 text-sm text-[#0C1B2E] border border-[#DDD3C0] px-4 py-2 rounded-lg hover:bg-[#FAF6EF]">
               <Newspaper className="w-4 h-4" /> All Updates
             </button>
           </div>
@@ -400,22 +400,22 @@ export default function GovernanceHubClient({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: (i % 4) * 0.1 }}
-                className="border border-gray-100 rounded-xl p-6 hover:shadow-md transition-all"
+                className="border border-[#DDD3C0] rounded-xl p-6 hover:shadow-md transition-all"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                     update.tag === "Regulatory" ? "bg-red-50 text-red-700" :
                     update.tag === "Standards" ? "bg-blue-50 text-blue-700" :
                     update.tag === "Accreditation" ? "bg-green-50 text-green-700" :
-                    "bg-gray-100 text-gray-600"
+                    "bg-[#DDD3C0]/30 text-[#6B6458]"
                   }`}>
                     {update.tag}
                   </span>
-                  <span className="text-xs text-gray-400">{update.date}</span>
+                  <span className="text-xs text-[#6B6458]/60">{update.date}</span>
                 </div>
-                <h3 className="text-[#0A1728] font-semibold mb-2 leading-snug">{update.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-4">{update.summary}</p>
-                <button className="flex items-center gap-1 text-sm text-[#c36c32] font-medium">
+                <h3 className="text-[#0C1B2E] font-semibold mb-2 leading-snug">{update.title}</h3>
+                <p className="text-[#6B6458] text-sm leading-relaxed mb-4">{update.summary}</p>
+                <button className="flex items-center gap-1 text-sm text-[#C07830] font-medium">
                   Read More <ChevronRight className="w-3 h-3" />
                 </button>
               </motion.div>
@@ -427,7 +427,7 @@ export default function GovernanceHubClient({
               <Button
                 onClick={handleLoadMorePolicies}
                 disabled={isLoadingMore}
-                className="bg-aic-paper border border-gray-200 text-[#0A1728] hover:bg-gray-50 px-8 py-6 h-auto text-base"
+                className="bg-aic-paper border border-[#DDD3C0] text-[#0C1B2E] hover:bg-[#FAF6EF] px-8 py-6 h-auto text-base"
               >
                 {isLoadingMore ? (
                   <>

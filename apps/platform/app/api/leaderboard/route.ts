@@ -7,8 +7,7 @@ export async function GET() {
 
     // 1. Compute Maturity Score per Organization
     // Formula: (IntegrityScore * 0.4) + (HumanInterventionRate * 0.6)
-    const maturityData = await db.query(async (tx) => {
-      return await tx.execute(sql`
+    const maturityData = await db.execute(sql`
         SELECT 
           o.id, 
           o.name, 
@@ -22,7 +21,6 @@ export async function GET() {
         ORDER BY o.integrity_score DESC
         LIMIT 10
       `);
-    });
 
     return NextResponse.json({
       leaderboard: maturityData.rows,

@@ -13,6 +13,7 @@ import {
   Trash2,
   Loader2
 } from "lucide-react";
+import { Card } from "@/app/components/ui/card";
 
 export default function AdminPermissions() {
   const [activeTab, setActiveTab] = useState<'roles' | 'capabilities' | 'audit'>('roles');

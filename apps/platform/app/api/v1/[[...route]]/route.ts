@@ -9,24 +9,24 @@ import { hasCapability } from '@/lib/rbac';
  * 
  * B-1: FIXED - Multi-tenant isolation using getTenantDb(session.user.orgId)
  */
-export async function GET(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
   const { route } = await params;
-  return handleRequest(req, route, 'GET');
+  return handleRequest(req, route || [], 'GET');
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
   const { route } = await params;
-  return handleRequest(req, route, 'POST');
+  return handleRequest(req, route || [], 'POST');
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
     const { route } = await params;
-    return handleRequest(req, route, 'PATCH');
+    return handleRequest(req, route || [], 'PATCH');
 }
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ route: string[] }> }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ route?: string[] }> }) {
   const { route } = await params;
-  return handleRequest(req, route, 'PUT');
+  return handleRequest(req, route || [], 'PUT');
 }
 
 async function handleRequest(req: NextRequest, route: string[], method: string) {
@@ -280,7 +280,7 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     });
 
     const pdfBuffer = await generatePDF(html);
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="AIC-Workspace-Export-${org.name.replace(/\s+/g, '-')}.pdf"`,

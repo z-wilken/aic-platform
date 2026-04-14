@@ -106,7 +106,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1728]/95 via-[#0A1728]/90 to-[#1a3160]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0C1B2E]/95 via-[#0C1B2E]/90 to-[#1a3160]/85" />
         
         {/* Grid overlay */}
         <div
@@ -125,8 +125,8 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
             className="text-center max-w-3xl mx-auto"
           >
             <div className="flex items-center justify-center gap-2 mb-6">
-              <BookOpen className="w-5 h-5 text-[#c36c32]" />
-              <span className="text-[#c36c32] text-sm uppercase tracking-widest font-medium">
+              <BookOpen className="w-5 h-5 text-[#C07830]" />
+              <span className="text-[#C07830] text-sm uppercase tracking-widest font-medium">
                 Knowledge Center
               </span>
             </div>
@@ -141,32 +141,32 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
       </section>
 
       {/* Search & Filter Bar */}
-      <section className="sticky top-0 z-30 bg-aic-paper border-b border-gray-200 shadow-sm">
+      <section className="sticky top-0 z-30 bg-aic-paper border-b border-[#DDD3C0] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search */}
             <div className="relative flex-1 max-w-md w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#6B6458]/60" />
               <input
                 type="text"
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c36c32]/20 focus:border-[#c36c32]"
+                className="w-full pl-10 pr-4 py-2.5 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
               />
             </div>
 
             {/* Category Filter */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
-              <Filter className="w-4 h-4 text-gray-400 shrink-0" />
+              <Filter className="w-4 h-4 text-[#6B6458]/60 shrink-0" />
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                     selectedCategory === category
-                      ? "bg-[#0A1728] text-aic-paper"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      ? "bg-[#C07830] text-white"
+                      : "bg-[#DDD3C0] text-[#6B6458] hover:bg-[#C07830]/20 hover:text-[#0C1B2E]"
                   }`}
                 >
                   {category}
@@ -179,11 +179,11 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
 
       {/* Featured Articles */}
       {featuredArticles.length > 0 && selectedCategory === "All Articles" && searchQuery === "" && (
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-[#FAF6EF]">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-semibold text-[#0A1728]">Featured Articles</h2>
-              <TrendingUp className="w-5 h-5 text-[#c36c32]" />
+              <h2 className="text-2xl font-semibold text-[#0C1B2E]">Featured Articles</h2>
+              <TrendingUp className="w-5 h-5 text-[#C07830]" />
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -203,13 +203,13 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-4 left-4">
-                        <span className="px-3 py-1 bg-[#c36c32] text-aic-paper text-xs rounded-full font-medium">
+                        <span className="px-3 py-1 bg-[#C07830] text-aic-paper text-xs rounded-full font-medium">
                           Featured
                         </span>
                       </div>
                     </div>
                     <div className="p-6 flex-1 flex flex-col">
-                      <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                      <div className="flex items-center gap-3 text-xs text-[#6B6458] mb-3">
                         <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded font-medium">
                           {article.category}
                         </span>
@@ -222,19 +222,19 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           {article.readTime}
                         </span>
                       </div>
-                      <h3 className="text-xl font-semibold text-[#0A1728] mb-3 group-hover:text-[#c36c32] transition-colors leading-tight">
+                      <h3 className="text-xl font-semibold text-[#0C1B2E] mb-3 group-hover:text-[#C07830] transition-colors leading-tight">
                         {article.title}
                       </h3>
-                      <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-1">
+                      <p className="text-[#6B6458] text-sm leading-relaxed mb-4 flex-1">
                         {article.excerpt}
                       </p>
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="flex items-center justify-between pt-4 border-t border-[#DDD3C0]">
                         <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-600">{article.author}</span>
+                          <User className="w-4 h-4 text-[#6B6458]/60" />
+                          <span className="text-sm text-[#6B6458]">{article.author}</span>
                         </div>
                         <Link href={`/articles/${article.slug}`}>
-                          <Button className="bg-[#0A1728] hover:bg-[#1a3160] text-aic-paper text-sm">
+                          <Button className="bg-[#C07830] hover:bg-[#A66628] text-white text-sm">
                             Read Article <ArrowRight className="w-4 h-4 ml-1" />
                           </Button>
                         </Link>
@@ -252,18 +252,18 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
       <section className="py-16 bg-aic-paper">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-semibold text-[#0A1728]">
+            <h2 className="text-2xl font-semibold text-[#0C1B2E]">
               {selectedCategory === "All Articles" ? "All Articles" : selectedCategory}
             </h2>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-[#6B6458]">
               {filteredArticles.length} {filteredArticles.length === 1 ? "article" : "articles"}
             </span>
           </div>
 
           {filteredArticles.length === 0 ? (
             <div className="text-center py-16">
-              <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500">No articles found matching your criteria.</p>
+              <FileText className="w-12 h-12 text-[#DDD3C0] mx-auto mb-4" />
+              <p className="text-[#6B6458]">No articles found matching your criteria.</p>
             </div>
           ) : (
             <>
@@ -277,9 +277,9 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                     transition={{ delay: (i % 6) * 0.05 }}
                   >
                     <Card className="p-6 hover:shadow-lg transition-shadow group h-full flex flex-col">
-                      <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                      <div className="flex items-center gap-2 text-xs text-[#6B6458] mb-3">
                         <Tag className="w-3 h-3" />
-                        <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">
+                        <span className="px-2 py-0.5 bg-[#DDD3C0]/30 text-[#6B6458] rounded font-medium">
                           {article.category}
                         </span>
                         <span className="flex items-center gap-1">
@@ -287,17 +287,17 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           {article.readTime}
                         </span>
                       </div>
-                      <h3 className="text-lg font-semibold text-[#0A1728] mb-2 group-hover:text-[#c36c32] transition-colors leading-tight flex-1">
+                      <h3 className="text-lg font-semibold text-[#0C1B2E] mb-2 group-hover:text-[#C07830] transition-colors leading-tight flex-1">
                         {article.title}
                       </h3>
-                      <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                      <p className="text-[#6B6458] text-sm leading-relaxed mb-4">
                         {article.excerpt}
                       </p>
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <span className="text-xs text-gray-500">{article.date}</span>
+                      <div className="flex items-center justify-between pt-4 border-t border-[#DDD3C0]">
+                        <span className="text-xs text-[#6B6458]">{article.date}</span>
                         <Link 
                           href={`/articles/${article.slug}`}
-                          className="text-[#0A1728] hover:text-[#c36c32] transition-colors text-sm font-medium flex items-center gap-1"
+                          className="text-[#0C1B2E] hover:text-[#C07830] transition-colors text-sm font-medium flex items-center gap-1"
                         >
                           Read <ArrowRight className="w-3 h-3" />
                         </Link>
@@ -312,7 +312,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                   <Button
                     onClick={handleLoadMore}
                     disabled={isLoadingMore}
-                    className="bg-aic-paper border border-gray-200 text-[#0A1728] hover:bg-gray-50 px-8 py-6 h-auto text-base"
+                    className="bg-aic-paper border border-[#DDD3C0] text-[#0C1B2E] hover:bg-[#FAF6EF] px-8 py-6 h-auto text-base"
                   >
                     {isLoadingMore ? (
                       <>
@@ -331,14 +331,14 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
       </section>
 
       {/* Newsletter Subscription */}
-      <section className="py-16 bg-gradient-to-br from-[#0A1728] to-[#1a3160]">
+      <section className="py-16 bg-gradient-to-br from-[#0C1B2E] to-[#1a3160]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Shield className="w-12 h-12 text-[#c36c32] mx-auto mb-6" />
+            <Shield className="w-12 h-12 text-[#C07830] mx-auto mb-6" />
             <h2 className="text-3xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Stay Informed on AI Governance
             </h2>
@@ -353,12 +353,12 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 placeholder="Enter your email"
                 aria-label="Email address for newsletter"
                 required
-                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c36c32]"
+                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C07830]"
               />
               <Button
                 type="submit"
                 disabled={newsletterLoading || newsletterSuccess}
-                className="bg-[#c36c32] hover:bg-[#c36c32] text-aic-paper px-6 py-3 disabled:opacity-60"
+                className="bg-[#C07830] hover:bg-[#C07830] text-aic-paper px-6 py-3 disabled:opacity-60"
               >
                 {newsletterSuccess ? 'Subscribed ✓' : newsletterLoading ? 'Subscribing...' : 'Subscribe'}
               </Button>
@@ -411,14 +411,14 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                   transition={{ delay: i * 0.1 }}
                 >
                   <Card className="p-6 hover:shadow-lg transition-shadow h-full flex flex-col">
-                    <div className="w-12 h-12 rounded-xl bg-[#0A1728]/5 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-[#0A1728]" />
+                    <div className="w-12 h-12 rounded-xl bg-[#0C1B2E]/5 flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-[#0C1B2E]" />
                     </div>
-                    <h3 className="text-lg font-semibold text-[#0A1728] mb-2">{resource.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 flex-1">{resource.description}</p>
+                    <h3 className="text-lg font-semibold text-[#0C1B2E] mb-2">{resource.title}</h3>
+                    <p className="text-[#6B6458] text-sm mb-4 flex-1">{resource.description}</p>
                     <Link
                       href={resource.link}
-                      className="text-[#c36c32] hover:text-[#c36c32] font-medium text-sm flex items-center gap-1"
+                      className="text-[#C07830] hover:text-[#C07830] font-medium text-sm flex items-center gap-1"
                     >
                       {resource.linkText} <ExternalLink className="w-3 h-3" />
                     </Link>

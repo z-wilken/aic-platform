@@ -1,4 +1,5 @@
 export * from './db';
+export * from './schema';
 export * from './services/intelligence';
 export * from './services/storage';
 export * from './services/ledger';
