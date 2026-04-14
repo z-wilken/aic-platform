@@ -247,17 +247,17 @@ export default function AIGovernanceIndexPage() {
   };
 
   return (
-    <div className="bg-[#F0E8D6] min-h-screen">
+    <div className="bg-[#EEE9DF] min-h-screen">
       {/* Hero */}
       <section className="relative py-12 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-[#0C1B2E]/55" />
+        <div className="absolute inset-0 bg-[#1B2632]/55" />
         <div className="absolute inset-0 subtle-grid opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-6 h-6 text-[#7A2535]" />
-              <span className="eyebrow text-[#7A2535]">
+              <BarChart3 className="w-6 h-6 text-[#A35139]" />
+              <span className="eyebrow text-[#A35139]">
                 Fortune 500 AI Maturity Rankings
               </span>
             </div>
@@ -269,7 +269,7 @@ export default function AIGovernanceIndexPage() {
               compliance, and human accountability. Updated quarterly.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
-              <Button className="bg-[#7A2535] hover:bg-[#7A2535]/90 text-white px-7 py-3">
+              <Button className="bg-[#A35139] hover:bg-[#A35139]/90 text-white px-7 py-3">
                 <Download className="w-4 h-4 mr-2" />
                 Download Full Report (Q1 2026)
               </Button>
@@ -298,8 +298,8 @@ export default function AIGovernanceIndexPage() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <Icon className="w-5 h-5 text-[#7A2535] mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-[#0C1B2E]">{stat.value}</div>
+                  <Icon className="w-5 h-5 text-[#A35139] mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-[#1B2632]">{stat.value}</div>
                   <div className="text-sm text-[#6B6458] mt-1">{stat.label}</div>
                 </motion.div>
               );
@@ -309,7 +309,7 @@ export default function AIGovernanceIndexPage() {
       </section>
 
       {/* Filters & Search */}
-      <section className="py-8 bg-[#F0E8D6] border-b border-[#DDD3C0]">
+      <section className="py-8 bg-[#EEE9DF] border-b border-[#DDD3C0]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
@@ -350,11 +350,11 @@ export default function AIGovernanceIndexPage() {
       </section>
 
       {/* Main Index Table */}
-      <section className="py-12 lg:py-24 bg-[#F0E8D6]">
+      <section className="py-12 lg:py-24 bg-[#EEE9DF]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <h2 className="text-[#0C1B2E]">Top 10 Rankings</h2>
+              <h2 className="text-[#1B2632]">Top 10 Rankings</h2>
               <p className="text-sm text-[#6B6458] mt-1">Based on Q1 2026 assessment cycle</p>
             </div>
             <div className="flex items-center gap-2 text-sm text-[#6B6458]">
@@ -377,7 +377,7 @@ export default function AIGovernanceIndexPage() {
                 >
                   <Card
                     className={`overflow-hidden transition-all cursor-pointer hover:shadow-lg bg-[#FAF6EF] border-[#DDD3C0] ${
-                      isExpanded ? "ring-2 ring-[#7A2535]" : ""
+                      isExpanded ? "ring-2 ring-[#A35139]" : ""
                     }`}
                     onClick={() => setExpandedRow(isExpanded ? null : company.rank)}
                   >
@@ -386,7 +386,7 @@ export default function AIGovernanceIndexPage() {
                       <div className="flex items-center gap-4">
                         {/* Rank */}
                         <div className="w-12 text-center">
-                          <div className="text-2xl font-bold text-[#0C1B2E]">#{company.rank}</div>
+                          <div className="text-2xl font-bold text-[#1B2632]">#{company.rank}</div>
                           <div className="text-xs text-[#6B6458] mt-0.5">
                             {getRankChangeDisplay(company.rankChange)}
                           </div>
@@ -395,9 +395,9 @@ export default function AIGovernanceIndexPage() {
                         {/* Company Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-semibold text-[#0C1B2E] truncate m-0">{company.company}</h3>
+                            <h3 className="text-xl font-semibold text-[#1B2632] truncate m-0">{company.company}</h3>
                             {company.hasAICertification && (
-                              <Badge className="bg-[#7A2535] text-white shrink-0 rounded">
+                              <Badge className="bg-[#A35139] text-white shrink-0 rounded">
                                 <Shield className="w-3 h-3 mr-1" />
                                 AIC Certified
                               </Badge>
@@ -412,7 +412,7 @@ export default function AIGovernanceIndexPage() {
 
                         {/* Maturity Score */}
                         <div className="text-center hidden sm:block">
-                          <div className="text-2xl font-bold text-[#0C1B2E]">{company.maturityScore}</div>
+                          <div className="text-2xl font-bold text-[#1B2632]">{company.maturityScore}</div>
                           <div className="text-xs text-[#6B6458]">Maturity</div>
                         </div>
 
@@ -443,7 +443,7 @@ export default function AIGovernanceIndexPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="border-t border-[#DDD3C0] bg-[#F0E8D6] p-6"
+                        className="border-t border-[#DDD3C0] bg-[#EEE9DF] p-6"
                       >
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                           {[
@@ -479,10 +479,10 @@ export default function AIGovernanceIndexPage() {
                                   <Icon className={`w-4 h-4 ${metric.color}`} />
                                   <span className="text-sm text-[#6B6458]">{metric.label}</span>
                                 </div>
-                                <div className="text-2xl font-bold text-[#0C1B2E] mb-2">{metric.score}</div>
+                                <div className="text-2xl font-bold text-[#1B2632] mb-2">{metric.score}</div>
                                 <div className="w-full bg-[#DDD3C0] rounded-full h-2">
                                   <div
-                                    className="bg-[#7A2535] h-2 rounded-full transition-all"
+                                    className="bg-[#A35139] h-2 rounded-full transition-all"
                                     style={{ width: `${metric.score}%` }}
                                   />
                                 </div>
@@ -499,13 +499,13 @@ export default function AIGovernanceIndexPage() {
                                 <span>ISO/IEC 42001 Certified</span>
                               </div>
                             ) : (
-                              <div className="flex items-center gap-1 text-[#7A2535]">
+                              <div className="flex items-center gap-1 text-[#A35139]">
                                 <AlertTriangle className="w-4 h-4" />
                                 <span>Certification Recommended</span>
                               </div>
                             )}
                           </div>
-                          <Button size="sm" variant="outline" className="border-[#0C1B2E] text-[#0C1B2E] rounded">
+                          <Button size="sm" variant="outline" className="border-[#1B2632] text-[#1B2632] rounded">
                             View Full Profile
                           </Button>
                         </div>
@@ -519,7 +519,7 @@ export default function AIGovernanceIndexPage() {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-[#6B6458] mb-4">Showing top 10 of 500 companies</p>
-            <Button variant="outline" className="border-[#0C1B2E] text-[#0C1B2E] rounded">View Full Index (500 Companies)</Button>
+            <Button variant="outline" className="border-[#1B2632] text-[#1B2632] rounded">View Full Index (500 Companies)</Button>
           </div>
         </div>
       </section>
@@ -528,7 +528,7 @@ export default function AIGovernanceIndexPage() {
       <section className="py-12 lg:py-24 bg-[#FAF6EF]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-[#0C1B2E] mb-3">
+            <h2 className="text-[#1B2632] mb-3">
               Assessment Methodology
             </h2>
             <p className="text-[#6B6458] max-w-2xl mx-auto">
@@ -568,8 +568,8 @@ export default function AIGovernanceIndexPage() {
               >
                 <Card className="p-6 h-full bg-[#FAF6EF] border-[#DDD3C0] rounded">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold text-[#0C1B2E] m-0">{method.category}</h3>
-                    <Badge className="bg-[#7A2535] text-white rounded">{method.weight}</Badge>
+                    <h3 className="text-lg font-semibold text-[#1B2632] m-0">{method.category}</h3>
+                    <Badge className="bg-[#A35139] text-white rounded">{method.weight}</Badge>
                   </div>
                   <ul className="space-y-2">
                     {method.criteria.map((criterion, j) => (
@@ -584,11 +584,11 @@ export default function AIGovernanceIndexPage() {
             ))}
           </div>
 
-          <div className="mt-8 p-6 bg-[#F0E8D6] border border-[#DDD3C0] rounded">
+          <div className="mt-8 p-6 bg-[#EEE9DF] border border-[#DDD3C0] rounded">
             <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-[#0C1B2E] shrink-0 mt-0.5" />
+              <Info className="w-5 h-5 text-[#1B2632] shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-[#0C1B2E] mb-2">Data Sources & Verification</h4>
+                <h4 className="font-semibold text-[#1B2632] mb-2">Data Sources & Verification</h4>
                 <p className="text-sm text-[#6B6458] leading-relaxed">
                   Rankings are based on publicly available disclosures, regulatory filings, third-party audits, and
                   direct company submissions. All data is independently verified by AIC&apos;s Research Division and updated
@@ -601,15 +601,15 @@ export default function AIGovernanceIndexPage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="py-12 lg:py-24 bg-[#0C1B2E] text-white relative overflow-hidden">
+      <section className="py-12 lg:py-24 bg-[#1B2632] text-white relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #7A2535 0%, transparent 60%)",
+            backgroundImage: "radial-gradient(circle at 30% 50%, #A35139 0%, transparent 60%)",
           }}
         />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <BarChart3 className="w-12 h-12 mx-auto mb-4 text-[#7A2535]" />
+          <BarChart3 className="w-12 h-12 mx-auto mb-4 text-[#A35139]" />
           <h2 className="text-white mb-4">
             Improve Your Organization&apos;s Ranking
           </h2>
@@ -618,7 +618,7 @@ export default function AIGovernanceIndexPage() {
             maturity score. Schedule a gap analysis to identify opportunities for improvement.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button className="bg-[#7A2535] hover:bg-[#7A2535]/90 text-white px-8 py-3 rounded">
+            <Button className="bg-[#A35139] hover:bg-[#A35139]/90 text-white px-8 py-3 rounded">
               Request Gap Analysis
             </Button>
           </div>

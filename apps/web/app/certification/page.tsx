@@ -104,14 +104,14 @@ const heroBg = "https://images.unsplash.com/photo-1683447551794-1c287cd42675?cro
 
 export default function CertificationPage() {
   return (
-    <div className="bg-[#F0E8D6] min-h-screen">
+    <div className="bg-[#EEE9DF] min-h-screen">
       {/* Hero */}
       <section className="relative py-12 lg:py-24 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-[#0C1B2E]/55" />
+        <div className="absolute inset-0 bg-[#1B2632]/55" />
         <div className="absolute inset-0 subtle-grid opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
@@ -121,13 +121,13 @@ export default function CertificationPage() {
             className="max-w-3xl"
           >
             <div className="flex items-center gap-2 mb-6">
-              <span className="eyebrow px-3 py-1 bg-[#7A2535]/10 rounded-full border border-[#7A2535]/20">
+              <span className="eyebrow px-3 py-1 bg-[#A35139]/10 rounded-full border border-[#A35139]/20">
                 AIC Five-Division Framework
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl text-white mb-6">
               Accountability<br />
-              <span className="text-[#7A2535]">Calibrated to AI</span>
+              <span className="text-[#A35139]">Calibrated to AI</span>
             </h1>
             <p className="text-xl text-white/80 leading-[1.65] mb-10 max-w-2xl">
               AIC certification is structured around how your organisation actually relates to AI in consequential decisions — not a one-size-fits-all compliance checkbox. Choose the Division that reflects your reality.
@@ -135,7 +135,7 @@ export default function CertificationPage() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-[#7A2535] hover:bg-[#7A2535]/90 text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#7A2535]/20"
+                className="inline-flex items-center gap-2 bg-[#A35139] hover:bg-[#A35139]/90 text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#A35139]/20"
               >
                 Enquire About Certification <ArrowRight className="w-4 h-4" />
               </Link>
@@ -145,7 +145,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Intro — accountability calibrated */}
-      <section className="py-12 lg:py-24 bg-[#F0E8D6]">
+      <section className="py-12 lg:py-24 bg-[#EEE9DF]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <motion.div
@@ -154,7 +154,7 @@ export default function CertificationPage() {
               viewport={{ once: true }}
             >
               <span className="eyebrow">The Framework</span>
-              <h2 className="text-[#0C1B2E] mt-3 mb-6">
+              <h2 className="text-[#1B2632] mt-3 mb-6">
                 Your relationship with AI determines your certification path
               </h2>
               <p className="text-[#6B6458] mb-6">
@@ -177,15 +177,15 @@ export default function CertificationPage() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className={`flex items-center gap-4 p-4 rounded border border-[#DDD3C0] bg-[#FAF6EF] hover:bg-[#F0E8D6] transition-colors`}
+                    className={`flex items-center gap-4 p-4 rounded border border-[#DDD3C0] bg-[#FAF6EF] hover:bg-[#EEE9DF] transition-colors`}
                   >
-                    <div className={`w-10 h-10 rounded flex items-center justify-center shrink-0 bg-[#F0E8D6]`}>
+                    <div className={`w-10 h-10 rounded flex items-center justify-center shrink-0 bg-[#EEE9DF]`}>
                       <Icon className={`w-5 h-5 ${div.accentText}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-[10px] font-mono text-[#6B6458] uppercase tracking-widest">Division {div.number}</span>
-                        <span className="text-sm font-semibold text-[#0C1B2E]">{div.name}</span>
+                        <span className="text-sm font-semibold text-[#1B2632]">{div.name}</span>
                       </div>
                       <p className="text-xs text-[#6B6458] truncate">{div.tagline}</p>
                     </div>
@@ -208,7 +208,7 @@ export default function CertificationPage() {
             className="text-center mb-14"
           >
             <span className="eyebrow">Full Detail</span>
-            <h2 className="text-[#0C1B2E] mt-3 mb-4">
+            <h2 className="text-[#1B2632] mt-3 mb-4">
               The Five Divisions
             </h2>
             <p className="text-[#6B6458] max-w-2xl mx-auto">
@@ -227,7 +227,7 @@ export default function CertificationPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="bg-[#0C1B2E] rounded overflow-hidden border border-white/10 shadow-2xl"
+                  className="bg-[#1B2632] rounded overflow-hidden border border-white/10 shadow-2xl"
                 >
                   {/* Colored top accent strip */}
                   <div className={`h-1 ${div.accentStripBg}`} />
@@ -277,8 +277,8 @@ export default function CertificationPage() {
                             <p className="text-white/80 text-xs leading-relaxed">{div.product}</p>
                           </div>
                           {div.valueProp && (
-                            <div className="flex-1 p-4 rounded bg-[#7A2535]/10 border border-[#7A2535]/20">
-                              <div className="text-[10px] font-mono text-[#7A2535]/70 uppercase tracking-widest mb-2">Value Proposition</div>
+                            <div className="flex-1 p-4 rounded bg-[#A35139]/10 border border-[#A35139]/20">
+                              <div className="text-[10px] font-mono text-[#A35139]/70 uppercase tracking-widest mb-2">Value Proposition</div>
                               <p className="text-white/80 text-xs leading-relaxed italic">{div.valueProp}</p>
                             </div>
                           )}
@@ -301,7 +301,7 @@ export default function CertificationPage() {
       </section>
 
       {/* Certification Journey */}
-      <section className="py-12 lg:py-24 bg-[#F0E8D6]">
+      <section className="py-12 lg:py-24 bg-[#EEE9DF]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -310,7 +310,7 @@ export default function CertificationPage() {
             className="text-center mb-14"
           >
             <span className="eyebrow">How It Works</span>
-            <h2 className="text-[#0C1B2E] mt-3 mb-4">
+            <h2 className="text-[#1B2632] mt-3 mb-4">
               Your Certification Journey
             </h2>
             <p className="text-[#6B6458] max-w-2xl mx-auto">
@@ -328,9 +328,9 @@ export default function CertificationPage() {
                 transition={{ delay: i * 0.1 }}
                 className="relative"
               >
-                <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded p-6 h-full hover:border-[#7A2535]/30 hover:shadow-md transition-all">
-                  <div className="text-[#7A2535] text-2xl font-bold font-mono mb-4">{step.step}</div>
-                  <h3 className="text-[#0C1B2E] font-semibold mb-3 text-sm">{step.title}</h3>
+                <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded p-6 h-full hover:border-[#A35139]/30 hover:shadow-md transition-all">
+                  <div className="text-[#A35139] text-2xl font-bold font-mono mb-4">{step.step}</div>
+                  <h3 className="text-[#1B2632] font-semibold mb-3 text-sm">{step.title}</h3>
                   <p className="text-[#6B6458] text-xs leading-relaxed">{step.desc}</p>
                 </div>
                 {i < journeySteps.length - 1 && (
@@ -345,11 +345,11 @@ export default function CertificationPage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="py-12 lg:py-24 bg-[#0C1B2E] relative overflow-hidden">
+      <section className="py-12 lg:py-24 bg-[#1B2632] relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #7A2535 0%, transparent 60%)",
+            backgroundImage: "radial-gradient(circle at 30% 50%, #A35139 0%, transparent 60%)",
           }}
         />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
@@ -358,7 +358,7 @@ export default function CertificationPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="eyebrow text-[#7A2535] bg-[#7A2535]/10 px-3 py-1 rounded-full inline-block mb-6">
+            <span className="eyebrow text-[#A35139] bg-[#A35139]/10 px-3 py-1 rounded-full inline-block mb-6">
               Get Certified
             </span>
             <h2 className="text-white mb-4">
@@ -369,7 +369,7 @@ export default function CertificationPage() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 bg-[#7A2535] hover:bg-[#7A2535]/90 text-white px-10 py-4 rounded font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#7A2535]/25 text-sm"
+              className="inline-flex items-center gap-2 bg-[#A35139] hover:bg-[#A35139]/90 text-white px-10 py-4 rounded font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#A35139]/25 text-sm"
             >
               Enquire About Certification
               <ArrowRight className="w-4 h-4" />

@@ -11,65 +11,65 @@
   --font-sans: 'Space Grotesk', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
   --font-size: 16px;
-  --background: #F0E8D6;
+  --background: #EEE9DF;
   --foreground: #1B2632;
-  --card: #F0E8D6;
+  --card: #EEE9DF;
   --card-foreground: #1B2632;
-  --popover: #F0E8D6;
+  --popover: #EEE9DF;
   --popover-foreground: #1B2632;
-  --primary: #7A2535;
+  --primary: #A35139;
   --primary-foreground: #FFFFFF;
-  --secondary: #F0E8D6;
+  --secondary: #EEE9DF;
   --secondary-foreground: #2C3B4D;
-  --muted: #F0E8D6;
+  --muted: #EEE9DF;
   --muted-foreground: #6B6458;
-  --accent: #7A2535;
-  --accent-foreground: #F0E8D6;
+  --accent: #A35139;
+  --accent-foreground: #EEE9DF;
   --destructive: #d4183d;
-  --destructive-foreground: #F0E8D6;
+  --destructive-foreground: #EEE9DF;
   --border: #DDD3C0;
   --input: transparent;
-  --input-background: #F0E8D6;
+  --input-background: #EEE9DF;
   --switch-background: #DDD3C0;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #7A2535;
+  --ring: #A35139;
   --radius: 4px;
-  --sidebar: #F0E8D6;
+  --sidebar: #EEE9DF;
   --sidebar-foreground: #2C3B4D;
-  --sidebar-primary: #7A2535;
+  --sidebar-primary: #A35139;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F0E8D6;
+  --sidebar-accent: #EEE9DF;
   --sidebar-accent-foreground: #2C3B4D;
   --sidebar-border: #DDD3C0;
-  --sidebar-ring: #7A2535;
+  --sidebar-ring: #A35139;
 
   --aic-navy: #2C3B4D;
   --aic-navy-mid: #2C3B4D;
-  --aic-gold: #7A2535;
-  --aic-gold-light: #7A2535;
-  --aic-copper: #7A2535;
-  --aic-paper: #F0E8D6;
+  --aic-gold: #A35139;
+  --aic-gold-light: #A35139;
+  --aic-copper: #A35139;
+  --aic-paper: #EEE9DF;
 }
 
 .dark {
-  --background: #0C1B2E;
-  --foreground: #F0E8D6;
-  --card: #0C1B2E;
-  --card-foreground: #F0E8D6;
-  --popover: #0C1B2E;
-  --popover-foreground: #F0E8D6;
-  --primary: #F0E8D6;
-  --primary-foreground: #0C1B2E;
+  --background: #1B2632;
+  --foreground: #EEE9DF;
+  --card: #1B2632;
+  --card-foreground: #EEE9DF;
+  --popover: #1B2632;
+  --popover-foreground: #EEE9DF;
+  --primary: #EEE9DF;
+  --primary-foreground: #1B2632;
   --secondary: #1a3160;
-  --secondary-foreground: #F0E8D6;
+  --secondary-foreground: #EEE9DF;
   --muted: #1a3160;
   --muted-foreground: #DDD3C0;
-  --accent: #7A2535;
+  --accent: #A35139;
   --accent-foreground: #FFFFFF;
   --border: #1a3160;
   --input: #1a3160;
-  --ring: #7A2535;
+  --ring: #A35139;
 }
 
 @theme inline {
@@ -168,7 +168,7 @@
   .eyebrow {
     font-size: 0.7rem;
     letter-spacing: 0.15em;
-    color: #7A2535;
+    color: #A35139;
     font-weight: 500;
     text-transform: uppercase;
   }

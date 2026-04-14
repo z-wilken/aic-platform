@@ -65,14 +65,14 @@ export default function ContactPage() {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-[#0C1B2E] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl font-bold text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               You&apos;re on the List!
             </h2>
             <p className="text-[#6B6458] text-lg mb-6 leading-relaxed">
               Thank you for joining the AIC waiting list, <strong>{formData.firstName}</strong>. We&apos;ve received your application.
             </p>
             <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 mb-8 text-left">
-              <h3 className="font-semibold text-[#0C1B2E] mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-[#1B2632] mb-3 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-600" />
                 What Happens Next?
               </h3>
@@ -98,7 +98,7 @@ export default function ContactPage() {
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => setSubmitted(false)}
-                className="bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper px-8"
+                className="bg-[#A35139] hover:bg-[#A35139] text-aic-paper px-8"
               >
                 Back to Portal
               </Button>
@@ -112,7 +112,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-aic-paper">
       {/* Header */}
-      <section className="bg-[#0C1B2E] pt-32 pb-20">
+      <section className="bg-[#1B2632] pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -120,7 +120,7 @@ export default function ContactPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Join the <span className="text-[#7A2535]">Aic Waiting List</span>
+              Join the <span className="text-[#A35139]">Aic Waiting List</span>
             </h1>
             <p className="text-aic-paper/70 text-lg max-w-2xl mx-auto">
               Secure your place in the upcoming certification cohort. Professionals who join the waiting list receive early access, exclusive study materials, and a 25% discount.
@@ -136,7 +136,7 @@ export default function ContactPage() {
             {/* Left Column: Info */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-[#0C1B2E] mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+                <h2 className="text-2xl font-bold text-[#1B2632] mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
                   Contact Information
                 </h2>
                 <div className="space-y-6">
@@ -146,7 +146,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">General Inquiries</div>
-                      <div className="text-[#0C1B2E]">contact@aiccertified.cloud</div>
+                      <div className="text-[#1B2632]">contact@aiccertified.cloud</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -155,7 +155,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">Certification Support</div>
-                      <div className="text-[#0C1B2E]">support@aiccertified.cloud</div>
+                      <div className="text-[#1B2632]">support@aiccertified.cloud</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -164,18 +164,18 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">Headquarters</div>
-                      <div className="text-[#0C1B2E]">London, United Kingdom<br />Global Remote Operations</div>
+                      <div className="text-[#1B2632]">London, United Kingdom<br />Global Remote Operations</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="p-6 bg-[#FAF6EF] rounded-xl border border-[#DDD3C0]">
-                <h3 className="font-semibold text-[#0C1B2E] mb-4">Enterprise Solutions</h3>
+                <h3 className="font-semibold text-[#1B2632] mb-4">Enterprise Solutions</h3>
                 <p className="text-sm text-[#6B6458] mb-4">
                   Interested in certifying your entire team or organization? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
-                <a href="#" className="text-[#7A2535] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+                <a href="#" className="text-[#A35139] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                   Contact Enterprise Sales <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -197,7 +197,7 @@ export default function ContactPage() {
                         value={formData.firstName}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
                       />
                     </div>
                     <div className="space-y-2">
@@ -209,7 +209,7 @@ export default function ContactPage() {
                         value={formData.lastName}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
                       />
                     </div>
                   </div>
@@ -224,7 +224,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
                     />
                   </div>
 
@@ -238,7 +238,7 @@ export default function ContactPage() {
                         value={formData.company}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
                       />
                     </div>
                     <div className="space-y-2">
@@ -250,7 +250,7 @@ export default function ContactPage() {
                         value={formData.jobTitle}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
                       />
                     </div>
                   </div>
@@ -266,14 +266,14 @@ export default function ContactPage() {
                         value={formData.country}
                         onChange={handleChange}
                         required
-                        className="pl-10 bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                        className="pl-10 bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139]"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-4 pt-2">
                     <label className="text-sm font-medium text-[#0D0D0D] block flex items-center gap-2">
-                      <Award className="w-4 h-4 text-[#7A2535]" />
+                      <Award className="w-4 h-4 text-[#A35139]" />
                       I&apos;m Interested In
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -282,7 +282,7 @@ export default function ContactPage() {
                           key={type.value}
                           className={`flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
                             formData.certificationType === type.value
-                              ? "border-[#7A2535] bg-[#7A2535]/5 ring-1 ring-[#7A2535]"
+                              ? "border-[#A35139] bg-[#A35139]/5 ring-1 ring-[#A35139]"
                               : "border-[#DDD3C0] hover:border-[#C4B8A8] hover:bg-[#FAF6EF]"
                           }`}
                         >
@@ -292,11 +292,11 @@ export default function ContactPage() {
                             value={type.value}
                             checked={formData.certificationType === type.value}
                             onChange={handleChange}
-                            className="mt-1 w-4 h-4 text-[#7A2535] border-[#C4B8A8] focus:ring-[#7A2535]"
+                            className="mt-1 w-4 h-4 text-[#A35139] border-[#C4B8A8] focus:ring-[#A35139]"
                             required
                           />
                           <div>
-                            <div className="font-semibold text-[#0C1B2E] text-sm">{type.label}</div>
+                            <div className="font-semibold text-[#1B2632] text-sm">{type.label}</div>
                             <div className="text-xs text-[#6B6458] leading-snug mt-0.5">{type.description}</div>
                           </div>
                         </label>
@@ -312,14 +312,14 @@ export default function ContactPage() {
                       placeholder="Tell us about your background or specific requirements..."
                       value={formData.message}
                       onChange={handleChange}
-                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535] min-h-[120px]"
+                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#A35139]/20 focus:border-[#A35139] min-h-[120px]"
                     />
                   </div>
 
                   <div className="pt-4">
                     <Button
                       type="submit"
-                      className="w-full bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper py-6 text-lg font-bold shadow-lg shadow-[#7A2535]/20 transition-all"
+                      className="w-full bg-[#A35139] hover:bg-[#A35139] text-aic-paper py-6 text-lg font-bold shadow-lg shadow-[#A35139]/20 transition-all"
                     >
                       Join the Waiting List
                     </Button>
@@ -335,15 +335,15 @@ export default function ContactPage() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-20 bg-[#F0E8D6] border-t border-[#DDD3C0]">
+      <section className="py-20 bg-[#EEE9DF] border-t border-[#DDD3C0]">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Users className="w-12 h-12 text-[#7A2535] mx-auto mb-6" />
-            <h2 className="text-3xl text-[#0C1B2E] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <Users className="w-12 h-12 text-[#A35139] mx-auto mb-6" />
+            <h2 className="text-3xl text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Join Thousands of AI Leaders
             </h2>
             <p className="text-[#6B6458] text-lg leading-relaxed max-w-2xl mx-auto">

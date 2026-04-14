@@ -107,7 +107,7 @@ export default function WaitingListPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0C1B2E] via-[#1a3160] to-[#0C1B2E] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#1B2632] via-[#2C3B4D] to-[#1B2632] flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -118,14 +118,14 @@ export default function WaitingListPage() {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-[#0C1B2E] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl font-bold text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               You're on the List!
             </h2>
             <p className="text-[#6B6458] text-lg mb-6 leading-relaxed">
               Thank you for joining the AIC waiting list, <strong>{formData.firstName}</strong>. We've sent a confirmation email to <strong>{formData.email}</strong>.
             </p>
             <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 mb-8 text-left">
-              <h3 className="font-semibold text-[#0C1B2E] mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-[#1B2632] mb-3 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-blue-600" />
                 What Happens Next?
               </h3>
@@ -157,7 +157,7 @@ export default function WaitingListPage() {
               </Button>
               <Button
                 onClick={() => router.push("/")}
-                className="bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper"
+                className="bg-[#A35139] hover:bg-[#A35139] text-aic-paper"
               >
                 Return Home
               </Button>
@@ -176,7 +176,7 @@ export default function WaitingListPage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0C1B2E]/95 via-[#0C1B2E]/90 to-[#1a3160]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1B2632]/95 via-[#1B2632]/90 to-[#2C3B4D]/85" />
         
         {/* Grid overlay */}
         <div
@@ -194,8 +194,8 @@ export default function WaitingListPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="flex items-center justify-center gap-2 mb-6">
-              <Shield className="w-5 h-5 text-[#7A2535]" />
-              <span className="text-[#7A2535] text-sm uppercase tracking-widest font-medium">
+              <Shield className="w-5 h-5 text-[#A35139]" />
+              <span className="text-[#A35139] text-sm uppercase tracking-widest font-medium">
                 Join the Waiting List
               </span>
             </div>
@@ -226,7 +226,7 @@ export default function WaitingListPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="text-[#7A2535] text-3xl font-bold">{stat.value}</div>
+                <div className="text-[#A35139] text-3xl font-bold">{stat.value}</div>
                 <div className="text-[#6B6458] text-sm mt-0.5">{stat.label}</div>
               </motion.div>
             ))}
@@ -243,7 +243,7 @@ export default function WaitingListPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl text-[#0C1B2E] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Why Join the Waiting List?
             </h2>
             <p className="text-[#6B6458] max-w-2xl mx-auto">
@@ -263,10 +263,10 @@ export default function WaitingListPage() {
                   transition={{ delay: i * 0.1 }}
                 >
                   <Card className="p-6 text-center h-full hover:shadow-lg transition-shadow">
-                    <div className="w-12 h-12 bg-[#0C1B2E]/5 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-6 h-6 text-[#0C1B2E]" />
+                    <div className="w-12 h-12 bg-[#1B2632]/5 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Icon className="w-6 h-6 text-[#1B2632]" />
                     </div>
-                    <h3 className="font-semibold text-[#0C1B2E] mb-2">{benefit.title}</h3>
+                    <h3 className="font-semibold text-[#1B2632] mb-2">{benefit.title}</h3>
                     <p className="text-[#6B6458] text-sm">{benefit.description}</p>
                   </Card>
                 </motion.div>
@@ -285,7 +285,7 @@ export default function WaitingListPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl text-[#0C1B2E] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h2 className="text-3xl text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Reserve Your Spot
             </h2>
             <p className="text-[#6B6458]">
@@ -308,7 +308,7 @@ export default function WaitingListPage() {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A35139]/20 focus:border-[#A35139]"
                     placeholder="John"
                   />
                 </div>
@@ -322,7 +322,7 @@ export default function WaitingListPage() {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A35139]/20 focus:border-[#A35139]"
                     placeholder="Doe"
                   />
                 </div>
@@ -340,7 +340,7 @@ export default function WaitingListPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A35139]/20 focus:border-[#A35139]"
                   placeholder="john.doe@company.com"
                 />
               </div>
@@ -358,7 +358,7 @@ export default function WaitingListPage() {
                     value={formData.organization}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A35139]/20 focus:border-[#A35139]"
                     placeholder="Company Name"
                   />
                 </div>
@@ -373,7 +373,7 @@ export default function WaitingListPage() {
                     value={formData.role}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A35139]/20 focus:border-[#A35139]"
                     placeholder="Chief Risk Officer"
                   />
                 </div>
@@ -391,7 +391,7 @@ export default function WaitingListPage() {
                   value={formData.country}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
+                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A35139]/20 focus:border-[#A35139]"
                   placeholder="United States"
                 />
               </div>
@@ -415,10 +415,10 @@ export default function WaitingListPage() {
                         checked={formData.certificationType === type.value}
                         onChange={handleChange}
                         required
-                        className="mt-1 w-4 h-4 text-[#7A2535] focus:ring-[#7A2535]"
+                        className="mt-1 w-4 h-4 text-[#A35139] focus:ring-[#A35139]"
                       />
                       <div>
-                        <div className="font-medium text-[#0C1B2E]">{type.label}</div>
+                        <div className="font-medium text-[#1B2632]">{type.label}</div>
                         <div className="text-sm text-[#6B6458]">{type.description}</div>
                       </div>
                     </label>
@@ -428,14 +428,14 @@ export default function WaitingListPage() {
 
               {/* Privacy Notice */}
               <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-[#6B6458]">
-                <strong className="text-[#0C1B2E]">Privacy Notice:</strong> Your information will only be used to communicate certification updates and early access opportunities. We never share your data with third parties. See our privacy policy for details.
+                <strong className="text-[#1B2632]">Privacy Notice:</strong> Your information will only be used to communicate certification updates and early access opportunities. We never share your data with third parties. See our privacy policy for details.
               </div>
 
               {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper py-4 text-base font-medium disabled:opacity-60"
+                className="w-full bg-[#A35139] hover:bg-[#A35139] text-aic-paper py-4 text-base font-medium disabled:opacity-60"
               >
                 {isSubmitting ? 'Submitting...' : 'Join Waiting List'} <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -448,14 +448,14 @@ export default function WaitingListPage() {
       </section>
 
       {/* Social Proof */}
-      <section className="py-16 bg-gradient-to-br from-[#0C1B2E] to-[#1a3160]">
+      <section className="py-16 bg-gradient-to-br from-[#1B2632] to-[#2C3B4D]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Users className="w-12 h-12 text-[#7A2535] mx-auto mb-6" />
+            <Users className="w-12 h-12 text-[#A35139] mx-auto mb-6" />
             <h2 className="text-3xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Join Thousands of AI Leaders
             </h2>

@@ -28,7 +28,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50">
       {/* Top utility bar — solid dark, no transparency */}
-      <div className="bg-[#0C1B2E] text-white/70 text-[10px] uppercase tracking-wider py-2">
+      <div className="bg-[#1B2632] text-white/70 text-[10px] uppercase tracking-wider py-2">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
@@ -58,9 +58,9 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
               <div className={`w-10 h-10 rounded flex items-center justify-center transition-colors ${
-                !scrolled && isHome ? "bg-white/10 backdrop-blur-md" : "bg-[#0C1B2E]"
+                !scrolled && isHome ? "bg-white/10 backdrop-blur-md" : "bg-[#1B2632]"
               }`}>
-                <Shield className="w-5 h-5 text-[#7A2535]" />
+                <Shield className="w-5 h-5 text-[#A35139]" />
               </div>
               <div>
                 <div className={`font-bold text-lg leading-tight tracking-tight ${
@@ -81,7 +81,7 @@ export default function Navbar() {
                   className={`px-4 py-2 rounded text-sm font-medium transition-colors relative ${
                     !scrolled && isHome
                       ? "text-white/90 hover:text-white hover:bg-white/10"
-                      : "text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#F0E8D6]"
+                      : "text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
                   }`}
                 >
                   {item.label}
@@ -94,7 +94,7 @@ export default function Navbar() {
                 className={`ml-2 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1.5 ${
                   !scrolled && isHome
                     ? "text-white/70 hover:text-white hover:bg-white/10"
-                    : "text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#F0E8D6]"
+                    : "text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
                 }`}
               >
                 <LogIn className="w-3.5 h-3.5" />
@@ -104,7 +104,7 @@ export default function Navbar() {
               {/* Burgundy CTA */}
               <Link
                 href="/contact"
-                className="ml-2 bg-[#7A2535] text-white px-6 py-2.5 rounded text-sm font-semibold hover:bg-[#5E1A2B] transition-all shadow-md active:scale-95"
+                className="ml-2 bg-[#A35139] text-white px-6 py-2.5 rounded text-sm font-semibold hover:bg-[#8B422E] transition-all shadow-md active:scale-95"
               >
                 Get Certified
               </Link>
@@ -113,7 +113,7 @@ export default function Navbar() {
             {/* Mobile menu button */}
             <button
               className={`lg:hidden p-2 ${
-                !scrolled && isHome ? "text-white" : "text-[#0C1B2E]"
+                !scrolled && isHome ? "text-white" : "text-[#1B2632]"
               }`}
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle navigation menu"
@@ -139,8 +139,8 @@ export default function Navbar() {
                     href={item.href}
                     className={`flex items-center gap-3 px-4 py-4 rounded-lg transition-colors ${
                       isActive
-                        ? "bg-[#0C1B2E] text-white"
-                        : "text-[#0D0D0D] hover:bg-[#F0E8D6]"
+                        ? "bg-[#1B2632] text-white"
+                        : "text-[#0D0D0D] hover:bg-[#EEE9DF]"
                     }`}
                     onClick={() => setMenuOpen(false)}
                   >
@@ -151,7 +151,7 @@ export default function Navbar() {
               <div className="pt-4 mt-2 border-t border-[#DDD3C0] flex flex-col gap-3">
                 <Link
                   href="/login"
-                  className="flex items-center justify-center gap-2 text-base border border-[#DDD3C0] text-[#0C1B2E] px-4 py-3 rounded font-medium transition-all hover:bg-[#F0E8D6]"
+                  className="flex items-center justify-center gap-2 text-base border border-[#DDD3C0] text-[#1B2632] px-4 py-3 rounded font-medium transition-all hover:bg-[#EEE9DF]"
                   onClick={() => setMenuOpen(false)}
                 >
                   <LogIn className="w-4 h-4" />
@@ -159,7 +159,7 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/contact"
-                  className="flex items-center justify-center text-base bg-[#7A2535] text-white px-4 py-4 rounded font-bold transition-all hover:bg-[#5E1A2B]"
+                  className="flex items-center justify-center text-base bg-[#A35139] text-white px-4 py-4 rounded font-bold transition-all hover:bg-[#8B422E]"
                   onClick={() => setMenuOpen(false)}
                 >
                   Get Certified
