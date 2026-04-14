@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Shield,
-  BookOpen,
   ArrowRight,
   CheckCircle,
   Eye,
@@ -12,11 +11,6 @@ import {
   Bell,
   RefreshCw,
   UserCheck,
-  Globe,
-  Users,
-  Building2,
-  Star,
-  ChevronRight,
 } from "lucide-react";
 
 const heroBg = "https://images.unsplash.com/photo-1774360502057-a934d7d0ce60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsJTIwYWJzdHJhY3QlMjB0ZWNobm9sb2d5JTIwYmx1ZXxlbnwxfHx8fDE3NzU1MDg4MTd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
@@ -47,50 +41,6 @@ const algorithmicRights = [
     title: "Human Interaction Choice",
     description: "Every person retains the fundamental right to opt out of AI-mediated services and request human service in any context affecting their material interests.",
   },
-];
-
-const portals = [
-  {
-    icon: BookOpen,
-    label: "Governance Hub",
-    href: "/governance-hub",
-    description: "Algorithmic Rights standards, global policy maps, and regulatory updates for researchers and policymakers.",
-    accent: "#1d4ed8",
-    tag: "Policy & Research",
-  },
-  {
-    icon: Shield,
-    label: "Corporate Portal",
-    href: "/corporate-portal",
-    description: "ISO/IEC 42001 certification services, AI risk templates, and gap analysis tools for Chief Risk Officers.",
-    accent: "#0C1B2E",
-    tag: "Enterprise",
-  },
-  /*
-  {
-    icon: Award,
-    label: "Professional Portal",
-    href: "/professional-portal",
-    description: "ISO/IEC 17024 personnel certification, exam scheduling, and competency development guides.",
-    accent: "#C07830",
-    tag: "Individual Certification",
-  },
-  {
-    icon: BarChart3,
-    label: "AI Governance Index",
-    href: "/ai-governance-index",
-    description: "Interactive dashboard ranking Fortune 500 companies on AI maturity, board oversight, and accountability.",
-    accent: "#059669",
-    tag: "Rankings & Analytics",
-  },
-  */
-];
-
-const stats = [
-  { value: "4,200+", label: "Certified Professionals", icon: Users },
-  { value: "340+", label: "Accredited Organizations", icon: Building2 },
-  { value: "48", label: "Countries Represented", icon: Globe },
-  { value: "97%", label: "Employer Recognition Rate", icon: Star },
 ];
 
 const standards = [
