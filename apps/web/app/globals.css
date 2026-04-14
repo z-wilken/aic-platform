@@ -13,9 +13,10 @@
   --font-size: 16px;
   --background: #EEE9DF;
   --foreground: #1B2632;
-  --card: #EEE9DF;
+  /* Slightly higher contrast surfaces on top of Paper background */
+  --card: #FFFFFF;
   --card-foreground: #1B2632;
-  --popover: #EEE9DF;
+  --popover: #FFFFFF;
   --popover-foreground: #1B2632;
   --primary: #A35139;
   --primary-foreground: #FFFFFF;
@@ -29,13 +30,13 @@
   --destructive-foreground: #EEE9DF;
   --border: #DDD3C0;
   --input: transparent;
-  --input-background: #EEE9DF;
+  --input-background: #FFFFFF;
   --switch-background: #DDD3C0;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
   --ring: #A35139;
   --radius: 4px;
-  --sidebar: #EEE9DF;
+  --sidebar: #FFFFFF;
   --sidebar-foreground: #2C3B4D;
   --sidebar-primary: #A35139;
   --sidebar-primary-foreground: #FFFFFF;
