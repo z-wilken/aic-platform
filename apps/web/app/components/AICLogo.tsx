@@ -24,7 +24,7 @@ export function AICLogo({
   };
 
   const { w, h } = sizes[size];
-  const gold = "#C07830";
+  const gold = "#7A2535";
   const navy = "#0C1B2E";
   const primaryColor = scheme === "dark" ? "var(--aic-paper)" : navy;
 

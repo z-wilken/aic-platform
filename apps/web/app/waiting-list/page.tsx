@@ -157,7 +157,7 @@ export default function WaitingListPage() {
               </Button>
               <Button
                 onClick={() => router.push("/")}
-                className="bg-[#C07830] hover:bg-[#C07830] text-aic-paper"
+                className="bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper"
               >
                 Return Home
               </Button>
@@ -194,8 +194,8 @@ export default function WaitingListPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="flex items-center justify-center gap-2 mb-6">
-              <Shield className="w-5 h-5 text-[#C07830]" />
-              <span className="text-[#C07830] text-sm uppercase tracking-widest font-medium">
+              <Shield className="w-5 h-5 text-[#7A2535]" />
+              <span className="text-[#7A2535] text-sm uppercase tracking-widest font-medium">
                 Join the Waiting List
               </span>
             </div>
@@ -226,7 +226,7 @@ export default function WaitingListPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="text-[#C07830] text-3xl font-bold">{stat.value}</div>
+                <div className="text-[#7A2535] text-3xl font-bold">{stat.value}</div>
                 <div className="text-[#6B6458] text-sm mt-0.5">{stat.label}</div>
               </motion.div>
             ))}
@@ -308,7 +308,7 @@ export default function WaitingListPage() {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                     placeholder="John"
                   />
                 </div>
@@ -322,7 +322,7 @@ export default function WaitingListPage() {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                     placeholder="Doe"
                   />
                 </div>
@@ -340,7 +340,7 @@ export default function WaitingListPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                   placeholder="john.doe@company.com"
                 />
               </div>
@@ -358,7 +358,7 @@ export default function WaitingListPage() {
                     value={formData.organization}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                     placeholder="Company Name"
                   />
                 </div>
@@ -373,7 +373,7 @@ export default function WaitingListPage() {
                     value={formData.role}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                    className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                     placeholder="Chief Risk Officer"
                   />
                 </div>
@@ -391,7 +391,7 @@ export default function WaitingListPage() {
                   value={formData.country}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                  className="w-full px-4 py-3 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                   placeholder="United States"
                 />
               </div>
@@ -415,7 +415,7 @@ export default function WaitingListPage() {
                         checked={formData.certificationType === type.value}
                         onChange={handleChange}
                         required
-                        className="mt-1 w-4 h-4 text-[#C07830] focus:ring-[#C07830]"
+                        className="mt-1 w-4 h-4 text-[#7A2535] focus:ring-[#7A2535]"
                       />
                       <div>
                         <div className="font-medium text-[#0C1B2E]">{type.label}</div>
@@ -435,7 +435,7 @@ export default function WaitingListPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#C07830] hover:bg-[#C07830] text-aic-paper py-4 text-base font-medium disabled:opacity-60"
+                className="w-full bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper py-4 text-base font-medium disabled:opacity-60"
               >
                 {isSubmitting ? 'Submitting...' : 'Join Waiting List'} <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -455,7 +455,7 @@ export default function WaitingListPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Users className="w-12 h-12 text-[#C07830] mx-auto mb-6" />
+            <Users className="w-12 h-12 text-[#7A2535] mx-auto mb-6" />
             <h2 className="text-3xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Join Thousands of AI Leaders
             </h2>

@@ -48,19 +48,19 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         />
         
         {/* Human Silhouette - Head */}
-        <circle cx="50" cy="35" r="8" fill="#C07830" />
+        <circle cx="50" cy="35" r="8" fill="#7A2535" />
         
         {/* Human Silhouette - Body */}
         <path
           d="M50 45C42 45 36 50 36 56V68C36 70 37 72 39 72H61C63 72 64 70 64 68V56C64 50 58 45 50 45Z"
-          fill="#C07830"
+          fill="#7A2535"
         />
         
         {/* AI Circuit Pattern */}
-        <circle cx="35" cy="50" r="2" fill="#C07830" opacity="0.4" />
-        <circle cx="65" cy="50" r="2" fill="#C07830" opacity="0.4" />
-        <line x1="37" y1="50" x2="42" y2="52" stroke="#C07830" strokeWidth="1" opacity="0.4" />
-        <line x1="63" y1="50" x2="58" y2="52" stroke="#C07830" strokeWidth="1" opacity="0.4" />
+        <circle cx="35" cy="50" r="2" fill="#7A2535" opacity="0.4" />
+        <circle cx="65" cy="50" r="2" fill="#7A2535" opacity="0.4" />
+        <line x1="37" y1="50" x2="42" y2="52" stroke="#7A2535" strokeWidth="1" opacity="0.4" />
+        <line x1="63" y1="50" x2="58" y2="52" stroke="#7A2535" strokeWidth="1" opacity="0.4" />
       </svg>
     );
   }
@@ -89,7 +89,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         <text
           x="0"
           y="56"
-          fill="#C07830"
+          fill="#7A2535"
           fontSize="9"
           fontWeight="500"
           fontFamily="'Space Grotesk', sans-serif"
@@ -126,19 +126,19 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         />
         
         {/* Human Silhouette - Head */}
-        <circle cx="35" cy="24" r="5" fill="#C07830" />
+        <circle cx="35" cy="24" r="5" fill="#7A2535" />
         
         {/* Human Silhouette - Body */}
         <path
           d="M35 30C30 30 26 33 26 37V45C26 46 27 47 28 47H42C43 47 44 46 44 45V37C44 33 40 30 35 30Z"
-          fill="#C07830"
+          fill="#7A2535"
         />
         
         {/* AI Circuit Dots */}
-        <circle cx="25" cy="35" r="1.5" fill="#C07830" opacity="0.4" />
-        <circle cx="45" cy="35" r="1.5" fill="#C07830" opacity="0.4" />
-        <line x1="26.5" y1="35" x2="30" y2="36" stroke="#C07830" strokeWidth="0.8" opacity="0.4" />
-        <line x1="43.5" y1="35" x2="40" y2="36" stroke="#C07830" strokeWidth="0.8" opacity="0.4" />
+        <circle cx="25" cy="35" r="1.5" fill="#7A2535" opacity="0.4" />
+        <circle cx="45" cy="35" r="1.5" fill="#7A2535" opacity="0.4" />
+        <line x1="26.5" y1="35" x2="30" y2="36" stroke="#7A2535" strokeWidth="0.8" opacity="0.4" />
+        <line x1="43.5" y1="35" x2="40" y2="36" stroke="#7A2535" strokeWidth="0.8" opacity="0.4" />
       </g>
       
       {/* Text */}
@@ -170,7 +170,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
         </text>
         
         {/* Accent Line */}
-        <line x1="0" y1="62" x2="180" y2="62" stroke="#C07830" strokeWidth="1.5" opacity="0.3" />
+        <line x1="0" y1="62" x2="180" y2="62" stroke="#7A2535" strokeWidth="1.5" opacity="0.3" />
       </g>
     </svg>
   );

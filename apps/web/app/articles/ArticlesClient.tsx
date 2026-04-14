@@ -125,8 +125,8 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
             className="text-center max-w-3xl mx-auto"
           >
             <div className="flex items-center justify-center gap-2 mb-6">
-              <BookOpen className="w-5 h-5 text-[#C07830]" />
-              <span className="text-[#C07830] text-sm uppercase tracking-widest font-medium">
+              <BookOpen className="w-5 h-5 text-[#7A2535]" />
+              <span className="text-[#7A2535] text-sm uppercase tracking-widest font-medium">
                 Knowledge Center
               </span>
             </div>
@@ -152,7 +152,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                className="w-full pl-10 pr-4 py-2.5 border border-[#DDD3C0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
               />
             </div>
 
@@ -165,8 +165,8 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                   onClick={() => setSelectedCategory(category)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                     selectedCategory === category
-                      ? "bg-[#C07830] text-white"
-                      : "bg-[#DDD3C0] text-[#6B6458] hover:bg-[#C07830]/20 hover:text-[#0C1B2E]"
+                      ? "bg-[#7A2535] text-white"
+                      : "bg-[#DDD3C0] text-[#6B6458] hover:bg-[#7A2535]/20 hover:text-[#0C1B2E]"
                   }`}
                 >
                   {category}
@@ -183,7 +183,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-semibold text-[#0C1B2E]">Featured Articles</h2>
-              <TrendingUp className="w-5 h-5 text-[#C07830]" />
+              <TrendingUp className="w-5 h-5 text-[#7A2535]" />
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -203,7 +203,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-4 left-4">
-                        <span className="px-3 py-1 bg-[#C07830] text-aic-paper text-xs rounded-full font-medium">
+                        <span className="px-3 py-1 bg-[#7A2535] text-aic-paper text-xs rounded-full font-medium">
                           Featured
                         </span>
                       </div>
@@ -222,7 +222,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           {article.readTime}
                         </span>
                       </div>
-                      <h3 className="text-xl font-semibold text-[#0C1B2E] mb-3 group-hover:text-[#C07830] transition-colors leading-tight">
+                      <h3 className="text-xl font-semibold text-[#0C1B2E] mb-3 group-hover:text-[#7A2535] transition-colors leading-tight">
                         {article.title}
                       </h3>
                       <p className="text-[#6B6458] text-sm leading-relaxed mb-4 flex-1">
@@ -234,7 +234,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           <span className="text-sm text-[#6B6458]">{article.author}</span>
                         </div>
                         <Link href={`/articles/${article.slug}`}>
-                          <Button className="bg-[#C07830] hover:bg-[#A66628] text-white text-sm">
+                          <Button className="bg-[#7A2535] hover:bg-[#5E1A2B] text-white text-sm">
                             Read Article <ArrowRight className="w-4 h-4 ml-1" />
                           </Button>
                         </Link>
@@ -287,7 +287,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                           {article.readTime}
                         </span>
                       </div>
-                      <h3 className="text-lg font-semibold text-[#0C1B2E] mb-2 group-hover:text-[#C07830] transition-colors leading-tight flex-1">
+                      <h3 className="text-lg font-semibold text-[#0C1B2E] mb-2 group-hover:text-[#7A2535] transition-colors leading-tight flex-1">
                         {article.title}
                       </h3>
                       <p className="text-[#6B6458] text-sm leading-relaxed mb-4">
@@ -297,7 +297,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                         <span className="text-xs text-[#6B6458]">{article.date}</span>
                         <Link 
                           href={`/articles/${article.slug}`}
-                          className="text-[#0C1B2E] hover:text-[#C07830] transition-colors text-sm font-medium flex items-center gap-1"
+                          className="text-[#0C1B2E] hover:text-[#7A2535] transition-colors text-sm font-medium flex items-center gap-1"
                         >
                           Read <ArrowRight className="w-3 h-3" />
                         </Link>
@@ -338,7 +338,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Shield className="w-12 h-12 text-[#C07830] mx-auto mb-6" />
+            <Shield className="w-12 h-12 text-[#7A2535] mx-auto mb-6" />
             <h2 className="text-3xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Stay Informed on AI Governance
             </h2>
@@ -353,17 +353,17 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 placeholder="Enter your email"
                 aria-label="Email address for newsletter"
                 required
-                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C07830]"
+                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7A2535]"
               />
               <Button
                 type="submit"
                 disabled={newsletterLoading || newsletterSuccess}
-                className="bg-[#C07830] hover:bg-[#C07830] text-aic-paper px-6 py-3 disabled:opacity-60"
+                className="bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper px-6 py-3 disabled:opacity-60"
               >
                 {newsletterSuccess ? 'Subscribed ✓' : newsletterLoading ? 'Subscribing...' : 'Subscribe'}
               </Button>
             </form>
-            <p className="text-aic-paper/40 text-xs mt-4">
+            <p className="text-aic-paper/40 text-xs mt-4 text-center w-full">
               No spam. Unsubscribe anytime. Read our{" "}
               <Link href="/disclosures" className="underline hover:text-aic-paper/60">
                 privacy policy
@@ -418,7 +418,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                     <p className="text-[#6B6458] text-sm mb-4 flex-1">{resource.description}</p>
                     <Link
                       href={resource.link}
-                      className="text-[#C07830] hover:text-[#C07830] font-medium text-sm flex items-center gap-1"
+                      className="text-[#7A2535] hover:text-[#7A2535] font-medium text-sm flex items-center gap-1"
                     >
                       {resource.linkText} <ExternalLink className="w-3 h-3" />
                     </Link>

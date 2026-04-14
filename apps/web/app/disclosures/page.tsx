@@ -134,8 +134,8 @@ export default function DisclosuresPage() {
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">
-              <FileText className="w-6 h-6 text-[#C07830]" />
-              <span className="text-[#C07830] text-sm uppercase tracking-widest font-medium">
+              <FileText className="w-6 h-6 text-[#7A2535]" />
+              <span className="text-[#7A2535] text-sm uppercase tracking-widest font-medium">
                 IAF MLA Mandatory Disclosures
               </span>
             </div>
@@ -170,7 +170,7 @@ export default function DisclosuresPage() {
                   transition={{ delay: i * 0.1 }}
                   className="text-center"
                 >
-                  <Icon className="w-6 h-6 text-[#C07830] mx-auto mb-2" />
+                  <Icon className="w-6 h-6 text-[#7A2535] mx-auto mb-2" />
                   <div className="text-sm text-gray-500 mb-1">{item.label}</div>
                   <div className="text-2xl font-bold text-[#0C1B2E]">{item.value}</div>
                 </motion.div>
@@ -201,7 +201,7 @@ export default function DisclosuresPage() {
                 <Card className="p-8">
                   <div className="flex items-start gap-4 mb-6">
                     <div className="w-12 h-12 bg-[#0C1B2E] rounded-lg flex items-center justify-center shrink-0">
-                      <Scale className="w-6 h-6 text-[#C07830]" />
+                      <Scale className="w-6 h-6 text-[#7A2535]" />
                     </div>
                     <div>
                       <h2 className="text-2xl font-semibold text-[#0C1B2E] mb-2">
@@ -366,7 +366,7 @@ export default function DisclosuresPage() {
                         const Icon = item.icon;
                         return (
                           <div key={i} className="flex items-start gap-3 p-4 bg-[#F9F8F4] rounded-lg">
-                            <Icon className="w-5 h-5 text-[#C07830] shrink-0 mt-0.5" />
+                            <Icon className="w-5 h-5 text-[#7A2535] shrink-0 mt-0.5" />
                             <div>
                               <div className="text-sm text-gray-500 mb-1">{item.label}</div>
                               <div className="font-medium text-[#0C1B2E]">{item.value}</div>
@@ -394,7 +394,7 @@ export default function DisclosuresPage() {
                         { region: "Middle East", signatories: "10" },
                       ].map((region, i) => (
                         <div key={i} className="text-center p-4 bg-[#F9F8F4] rounded-lg border border-gray-200">
-                          <Globe className="w-6 h-6 text-[#C07830] mx-auto mb-2" />
+                          <Globe className="w-6 h-6 text-[#7A2535] mx-auto mb-2" />
                           <div className="font-semibold text-[#0C1B2E]">{region.region}</div>
                           <div className="text-sm text-gray-500">{region.signatories} MLA Signatories</div>
                         </div>
@@ -522,7 +522,7 @@ export default function DisclosuresPage() {
                   <Card className="p-8">
                     <div className="flex items-start gap-4 mb-6">
                       <div className="w-12 h-12 bg-[#0C1B2E] rounded-lg flex items-center justify-center shrink-0">
-                        <Scale className="w-6 h-6 text-[#C07830]" />
+                        <Scale className="w-6 h-6 text-[#7A2535]" />
                       </div>
                       <div>
                         <h2 className="text-2xl font-semibold text-[#0C1B2E] mb-2">Appeals and Dispute Resolution</h2>
@@ -544,7 +544,7 @@ export default function DisclosuresPage() {
                             "The certification decision is inconsistent with international standards",
                           ].map((ground, i) => (
                             <li key={i} className="flex items-start gap-2 text-sm">
-                              <CheckCircle className="w-4 h-4 text-[#C07830] shrink-0 mt-0.5" />
+                              <CheckCircle className="w-4 h-4 text-[#7A2535] shrink-0 mt-0.5" />
                               <span>{ground}</span>
                             </li>
                           ))}
@@ -582,7 +582,7 @@ export default function DisclosuresPage() {
                             </div>
                             <div>
                               <strong>Online Portal:</strong>{" "}
-                              <a href="#" className="text-[#C07830] hover:underline">
+                              <a href="#" className="text-[#7A2535] hover:underline">
                                 aic-cert.org/appeals
                               </a>
                             </div>

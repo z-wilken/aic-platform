@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, Shield, BookOpen, FileText, Newspaper, Menu, X } from "lucide-react";
+import { Globe, Shield, BookOpen, FileText, Newspaper, Menu, X, LogIn } from "lucide-react";
 
 export const navItems = [
-  { href: "/certification",       label: "How It Works",       icon: Shield,    description: "Five-Division Accountability Framework" },
-  { href: "/governance-hub",      label: "For Companies",      icon: BookOpen,  description: "Algorithmic Rights & Global Standards" },
-  { href: "/corporate-portal",    label: "For Individuals",    icon: Shield,    description: "ISO/IEC 42001 Certification Services" },
-  { href: "/articles",            label: "Regulations",            icon: Newspaper, description: "Governance insights and updates" },
+  { href: "/certification",  label: "How It Works",         icon: Shield,    description: "Five-Division Accountability Framework" },
+  { href: "/governance-hub", label: "Standards & Recognition", icon: BookOpen,  description: "Algorithmic Rights & Global Standards" },
+  { href: "/articles",       label: "Articles",             icon: Newspaper, description: "Governance insights and updates" },
+  { href: "/disclosures",    label: "Disclosures",          icon: FileText,  description: "Public impartiality and conflict-of-interest statements" },
 ];
 
 export default function Navbar() {
@@ -41,7 +41,6 @@ export default function Navbar() {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/disclosures" className="hover:text-white transition-colors">Public Disclosures</Link>
             <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
           </div>
         </div>
@@ -61,7 +60,7 @@ export default function Navbar() {
               <div className={`w-10 h-10 rounded flex items-center justify-center transition-colors ${
                 !scrolled && isHome ? "bg-white/10 backdrop-blur-md" : "bg-[#0C1B2E]"
               }`}>
-                <Shield className="w-5 h-5 text-[#C07830]" />
+                <Shield className="w-5 h-5 text-[#7A2535]" />
               </div>
               <div>
                 <div className={`font-bold text-lg leading-tight tracking-tight ${
@@ -89,10 +88,23 @@ export default function Navbar() {
                 </Link>
               ))}
               
-              {/* Copper Button Nav Item */}
+              {/* Login link */}
+              <Link
+                href="/login"
+                className={`ml-2 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  !scrolled && isHome
+                    ? "text-white/70 hover:text-white hover:bg-white/10"
+                    : "text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#F0E8D6]"
+                }`}
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                Login
+              </Link>
+
+              {/* Burgundy CTA */}
               <Link
                 href="/contact"
-                className="ml-4 bg-[#C07830] text-white px-6 py-2.5 rounded text-sm font-semibold hover:bg-[#A66628] transition-all shadow-md active:scale-95"
+                className="ml-2 bg-[#7A2535] text-white px-6 py-2.5 rounded text-sm font-semibold hover:bg-[#5E1A2B] transition-all shadow-md active:scale-95"
               >
                 Get Certified
               </Link>
@@ -136,10 +148,18 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              <div className="pt-4 mt-2 border-t border-[#DDD3C0]">
+              <div className="pt-4 mt-2 border-t border-[#DDD3C0] flex flex-col gap-3">
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center gap-2 text-base border border-[#DDD3C0] text-[#0C1B2E] px-4 py-3 rounded font-medium transition-all hover:bg-[#F0E8D6]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <LogIn className="w-4 h-4" />
+                  Login to Platform
+                </Link>
                 <Link
                   href="/contact"
-                  className="flex items-center justify-center text-base bg-[#C07830] text-white px-4 py-4 rounded font-bold transition-all"
+                  className="flex items-center justify-center text-base bg-[#7A2535] text-white px-4 py-4 rounded font-bold transition-all hover:bg-[#5E1A2B]"
                   onClick={() => setMenuOpen(false)}
                 >
                   Get Certified

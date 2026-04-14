@@ -16,7 +16,7 @@ export default function Footer() {
     <footer id="contact" className="bg-[#0C1B2E] text-white overflow-hidden relative">
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-[#C07830] via-transparent to-transparent" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-[#7A2535] via-transparent to-transparent" />
       </div>
 
       {/* Manifesto band */}
@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="max-w-[1600px] mx-auto px-6 sm:px-8 py-16 sm:py-20">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
             <div className="max-w-3xl">
-              <div className="text-[#C07830] text-[10px] uppercase tracking-[0.3em] font-mono font-bold mb-5">
+              <div className="text-[#7A2535] text-[10px] uppercase tracking-[0.3em] font-mono font-bold mb-5">
                 Our Mission
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl text-white font-serif italic leading-relaxed">
@@ -33,7 +33,7 @@ export default function Footer() {
             </div>
             <Link
               href="/contact"
-              className="shrink-0 inline-flex items-center gap-2 bg-[#C07830] hover:bg-[#A66628] text-white px-7 py-4 rounded transition-all text-xs font-bold uppercase tracking-widest font-sans shadow-xl shadow-[#C07830]/20 self-start lg:self-auto"
+              className="shrink-0 inline-flex items-center gap-2 bg-[#7A2535] hover:bg-[#5E1A2B] text-white px-7 py-4 rounded transition-all text-xs font-bold uppercase tracking-widest font-sans shadow-xl shadow-[#7A2535]/20 self-start lg:self-auto"
             >
               Become a Founding Partner
               <ChevronRight className="w-4 h-4" />
@@ -54,7 +54,7 @@ export default function Footer() {
             <p className="text-white/50 text-sm leading-relaxed">
               The global standard for certifying the humans accountable for AI systems — ensuring transparency, accountability, and trust in the age of artificial intelligence.
             </p>
-            <div className="pt-2 flex items-center gap-2 text-[10px] text-[#C07830] font-mono uppercase tracking-widest">
+            <div className="pt-2 flex items-center gap-2 text-[10px] text-[#7A2535] font-mono uppercase tracking-widest">
               <Shield className="w-3.5 h-3.5 shrink-0" />
               <span>IAF MLA Accredited · ISO/IEC 17024</span>
             </div>
@@ -70,22 +70,13 @@ export default function Footer() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-white/60 hover:text-[#C07830] text-xs transition-colors font-mono uppercase tracking-widest flex items-center gap-2 group"
+                    className="text-white/60 hover:text-[#7A2535] text-xs transition-colors font-mono uppercase tracking-widest flex items-center gap-2 group"
                   >
-                    <ChevronRight className="w-3 h-3 text-[#C07830] opacity-0 group-hover:opacity-100 transition-opacity -ml-1" />
+                    <ChevronRight className="w-3 h-3 text-[#7A2535] opacity-0 group-hover:opacity-100 transition-opacity -ml-1" />
                     {item.label}
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  href="/disclosures"
-                  className="text-white/60 hover:text-[#C07830] text-xs transition-colors font-mono uppercase tracking-widest flex items-center gap-2 group"
-                >
-                  <ChevronRight className="w-3 h-3 text-[#C07830] opacity-0 group-hover:opacity-100 transition-opacity -ml-1" />
-                  Disclosures
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -101,9 +92,9 @@ export default function Footer() {
                     href={std.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-[#C07830] transition-colors group"
+                    className="flex items-center gap-2 hover:text-[#7A2535] transition-colors group"
                   >
-                    <span className="w-1 h-1 rounded-full bg-[#C07830] shrink-0 group-hover:scale-150 transition-transform" />
+                    <span className="w-1 h-1 rounded-full bg-[#7A2535] shrink-0 group-hover:scale-150 transition-transform" />
                     {std.label}
                   </a>
                 </li>
@@ -119,7 +110,7 @@ export default function Footer() {
             <ul className="space-y-5 text-sm text-white/60">
               <li className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center shrink-0 mt-0.5">
-                  <MapPin className="w-4 h-4 text-[#C07830]" />
+                  <MapPin className="w-4 h-4 text-[#7A2535]" />
                 </div>
                 <div className="leading-relaxed">
                   <div>Johannesburg, South Africa</div>
@@ -132,17 +123,17 @@ export default function Footer() {
               <li className="flex flex-col gap-3">
                 <div className="flex items-center gap-3 group">
                   <div className="w-8 h-8 rounded bg-white/5 flex items-center justify-center shrink-0">
-                    <Mail className="w-4 h-4 text-[#C07830]" />
+                    <Mail className="w-4 h-4 text-[#7A2535]" />
                   </div>
                   <a
-                    href="mailto:zander@ztoaholdings.co.za"
+                    href="mailto:albert@ztoaholdings.com"
                     className="hover:text-white transition-colors break-all"
                   >
-                    zander@ztoaholdings.co.za
+                    albert@ztoaholdings.com
                   </a>
                 </div>
-                <div className="text-xs text-[#C07830] font-medium pt-2">
-                  Questions? Reach Zander directly — zander@ztoaholdings.co.za
+                <div className="text-xs text-[#7A2535] font-medium pt-2">
+                  Questions? Reach Albert directly — albert@ztoaholdings.com
                 </div>
               </li>
             </ul>
@@ -151,17 +142,17 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
-          <p className="text-white/20 text-[10px] font-mono uppercase tracking-widest text-center sm:text-left">
+          <p className="text-white/50 text-[10px] font-mono uppercase tracking-widest text-center sm:text-left">
             aiccertified.cloud | © 2026 AI Integrity Certification (Pty) Ltd. All rights reserved.
           </p>
-          <div className="flex gap-6 sm:gap-8 text-[10px] text-white/20 font-mono uppercase tracking-widest">
-            <Link href="/privacy" className="hover:text-[#C07830] transition-colors">
+          <div className="flex gap-6 sm:gap-8 text-[10px] text-white/50 font-mono uppercase tracking-widest">
+            <Link href="/privacy" className="hover:text-[#7A2535] transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="hover:text-[#C07830] transition-colors">
+            <Link href="/terms" className="hover:text-[#7A2535] transition-colors">
               Terms of Use
             </Link>
-            <Link href="/disclosures" className="hover:text-[#C07830] transition-colors">
+            <Link href="/disclosures" className="hover:text-[#7A2535] transition-colors">
               Impartiality Statement
             </Link>
           </div>

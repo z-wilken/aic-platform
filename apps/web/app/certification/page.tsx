@@ -121,13 +121,13 @@ export default function CertificationPage() {
             className="max-w-3xl"
           >
             <div className="flex items-center gap-2 mb-6">
-              <span className="eyebrow px-3 py-1 bg-[#C07830]/10 rounded-full border border-[#C07830]/20">
+              <span className="eyebrow px-3 py-1 bg-[#7A2535]/10 rounded-full border border-[#7A2535]/20">
                 AIC Five-Division Framework
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl text-white mb-6">
               Accountability<br />
-              <span className="text-[#C07830]">Calibrated to AI</span>
+              <span className="text-[#7A2535]">Calibrated to AI</span>
             </h1>
             <p className="text-xl text-white/80 leading-[1.65] mb-10 max-w-2xl">
               AIC certification is structured around how your organisation actually relates to AI in consequential decisions — not a one-size-fits-all compliance checkbox. Choose the Division that reflects your reality.
@@ -135,7 +135,7 @@ export default function CertificationPage() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-[#C07830] hover:bg-[#C07830]/90 text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#C07830]/20"
+                className="inline-flex items-center gap-2 bg-[#7A2535] hover:bg-[#7A2535]/90 text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#7A2535]/20"
               >
                 Enquire About Certification <ArrowRight className="w-4 h-4" />
               </Link>
@@ -277,8 +277,8 @@ export default function CertificationPage() {
                             <p className="text-white/80 text-xs leading-relaxed">{div.product}</p>
                           </div>
                           {div.valueProp && (
-                            <div className="flex-1 p-4 rounded bg-[#C07830]/10 border border-[#C07830]/20">
-                              <div className="text-[10px] font-mono text-[#C07830]/70 uppercase tracking-widest mb-2">Value Proposition</div>
+                            <div className="flex-1 p-4 rounded bg-[#7A2535]/10 border border-[#7A2535]/20">
+                              <div className="text-[10px] font-mono text-[#7A2535]/70 uppercase tracking-widest mb-2">Value Proposition</div>
                               <p className="text-white/80 text-xs leading-relaxed italic">{div.valueProp}</p>
                             </div>
                           )}
@@ -328,8 +328,8 @@ export default function CertificationPage() {
                 transition={{ delay: i * 0.1 }}
                 className="relative"
               >
-                <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded p-6 h-full hover:border-[#C07830]/30 hover:shadow-md transition-all">
-                  <div className="text-[#C07830] text-2xl font-bold font-mono mb-4">{step.step}</div>
+                <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded p-6 h-full hover:border-[#7A2535]/30 hover:shadow-md transition-all">
+                  <div className="text-[#7A2535] text-2xl font-bold font-mono mb-4">{step.step}</div>
                   <h3 className="text-[#0C1B2E] font-semibold mb-3 text-sm">{step.title}</h3>
                   <p className="text-[#6B6458] text-xs leading-relaxed">{step.desc}</p>
                 </div>
@@ -349,7 +349,7 @@ export default function CertificationPage() {
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: "radial-gradient(circle at 30% 50%, #C07830 0%, transparent 60%)",
+            backgroundImage: "radial-gradient(circle at 30% 50%, #7A2535 0%, transparent 60%)",
           }}
         />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
@@ -358,7 +358,7 @@ export default function CertificationPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="eyebrow text-[#C07830] bg-[#C07830]/10 px-3 py-1 rounded-full inline-block mb-6">
+            <span className="eyebrow text-[#7A2535] bg-[#7A2535]/10 px-3 py-1 rounded-full inline-block mb-6">
               Get Certified
             </span>
             <h2 className="text-white mb-4">
@@ -369,7 +369,7 @@ export default function CertificationPage() {
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 bg-[#C07830] hover:bg-[#C07830]/90 text-white px-10 py-4 rounded font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#C07830]/25 text-sm"
+              className="inline-flex items-center gap-2 bg-[#7A2535] hover:bg-[#7A2535]/90 text-white px-10 py-4 rounded font-bold uppercase tracking-widest transition-all shadow-xl shadow-[#7A2535]/25 text-sm"
             >
               Enquire About Certification
               <ArrowRight className="w-4 h-4" />

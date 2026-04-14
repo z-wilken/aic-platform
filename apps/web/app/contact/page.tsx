@@ -98,7 +98,7 @@ export default function ContactPage() {
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => setSubmitted(false)}
-                className="bg-[#C07830] hover:bg-[#C07830] text-aic-paper px-8"
+                className="bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper px-8"
               >
                 Back to Portal
               </Button>
@@ -120,7 +120,7 @@ export default function ContactPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Join the <span className="text-[#C07830]">Aic Waiting List</span>
+              Join the <span className="text-[#7A2535]">Aic Waiting List</span>
             </h1>
             <p className="text-aic-paper/70 text-lg max-w-2xl mx-auto">
               Secure your place in the upcoming certification cohort. Professionals who join the waiting list receive early access, exclusive study materials, and a 25% discount.
@@ -175,7 +175,7 @@ export default function ContactPage() {
                 <p className="text-sm text-[#6B6458] mb-4">
                   Interested in certifying your entire team or organization? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
-                <a href="#" className="text-[#C07830] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+                <a href="#" className="text-[#7A2535] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                   Contact Enterprise Sales <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
@@ -197,7 +197,7 @@ export default function ContactPage() {
                         value={formData.firstName}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                       />
                     </div>
                     <div className="space-y-2">
@@ -209,7 +209,7 @@ export default function ContactPage() {
                         value={formData.lastName}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                       />
                     </div>
                   </div>
@@ -224,7 +224,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                     />
                   </div>
 
@@ -238,7 +238,7 @@ export default function ContactPage() {
                         value={formData.company}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                       />
                     </div>
                     <div className="space-y-2">
@@ -250,7 +250,7 @@ export default function ContactPage() {
                         value={formData.jobTitle}
                         onChange={handleChange}
                         required
-                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                        className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                       />
                     </div>
                   </div>
@@ -266,14 +266,14 @@ export default function ContactPage() {
                         value={formData.country}
                         onChange={handleChange}
                         required
-                        className="pl-10 bg-aic-paper border-[#DDD3C0] focus:ring-[#C07830]/20 focus:border-[#C07830]"
+                        className="pl-10 bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535]"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-4 pt-2">
                     <label className="text-sm font-medium text-[#0D0D0D] block flex items-center gap-2">
-                      <Award className="w-4 h-4 text-[#C07830]" />
+                      <Award className="w-4 h-4 text-[#7A2535]" />
                       I&apos;m Interested In
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -282,7 +282,7 @@ export default function ContactPage() {
                           key={type.value}
                           className={`flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
                             formData.certificationType === type.value
-                              ? "border-[#C07830] bg-[#C07830]/5 ring-1 ring-[#C07830]"
+                              ? "border-[#7A2535] bg-[#7A2535]/5 ring-1 ring-[#7A2535]"
                               : "border-[#DDD3C0] hover:border-[#C4B8A8] hover:bg-[#FAF6EF]"
                           }`}
                         >
@@ -292,7 +292,7 @@ export default function ContactPage() {
                             value={type.value}
                             checked={formData.certificationType === type.value}
                             onChange={handleChange}
-                            className="mt-1 w-4 h-4 text-[#C07830] border-[#C4B8A8] focus:ring-[#C07830]"
+                            className="mt-1 w-4 h-4 text-[#7A2535] border-[#C4B8A8] focus:ring-[#7A2535]"
                             required
                           />
                           <div>
@@ -312,14 +312,14 @@ export default function ContactPage() {
                       placeholder="Tell us about your background or specific requirements..."
                       value={formData.message}
                       onChange={handleChange}
-                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#C07830]/20 focus:border-[#C07830] min-h-[120px]"
+                      className="bg-aic-paper border-[#DDD3C0] focus:ring-[#7A2535]/20 focus:border-[#7A2535] min-h-[120px]"
                     />
                   </div>
 
                   <div className="pt-4">
                     <Button
                       type="submit"
-                      className="w-full bg-[#C07830] hover:bg-[#C07830] text-aic-paper py-6 text-lg font-bold shadow-lg shadow-[#C07830]/20 transition-all"
+                      className="w-full bg-[#7A2535] hover:bg-[#7A2535] text-aic-paper py-6 text-lg font-bold shadow-lg shadow-[#7A2535]/20 transition-all"
                     >
                       Join the Waiting List
                     </Button>
@@ -342,7 +342,7 @@ export default function ContactPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Users className="w-12 h-12 text-[#C07830] mx-auto mb-6" />
+            <Users className="w-12 h-12 text-[#7A2535] mx-auto mb-6" />
             <h2 className="text-3xl text-[#0C1B2E] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Join Thousands of AI Leaders
             </h2>

@@ -78,7 +78,7 @@ export default function Home() {
             className="max-w-4xl"
           >
             <div className="flex items-center gap-2 mb-8">
-              <span className="px-3 py-1 bg-[#C07830]/20 text-[#C07830] text-[0.7rem] font-medium rounded border border-[#C07830]/30 uppercase tracking-[0.15em]">
+              <span className="px-3 py-1 bg-[#7A2535]/20 text-[#7A2535] text-[0.7rem] font-medium rounded border border-[#7A2535]/30 uppercase tracking-[0.15em]">
                 IAF MLA Accredited · ISO/IEC 17024
               </span>
             </div>
@@ -87,7 +87,7 @@ export default function Home() {
               style={{ fontFamily: "'Merriweather', serif" }}
             >
               Certifying the{" "}
-              <span className="text-[#C07830]">Human</span>{" "}
+              <span className="text-[#7A2535]">Human</span>{" "}
               Behind the Algorithm
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl leading-[1.65]">
@@ -96,7 +96,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/certification"
-                className="inline-flex items-center gap-2 bg-[#C07830] hover:bg-[#A66628] text-white px-8 py-4 rounded transition-all text-sm font-semibold shadow-lg shadow-[#C07830]/20"
+                className="inline-flex items-center gap-2 bg-[#7A2535] hover:bg-[#5E1A2B] text-white px-8 py-4 rounded transition-all text-sm font-semibold shadow-lg shadow-[#7A2535]/20"
               >
                 See how certification works <ArrowRight className="w-4 h-4" />
               </Link>
@@ -116,22 +116,22 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#C07830]" />
+              <Shield className="w-4 h-4 text-[#7A2535]" />
               <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">POPIA §71 Aligned</span>
             </div>
             <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#C07830]" />
+              <Shield className="w-4 h-4 text-[#7A2535]" />
               <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">EU AI Act Ready</span>
             </div>
             <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#C07830]" />
+              <Shield className="w-4 h-4 text-[#7A2535]" />
               <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">FSCA Compliant</span>
             </div>
             <div className="hidden md:block w-px h-4 bg-[#DDD3C0]" />
             <div className="flex items-center gap-2 px-8">
-              <Shield className="w-4 h-4 text-[#C07830]" />
+              <Shield className="w-4 h-4 text-[#7A2535]" />
               <span className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[#0C1B2E]">SANAS Accreditation Pathway</span>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-[#C07830] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Why It Matters</span>
+            <span className="text-[#7A2535] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Why It Matters</span>
             <h2 
               className="text-4xl md:text-5xl text-[#0C1B2E] mt-3 mb-6 leading-[1.1] tracking-[-0.03em] font-bold"
               style={{ fontFamily: "'Merriweather', serif" }}
@@ -159,8 +159,9 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {algorithmicRights.map((right, i) => {
+          {/* First row: 3 cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            {algorithmicRights.slice(0, 3).map((right, i) => {
               const Icon = right.icon;
               return (
                 <motion.div
@@ -171,10 +172,33 @@ export default function Home() {
                   transition={{ delay: i * 0.1 }}
                   className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
                 >
-                  <div className="w-12 h-12 rounded bg-[#C07830]/10 flex items-center justify-center mb-6">
-                    <Icon className="w-6 h-6 text-[#C07830]" />
+                  <div className="w-12 h-12 rounded bg-[#7A2535]/10 flex items-center justify-center mb-6">
+                    <Icon className="w-6 h-6 text-[#7A2535]" />
                   </div>
-                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#C07830] font-bold mb-2">Article {i + 1}</div>
+                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#7A2535] font-bold mb-2">Article {i + 1}</div>
+                  <h3 className="text-xl font-bold mb-3 text-[#0C1B2E]">{right.title}</h3>
+                  <p className="text-[#6B6458] text-sm leading-[1.65]">{right.description}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+          {/* Second row: 2 cards centered */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[66.7%] mx-auto">
+            {algorithmicRights.slice(3).map((right, i) => {
+              const Icon = right.icon;
+              return (
+                <motion.div
+                  key={i + 3}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: (i + 3) * 0.1 }}
+                  className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="w-12 h-12 rounded bg-[#7A2535]/10 flex items-center justify-center mb-6">
+                    <Icon className="w-6 h-6 text-[#7A2535]" />
+                  </div>
+                  <div className="text-[0.7rem] uppercase tracking-[0.15em] text-[#7A2535] font-bold mb-2">Article {i + 4}</div>
                   <h3 className="text-xl font-bold mb-3 text-[#0C1B2E]">{right.title}</h3>
                   <p className="text-[#6B6458] text-sm leading-[1.65]">{right.description}</p>
                 </motion.div>
@@ -193,54 +217,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works - 4 Step Process */}
-      <section className="py-24 bg-[#FAF6EF]">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <span className="text-[#C07830] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">The Process</span>
-            <h2 
-              className="text-4xl md:text-5xl text-[#0C1B2E] mt-3 mb-6 font-bold"
-              style={{ fontFamily: "'Merriweather', serif" }}
-            >
-              How It Works
-            </h2>
-            <p className="text-[#6B6458] max-w-2xl mx-auto text-lg leading-[1.65]">
-              A streamlined, rigorous pathway to demonstrating algorithmic accountability.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { step: "Step 1", label: "Apply", desc: "Submit your organisation's AI inventory" },
-              { step: "Step 2", label: "Assess", desc: "Our methodology team audits your systems against the five rights" },
-              { step: "Step 3", label: "Certify", desc: "Receive your AIC certification mark and digital badge" },
-              { step: "Step 4", label: "Maintain", desc: "Annual review keeps your certification current" },
-            ].map((s, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="relative"
-              >
-                <div className="text-4xl font-bold text-[#C07830] mb-4">{s.step.split(' ')[1]}</div>
-                <h3 className="text-xl font-bold text-[#0C1B2E] mb-3">{s.label}</h3>
-                <p className="text-[#6B6458] text-sm leading-[1.65]">{s.desc}</p>
-                {i < 3 && (
-                  <div className="hidden md:block absolute top-6 left-full w-full border-t-2 border-dotted border-[#DDD3C0] -z-10" />
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Standards Section */}
       <section className="py-24 bg-[#F0E8D6] relative overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4">
@@ -250,7 +226,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="text-[#C07830] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Professional Standards</span>
+            <span className="text-[#7A2535] text-[0.7rem] uppercase tracking-[0.15em] font-semibold">Professional Standards</span>
             <h2 
               className="text-4xl md:text-5xl text-[#0C1B2E] mt-3 mb-6 leading-[1.05] tracking-[-0.03em] font-bold"
               style={{ fontFamily: "'Merriweather', serif" }}
@@ -272,10 +248,10 @@ export default function Home() {
                 transition={{ delay: i * 0.15 }}
                 className="border border-[#DDD3C0] rounded-xl p-8 bg-[#FAF6EF] shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="text-[#C07830] font-bold text-lg mb-2">{std.code}</div>
+                <div className="text-[#7A2535] font-bold text-lg mb-2">{std.code}</div>
                 <div className="text-[#0C1B2E] text-base font-bold mb-3">{std.name}</div>
                 <p className="text-[#6B6458] text-sm leading-[1.65]">{std.desc}</p>
-                <div className="mt-6 flex items-center gap-2 text-[#C07830] text-[0.7rem] font-bold uppercase tracking-wider">
+                <div className="mt-6 flex items-center gap-2 text-[#7A2535] text-[0.7rem] font-bold uppercase tracking-wider">
                   <CheckCircle className="w-4 h-4" />
                   <span>AIC Aligned</span>
                 </div>
@@ -286,7 +262,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-[#C07830]">
+      <section className="py-24 bg-[#7A2535]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -305,7 +281,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-4 justify-center">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-white text-[#C07830] px-8 py-4 rounded font-bold hover:bg-[#FAF6EF] transition-all"
+                className="inline-flex items-center gap-2 bg-white text-[#7A2535] px-8 py-4 rounded font-bold hover:bg-[#FAF6EF] transition-all"
               >
                 Start Certification Process <ArrowRight className="w-4 h-4" />
               </Link>
