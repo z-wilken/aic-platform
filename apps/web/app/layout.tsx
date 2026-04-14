@@ -69,7 +69,7 @@ const jsonLd = {
   areaServed: "ZA",
   contactPoint: {
     "@type": "ContactPoint",
-    email: "zander@ztoaholdings.co.za",
+    email: "zander@ztoaholdings.com",
     contactType: "General Enquiries",
   },
 };
