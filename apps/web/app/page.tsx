@@ -58,8 +58,8 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        {/* Overlay with 0.55 opacity */}
-        <div className="absolute inset-0 bg-[#0a1628]/40" />
+        {/* Overlay with 0.30 opacity */}
+        <div className="absolute inset-0 bg-[#0a1628]/30" />
 
         {/* Subtle grid overlay */}
         <div

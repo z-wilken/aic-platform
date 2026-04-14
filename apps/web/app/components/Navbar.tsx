@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Globe, Shield, BookOpen, FileText, Newspaper, Menu, X, LogIn } from "lucide-react";
 
 export const navItems = [
-  { href: "/certification",  label: "How It Works",         icon: Shield,    description: "Five-Division Accountability Framework" },
+  { href: "/certification",  label: "Certification",         icon: Shield,    description: "Five-Division Accountability Framework" },
   { href: "/governance-hub", label: "Standards & Recognition", icon: BookOpen,  description: "Algorithmic Rights & Global Standards" },
   { href: "/articles",       label: "Articles",             icon: Newspaper, description: "Governance insights and updates" },
   { href: "/disclosures",    label: "Disclosures",          icon: FileText,  description: "Public impartiality and conflict-of-interest statements" },
@@ -54,14 +54,14 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-20">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded flex items-center justify-center transition-colors bg-[#0f1f3d] group-hover:bg-[#1a3160]">
-                <Shield className="w-5 h-5 text-[#c9920a]" />
-              </div>
-              <div>
-                <div className="font-bold text-lg leading-tight tracking-tight text-[#0f1f3d]">AIC</div>
-                <div className="text-[10px] leading-tight tracking-widest uppercase text-[#6b7280]">AI Integrity Certification</div>
-              </div>
+            <Link href="/" className="flex items-center group shrink-0">
+              <img
+                src="/AIC-Logo-Navy.svg"
+                alt="AI Integrity Certification — Methodology Assessed"
+                className="h-[52px] w-auto sm:h-14 transition-opacity group-hover:opacity-90"
+                width={110}
+                height={180}
+              />
             </Link>
 
             {/* Desktop nav links */}

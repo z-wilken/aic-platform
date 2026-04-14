@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Shield, Mail, MapPin, ChevronRight } from "lucide-react";
 import { navItems } from "./Navbar";
-import { AICLogo } from "./AICLogo";
 
 const standards = [
   { label: "ISO/IEC 42001 (AIMS)",      url: "https://www.iso.org/standard/81230.html" },
@@ -49,7 +48,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
             <Link href="/" className="inline-block group">
-              <AICLogo variant="full" scheme="dark" size="md" className="group-hover:opacity-80 transition-opacity" />
+              <img
+                src="/AIC-Logo-White.svg"
+                alt="AI Integrity Certification — Methodology Assessed"
+                width={110}
+                height={180}
+                className="h-[72px] w-auto sm:h-20 group-hover:opacity-90 transition-opacity"
+              />
             </Link>
             <p className="text-white/50 text-sm leading-relaxed">
               The global standard for certifying the humans accountable for AI systems — ensuring transparency, accountability, and trust in the age of artificial intelligence.
