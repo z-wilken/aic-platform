@@ -5,72 +5,82 @@
 /* Theme */
 @custom-variant dark (&:is(.dark *));
 
-/* ─── AIC Brand Tokens - Sovereign Update ───────────────────── */
 :root {
-  --font-serif: 'Merriweather', serif;
-  --font-sans: 'Space Grotesk', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
   --font-size: 16px;
-  --background: #EEE9DF;
-  --foreground: #1B2632;
-  /* Slightly higher contrast surfaces on top of Paper background */
-  --card: #FFFFFF;
-  --card-foreground: #1B2632;
-  --popover: #FFFFFF;
-  --popover-foreground: #1B2632;
-  --primary: #A35139;
-  --primary-foreground: #FFFFFF;
-  --secondary: #EEE9DF;
-  --secondary-foreground: #2C3B4D;
-  --muted: #EEE9DF;
-  --muted-foreground: #6B6458;
-  --accent: #A35139;
-  --accent-foreground: #EEE9DF;
+  --background: #ffffff;
+  --foreground: oklch(0.145 0 0);
+  --card: #ffffff;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
   --destructive: #d4183d;
-  --destructive-foreground: #EEE9DF;
-  --border: #DDD3C0;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
   --input: transparent;
-  --input-background: #FFFFFF;
-  --switch-background: #DDD3C0;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #A35139;
-  --radius: 4px;
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #2C3B4D;
-  --sidebar-primary: #A35139;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EEE9DF;
-  --sidebar-accent-foreground: #2C3B4D;
-  --sidebar-border: #DDD3C0;
-  --sidebar-ring: #A35139;
-
-  --aic-navy: #2C3B4D;
-  --aic-navy-mid: #2C3B4D;
-  --aic-gold: #A35139;
-  --aic-gold-light: #A35139;
-  --aic-copper: #A35139;
-  --aic-paper: #EEE9DF;
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
-  --background: #1B2632;
-  --foreground: #EEE9DF;
-  --card: #1B2632;
-  --card-foreground: #EEE9DF;
-  --popover: #1B2632;
-  --popover-foreground: #EEE9DF;
-  --primary: #EEE9DF;
-  --primary-foreground: #1B2632;
-  --secondary: #1a3160;
-  --secondary-foreground: #EEE9DF;
-  --muted: #1a3160;
-  --muted-foreground: #DDD3C0;
-  --accent: #A35139;
-  --accent-foreground: #FFFFFF;
-  --border: #1a3160;
-  --input: #1a3160;
-  --ring: #A35139;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
 }
 
 @theme inline {
@@ -95,9 +105,14 @@
   --color-input-background: var(--input-background);
   --color-switch-background: var(--switch-background);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
@@ -107,21 +122,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-
-  /* AIC Brand Color mapping */
-  --color-aic-navy: var(--aic-navy);
-  --color-aic-navy-mid: var(--aic-navy-mid);
-  --color-aic-gold: var(--aic-gold);
-  --color-aic-gold-light: var(--aic-gold-light);
-  --color-aic-copper: var(--aic-copper);
-  --color-aic-paper: var(--aic-paper);
-
-  /* Font mapping - Sovereign Style */
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Merriweather", ui-serif, Georgia, serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-
 
 @layer base {
   * {
@@ -129,53 +130,58 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    text-rendering: optimizeLegibility;
+    @apply bg-background text-foreground;
   }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
 
   html {
     font-size: var(--font-size);
-    /* Fluid scaling for high-res desktops */
-    @media (min-width: 1920px) {
-      font-size: 19px;
-    }
-    @media (min-width: 2560px) {
-      font-size: 22px;
-    }
-    @media (min-width: 3840px) {
-      font-size: 26px;
-    }
   }
 
-  .container {
-    @apply mx-auto px-4 sm:px-6 lg:px-8;
-    max-width: 1280px;
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply text-balance font-sans font-semibold tracking-[-0.03em];
-    line-height: 1.05;
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
   }
 
-  h1 { font-size: 3.5rem; }
-  h2 { font-size: 2.75rem; }
-  h3 { font-size: 1.75rem; }
-
-  p {
-    @apply font-sans leading-[1.65] max-w-[65ch];
-    font-weight: 400;
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
   }
 
-  .eyebrow {
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    color: #A35139;
-    font-weight: 500;
-    text-transform: uppercase;
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
   }
 
-  label, button, input {
-    @apply font-sans;
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
   }
 }
 
