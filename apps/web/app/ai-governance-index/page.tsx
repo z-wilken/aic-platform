@@ -200,11 +200,11 @@ const companies: CompanyData[] = [
 ];
 
 const maturityLevelColors: Record<MaturityLevel, { bg: string; text: string; border: string }> = {
-  Leading: { bg: "bg-green-50", text: "text-green-700", border: "border-green-200" },
-  Established: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-  Developing: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
-  Emerging: { bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-200" },
-  Basic: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200" },
+  Leading: { bg: "bg-[#EEE9DF]", text: "text-[#1B2632]", border: "border-[#DDD3C0]" },
+  Established: { bg: "bg-[#FAF6EF]", text: "text-[#1B2632]", border: "border-[#DDD3C0]" },
+  Developing: { bg: "bg-[#A35139]/10", text: "text-[#A35139]", border: "border-[#A35139]/20" },
+  Emerging: { bg: "bg-[#2C3B4D]/10", text: "text-[#2C3B4D]", border: "border-[#DDD3C0]" },
+  Basic: { bg: "bg-[#1B2632]/5", text: "text-[#1B2632]", border: "border-[#DDD3C0]" },
 };
 
 const industries = ["all", ...Array.from(new Set(companies.map((c) => c.industry)))];
@@ -235,15 +235,15 @@ export default function AIGovernanceIndexPage() {
     });
 
   const getTrendIcon = (trend: TrendDirection) => {
-    if (trend === "up") return <TrendingUp className="w-4 h-4 text-green-600" />;
-    if (trend === "down") return <TrendingDown className="w-4 h-4 text-red-600" />;
-    return <Minus className="w-4 h-4 text-gray-400" />;
+    if (trend === "up") return <TrendingUp className="w-4 h-4 text-[#A35139]" />;
+    if (trend === "down") return <TrendingDown className="w-4 h-4 text-[#d4183d]" />;
+    return <Minus className="w-4 h-4 text-[#6B6458]/60" />;
   };
 
   const getRankChangeDisplay = (change: number) => {
-    if (change === 0) return <span className="text-gray-400">—</span>;
-    if (change > 0) return <span className="text-green-600">+{change}</span>;
-    return <span className="text-red-600">{change}</span>;
+    if (change === 0) return <span className="text-[#6B6458]/60">—</span>;
+    if (change > 0) return <span className="text-[#A35139]">+{change}</span>;
+    return <span className="text-[#d4183d]">{change}</span>;
   };
 
   return (
@@ -451,25 +451,25 @@ export default function AIGovernanceIndexPage() {
                               label: "Board Oversight",
                               score: company.boardOversight,
                               icon: Users,
-                              color: "text-blue-600",
+                              color: "text-[#A35139]",
                             },
                             {
                               label: "Rights Compliance",
                               score: company.rightsCompliance,
                               icon: Shield,
-                              color: "text-green-600",
+                              color: "text-[#A35139]",
                             },
                             {
                               label: "Transparency",
                               score: company.transparency,
                               icon: Globe,
-                              color: "text-purple-600",
+                              color: "text-[#A35139]",
                             },
                             {
                               label: "Risk Management",
                               score: company.riskManagement,
                               icon: AlertTriangle,
-                              color: "text-amber-600",
+                              color: "text-[#A35139]",
                             },
                           ].map((metric, j) => {
                             const Icon = metric.icon;
@@ -494,7 +494,7 @@ export default function AIGovernanceIndexPage() {
                         <div className="mt-4 pt-4 border-t border-[#DDD3C0] flex items-center justify-between">
                           <div className="flex items-center gap-4 text-sm text-[#6B6458]">
                             {company.hasAICertification ? (
-                              <div className="flex items-center gap-1 text-green-600">
+                              <div className="flex items-center gap-1 text-[#A35139]">
                                 <CheckCircle className="w-4 h-4" />
                                 <span>ISO/IEC 42001 Certified</span>
                               </div>
@@ -574,7 +574,7 @@ export default function AIGovernanceIndexPage() {
                   <ul className="space-y-2">
                     {method.criteria.map((criterion, j) => (
                       <li key={j} className="flex items-start gap-2 text-sm text-[#6B6458]">
-                        <CheckCircle className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                        <CheckCircle className="w-4 h-4 text-[#A35139] shrink-0 mt-0.5" />
                         <span>{criterion}</span>
                       </li>
                     ))}

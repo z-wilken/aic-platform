@@ -101,14 +101,14 @@ export function AICLogoShowcase() {
     <div className="p-8 space-y-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
-          <h3 className="text-sm font-mono text-gray-400 uppercase tracking-widest">On Light Background</h3>
-          <div className="p-8 bg-aic-paper border border-gray-100 rounded-xl flex flex-col gap-8 items-center">
+          <h3 className="text-sm font-mono text-[#6B6458]/60 uppercase tracking-widest">On Light Background</h3>
+          <div className="p-8 bg-aic-paper border border-[#DDD3C0] rounded-xl flex flex-col gap-8 items-center">
             <AICLogo variant="full" scheme="light" size="lg" />
             <AICLogo variant="icon" scheme="light" size="md" />
           </div>
         </div>
         <div className="space-y-4">
-          <h3 className="text-sm font-mono text-gray-400 uppercase tracking-widest">On Dark Background</h3>
+          <h3 className="text-sm font-mono text-[#6B6458]/60 uppercase tracking-widest">On Dark Background</h3>
           <div className="p-8 bg-[#1B2632] rounded-xl flex flex-col gap-8 items-center">
             <AICLogo variant="full" scheme="dark" size="lg" />
             <AICLogo variant="icon" scheme="dark" size="md" />

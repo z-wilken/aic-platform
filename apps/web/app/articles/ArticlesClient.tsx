@@ -210,7 +210,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                     </div>
                     <div className="p-6 flex-1 flex flex-col">
                       <div className="flex items-center gap-3 text-xs text-[#6B6458] mb-3">
-                        <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded font-medium">
+                        <span className="px-2 py-1 bg-[#A35139]/10 text-[#A35139] rounded font-medium">
                           {article.category}
                         </span>
                         <span className="flex items-center gap-1">
@@ -353,7 +353,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 placeholder="Enter your email"
                 aria-label="Email address for newsletter"
                 required
-                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A35139]"
+                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-[#1B2632] placeholder-[#6B6458]/60 focus:outline-none focus:ring-2 focus:ring-[#A35139]"
               />
               <Button
                 type="submit"

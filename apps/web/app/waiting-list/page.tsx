@@ -115,8 +115,8 @@ export default function WaitingListPage() {
           className="max-w-2xl w-full"
         >
           <Card className="p-12 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-[#A35139]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-[#A35139]" />
             </div>
             <h2 className="text-3xl font-bold text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               You're on the List!
@@ -124,26 +124,26 @@ export default function WaitingListPage() {
             <p className="text-[#6B6458] text-lg mb-6 leading-relaxed">
               Thank you for joining the AIC waiting list, <strong>{formData.firstName}</strong>. We've sent a confirmation email to <strong>{formData.email}</strong>.
             </p>
-            <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 mb-8 text-left">
+            <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-lg p-6 mb-8 text-left">
               <h3 className="font-semibold text-[#1B2632] mb-3 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-blue-600" />
+                <Clock className="w-5 h-5 text-[#A35139]" />
                 What Happens Next?
               </h3>
-              <ul className="space-y-2 text-sm text-[#0D0D0D]">
+              <ul className="space-y-2 text-sm text-[#1B2632]">
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">1.</span>
+                  <span className="text-[#A35139] font-bold">1.</span>
                   <span>You'll receive exclusive pre-launch updates and study materials</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">2.</span>
+                  <span className="text-[#A35139] font-bold">2.</span>
                   <span>Get notified 48 hours before registration opens to the public</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">3.</span>
+                  <span className="text-[#A35139] font-bold">3.</span>
                   <span>Access your exclusive 25% early bird discount code</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">4.</span>
+                  <span className="text-[#A35139] font-bold">4.</span>
                   <span>Join our private pre-certification community forum</span>
                 </li>
               </ul>
@@ -151,7 +151,7 @@ export default function WaitingListPage() {
             <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => setSubmitted(false)}
-                className="bg-aic-paper border border-[#DDD3C0] text-[#0D0D0D] hover:bg-[#FAF6EF]"
+                className="bg-aic-paper border border-[#DDD3C0] text-[#1B2632] hover:bg-[#FAF6EF]"
               >
                 Submit Another
               </Button>
@@ -298,7 +298,7 @@ export default function WaitingListPage() {
               {/* Name Fields */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+                  <label className="block text-sm font-medium text-[#1B2632] mb-2">
                     <User className="w-4 h-4 inline mr-1" />
                     First Name
                   </label>
@@ -313,7 +313,7 @@ export default function WaitingListPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+                  <label className="block text-sm font-medium text-[#1B2632] mb-2">
                     Last Name
                   </label>
                   <input
@@ -330,7 +330,7 @@ export default function WaitingListPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+                <label className="block text-sm font-medium text-[#1B2632] mb-2">
                   <Mail className="w-4 h-4 inline mr-1" />
                   Email Address
                 </label>
@@ -348,7 +348,7 @@ export default function WaitingListPage() {
               {/* Organization & Role */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+                  <label className="block text-sm font-medium text-[#1B2632] mb-2">
                     <Building2 className="w-4 h-4 inline mr-1" />
                     Organization
                   </label>
@@ -363,7 +363,7 @@ export default function WaitingListPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+                  <label className="block text-sm font-medium text-[#1B2632] mb-2">
                     <Briefcase className="w-4 h-4 inline mr-1" />
                     Job Title / Role
                   </label>
@@ -381,7 +381,7 @@ export default function WaitingListPage() {
 
               {/* Country */}
               <div>
-                <label className="block text-sm font-medium text-[#0D0D0D] mb-2">
+                <label className="block text-sm font-medium text-[#1B2632] mb-2">
                   <Globe className="w-4 h-4 inline mr-1" />
                   Country
                 </label>
@@ -398,7 +398,7 @@ export default function WaitingListPage() {
 
               {/* Certification Type */}
               <div>
-                <label className="block text-sm font-medium text-[#0D0D0D] mb-3">
+                <label className="block text-sm font-medium text-[#1B2632] mb-3">
                   <Award className="w-4 h-4 inline mr-1" />
                   I&apos;m Interested In
                 </label>
@@ -427,7 +427,7 @@ export default function WaitingListPage() {
               </div>
 
               {/* Privacy Notice */}
-              <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 text-sm text-[#6B6458]">
+              <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-lg p-4 text-sm text-[#6B6458]">
                 <strong className="text-[#1B2632]">Privacy Notice:</strong> Your information will only be used to communicate certification updates and early access opportunities. We never share your data with third parties. See our privacy policy for details.
               </div>
 
@@ -441,7 +441,7 @@ export default function WaitingListPage() {
               </Button>
             </form>
             {submitError && (
-              <p className="text-red-500 text-sm mt-2 text-center">{submitError}</p>
+              <p className="text-[#d4183d] text-sm mt-2 text-center">{submitError}</p>
             )}
           </Card>
         </div>

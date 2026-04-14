@@ -34,7 +34,7 @@ export default function Navbar() {
               IAF MLA Accredited Body
             </span>
             <span className="hidden sm:flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#A35139] inline-block" />
               Certification Status: Active
             </span>
           </div>
@@ -59,7 +59,7 @@ export default function Navbar() {
                 <Shield className="w-5 h-5 text-[#A35139]" />
               </div>
               <div>
-                <div className="font-bold text-lg leading-tight tracking-tight text-[#0D0D0D]">AIC</div>
+                <div className="font-bold text-lg leading-tight tracking-tight text-[#1B2632]">AIC</div>
                 <div className="text-[10px] leading-tight tracking-widest uppercase text-[#6B6458]">AI Integrity Certification</div>
               </div>
             </Link>
@@ -70,7 +70,7 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="px-4 py-2 rounded text-sm font-medium transition-colors relative text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
+                  className="px-4 py-2 rounded text-sm font-medium transition-colors relative text-[#6B6458] hover:text-[#1B2632] hover:bg-[#EEE9DF]"
                 >
                   {item.label}
                 </Link>
@@ -79,7 +79,7 @@ export default function Navbar() {
               {/* Login link */}
               <Link
                 href="/login"
-                className="ml-2 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1.5 text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
+                className="ml-2 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1.5 text-[#6B6458] hover:text-[#1B2632] hover:bg-[#EEE9DF]"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 Login
@@ -122,7 +122,7 @@ export default function Navbar() {
                     className={`flex items-center gap-3 px-4 py-4 rounded-lg transition-colors ${
                       isActive
                         ? "bg-[#1B2632] text-white"
-                        : "text-[#0D0D0D] hover:bg-[#EEE9DF]"
+                        : "text-[#1B2632] hover:bg-[#EEE9DF]"
                     }`}
                     onClick={() => setMenuOpen(false)}
                   >

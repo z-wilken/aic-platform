@@ -62,8 +62,8 @@ export default function ContactPage() {
           className="max-w-2xl w-full"
         >
           <Card className="p-12 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-[#A35139]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-[#A35139]" />
             </div>
             <h2 className="text-3xl font-bold text-[#1B2632] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               You&apos;re on the List!
@@ -71,26 +71,26 @@ export default function ContactPage() {
             <p className="text-[#6B6458] text-lg mb-6 leading-relaxed">
               Thank you for joining the AIC waiting list, <strong>{formData.firstName}</strong>. We&apos;ve received your application.
             </p>
-            <div className="bg-blue-50 border border-blue-100 rounded-lg p-6 mb-8 text-left">
+            <div className="bg-[#FAF6EF] border border-[#DDD3C0] rounded-lg p-6 mb-8 text-left">
               <h3 className="font-semibold text-[#1B2632] mb-3 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-blue-600" />
+                <Clock className="w-5 h-5 text-[#A35139]" />
                 What Happens Next?
               </h3>
-              <ul className="space-y-2 text-sm text-[#0D0D0D]">
+              <ul className="space-y-2 text-sm text-[#1B2632]">
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">1.</span>
+                  <span className="text-[#A35139] font-bold">1.</span>
                   <span>You&apos;ll receive exclusive pre-launch updates and study materials</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">2.</span>
+                  <span className="text-[#A35139] font-bold">2.</span>
                   <span>Get notified 48 hours before registration opens to the public</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">3.</span>
+                  <span className="text-[#A35139] font-bold">3.</span>
                   <span>Access your exclusive 25% early bird discount code</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-blue-600 font-bold">4.</span>
+                  <span className="text-[#A35139] font-bold">4.</span>
                   <span>Join our private pre-certification community forum</span>
                 </li>
               </ul>
@@ -141,8 +141,8 @@ export default function ContactPage() {
                 </h2>
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 bg-[#EEE9DF] rounded-lg flex items-center justify-center shrink-0">
+                      <Mail className="w-5 h-5 text-[#A35139]" />
                     </div>
                     <div>
                       <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">General Inquiries</div>
@@ -150,8 +150,8 @@ export default function ContactPage() {
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                      <Shield className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 bg-[#EEE9DF] rounded-lg flex items-center justify-center shrink-0">
+                      <Shield className="w-5 h-5 text-[#A35139]" />
                     </div>
                     <div>
                       <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">Certification Support</div>
@@ -159,8 +159,8 @@ export default function ContactPage() {
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 bg-[#EEE9DF] rounded-lg flex items-center justify-center shrink-0">
+                      <MapPin className="w-5 h-5 text-[#A35139]" />
                     </div>
                     <div>
                       <div className="text-sm text-[#6B6458] uppercase tracking-wider font-semibold">Headquarters</div>
@@ -184,12 +184,12 @@ export default function ContactPage() {
             {/* Right Column: Form */}
             <div className="lg:col-span-2">
               <Card className="p-8 md:p-10 shadow-xl border-[#DDD3C0] relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-10 -mt-10 opacity-50" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#EEE9DF] rounded-bl-full -mr-10 -mt-10 opacity-50" />
                 
                 <form onSubmit={handleSubmit} className="space-y-6 relative">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="firstName" className="text-sm font-medium text-[#0D0D0D]">First Name</label>
+                      <label htmlFor="firstName" className="text-sm font-medium text-[#1B2632]">First Name</label>
                       <Input
                         id="firstName"
                         name="firstName"
@@ -201,7 +201,7 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="lastName" className="text-sm font-medium text-[#0D0D0D]">Last Name</label>
+                      <label htmlFor="lastName" className="text-sm font-medium text-[#1B2632]">Last Name</label>
                       <Input
                         id="lastName"
                         name="lastName"
@@ -215,7 +215,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium text-[#0D0D0D]">Professional Email</label>
+                    <label htmlFor="email" className="text-sm font-medium text-[#1B2632]">Professional Email</label>
                     <Input
                       id="email"
                       name="email"
@@ -230,7 +230,7 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="company" className="text-sm font-medium text-[#0D0D0D]">Company / Organization</label>
+                      <label htmlFor="company" className="text-sm font-medium text-[#1B2632]">Company / Organization</label>
                       <Input
                         id="company"
                         name="company"
@@ -242,7 +242,7 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="jobTitle" className="text-sm font-medium text-[#0D0D0D]">Job Title</label>
+                      <label htmlFor="jobTitle" className="text-sm font-medium text-[#1B2632]">Job Title</label>
                       <Input
                         id="jobTitle"
                         name="jobTitle"
@@ -256,7 +256,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="country" className="text-sm font-medium text-[#0D0D0D]">Country</label>
+                    <label htmlFor="country" className="text-sm font-medium text-[#1B2632]">Country</label>
                     <div className="relative">
                       <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6458]/60" />
                       <Input
@@ -272,7 +272,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-4 pt-2">
-                    <label className="text-sm font-medium text-[#0D0D0D] block flex items-center gap-2">
+                    <label className="text-sm font-medium text-[#1B2632] block flex items-center gap-2">
                       <Award className="w-4 h-4 text-[#A35139]" />
                       I&apos;m Interested In
                     </label>
@@ -283,7 +283,7 @@ export default function ContactPage() {
                           className={`flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
                             formData.certificationType === type.value
                               ? "border-[#A35139] bg-[#A35139]/5 ring-1 ring-[#A35139]"
-                              : "border-[#DDD3C0] hover:border-[#C4B8A8] hover:bg-[#FAF6EF]"
+                              : "border-[#DDD3C0] hover:border-[#DDD3C0] hover:bg-[#FAF6EF]"
                           }`}
                         >
                           <input
@@ -292,7 +292,7 @@ export default function ContactPage() {
                             value={type.value}
                             checked={formData.certificationType === type.value}
                             onChange={handleChange}
-                            className="mt-1 w-4 h-4 text-[#A35139] border-[#C4B8A8] focus:ring-[#A35139]"
+                            className="mt-1 w-4 h-4 text-[#A35139] border-[#DDD3C0] focus:ring-[#A35139]"
                             required
                           />
                           <div>
@@ -305,7 +305,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2 pt-2">
-                    <label htmlFor="message" className="text-sm font-medium text-[#0D0D0D]">Message (Optional)</label>
+                    <label htmlFor="message" className="text-sm font-medium text-[#1B2632]">Message (Optional)</label>
                     <Textarea
                       id="message"
                       name="message"

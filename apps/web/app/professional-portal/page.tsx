@@ -36,8 +36,8 @@ const certificationLevels = [
     requirements: ["1+ year in technology or compliance", "No prior AI certification required", "Pass AAEP examination (70% threshold)"],
     duration: "4-6 months preparation",
     examFee: "$495",
-    color: "border-blue-200 bg-blue-50",
-    badge: "bg-blue-100 text-blue-700",
+    color: "border-[#DDD3C0] bg-[#FAF6EF]",
+    badge: "bg-[#A35139]/10 text-[#A35139]",
   },
   {
     level: "Certified AI Ethics Lead",
@@ -46,8 +46,8 @@ const certificationLevels = [
     requirements: ["3+ years in AI governance, ethics, or risk management", "Bachelor's degree or equivalent experience", "Pass CAEL examination (75% threshold)", "Submit 2 case studies demonstrating applied governance"],
     duration: "6-9 months preparation",
     examFee: "$1,295",
-    color: "border-amber-200 bg-amber-50",
-    badge: "bg-amber-100 text-amber-700",
+    color: "border-[#A35139]/30 bg-[#FAF6EF]",
+    badge: "bg-[#A35139] text-aic-paper",
     popular: true,
   },
   {
@@ -57,8 +57,8 @@ const certificationLevels = [
     requirements: ["7+ years in senior AI governance or risk leadership", "Current CAEL certification (or equivalent)", "Pass SAIGS examination (80% threshold)", "Present board-level governance case study", "Peer review by two certified practitioners"],
     duration: "12+ months preparation",
     examFee: "$2,495",
-    color: "border-purple-200 bg-purple-50",
-    badge: "bg-purple-100 text-purple-700",
+    color: "border-[#DDD3C0] bg-[#FAF6EF]",
+    badge: "bg-[#1B2632] text-aic-paper",
   },
 ];
 
@@ -134,7 +134,7 @@ export default function ProfessionalPortalPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 bg-aic-paper border-b border-gray-100">
+      <section className="py-12 bg-aic-paper border-b border-[#DDD3C0]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -218,7 +218,7 @@ export default function ProfessionalPortalPage() {
                               <ul className="space-y-2">
                                 {cert.requirements.map((req, j) => (
                                   <li key={j} className="flex items-start gap-2 text-sm text-[#6B6458]">
-                                    <Check className="w-4 h-4 text-green-600 shrink-0 mt-0.5" />
+                                    <Check className="w-4 h-4 text-[#A35139] shrink-0 mt-0.5" />
                                     <span>{req}</span>
                                   </li>
                                 ))}
@@ -290,7 +290,7 @@ export default function ProfessionalPortalPage() {
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-sm">
-                            <span className={exam.seats.includes("Unlimited") ? "text-green-600" : "text-amber-600"}>
+                            <span className={exam.seats.includes("Unlimited") ? "text-[#A35139]" : "text-[#6B6458]"}>
                               {exam.seats}
                             </span>
                           </div>
@@ -303,15 +303,15 @@ export default function ProfessionalPortalPage() {
                   </div>
                 </Card>
 
-                <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mt-8 p-6 bg-[#FAF6EF] border border-[#DDD3C0] rounded-lg">
                   <div className="flex items-start gap-3">
-                    <Calendar className="w-5 h-5 text-blue-700 shrink-0 mt-0.5" />
+                    <Calendar className="w-5 h-5 text-[#A35139] shrink-0 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold text-blue-900 mb-1">Can&apos;t find a suitable date?</h4>
-                      <p className="text-sm text-blue-700 mb-3">
+                      <h4 className="font-semibold text-[#1B2632] mb-1">Can&apos;t find a suitable date?</h4>
+                      <p className="text-sm text-[#6B6458] mb-3">
                         Request a custom exam session for your organization. Minimum 5 candidates required.
                       </p>
-                      <Button size="sm" variant="outline" className="border-blue-700 text-blue-700 hover:bg-blue-100">
+                      <Button size="sm" variant="outline" className="border-[#A35139] text-[#A35139] hover:bg-[#A35139]/10">
                         Request Custom Session
                       </Button>
                     </div>
@@ -358,9 +358,9 @@ export default function ProfessionalPortalPage() {
                   ))}
                 </div>
 
-                <div className="mt-8 p-6 bg-amber-50 border border-amber-200 rounded-lg">
-                  <h4 className="font-semibold text-amber-900 mb-2">Assessment Format</h4>
-                  <ul className="space-y-2 text-sm text-amber-800">
+                <div className="mt-8 p-6 bg-[#EEE9DF] border border-[#DDD3C0] rounded-lg">
+                  <h4 className="font-semibold text-[#1B2632] mb-2">Assessment Format</h4>
+                  <ul className="space-y-2 text-sm text-[#6B6458]">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" />
                       <span>Multiple-choice questions (60%), case analysis (30%), and ethics scenario evaluation (10%)</span>
@@ -465,7 +465,7 @@ export default function ProfessionalPortalPage() {
                 <Card className="p-6 mb-6">
                   <div className="flex gap-3">
                     <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6458]/60" />
                       <Input
                         placeholder="Search by name, company, or certification level..."
                         value={searchQuery}
@@ -504,7 +504,7 @@ export default function ProfessionalPortalPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="flex items-center gap-1 text-green-600 text-sm mb-1">
+                            <div className="flex items-center gap-1 text-[#A35139] text-sm mb-1">
                               <CheckCircle className="w-4 h-4" />
                               <span>Verified</span>
                             </div>

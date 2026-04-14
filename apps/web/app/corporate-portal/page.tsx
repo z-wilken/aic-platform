@@ -26,7 +26,7 @@ const certificationTiers = [
     code: "ISO/IEC 42001 – Level 1",
     price: "$12,400",
     duration: "4–6 weeks",
-    color: "#1d4ed8",
+    color: "#A35139",
     features: [
       "AI Risk Inventory Assessment",
       "Gap Analysis Report (50+ controls)",
@@ -148,7 +148,7 @@ export default function CorporatePortalPage() {
       </section>
 
       {/* Tab navigation */}
-      <div className="bg-aic-paper border-b border-gray-100 sticky top-16 z-40 shadow-sm">
+      <div className="bg-aic-paper border-b border-[#DDD3C0] sticky top-16 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex gap-0 overflow-x-auto">
             {[
@@ -163,7 +163,7 @@ export default function CorporatePortalPage() {
                 className={`flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                   activeTab === id
                     ? "border-[#A35139] text-[#1B2632]"
-                    : "border-transparent text-[#6B6458] hover:text-[#0D0D0D] hover:border-[#C4B8A8]"
+                    : "border-transparent text-[#6B6458] hover:text-[#1B2632] hover:border-[#DDD3C0]"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -209,10 +209,10 @@ export default function CorporatePortalPage() {
                     >
                       <Shield className="w-5 h-5" style={{ color: tier.color }} />
                     </div>
-                    <div className="text-xs uppercase tracking-wider text-gray-400 mb-1">{tier.code}</div>
+                    <div className="text-xs uppercase tracking-wider text-[#6B6458]/60 mb-1">{tier.code}</div>
                     <h3 className="text-xl font-bold text-[#1B2632] mb-1">{tier.tier}</h3>
                     <div className="text-2xl font-bold mb-1" style={{ color: tier.color }}>{tier.price}</div>
-                    <div className="flex items-center gap-1 text-xs text-gray-400 mb-5">
+                    <div className="flex items-center gap-1 text-xs text-[#6B6458]/60 mb-5">
                       <Clock className="w-3 h-3" />
                       {tier.duration} timeline
                     </div>
@@ -250,11 +250,11 @@ export default function CorporatePortalPage() {
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <div key={i} className="flex items-center gap-3 p-4 bg-[#EEE9DF] rounded-xl border border-gray-100">
+                  <div key={i} className="flex items-center gap-3 p-4 bg-[#EEE9DF] rounded-xl border border-[#DDD3C0]">
                     <Icon className="w-8 h-8 text-[#A35139] shrink-0" />
                     <div>
                       <div className="font-semibold text-[#1B2632] text-sm">{item.label}</div>
-                      <div className="text-gray-400 text-xs">{item.sub}</div>
+                      <div className="text-[#6B6458]/60 text-xs">{item.sub}</div>
                     </div>
                   </div>
                 );
@@ -288,12 +288,12 @@ export default function CorporatePortalPage() {
               </div>
               <div className="md:col-span-3 grid grid-cols-3 gap-4">
                 {[
-                  { label: "High Risk Gaps", value: "3", color: "text-red-600", bg: "bg-red-50 border-red-100" },
-                  { label: "Medium Risk Gaps", value: "2", color: "text-amber-600", bg: "bg-amber-50 border-amber-100" },
-                  { label: "Low Risk Gaps", value: "3", color: "text-green-600", bg: "bg-green-50 border-green-100" },
-                  { label: "Controls Met", value: "66/108", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
-                  { label: "Controls Partial", value: "22/108", color: "text-amber-600", bg: "bg-amber-50 border-amber-100" },
-                  { label: "Controls Missing", value: "20/108", color: "text-red-600", bg: "bg-red-50 border-red-100" },
+                  { label: "High Risk Gaps", value: "3", color: "text-[#d4183d]", bg: "bg-[#d4183d]/10 border-[#d4183d]/20" },
+                  { label: "Medium Risk Gaps", value: "2", color: "text-[#A35139]", bg: "bg-[#A35139]/10 border-[#A35139]/20" },
+                  { label: "Low Risk Gaps", value: "3", color: "text-[#2C3B4D]", bg: "bg-[#2C3B4D]/10 border-[#DDD3C0]" },
+                  { label: "Controls Met", value: "66/108", color: "text-[#1B2632]", bg: "bg-[#EEE9DF] border-[#DDD3C0]" },
+                  { label: "Controls Partial", value: "22/108", color: "text-[#A35139]", bg: "bg-[#A35139]/10 border-[#A35139]/20" },
+                  { label: "Controls Missing", value: "20/108", color: "text-[#d4183d]", bg: "bg-[#d4183d]/10 border-[#d4183d]/20" },
                 ].map((item, i) => (
                   <div key={i} className={`border rounded-xl p-4 ${item.bg}`}>
                     <div className={`text-2xl font-bold ${item.color}`}>{item.value}</div>
@@ -312,40 +312,40 @@ export default function CorporatePortalPage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="bg-aic-paper border border-gray-100 rounded-xl p-5 hover:shadow-sm transition-all"
+                    className="bg-aic-paper border border-[#DDD3C0] rounded-xl p-5 hover:shadow-sm transition-all"
                   >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <span
                           className={`w-2 h-2 rounded-full shrink-0 ${
-                            control.risk === "High" ? "bg-red-500" :
-                            control.risk === "Medium" ? "bg-amber-500" : "bg-green-500"
+                            control.risk === "High" ? "bg-[#d4183d]" :
+                            control.risk === "Medium" ? "bg-[#A35139]" : "bg-[#2C3B4D]"
                           }`}
                         ></span>
                         <span className="font-medium text-[#1B2632] text-sm">{control.domain}</span>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          control.risk === "High" ? "bg-red-50 text-red-700" :
-                          control.risk === "Medium" ? "bg-amber-50 text-amber-700" :
-                          "bg-green-50 text-green-700"
+                          control.risk === "High" ? "bg-[#d4183d]/10 text-[#d4183d]" :
+                          control.risk === "Medium" ? "bg-[#A35139]/10 text-[#A35139]" :
+                          "bg-[#2C3B4D]/10 text-[#2C3B4D]"
                         }`}>
                           {control.risk} Risk
                         </span>
-                        <span className="text-xs text-gray-400">{control.completed}/{control.controls} controls</span>
+                        <span className="text-xs text-[#6B6458]/60">{control.completed}/{control.controls} controls</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="flex-1 bg-[#DDD3C0]/30 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all ${
-                            pct >= 80 ? "bg-green-500" : pct >= 60 ? "bg-amber-500" : "bg-red-500"
+                            pct >= 80 ? "bg-[#2C3B4D]" : pct >= 60 ? "bg-[#A35139]" : "bg-[#d4183d]"
                           }`}
                           style={{ width: `${pct}%` }}
                         ></div>
                       </div>
                       <span className={`text-sm font-semibold shrink-0 ${
-                        pct >= 80 ? "text-green-600" : pct >= 60 ? "text-amber-600" : "text-red-600"
+                        pct >= 80 ? "text-[#2C3B4D]" : pct >= 60 ? "text-[#A35139]" : "text-[#d4183d]"
                       }`}>
                         {pct}%
                       </span>
@@ -387,17 +387,17 @@ export default function CorporatePortalPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  className="border border-gray-100 rounded-xl p-6 bg-aic-paper hover:shadow-md transition-all group"
+                  className="border border-[#DDD3C0] rounded-xl p-6 bg-aic-paper hover:shadow-md transition-all group"
                 >
                   <div className="w-10 h-10 rounded-lg bg-[#1B2632]/5 flex items-center justify-center mb-4">
                     <FileText className="w-5 h-5 text-[#1B2632]" />
                   </div>
                   <h3 className="font-semibold text-[#1B2632] mb-2 text-sm">{template.title}</h3>
-                  <p className="text-gray-400 text-xs leading-relaxed mb-4">{template.desc}</p>
+                  <p className="text-[#6B6458]/60 text-xs leading-relaxed mb-4">{template.desc}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-xs px-2 py-0.5 bg-[#DDD3C0]/30 rounded text-[#6B6458]">{template.type}</span>
-                      <span className="text-xs text-gray-400">{template.size}</span>
+                      <span className="text-xs text-[#6B6458]/60">{template.size}</span>
                     </div>
                     <button className="flex items-center gap-1 text-xs text-[#A35139] font-medium hover:gap-2 transition-all">
                       <Download className="w-3.5 h-3.5" /> Download
@@ -407,11 +407,11 @@ export default function CorporatePortalPage() {
               ))}
             </div>
 
-            <div className="mt-10 p-6 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-4">
-              <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+            <div className="mt-10 p-6 bg-[#FAF6EF] border border-[#DDD3C0] rounded-2xl flex items-start gap-4">
+              <AlertTriangle className="w-5 h-5 text-[#A35139] mt-0.5 shrink-0" />
               <div>
-                <div className="font-medium text-amber-800 mb-1">Templates Are Starting Points</div>
-                <p className="text-amber-700 text-sm">
+                <div className="font-medium text-[#1B2632] mb-1">Templates Are Starting Points</div>
+                <p className="text-[#6B6458] text-sm">
                   These templates are designed to support your AI governance program but do not constitute formal ISO/IEC 42001 certification or legal advice. Engage an AIC-certified assessor for compliance assurance.
                 </p>
               </div>
@@ -433,7 +433,7 @@ export default function CorporatePortalPage() {
             </div>
 
             <div className="relative mb-6 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6458]/60" />
               <input
                 type="text"
                 placeholder="Search organizations or sector..."
@@ -455,7 +455,7 @@ export default function CorporatePortalPage() {
                     <th className="text-left px-5 py-3 hidden lg:table-cell">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 bg-aic-paper">
+                <tbody className="divide-y divide-[#DDD3C0] bg-aic-paper">
                   {filteredOrgs.map((org, i) => (
                     <tr key={i} className="hover:bg-[#FAF6EF]">
                       <td className="px-5 py-4 font-medium text-[#1B2632] flex items-center gap-2">
@@ -467,7 +467,7 @@ export default function CorporatePortalPage() {
                         <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                           org.tier === "Enterprise" ? "bg-[#1B2632] text-aic-paper" :
                           org.tier === "Professional" ? "bg-[#A35139]/10 text-[#A35139]" :
-                          "bg-blue-50 text-blue-700"
+                          "bg-[#EEE9DF] text-[#1B2632]"
                         }`}>
                           {org.tier}
                         </span>
@@ -478,11 +478,11 @@ export default function CorporatePortalPage() {
                           <div className="w-16 bg-[#DDD3C0]/30 rounded-full h-1.5">
                             <div className="h-1.5 rounded-full bg-[#A35139]" style={{ width: `${org.score}%` }}></div>
                           </div>
-                          <span className="text-xs font-medium text-[#0D0D0D]">{org.score}/100</span>
+                          <span className="text-xs font-medium text-[#1B2632]">{org.score}/100</span>
                         </div>
                       </td>
                       <td className="px-5 py-4 hidden lg:table-cell">
-                        <span className="flex items-center gap-1 text-green-600 text-xs">
+                        <span className="flex items-center gap-1 text-[#A35139] text-xs">
                           <CheckCircle className="w-3.5 h-3.5" /> Active
                         </span>
                       </td>
@@ -490,7 +490,7 @@ export default function CorporatePortalPage() {
                   ))}
                   {filteredOrgs.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="px-5 py-12 text-center text-gray-400 text-sm">
+                      <td colSpan={6} className="px-5 py-12 text-center text-[#6B6458]/60 text-sm">
                         No certified organizations found matching your search.
                       </td>
                     </tr>

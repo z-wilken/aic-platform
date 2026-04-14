@@ -331,7 +331,7 @@ export default function GovernanceHubClient({
                   <th className="text-left px-5 py-3 hidden lg:table-cell">Year</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[#DDD3C0]">
                 {filteredStandards.map((s, i) => (
                   <tr key={i} className="hover:bg-[#FAF6EF] transition-colors">
                     <td className="px-5 py-4 font-medium text-[#1B2632] flex items-center gap-2">
@@ -341,18 +341,18 @@ export default function GovernanceHubClient({
                     <td className="px-5 py-4 text-[#6B6458]">{s.framework}</td>
                     <td className="px-5 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                        s.status === "Enacted" ? "bg-green-100 text-green-700" :
-                        s.status === "Active" ? "bg-blue-100 text-blue-700" :
-                        "bg-amber-100 text-amber-700"
+                        s.status === "Enacted" ? "bg-[#A35139]/10 text-[#A35139]" :
+                        s.status === "Active" ? "bg-[#2C3B4D]/10 text-[#2C3B4D]" :
+                        "bg-[#DDD3C0]/30 text-[#6B6458]"
                       }`}>
                         {s.status}
                       </span>
                     </td>
                     <td className="px-5 py-4 hidden md:table-cell">
                       <span className={`text-xs font-medium ${
-                        s.level === "High" ? "text-red-600" :
-                        s.level === "Moderate" ? "text-amber-600" :
-                        "text-green-600"
+                        s.level === "High" ? "text-[#d4183d]" :
+                        s.level === "Moderate" ? "text-[#A35139]" :
+                        "text-[#6B6458]"
                       }`}>
                         {s.level}
                       </span>
@@ -404,9 +404,9 @@ export default function GovernanceHubClient({
               >
                 <div className="flex items-center gap-3 mb-3">
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    update.tag === "Regulatory" ? "bg-red-50 text-red-700" :
-                    update.tag === "Standards" ? "bg-blue-50 text-blue-700" :
-                    update.tag === "Accreditation" ? "bg-green-50 text-green-700" :
+                    update.tag === "Regulatory" ? "bg-[#d4183d]/10 text-[#d4183d]" :
+                    update.tag === "Standards" ? "bg-[#2C3B4D]/10 text-[#2C3B4D]" :
+                    update.tag === "Accreditation" ? "bg-[#A35139]/10 text-[#A35139]" :
                     "bg-[#DDD3C0]/30 text-[#6B6458]"
                   }`}>
                     {update.tag}
