@@ -23,8 +23,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const isHome = pathname === "/";
-
   return (
     <header className="sticky top-0 z-50">
       {/* Top utility bar — solid dark, no transparency */}
@@ -50,25 +48,19 @@ export default function Navbar() {
       <nav className={`transition-all duration-300 ${
         scrolled 
           ? "bg-[#FAF6EF] shadow-lg border-b border-[#DDD3C0]" 
-          : (isHome ? "bg-transparent" : "bg-[#FAF6EF]")
+          : "bg-[#FAF6EF]"
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className={`w-10 h-10 rounded flex items-center justify-center transition-colors ${
-                !scrolled && isHome ? "bg-white/10 backdrop-blur-md" : "bg-[#1B2632]"
-              }`}>
+              <div className="w-10 h-10 rounded flex items-center justify-center transition-colors bg-[#1B2632]">
                 <Shield className="w-5 h-5 text-[#A35139]" />
               </div>
               <div>
-                <div className={`font-bold text-lg leading-tight tracking-tight ${
-                  !scrolled && isHome ? "text-white" : "text-[#0D0D0D]"
-                }`}>AIC</div>
-                <div className={`text-[10px] leading-tight tracking-widest uppercase ${
-                  !scrolled && isHome ? "text-white/60" : "text-[#6B6458]"
-                }`}>AI Integrity Certification</div>
+                <div className="font-bold text-lg leading-tight tracking-tight text-[#0D0D0D]">AIC</div>
+                <div className="text-[10px] leading-tight tracking-widest uppercase text-[#6B6458]">AI Integrity Certification</div>
               </div>
             </Link>
 
@@ -78,11 +70,7 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-4 py-2 rounded text-sm font-medium transition-colors relative ${
-                    !scrolled && isHome
-                      ? "text-white/90 hover:text-white hover:bg-white/10"
-                      : "text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
-                  }`}
+                  className="px-4 py-2 rounded text-sm font-medium transition-colors relative text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
                 >
                   {item.label}
                 </Link>
@@ -91,11 +79,7 @@ export default function Navbar() {
               {/* Login link */}
               <Link
                 href="/login"
-                className={`ml-2 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  !scrolled && isHome
-                    ? "text-white/70 hover:text-white hover:bg-white/10"
-                    : "text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
-                }`}
+                className="ml-2 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1.5 text-[#6B6458] hover:text-[#0D0D0D] hover:bg-[#EEE9DF]"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 Login
@@ -112,9 +96,7 @@ export default function Navbar() {
 
             {/* Mobile menu button */}
             <button
-              className={`lg:hidden p-2 ${
-                !scrolled && isHome ? "text-white" : "text-[#1B2632]"
-              }`}
+              className="lg:hidden p-2 text-[#1B2632]"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle navigation menu"
               aria-expanded={menuOpen}
