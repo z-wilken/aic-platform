@@ -176,7 +176,7 @@ export default function WaitingListPage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1B2632]/95 via-[#1B2632]/90 to-[#2C3B4D]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1B2632]/80 via-[#1B2632]/75 to-[#2C3B4D]/70" />
         
         {/* Grid overlay */}
         <div

@@ -59,7 +59,7 @@ export default function Home() {
           style={{ backgroundImage: `url(${heroBg})` }}
         />
         {/* Overlay with 0.55 opacity */}
-        <div className="absolute inset-0 bg-[#1B2632]/55" />
+        <div className="absolute inset-0 bg-[#1B2632]/40" />
 
         {/* Subtle grid overlay */}
         <div

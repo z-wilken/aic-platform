@@ -111,7 +111,7 @@ export default function CertificationPage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-[#1B2632]/55" />
+        <div className="absolute inset-0 bg-[#1B2632]/40" />
         <div className="absolute inset-0 subtle-grid opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div

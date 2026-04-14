@@ -130,7 +130,7 @@ export default function DisclosuresPage() {
       {/* Hero */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1B2632]/95 via-[#2C3B4D]/90 to-[#1B2632]/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1B2632]/80 via-[#2C3B4D]/75 to-[#1B2632]/70" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">
