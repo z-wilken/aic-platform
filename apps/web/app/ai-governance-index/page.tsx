@@ -277,41 +277,41 @@ function RegistryContent() {
         </div>
       )}
 
-      {/* Expanded Modal (50% Width / Notion Style) */}
+      {/* Expanded Modal (Notion-style Center Peek) */}
       <Dialog open={isModalOpen} onOpenChange={(open) => !open && closeRegistryModal()}>
-        <DialogContent className="max-w-5xl max-h-[92vh] overflow-y-auto p-0 border-none bg-white rounded-2xl shadow-2xl flex flex-col">
+        <DialogContent className="max-w-[1100px] w-[90vw] md:w-[80vw] lg:w-[70vw] max-h-[92vh] overflow-y-auto p-0 border-none bg-white rounded-xl shadow-[0_20px_70px_-10px_rgba(0,0,0,0.3)] flex flex-col">
           {selectedCompany && (
             <div className="relative">
-              {/* Header Visual */}
-              <div className="h-40 bg-gradient-to-br from-[#0a1628] via-[#1a3160] to-[#0a1628] relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "24px 24px" }} />
-                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
-              </div>
-              
-              <div className="px-12 pb-16 relative">
+              {/* Header Visual - Clean Notion Style */}
+              <div className="h-48 bg-[#fbfbfa] border-b border-[#f1f1f0] relative overflow-hidden flex items-end px-12 pb-8">
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "radial-gradient(#000 1px, transparent 0)", backgroundSize: "24px 24px" }} />
+                
                 {/* Profile Floating Info */}
-                <div className="flex flex-col md:flex-row gap-8 items-start -mt-12 mb-12">
-                  <div className="bg-white p-6 rounded-3xl shadow-2xl border border-[#f0f4f8] z-10">
+                <div className="flex flex-col md:flex-row gap-8 items-end w-full">
+                  <div className="bg-white p-6 rounded-3xl shadow-xl border border-[#f0f4f8] transform translate-y-20">
                     <Building2 className="w-16 h-16 text-[#c9920a]" />
                   </div>
-                  <div className="flex-1 pt-4">
+                  <div className="flex-1 pb-2">
                     <div className="flex flex-wrap items-center gap-3 mb-2">
-                      <h2 className="text-4xl font-bold text-[#0f1f3d]">{selectedCompany.name}</h2>
-                      <Badge className="bg-[#10b981] text-white px-3 py-1 text-xs">
+                      <h2 className="text-4xl font-bold text-[#0f1f3d] tracking-tight">{selectedCompany.name}</h2>
+                      <Badge className="bg-[#10b981]/10 text-[#10b981] border-[#10b981]/20 px-3 py-1 text-xs rounded-full">
                         {selectedCompany.status} Certification
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap gap-6 items-center text-[#6b7280] font-medium">
-                      <span className="flex items-center gap-1.5"><Globe className="w-4 h-4 text-[#c9920a]" /> {selectedCompany.website}</span>
-                      <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-[#c9920a]" /> {selectedCompany.location}</span>
-                      <span className="flex items-center gap-1.5"><Fingerprint className="w-4 h-4 text-[#c9920a]" /> {selectedCompany.certificateNumber}</span>
-                    </div>
                   </div>
                 </div>
-
-                <div className="grid lg:grid-cols-12 gap-12">
+              </div>
+              
+              <div className="px-12 pt-24 pb-20 relative">
+                <div className="grid lg:grid-cols-12 gap-16">
                   {/* Main Info Column */}
-                  <div className="lg:col-span-8 space-y-12">
+                  <div className="lg:col-span-8 space-y-16">
+                    <div className="flex flex-wrap gap-8 items-center text-[#6b7280] font-medium border-b border-[#f1f1f0] pb-8">
+                      <span className="flex items-center gap-2"><Globe className="w-4 h-4 text-[#c9920a]" /> {selectedCompany.website}</span>
+                      <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#c9920a]" /> {selectedCompany.location}</span>
+                      <span className="flex items-center gap-2"><Fingerprint className="w-4 h-4 text-[#c9920a]" /> {selectedCompany.certificateNumber}</span>
+                    </div>
+
                     {/* Official Scope */}
                     <section>
                       <h4 className="flex items-center gap-2 text-[#0f1f3d] font-bold uppercase tracking-[0.2em] text-[10px] mb-6 border-b border-[#f0f4f8] pb-4">
