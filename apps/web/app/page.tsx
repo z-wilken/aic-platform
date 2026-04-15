@@ -118,7 +118,7 @@ export default function Home() {
           }}
         />
 
-        <div className="relative max-w-7xl mx-auto px-4 py-32 w-full">
+        <div className="relative max-w-7xl mx-auto px-4 pt-20 pb-32 w-full">
           <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
             <motion.div
               initial="hidden"
@@ -191,13 +191,13 @@ export default function Home() {
               transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
               className="hidden lg:flex items-center justify-center shrink-0"
             >
-              <svg viewBox="0 0 110 180" style={{ height: "320px", width: "auto" }} xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 110 180" style={{ height: "420px", width: "auto" }} xmlns="http://www.w3.org/2000/svg">
                 <path d="M36,1 L1,1 L1,179 L36,179" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="square"/>
                 <path d="M74,1 L109,1 L109,179 L74,179" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="square"/>
                 <text x="55" y="21" fontSize="7.5" fill="#ffffff" textAnchor="middle" letterSpacing="2.5" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">METHODOLOGY</text>
                 <text x="55" y="33" fontSize="7.5" fill="#ffffff" textAnchor="middle" letterSpacing="2.5" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">ASSESSED</text>
                 <line x1="8" y1="43" x2="102" y2="43" stroke="#ffffff" strokeWidth="1" opacity="0.4"/>
-                <text x="55" y="107" fontSize="42" fontWeight="700" fill="#ffffff" textAnchor="middle" letterSpacing="6" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">AIC</text>
+                <text x="55" y="100" fontSize="42" fontWeight="700" fill="#ffffff" textAnchor="middle" letterSpacing="6" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">AIC</text>
                 <line x1="8" y1="126" x2="102" y2="126" stroke="#ffffff" strokeWidth="1" opacity="0.4"/>
                 <text x="55" y="153" fontSize="5.5" fill="#ffffff" opacity="0.6" textAnchor="middle" letterSpacing="1.5" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">AICCERTIFIED.CLOUD</text>
               </svg>
