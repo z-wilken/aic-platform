@@ -227,7 +227,7 @@ export default function WaitingListPage() {
                 transition={{ delay: i * 0.1 }}
               >
                 <div className="text-[#c9920a] text-3xl font-bold">{stat.value}</div>
-                <div className="text-[#6b7280] text-sm mt-0.5">{stat.label}</div>
+                <div className="text-[#0f1f3d] text-sm mt-0.5 font-medium">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -246,7 +246,7 @@ export default function WaitingListPage() {
             <h2 className="text-3xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Why Join the Waiting List?
             </h2>
-            <p className="text-[#6b7280] max-w-2xl mx-auto">
+            <p className="text-[#0f1f3d] max-w-2xl mx-auto font-medium opacity-80">
               Early access members receive exclusive benefits that position you ahead of the competition
             </p>
           </motion.div>
@@ -267,7 +267,7 @@ export default function WaitingListPage() {
                       <Icon className="w-6 h-6 text-[#0f1f3d]" />
                     </div>
                     <h3 className="font-semibold text-[#0f1f3d] mb-2">{benefit.title}</h3>
-                    <p className="text-[#6b7280] text-sm">{benefit.description}</p>
+                    <p className="text-[#0f1f3d] text-sm opacity-70">{benefit.description}</p>
                   </Card>
                 </motion.div>
               );

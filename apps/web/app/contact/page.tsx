@@ -144,8 +144,8 @@ export default function ContactPage() {
                       <Mail className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#6b7280] uppercase tracking-wider font-semibold">General Inquiries</div>
-                      <div className="text-[#0f1f3d]">contact@aiccertified.cloud</div>
+                      <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">General Inquiries</div>
+                      <div className="text-[#0f1f3d] font-medium">contact@aiccertified.cloud</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -153,8 +153,8 @@ export default function ContactPage() {
                       <Shield className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#6b7280] uppercase tracking-wider font-semibold">Certification Support</div>
-                      <div className="text-[#0f1f3d]">support@aiccertified.cloud</div>
+                      <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">Certification Support</div>
+                      <div className="text-[#0f1f3d] font-medium">support@aiccertified.cloud</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -162,8 +162,8 @@ export default function ContactPage() {
                       <MapPin className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#6b7280] uppercase tracking-wider font-semibold">Headquarters</div>
-                      <div className="text-[#0f1f3d]">Johannesburg, South Africa<br />15 Smit Street, Gauteng, 2000</div>
+                      <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">Headquarters</div>
+                      <div className="text-[#0f1f3d] font-medium">Johannesburg, South Africa<br />15 Smit Street, Gauteng, 2000</div>
                     </div>
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export default function ContactPage() {
 
               <div className="p-6 bg-[#f0f4f8] rounded-xl border border-[#e5e7eb]">
                 <h3 className="font-semibold text-[#0f1f3d] mb-4">Enterprise Solutions</h3>
-                <p className="text-sm text-[#6b7280] mb-4">
+                <p className="text-sm text-[#0f1f3d] opacity-80 mb-4 font-medium">
                   Interested in certifying your entire team or organization? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
                 <a href="mailto:contact@aiccertified.cloud" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
