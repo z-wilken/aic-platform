@@ -128,55 +128,6 @@ export default function Home() {
               }}
               className="flex-1"
             >
-              {/* AIC Bracket SVG Mark */}
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, scale: 0.8 },
-                  visible: { opacity: 1, scale: 1 }
-                }}
-                className="mb-12"
-              >
-                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <motion.path
-                    d="M15 10H10V50H15"
-                    stroke="#c9920a"
-                    strokeWidth="3"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                  />
-                  <motion.path
-                    d="M45 10H50V50H45"
-                    stroke="#c9920a"
-                    strokeWidth="3"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                  />
-                  <motion.circle
-                    cx="30"
-                    cy="30"
-                    r="4"
-                    fill="#c9920a"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1 }}
-                  />
-                </svg>
-              </motion.div>
-
-              <div className="flex items-center gap-2 mb-8">
-                <motion.span 
-                  variants={{
-                    hidden: { opacity: 0, x: -20 },
-                    visible: { opacity: 1, x: 0 }
-                  }}
-                  className="px-3 py-1 bg-[#c9920a]/20 text-[#c9920a] text-[0.7rem] font-medium rounded border border-[#c9920a]/30 uppercase tracking-[0.15em]"
-                >
-                  IAF MLA Accredited · ISO/IEC 17024
-                </motion.span>
-              </div>
-
               <motion.h1 
                 variants={{
                   hidden: { opacity: 0 },
@@ -206,9 +157,9 @@ export default function Home() {
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0 }
                 }}
-                className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl leading-[1.65]"
+                className="text-lg md:text-xl text-white/80 mb-12 max-w-3xl leading-[1.65]"
               >
-                If your company uses AI to make decisions about people, you have a regulatory exposure that needs mapping.
+                AIC is the world&apos;s premier accreditation body focused on certifying the professionals accountable for AI — not just the machines. We establish the global standard for AI governance, ethics, and human responsibility.
               </motion.p>
 
               <motion.div 
@@ -224,6 +175,12 @@ export default function Home() {
                 >
                   SEE HOW CERTIFICATION WORKS <ArrowRight className="w-4 h-4" />
                 </Link>
+                <Link
+                  href="/governance-hub"
+                  className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-10 py-5 rounded-full transition-all text-sm font-bold hover:-translate-y-1"
+                >
+                  EXPLORE ALGORITHMIC RIGHTS <ArrowRight className="w-4 h-4" />
+                </Link>
               </motion.div>
             </motion.div>
 
@@ -234,12 +191,16 @@ export default function Home() {
               transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
               className="hidden lg:flex items-center justify-center shrink-0"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/AIC-Logo-White.svg"
-                alt="AIC — Methodology Assessed"
-                style={{ height: "320px", width: "auto" }}
-              />
+              <svg viewBox="0 0 110 180" style={{ height: "320px", width: "auto" }} xmlns="http://www.w3.org/2000/svg">
+                <path d="M36,1 L1,1 L1,179 L36,179" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="square"/>
+                <path d="M74,1 L109,1 L109,179 L74,179" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="square"/>
+                <text x="55" y="21" fontSize="7.5" fill="#ffffff" textAnchor="middle" letterSpacing="2.5" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">METHODOLOGY</text>
+                <text x="55" y="33" fontSize="7.5" fill="#ffffff" textAnchor="middle" letterSpacing="2.5" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">ASSESSED</text>
+                <line x1="8" y1="43" x2="102" y2="43" stroke="#ffffff" strokeWidth="1" opacity="0.4"/>
+                <text x="55" y="107" fontSize="42" fontWeight="700" fill="#ffffff" textAnchor="middle" letterSpacing="6" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">AIC</text>
+                <line x1="8" y1="126" x2="102" y2="126" stroke="#ffffff" strokeWidth="1" opacity="0.4"/>
+                <text x="55" y="153" fontSize="5.5" fill="#ffffff" opacity="0.6" textAnchor="middle" letterSpacing="1.5" fontFamily="'Space Grotesk','Helvetica Neue',Arial,sans-serif">AICCERTIFIED.CLOUD</text>
+              </svg>
             </motion.div>
           </div>
         </div>
