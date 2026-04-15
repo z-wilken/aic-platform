@@ -40,7 +40,6 @@ export default function ContactPage() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // In a real app, this would send data to an API
-    console.log("Form submitted:", formData);
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -120,7 +119,7 @@ export default function ContactPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Join the <span className="text-[#c9920a]">Aic Waiting List</span>
+              Join the <span className="text-[#c9920a]">AIC Waiting List</span>
             </h1>
             <p className="text-aic-paper/70 text-lg max-w-2xl mx-auto">
               Secure your place in the upcoming certification cohort. Professionals who join the waiting list receive early access, exclusive study materials, and a 25% discount.
@@ -164,7 +163,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-sm text-[#6b7280] uppercase tracking-wider font-semibold">Headquarters</div>
-                      <div className="text-[#0f1f3d]">London, United Kingdom<br />Global Remote Operations</div>
+                      <div className="text-[#0f1f3d]">Johannesburg, South Africa<br />15 Smit Street, Gauteng, 2000</div>
                     </div>
                   </div>
                 </div>
@@ -175,7 +174,7 @@ export default function ContactPage() {
                 <p className="text-sm text-[#6b7280] mb-4">
                   Interested in certifying your entire team or organization? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
-                <a href="#" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+                <a href="mailto:contact@aiccertified.cloud" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                   Contact Enterprise Sales <ArrowRight className="w-4 h-4" />
                 </a>
               </div>

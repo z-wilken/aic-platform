@@ -58,8 +58,8 @@ export default async function ArticlesPage() {
   let articlesData: { results: any[]; nextCursor: string | null } = { results: [], nextCursor: null };
   try {
     articlesData = await getArticles(12);
-  } catch (error) {
-    console.error("Failed to fetch articles from Notion:", error);
+  } catch {
+    // fall through to fallback articles below
   }
 
   // Use fallback if no articles are found in Notion

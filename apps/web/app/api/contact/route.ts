@@ -33,7 +33,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { firstName, lastName, email, organization, role, country, enquiryType, message } = body;
+  // Support both legacy field names (organization/role/enquiryType) and
+  // current form field names (company/jobTitle/certificationType)
+  const firstName = body.firstName;
+  const lastName = body.lastName;
+  const email = body.email;
+  const organization = body.organization || body.company;
+  const role = body.role || body.jobTitle;
+  const country = body.country;
+  const enquiryType = body.enquiryType || body.certificationType;
+  const message = body.message;
 
   if (!firstName || !lastName || !email || !organization || !role || !country || !enquiryType) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

@@ -61,8 +61,8 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
       const data = await res.json();
       setArticles(prev => [...prev, ...data.results]);
       setNextCursor(data.nextCursor);
-    } catch (error) {
-      console.error("Failed to load more articles:", error);
+    } catch {
+      // silently fail — user can retry via button
     } finally {
       setIsLoadingMore(false);
     }
@@ -365,7 +365,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
             </form>
             <p className="text-aic-paper/40 text-xs mt-4 text-center w-full">
               No spam. Unsubscribe anytime. Read our{" "}
-              <Link href="/disclosures" className="underline hover:text-aic-paper/60">
+              <Link href="/privacy" className="underline hover:text-aic-paper/60">
                 privacy policy
               </Link>
               .

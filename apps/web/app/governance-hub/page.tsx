@@ -27,8 +27,8 @@ export default async function GovernanceHubPage() {
   let policyUpdatesData: { results: any[]; nextCursor: string | null } = { results: [], nextCursor: null };
   try {
     policyUpdatesData = await getPolicyUpdates(4);
-  } catch (error) {
-    console.error("Failed to fetch policy updates from Notion:", error);
+  } catch {
+    // fall through to fallback policy updates below
   }
 
   const displayPolicyUpdates = policyUpdatesData.results.length > 0 ? policyUpdatesData.results : fallbackPolicyUpdates;

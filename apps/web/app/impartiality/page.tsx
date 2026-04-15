@@ -170,7 +170,7 @@ export default function ImpartialityStatement() {
               <h3 className="font-bold text-aic-navy mb-4 font-serif text-xl">Complaints Process</h3>
               <div className="space-y-4">
                 {[
-                  "Submit your concern in writing to zander@ztoaholdings.co.za, marked &ldquo;Impartiality Concern&rdquo;.",
+                  "Submit your concern in writing to zander@ztoaholdings.com, marked &ldquo;Impartiality Concern&rdquo;.",
                   "AIC will acknowledge receipt within 5 business days.",
                   "An investigation will be conducted by a person not involved in the matter under review.",
                   "A written response including findings and any remedial action will be provided within 30 days.",

@@ -145,8 +145,8 @@ export default function GovernanceHubClient({
       const data = await res.json();
       setPolicyUpdates(prev => [...prev, ...data.results]);
       setNextCursor(data.nextCursor);
-    } catch (error) {
-      console.error("Failed to load more policies:", error);
+    } catch {
+      // silently fail — user can retry via button
     } finally {
       setIsLoadingMore(false);
     }
