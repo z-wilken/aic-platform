@@ -33,7 +33,7 @@ const mockSetDrawColor = vi.fn();
 const mockSetLineWidth = vi.fn();
 const mockRect = vi.fn();
 const mockLine = vi.fn();
-const mockSplitTextToSize = vi.fn((text: string) => [text]);
+const mockSplitTextToSize = vi.fn((...args: any[]) => [args[0]]);
 
 const mockJsPDFInstance = {
   save: mockSave,
@@ -49,7 +49,7 @@ const mockJsPDFInstance = {
   splitTextToSize: mockSplitTextToSize,
 };
 
-const mockJsPDF = vi.fn(() => mockJsPDFInstance);
+const mockJsPDF = vi.fn((..._args: any[]) => mockJsPDFInstance);
 
 // Inline implementation of generatePDFReport for testing
 // This mirrors the actual implementation in lib/report-generator.ts

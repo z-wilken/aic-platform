@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import {
-  Shield,
   ArrowRight,
   CheckCircle,
   Eye,

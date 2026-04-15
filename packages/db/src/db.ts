@@ -36,8 +36,8 @@ function getDbInstance() {
  * SOVEREIGN TENANT ISOLATION (ZERO-BYPASS)
  * 
  * Returns a database instance scoped to a specific organization.
- * Every query executed through this instance is automatically
- * wrapped in a transaction that sets the 'app.current_org_id' RLS variable.
+ * All operations must be performed within the query/transaction callback 
+ * to ensure the RLS 'app.current_org_id' variable is set.
  */
 export function getTenantDb(orgId: string) {
   if (!orgId) throw new Error("[SECURITY] Attempted to access tenant DB without an orgId");
@@ -45,61 +45,30 @@ export function getTenantDb(orgId: string) {
   const rawDb = getDbInstance();
 
   return {
-    ...rawDb,
+    /**
+     * Executes a callback within a transaction scoped to the current tenant.
+     * This is the PRIMARY way to interact with the tenant database.
+     */
     query: async <T>(callback: (tx: TenantTransaction) => Promise<T>): Promise<T> => {
       return await rawDb.transaction(async (tx) => {
         await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
         return await callback(tx);
       });
     },
+
+    /**
+     * Legacy/Compatibility: Executes raw queries with tenant context.
+     */
     execute: async (query: any): Promise<any> => {
       return await rawDb.transaction(async (tx) => {
         await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
         return await tx.execute(query);
       });
     },
-    select: (...args: any[]) => {
-      // Create a proxy that wraps the actual execution in a transaction
-      const selectBase = rawDb.select(...args);
-      const originalThen = selectBase.then.bind(selectBase);
-      selectBase.then = (onfulfilled?: any, onrejected?: any) => {
-        return rawDb.transaction(async (tx) => {
-          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
-          return await (tx.select(...args) as any).then(onfulfilled, onrejected);
-        });
-      };
-      return selectBase;
-    },
-    insert: (...args: any[]) => {
-      const insertBase = rawDb.insert(...args);
-      insertBase.then = (onfulfilled?: any, onrejected?: any) => {
-        return rawDb.transaction(async (tx) => {
-          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
-          return await (tx.insert(...args) as any).then(onfulfilled, onrejected);
-        });
-      };
-      return insertBase;
-    },
-    update: (...args: any[]) => {
-      const updateBase = rawDb.update(...args);
-      updateBase.then = (onfulfilled?: any, onrejected?: any) => {
-        return rawDb.transaction(async (tx) => {
-          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
-          return await (tx.update(...args) as any).then(onfulfilled, onrejected);
-        });
-      };
-      return updateBase;
-    },
-    delete: (...args: any[]) => {
-      const deleteBase = rawDb.delete(...args);
-      deleteBase.then = (onfulfilled?: any, onrejected?: any) => {
-        return rawDb.transaction(async (tx) => {
-          await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
-          return await (tx.delete(...args) as any).then(onfulfilled, onrejected);
-        });
-      };
-      return deleteBase;
-    },
+
+    /**
+     * Transaction wrapper (same as query, but named consistently with Drizzle).
+     */
     transaction: async <T>(callback: (tx: TenantTransaction) => Promise<T>): Promise<T> => {
       return await rawDb.transaction(async (tx) => {
         await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
