@@ -119,112 +119,129 @@ export default function Home() {
         />
 
         <div className="relative max-w-7xl mx-auto px-4 py-32 w-full">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              visible: { transition: { staggerChildren: 0.3 } }
-            }}
-            className="max-w-4xl"
-          >
-            {/* AIC Bracket SVG Mark */}
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
             <motion.div
+              initial="hidden"
+              animate="visible"
               variants={{
-                hidden: { opacity: 0, scale: 0.8 },
-                visible: { opacity: 1, scale: 1 }
+                visible: { transition: { staggerChildren: 0.3 } }
               }}
-              className="mb-12"
+              className="flex-1"
             >
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <motion.path
-                  d="M15 10H10V50H15"
-                  stroke="#c9920a"
-                  strokeWidth="3"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 1.2, ease: "easeOut" }}
-                />
-                <motion.path
-                  d="M45 10H50V50H45"
-                  stroke="#c9920a"
-                  strokeWidth="3"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 1.2, ease: "easeOut" }}
-                />
-                <motion.circle
-                  cx="30"
-                  cy="30"
-                  r="4"
-                  fill="#c9920a"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1 }}
-                />
-              </svg>
-            </motion.div>
-
-            <div className="flex items-center gap-2 mb-8">
-              <motion.span 
+              {/* AIC Bracket SVG Mark */}
+              <motion.div
                 variants={{
-                  hidden: { opacity: 0, x: -20 },
-                  visible: { opacity: 1, x: 0 }
+                  hidden: { opacity: 0, scale: 0.8 },
+                  visible: { opacity: 1, scale: 1 }
                 }}
-                className="px-3 py-1 bg-[#c9920a]/20 text-[#c9920a] text-[0.7rem] font-medium rounded border border-[#c9920a]/30 uppercase tracking-[0.15em]"
+                className="mb-12"
               >
-                IAF MLA Accredited · ISO/IEC 17024
-              </motion.span>
-            </div>
-
-            <motion.h1 
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1 }
-              }}
-              className="text-5xl md:text-8xl text-white mb-8 leading-[1.05] tracking-[-0.03em] font-bold"
-              style={{ fontFamily: "'Merriweather', serif" }}
-            >
-              Certifying the{" "}
-              <span className="text-[#c9920a] inline-flex">
-                {headlineHuman.map((letter, i) => (
-                  <motion.span
-                    key={i}
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <motion.path
+                    d="M15 10H10V50H15"
+                    stroke="#c9920a"
+                    strokeWidth="3"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  />
+                  <motion.path
+                    d="M45 10H50V50H45"
+                    stroke="#c9920a"
+                    strokeWidth="3"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                  />
+                  <motion.circle
+                    cx="30"
+                    cy="30"
+                    r="4"
+                    fill="#c9920a"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1.2 + (i * 0.08) }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
-              </span>{" "}
-              Behind the Algorithm
-            </motion.h1>
+                    transition={{ delay: 1 }}
+                  />
+                </svg>
+              </motion.div>
 
-            <motion.p 
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 }
-              }}
-              className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl leading-[1.65]"
-            >
-              If your company uses AI to make decisions about people, you have a regulatory exposure that needs mapping.
-            </motion.p>
+              <div className="flex items-center gap-2 mb-8">
+                <motion.span 
+                  variants={{
+                    hidden: { opacity: 0, x: -20 },
+                    visible: { opacity: 1, x: 0 }
+                  }}
+                  className="px-3 py-1 bg-[#c9920a]/20 text-[#c9920a] text-[0.7rem] font-medium rounded border border-[#c9920a]/30 uppercase tracking-[0.15em]"
+                >
+                  IAF MLA Accredited · ISO/IEC 17024
+                </motion.span>
+              </div>
 
-            <motion.div 
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 }
-              }}
-              className="flex flex-wrap gap-4"
-            >
-              <Link
-                href="/certification"
-                className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-10 py-5 rounded-full transition-all text-sm font-bold shadow-2xl shadow-[#c9920a]/30 hover:-translate-y-1"
+              <motion.h1 
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1 }
+                }}
+                className="text-5xl md:text-8xl text-white mb-8 leading-[1.05] tracking-[-0.03em] font-bold"
+                style={{ fontFamily: "'Merriweather', serif" }}
               >
-                SEE HOW CERTIFICATION WORKS <ArrowRight className="w-4 h-4" />
-              </Link>
+                Certifying the{" "}
+                <span className="text-[#c9920a] inline-flex">
+                  {headlineHuman.map((letter, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.2 + (i * 0.08) }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </span>{" "}
+                Behind the Algorithm
+              </motion.h1>
+
+              <motion.p 
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl leading-[1.65]"
+              >
+                If your company uses AI to make decisions about people, you have a regulatory exposure that needs mapping.
+              </motion.p>
+
+              <motion.div 
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+                className="flex flex-wrap gap-4"
+              >
+                <Link
+                  href="/certification"
+                  className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-10 py-5 rounded-full transition-all text-sm font-bold shadow-2xl shadow-[#c9920a]/30 hover:-translate-y-1"
+                >
+                  SEE HOW CERTIFICATION WORKS <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
             </motion.div>
-          </motion.div>
+
+            {/* Right side — Brand Mark */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
+              className="hidden lg:flex items-center justify-center shrink-0"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/AIC-Logo-White.svg"
+                alt="AIC — Methodology Assessed"
+                style={{ height: "320px", width: "auto" }}
+              />
+            </motion.div>
+          </div>
         </div>
 
         {/* Animated Scroll indicator */}

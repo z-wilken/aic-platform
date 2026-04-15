@@ -55,13 +55,10 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center group shrink-0">
-              <img
-                src="/AIC-Logo-Navy.svg"
-                alt="AI Integrity Certification — Methodology Assessed"
-                className="h-[52px] w-auto sm:h-14 transition-opacity group-hover:opacity-90"
-                width={110}
-                height={180}
-              />
+              <div>
+                <div className="font-bold text-lg leading-tight tracking-tight text-[#0f1f3d]">AIC</div>
+                <div className="text-[10px] leading-tight tracking-widest uppercase text-[#6b7280]">AI Integrity Certification</div>
+              </div>
             </Link>
 
             {/* Desktop nav links */}
