@@ -127,6 +127,8 @@ function RegistryContent() {
   const [selectedCompany, setSelectedCompany] = useState<CertifiedCompany | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [visibleCount, setVisibleCount] = useState(9);
+
   // Handle Deep Linking
   useEffect(() => {
     const companyId = searchParams.get("company");
@@ -153,7 +155,7 @@ function RegistryContent() {
     // Remove query param
     const params = new URLSearchParams(searchParams.toString());
     params.delete("company");
-    window.history.pushState(null, "", pathname); // Need to define pathname or just use window.location.pathname
+    window.history.pushState(null, "", window.location.pathname);
   };
   
   // Alternative to handleCloseModal that uses router
@@ -167,6 +169,8 @@ function RegistryContent() {
     c.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.certificateNumber.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const visibleCompanies = filteredCompanies.slice(0, visibleCount);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -186,15 +190,18 @@ function RegistryContent() {
           <Input
             placeholder="Search by company name, industry, or certificate number..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setVisibleCount(9); // Reset count on search
+            }}
             className="pl-12 h-14 bg-white border-[#e5e7eb] rounded-xl text-lg shadow-sm focus:ring-[#c9920a]"
           />
         </div>
       </div>
 
       {/* Registry Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCompanies.map((company) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {visibleCompanies.map((company) => (
           <motion.div
             key={company.id}
             initial={{ opacity: 0, y: 20 }}
@@ -203,33 +210,50 @@ function RegistryContent() {
             className="cursor-pointer"
             onClick={() => handleOpenModal(company)}
           >
-            <Card className="p-6 h-full border-[#e5e7eb] hover:border-[#c9920a] hover:shadow-xl transition-all duration-300 bg-white">
-              <div className="flex justify-between items-start mb-4">
-                <div className="p-3 bg-[#f0f4f8] rounded-lg">
-                  <Building2 className="w-6 h-6 text-[#0f1f3d]" />
+            <Card className="p-8 h-full border-[#e5e7eb] hover:border-[#c9920a] hover:shadow-xl transition-all duration-300 bg-white group">
+              <div className="flex justify-between items-start mb-6">
+                <div className="p-4 bg-[#f0f4f8] rounded-xl group-hover:bg-[#c9920a]/10 transition-colors">
+                  <Building2 className="w-7 h-7 text-[#0f1f3d] group-hover:text-[#c9920a]" />
                 </div>
-                <Badge className="bg-[#c9920a] text-white">
-                  <BadgeCheck className="w-3 h-3 mr-1" />
+                <Badge className="bg-[#c9920a] text-white px-3 py-1">
+                  <BadgeCheck className="w-3.5 h-3.5 mr-1" />
                   Verified
                 </Badge>
               </div>
-              <h3 className="text-xl font-bold text-[#0f1f3d] mb-1">{company.name}</h3>
-              <p className="text-sm text-[#6b7280] mb-4">{company.industry} • {company.location}</p>
+              <h3 className="text-2xl font-bold text-[#0f1f3d] mb-2">{company.name}</h3>
+              <p className="text-[#6b7280] mb-6 flex items-center gap-2">
+                <Globe className="w-4 h-4" />
+                {company.industry} • {company.location}
+              </p>
               
-              <div className="space-y-3 pt-4 border-t border-[#f0f4f8]">
-                <div className="flex justify-between text-sm">
-                  <span className="text-[#6b7280]">Status</span>
-                  <span className="text-[#10b981] font-bold">{company.status}</span>
+              <div className="space-y-4 pt-6 border-t border-[#f0f4f8]">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[#6b7280] font-medium uppercase tracking-wider text-[10px]">Registry Status</span>
+                  <span className="text-[#10b981] font-bold px-2 py-0.5 bg-[#10b981]/10 rounded">{company.status}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[#6b7280]">Integrity Score</span>
-                  <span className="text-[#0f1f3d] font-bold">{company.integrityScore}/100</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[#6b7280] font-medium uppercase tracking-wider text-[10px]">Integrity Score</span>
+                  <span className="text-[#0f1f3d] font-bold text-lg">{company.integrityScore}<span className="text-[10px] text-[#6b7280] font-normal">/100</span></span>
                 </div>
               </div>
             </Card>
           </motion.div>
         ))}
       </div>
+
+      {/* Load More Button */}
+      {visibleCount < filteredCompanies.length && (
+        <div className="mt-16 flex justify-center">
+          <Button 
+            onClick={() => setVisibleCount(prev => prev + 9)}
+            variant="outline"
+            className="px-12 py-6 rounded-full border-2 border-[#0f1f3d] text-[#0f1f3d] hover:bg-[#0f1f3d] hover:text-white font-bold transition-all text-lg"
+          >
+            Load More Verified Organizations
+          </Button>
+        </div>
+      )}
+
 
       {/* Company Detail Modal (Notion-style) */}
       <Dialog open={isModalOpen} onOpenChange={(open) => !open && closeRegistryModal()}>
