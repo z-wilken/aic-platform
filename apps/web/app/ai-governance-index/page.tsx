@@ -222,14 +222,14 @@ function PeekModal({
 
       {/* Centered modal */}
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 pointer-events-none"
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 pointer-events-none"
         initial={{ opacity: 0, scale: 0.97, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 10 }}
         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
       >
         <div
-          className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-2xl shadow-[0_24px_80px_-12px_rgba(0,0,0,0.35)] overflow-hidden flex flex-col pointer-events-auto"
+          className="relative w-full max-w-[92vw] xl:max-w-[1400px] max-h-[92vh] bg-white rounded-2xl shadow-[0_24px_80px_-12px_rgba(0,0,0,0.35)] overflow-hidden flex flex-col pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Cover band */}

@@ -49,7 +49,6 @@ const standards = [
 
 const counters = [
   { value: 67, label: "Nations recognising algorithmic rights" },
-  { value: 24, label: "Official language translations" },
   { value: 5, label: "Fundamental algorithmic rights" },
   { value: 95, label: "EU AI Act alignment score", suffix: "%" },
 ];
@@ -62,7 +61,6 @@ const alignmentBars = [
   { standard: "UK Pro-Innovation", alignment: 74, opacity: 0.6 },
 ];
 
-const logos = ["ISO", "IEC", "NIST", "IEEE", "EU COMMISSION", "SANAS", "ISO", "IEC", "NIST", "IEEE", "EU COMMISSION", "SANAS"];
 
 function Counter({ value, label, suffix = "" }: { value: number; label: string; suffix?: string }) {
   const count = useMotionValue(0);
@@ -370,17 +368,6 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Logo Marquee */}
-          <div className="relative overflow-hidden py-12 border-y border-[#e5e7eb]">
-            <div className="flex animate-[marquee_30s_linear_infinite] whitespace-nowrap gap-20">
-              {logos.map((logo, i) => (
-                <span key={i} className="text-2xl font-black text-[#0a1628]/10 tracking-tighter grayscale italic">{logo}</span>
-              ))}
-            </div>
-            {/* Fade edges */}
-            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10" />
-            <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10" />
-          </div>
         </div>
       </section>
 
