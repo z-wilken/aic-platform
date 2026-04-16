@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import Script from "next/script";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
 import { Sidebar } from "./components/Sidebar";
@@ -39,9 +40,24 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const navItems = await getNavigation();
+  const gaId = "G-G7QB1VX27Q";
 
   return (
     <html lang="en">
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${gaId}');
+          `}
+        </Script>
+      </head>
       <body className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-navy text-aic-paper font-sans`}>
         <Providers>
           <div className="flex">
