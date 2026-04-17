@@ -48,17 +48,14 @@ const standards = [
 ];
 
 const counters = [
-  { value: 67, label: "Nations recognising algorithmic rights" },
-  { value: 5, label: "Fundamental algorithmic rights" },
-  { value: 95, label: "EU AI Act alignment score", suffix: "%" },
+  { value: 95, label: "POPIA · §71", suffix: "%" },
 ];
 
 const alignmentBars = [
+  { standard: "POPIA · §71", alignment: 95 },
   { standard: "EU AI Act", alignment: 95 },
   { standard: "NIST AI RMF", alignment: 82, opacity: 0.6 },
   { standard: "Singapore MGAI", alignment: 85 },
-  { standard: "Canada AIDA", alignment: 88 },
-  { standard: "UK Pro-Innovation", alignment: 74, opacity: 0.6 },
 ];
 
 
@@ -217,15 +214,13 @@ export default function Home() {
       {/* SECTION 2 — EVIDENCE STRIP */}
       <section className="bg-[#0a1628] py-16 border-y border-white/5 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0">
+          <div className="flex justify-center">
             {counters.map((counter, i) => (
               <Counter key={i} {...counter} />
             ))}
           </div>
-          <div className="mt-12 flex flex-wrap justify-center gap-6 opacity-40">
-            {["POPIA · §71", "EU AI ACT", "NIST AI RMF", "FSCA COMPLIANT", "ISO/IEC 42001"].map((badge, i) => (
-              <span key={i} className="text-[0.6rem] font-mono text-[#c9920a] tracking-[0.2em]">{badge}</span>
-            ))}
+          <div className="mt-12 flex justify-center opacity-40">
+            <span className="text-[0.6rem] font-mono text-[#c9920a] tracking-[0.2em]">POPIA · §71</span>
           </div>
         </div>
       </section>
@@ -237,11 +232,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-24"
+            className="mb-24 text-center"
           >
             <span className="text-[#c9920a] text-[0.7rem] uppercase tracking-[0.3em] font-bold">The Manifesto</span>
             <h2 
-              className="text-4xl md:text-6xl text-[#0a1628] mt-4 mb-8 leading-[1.1] tracking-[-0.03em] font-bold max-w-3xl"
+              className="text-4xl md:text-6xl text-[#0a1628] mt-4 mb-8 leading-[1.1] tracking-[-0.03em] font-bold mx-auto max-w-3xl"
               style={{ fontFamily: "'Merriweather', serif" }}
             >
               The Five Fundamental Algorithmic Rights
@@ -250,38 +245,34 @@ export default function Home() {
 
           <div className="space-y-0">
             {algorithmicRights.map((right, i) => {
-              const Icon = right.icon;
               return (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="group relative border-t border-[#e5e7eb] last:border-b py-12 transition-all hover:bg-[#0a1628] overflow-hidden"
+                  className="group relative border-t border-[#e5e7eb] last:border-b py-16 transition-all hover:bg-[#0a1628] overflow-hidden"
                 >
-                  <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-0">
-                    <div className="w-24 shrink-0 text-6xl font-bold text-[#c9920a]/20 group-hover:text-[#c9920a]/40 transition-colors font-serif italic">
+                  <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center text-center px-4">
+                    <div className="text-5xl font-bold text-[#c9920a]/20 group-hover:text-[#c9920a]/40 transition-colors font-serif italic mb-6">
                       0{i + 1}
                     </div>
-                    <div className="flex-1 md:pr-12">
-                      <h3 className="text-2xl font-bold mb-4 text-[#0a1628] group-hover:text-white transition-colors">{right.title}</h3>
-                      <p className="text-[#6b7280] group-hover:text-white/60 transition-colors max-w-2xl leading-relaxed">
+                    <div className="flex-1">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-6 text-[#0a1628] group-hover:text-white transition-colors">{right.title}</h3>
+                      <p className="text-[#6b7280] group-hover:text-white/60 transition-colors max-w-2xl mx-auto leading-relaxed text-lg">
                         {right.description}
                       </p>
                     </div>
-                    <div className="shrink-0">
-                      <Icon className="w-12 h-12 text-[#c9920a] opacity-40 group-hover:opacity-100 transition-all group-hover:scale-110" />
-                    </div>
                   </div>
-                  {/* Left accent border */}
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#c9920a] origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500" />
+                  {/* Accent bottom border */}
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 bg-[#c9920a] w-0 group-hover:w-full transition-all duration-700" />
                 </motion.div>
               );
             })}
           </div>
 
-          <div className="mt-20">
+          <div className="mt-20 text-center">
             <Link
               href="/governance-hub"
               className="inline-flex items-center gap-4 text-[#0a1628] font-bold uppercase tracking-widest text-xs group"
