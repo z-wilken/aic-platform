@@ -101,12 +101,12 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
   return (
     <div className="min-h-screen bg-aic-paper">
       {/* Hero Section */}
-      <section className="relative py-24 overflow-hidden">
+      <section className="relative py-24 lg:py-32 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628]/80 via-[#0a1628]/75 to-[#0f1f3d]/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/90 to-[#0a1628]/80" />
         
         {/* Grid overlay */}
         <div
@@ -122,18 +122,19 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            className="max-w-3xl"
           >
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <BookOpen className="w-5 h-5 text-[#c9920a]" />
+            <div className="flex items-center gap-2 mb-4">
+              <BookOpen className="w-4 h-4 text-[#c9920a]" />
               <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
                 Knowledge Center
               </span>
             </div>
-            <h1 className="text-5xl md:text-6xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Articles & Insights
+            <h1 className="text-5xl md:text-6xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
+              Articles &<br />
+              <span className="text-[#c9920a]">Insights</span>
             </h1>
-            <p className="text-xl text-white/80 leading-relaxed">
+            <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl">
               Expert analysis, research findings, and practical guidance on AI governance, certification, and the evolving landscape of algorithmic accountability.
             </p>
           </motion.div>

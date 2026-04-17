@@ -128,21 +128,27 @@ export default function DisclosuresPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative py-20 overflow-hidden">
+      <section className="relative py-24 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628]/90 via-[#0f1f3d]/85 to-[#0a1628]/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/90 to-[#0a1628]/80" />
         <div className="relative max-w-7xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-3xl"
+          >
             <div className="flex items-center gap-2 mb-4">
-              <FileText className="w-6 h-6 text-[#c9920a]" />
+              <FileText className="w-4 h-4 text-[#c9920a]" />
               <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
-                IAF MLA Mandatory Disclosures
+                Mandatory Disclosures
               </span>
             </div>
-            <h1 className="text-5xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Public Disclosures & Compliance
+            <h1 className="text-5xl md:text-6xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
+              Public Disclosures &<br />
+              <span className="text-[#c9920a]">Compliance</span>
             </h1>
-            <p className="text-xl text-white/80 max-w-3xl leading-relaxed">
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed">
               As an IAF Multilateral Recognition Arrangement (MLA) signatory, AIC maintains full transparency regarding
               our impartiality, accreditation status, certified organizations, and appeals processes.
             </p>

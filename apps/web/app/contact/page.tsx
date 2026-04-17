@@ -111,17 +111,27 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-aic-paper">
       {/* Header */}
-      <section className="bg-[#0a1628] pt-32 pb-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+      <section className="relative py-24 lg:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-[#0a1628]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/95 to-[#0a1628]/80" />
+        <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            className="max-w-3xl"
           >
-            <h1 className="text-4xl md:text-5xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
-              Join the <span className="text-[#c9920a]">AIC Waiting List</span>
+            <div className="flex items-center gap-2 mb-4">
+              <Mail className="w-4 h-4 text-[#c9920a]" />
+              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
+                Contact & Support
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-6xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
+              Join the AIC<br />
+              <span className="text-[#c9920a]">Waiting List</span>
             </h1>
-            <p className="text-white/80 text-lg max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl">
               Secure your place in the upcoming certification cohort. Professionals who join the waiting list receive early access, exclusive study materials, and a 25% discount.
             </p>
           </motion.div>

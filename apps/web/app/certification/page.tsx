@@ -106,12 +106,12 @@ export default function CertificationPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* Hero */}
-      <section className="relative py-12 lg:py-24 overflow-hidden">
+      <section className="relative py-24 lg:py-32 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
-        <div className="absolute inset-0 bg-[#0a1628]/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/90 to-[#0a1628]/80" />
         <div className="absolute inset-0 subtle-grid opacity-5" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div
@@ -120,24 +120,25 @@ export default function CertificationPage() {
             transition={{ duration: 0.7 }}
             className="max-w-3xl"
           >
-            <div className="flex items-center gap-2 mb-6">
-              <span className="eyebrow px-3 py-1 bg-[#c9920a]/10 rounded-full border border-[#c9920a]/20 text-white">
+            <div className="flex items-center gap-2 mb-4">
+              <Award className="w-4 h-4 text-[#c9920a]" />
+              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
                 AIC Five-Division Framework
               </span>
             </div>
-            <h1 className="text-5xl md:text-7xl text-white mb-6">
+            <h1 className="text-5xl md:text-7xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
               Accountability<br />
               <span className="text-[#c9920a]">Calibrated to AI</span>
             </h1>
-            <p className="text-xl text-white/80 leading-[1.65] mb-10 max-w-2xl">
+            <p className="text-lg md:text-xl text-white/80 leading-relaxed mb-10 max-w-2xl">
               AIC certification is structured around how your organisation actually relates to AI in consequential decisions — not a one-size-fits-all compliance checkbox. Choose the Division that reflects your reality.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-7 py-3 rounded transition-all text-sm font-medium shadow-lg shadow-[#c9920a]/20"
+                className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-8 py-4 rounded-lg transition-all text-sm font-bold shadow-xl shadow-[#c9920a]/20"
               >
-                Enquire About Certification <ArrowRight className="w-4 h-4" />
+                ENQUIRE ABOUT CERTIFICATION <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </motion.div>
