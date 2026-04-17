@@ -211,16 +211,64 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 2 — EVIDENCE STRIP */}
-      <section className="bg-[#0a1628] py-16 border-y border-white/5 relative overflow-hidden">
+      {/* SECTION 2 — 2 MIN EXPLAINER */}
+      <section className="bg-white py-24 border-b border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-center">
-            {counters.map((counter, i) => (
-              <Counter key={i} {...counter} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mb-16"
+          >
+            <span className="inline-flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.25em] text-[#c9920a] mb-6">
+              <span className="w-6 h-[1.5px] bg-[#c9920a] inline-block" />
+              2 min read
+            </span>
+            <h2
+              className="text-3xl md:text-5xl font-bold text-[#0f1f3d] leading-[1.1] tracking-[-0.03em]"
+              style={{ fontFamily: "'Merriweather', serif" }}
+            >
+              Why AIC exists — and what we actually do.
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-0 border border-[#e5e7eb] rounded-2xl overflow-hidden">
+            {[
+              {
+                tag: "The Problem",
+                heading: "AI is making decisions about people.",
+                body: "Hiring. Lending. Insurance. Healthcare. Parole. Millions of life-changing decisions are now made — or heavily influenced — by automated systems. Most people never know it happened. Most companies cannot explain why.",
+              },
+              {
+                tag: "The Gap",
+                heading: "Nobody is accountable for the outcome.",
+                body: "Technology can be audited. Code can be reviewed. But accountability only exists when a human being is responsible. Right now, the industry has no recognised standard for who that person is — or what they must know.",
+              },
+              {
+                tag: "The Answer",
+                heading: "AIC certifies the humans behind the algorithm.",
+                body: "We are the world's only accreditation body focused on the professionals responsible for AI governance. Our certification is built on ISO/IEC 17024, aligned to the EU AI Act, NIST AI RMF, and POPIA — and it means something when it matters most.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12 }}
+                className="p-10 border-r border-[#e5e7eb] last:border-r-0 group hover:bg-[#0a1628] transition-colors duration-300"
+              >
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.25em] text-[#c9920a] mb-5 block">
+                  {item.tag}
+                </span>
+                <h3 className="text-xl font-bold text-[#0f1f3d] group-hover:text-white mb-5 leading-snug transition-colors">
+                  {item.heading}
+                </h3>
+                <p className="text-[#6b7280] group-hover:text-white/60 text-[15px] leading-relaxed transition-colors">
+                  {item.body}
+                </p>
+              </motion.div>
             ))}
-          </div>
-          <div className="mt-12 flex justify-center opacity-40">
-            <span className="text-[0.6rem] font-mono text-[#c9920a] tracking-[0.2em]">POPIA · §71</span>
           </div>
         </div>
       </section>
