@@ -68,26 +68,26 @@ export async function POST(
 
     const db = getTenantDb(session.user.orgId as string);
 
-    // 1. Fetch current assessment to verify transition
-    const [assessment] = await db.select().from(aimsAssessments).where(eq(aimsAssessments.orgId, orgId)).limit(1);
-    
-    if (assessment && !isValidTransition(assessment.stage as any, stage)) {
-        return NextResponse.json({ 
-            error: 'Invalid Stage Transition', 
-            message: `Cannot move from ${assessment.stage} to ${stage}` 
-        }, { status: 400 });
-    }
-
-    // 2. Verify Impartiality before moving beyond READINESS
-    if (['STAGE_1_DOCS', 'STAGE_2_TECHNICAL', 'CERTIFIED'].includes(stage)) {
-      if (!assessment?.impartialityDisclosureSigned) {
-        return NextResponse.json({ 
-          error: 'Forbidden: Impartiality Disclosure (ISO 17021/42001) must be signed before proceeding to audit stages.' 
-        }, { status: 403 });
-      }
-    }
-
     return await db.transaction(async (tx) => {
+        // 1. Fetch current assessment to verify transition
+        const [assessment] = await tx.select().from(aimsAssessments).where(eq(aimsAssessments.orgId, orgId)).limit(1);
+        
+        if (assessment && !isValidTransition(assessment.stage as any, stage)) {
+            return NextResponse.json({ 
+                error: 'Invalid Stage Transition', 
+                message: `Cannot move from ${assessment.stage} to ${stage}` 
+            }, { status: 400 });
+        }
+
+        // 2. Verify Impartiality before moving beyond READINESS
+        if (['STAGE_1_DOCS', 'STAGE_2_TECHNICAL', 'CERTIFIED'].includes(stage)) {
+          if (!assessment?.impartialityDisclosureSigned) {
+            return NextResponse.json({ 
+              error: 'Forbidden: Impartiality Disclosure (ISO 17021/42001) must be signed before proceeding to audit stages.' 
+            }, { status: 403 });
+          }
+        }
+
         const [updated] = await tx.update(aimsAssessments)
           .set({ 
             stage, 

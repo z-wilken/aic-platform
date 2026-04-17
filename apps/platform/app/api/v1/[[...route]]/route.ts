@@ -265,7 +265,14 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     if (!orgId) return unauthorized();
     const db = getTenantDb(orgId);
 
-    const [org] = await db.select().from(organizations).where(eq(organizations.id, orgId)).limit(1);
+    const org = await db.query(async (tx) => {
+      const [result] = await tx.select().from(organizations).where(eq(organizations.id, orgId)).limit(1);
+      return result;
+    });
+
+    if (!org) {
+      return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    }
     
     const { generatePDF, getReportTemplate } = await import('@/lib/pdf-generator');
     const html = getReportTemplate({
