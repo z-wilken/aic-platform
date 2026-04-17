@@ -39,7 +39,8 @@ export class EncryptionService {
   /**
    * Decrypt a sensitive string
    */
-  static decrypt(encryptedData: string): string {
+  static decrypt(encryptedData: string | null | undefined): string {
+    if (!encryptedData) return '';
     try {
       const [ivHex, authTagHex, encryptedText] = encryptedData.split(':');
       
@@ -53,7 +54,7 @@ export class EncryptionService {
       decrypted += decipher.final('utf8');
       
       return decrypted;
-    } catch (err) {
+    } catch (_err) {
       console.error('[SECURITY] Decryption failed. Possible key mismatch or data corruption.');
       return '[ENCRYPTED_DATA_UNREADABLE]';
     }

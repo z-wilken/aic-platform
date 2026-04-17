@@ -14,10 +14,12 @@ import {
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
+import { motion } from "framer-motion";
 
 export default function EmpathyDemo() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>(null);
 
   const analyzeEmpathy = async () => {

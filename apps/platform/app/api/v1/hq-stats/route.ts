@@ -20,7 +20,7 @@ export async function GET() {
       .groupBy(organizations.certificationStatus);
 
     // 2. Aggregate Totals
-    const [stats]: any = await db.execute(sql`
+    const [_stats]: any = await db.execute(sql`
       SELECT 
         COUNT(*) filter (WHERE certification_status = 'CERTIFIED') as active_certs,
         COALESCE(SUM(labor_hours_invested), 0) as total_labor_hours,
@@ -30,22 +30,23 @@ export async function GET() {
     `);
 
     // 3. Calculate Velocity (MoM Delta)
-    const [prevStats]: any = await db.execute(sql`
+    const [_prevStats]: any = await db.execute(sql`
       SELECT AVG(integrity_score) as prev_avg
       FROM organizations
       WHERE created_at < now() - interval '30 days'
     `);
 
-    const currentAvg = Number(stats?.avg_integrity || 0);
-    const prevAvg = Number(prevStats?.prev_avg || 0);
-    const velocity = prevAvg > 0 
-      ? ((currentAvg - prevAvg) / prevAvg * 100).toFixed(1)
-      : '0.0';
+    const currentAvg = Number(_stats?.avg_integrity || 0);
+    const prevAvg = Number(_prevStats?.prev_avg || 0);
+    const velocityNum = prevAvg > 0 
+      ? ((currentAvg - prevAvg) / prevAvg * 100)
+      : 0;
+    const velocity = velocityNum.toFixed(1);
 
     return NextResponse.json({
       pipeline,
       metrics: stats,
-      integrityVelocity: `${velocity > 0 ? '+' : ''}${velocity}%`,
+      integrityVelocity: `${velocityNum > 0 ? '+' : ''}${velocity}%`,
       citizenAppeals: 3,
       auditorUtilization: '68%'
     });

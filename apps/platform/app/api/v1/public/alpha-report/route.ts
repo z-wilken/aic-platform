@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generatePDF, getReportTemplate } from '@/lib/pdf-generator';
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     // Mock data for the Alpha Report (BIZ-1 deliverable)
     const demoData = {
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     const html = getReportTemplate(demoData);
     const pdfBuffer = await generatePDF(html);
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': 'attachment; filename="AIC-Alpha-Audit-Report.pdf"',

@@ -26,7 +26,7 @@ export async function hasCapability(userId: string, capabilitySlug: string): Pro
     .limit(1);
 
   if (userOverride !== undefined) {
-    return userOverride.isGranted;
+    return !!userOverride.isGranted;
   }
 
   // 3. Fallback to Role-based Capability

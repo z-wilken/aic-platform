@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, governanceBlocks, auditLedger, HashChainService, EmpathyScrutiny, eq, asc, and, desc } from '@aic/db';
+import { getTenantDb, governanceBlocks, HashChainService, EmpathyScrutiny, eq, asc, and } from '@aic/db';
 import { auth } from '@aic/auth';
 
 export async function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const db = getTenantDb(session.user.orgId);
-    const blocks = await db.query(async (tx) => {
+    const blocks = await db.transaction(async (tx) => {
       return await tx
         .select()
         .from(governanceBlocks)
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    await db.query(async (tx) => {
+    await db.transaction(async (tx) => {
       // 1. Clear existing blocks for this system
       await tx.delete(governanceBlocks).where(eq(governanceBlocks.systemId, systemId));
 

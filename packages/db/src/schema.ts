@@ -516,9 +516,11 @@ export const governanceBlocks = pgTable('governance_blocks', {
   orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
   systemId: uuid('system_id').notNull(),
   type: varchar('type', { length: 50 }).notNull(), // 'INPUT', 'PROCESS', 'OUTPUT', 'HUMAN'
-  content: text('content').notNull(),
+  content: jsonb('content').notNull(),
   sequence: integer('sequence').notNull(),
   impact: varchar('impact', { length: 20 }).default('LOW'),
+  impactMagnitude: integer('impact_magnitude').default(0),
+  createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
 
@@ -555,9 +557,13 @@ export const aiSystems = pgTable('ai_systems', {
 export const aimsAssessments = pgTable('aims_assessments', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+  stage: varchar('stage', { length: 50 }).default('ADVISORY'),
   status: varchar('status', { length: 50 }).default('IN_PROGRESS'),
   notes: text('notes'),
   readinessScore: integer('readiness_score').default(0),
+  assignedAuditorId: uuid('assigned_auditor_id').references(() => users.id),
+  impartialityDisclosureSigned: boolean('impartiality_disclosure_signed').default(false),
+  impartialitySignedAt: timestamp('impartiality_signed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
 });
@@ -567,7 +573,11 @@ export const conflictChecks = pgTable('conflict_checks', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
   auditorId: uuid('auditor_id').references(() => users.id),
-  declaration: text('declaration').notNull(),
+  declaration: text('declaration'),
+  hasPriorAdvisoryRelationship: boolean('has_prior_advisory_relationship').default(false),
+  lastAdvisoryDate: timestamp('last_advisory_date', { withTimezone: true }),
+  isCleared: boolean('is_cleared').default(false),
+  justification: text('justification'),
   status: varchar('status', { length: 20 }).default('PENDING'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
@@ -588,8 +598,11 @@ export const cpdLogs = pgTable('cpd_logs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
   hours: integer('hours').notNull(),
   date: timestamp('date', { withTimezone: true }).notNull(),
+  category: varchar('category', { length: 50 }),
+  evidenceUrl: text('evidence_url'),
   status: varchar('status', { length: 20 }).default('PENDING'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });
@@ -598,9 +611,16 @@ export const cpdLogs = pgTable('cpd_logs', {
 export const examQuestions = pgTable('exam_questions', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   certLevelId: uuid('cert_level_id').notNull(),
-  question: text('question').notNull(),
-  options: jsonb('options').notNull(), // Array of choices
-  correctOptionIndex: integer('correct_option_index').notNull(),
+  question: text('question'),
+  questionEncrypted: text('question_encrypted'),
+  options: jsonb('options'), // Array of choices
+  optionsEncrypted: text('options_encrypted'),
+  correctOptionIndex: integer('correct_option_index'),
+  correctAnswerEncrypted: text('correct_answer_encrypted'),
   explanation: text('explanation'),
+  explanationEncrypted: text('explanation_encrypted'),
+  category: varchar('category', { length: 100 }),
+  difficulty: integer('difficulty').default(1),
+  isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 });

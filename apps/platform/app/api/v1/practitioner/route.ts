@@ -19,7 +19,7 @@ export async function GET() {
 
     const db = getTenantDb(session.user.orgId as string);
     
-    return await db.query(async (tx) => {
+    return await db.transaction(async (tx) => {
       const [certification] = await tx.select().from(practitionerCertifications)
           .where(eq(practitionerCertifications.userId, session.user.id))
           .limit(1);
@@ -56,11 +56,12 @@ export async function POST(request: NextRequest) {
     const data = CPDLogSchema.parse(body);
 
     const db = getTenantDb(session.user.orgId as string);
-    return await db.query(async (tx) => {
+    return await db.transaction(async (tx) => {
       const [newLog] = await tx.insert(cpdLogs).values({
         userId: session.user.id,
         ...data,
-        status: 'PENDING'
+        status: 'PENDING',
+        date: new Date()
       }).returning();
 
       return NextResponse.json(newLog);

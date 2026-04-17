@@ -1,4 +1,4 @@
-import { getSystemDb, auditDocuments, organizations, eq, sql } from '@aic/db';
+import { getSystemDb, auditDocuments, sql } from '@aic/db';
 
 /**
  * Calculates AIMS Readiness Level (1-4) based on mandatory document slots.
@@ -40,6 +40,6 @@ export async function getLedgerHealthStatus(orgId: string) {
   return { 
     healthy: true, 
     nodeCount: entries.length, 
-    lastHash: entries[entries.length-1].current_hash 
+    lastHash: entries[entries.length-1].currentHash 
   };
 }

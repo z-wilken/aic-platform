@@ -1,8 +1,33 @@
 import Redis from 'ioredis';
-import { getSystemDb, revokedTokens, eq, sql } from '@aic/db';
+import { getSystemDb, revokedTokens, eq } from '@aic/db';
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379/0';
-// ... (rest of redis setup)
+
+let redis: Redis | null = null;
+let isRedisAvailable = true;
+
+function getRedis() {
+    if (!redis && isRedisAvailable) {
+        try {
+            redis = new Redis(redisUrl, {
+                maxRetriesPerRequest: 1,
+                connectTimeout: 2000,
+                retryStrategy: (times) => {
+                    if (times > 3) {
+                        isRedisAvailable = false;
+                        return null;
+                    }
+                    return Math.min(times * 100, 2000);
+                }
+            });
+            redis.on('error', () => { isRedisAvailable = false; });
+            redis.on('connect', () => { isRedisAvailable = true; });
+        } catch (_e) {
+            isRedisAvailable = false;
+        }
+    }
+    return redis as Redis;
+}
 
 /**
  * INSTITUTIONAL TOKEN REVOCATION SERVICE
@@ -38,8 +63,8 @@ export class RevocationService {
                 await client.set(`trl:${jti}`, 'revoked', 'EX', ttl);
                 console.log(`[AUTH] Token revoked in cache: ${jti} (TTL: ${ttl}s)`);
             }
-        } catch (error) {
-            console.error('[AUTH] Cache Revocation failed:', error);
+        } catch (_error) {
+            console.error('[AUTH] Cache Revocation failed:', _error);
         }
     }
 
@@ -55,7 +80,7 @@ export class RevocationService {
                 const client = getRedis();
                 const exists = await client.exists(`trl:${jti}`);
                 if (exists === 1) return true;
-            } catch (error) {
+            } catch (_error) {
                 isRedisAvailable = false;
             }
         }
@@ -69,7 +94,7 @@ export class RevocationService {
                 .where(eq(revokedTokens.jti, jti))
                 .limit(1);
             return !!revoked;
-        } catch (error) {
+        } catch (_error) {
             return false;
         }
     }

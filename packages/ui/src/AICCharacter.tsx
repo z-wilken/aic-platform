@@ -14,7 +14,7 @@
  *  - Asymmetric idle cycle so the figure never feels robotic
  */
 
-import { motion, useAnimationControls, Variants } from 'framer-motion';
+import { motion, useAnimationControls, Variants, TargetAndTransition } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 type Pose = 'idle' | 'thinking' | 'reviewing' | 'approving';
@@ -126,7 +126,7 @@ export default function AICCharacter({
     armRControls.start({ ...p.armR,  transition: SPRING_HEAVY });
     hairAControls.start({ ...p.hairA, transition: SPRING_SOFT });
     hairBControls.start({ ...p.hairB, transition: SPRING_SOFT });
-  }, [pose, shouldAnimate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pose, shouldAnimate, torsoControls, headControls, armLControls, armRControls, hairAControls, hairBControls]);
 
   // Idle breathing cycle
   useEffect(() => {
@@ -204,7 +204,7 @@ export default function AICCharacter({
 
       {/* ── Torso group (breathes) ──────────────────────────────── */}
       <motion.g
-        animate={shouldAnimate ? breatheVariants[breathePhase] : {}}
+        animate={(shouldAnimate ? breatheVariants[breathePhase] : {}) as TargetAndTransition}
         style={{ originX: '100px', originY: '200px' }}
       >
         <motion.g animate={torsoControls} style={{ originX: '100px', originY: '160px' }}>
@@ -368,7 +368,7 @@ export default function AICCharacter({
 
       {/* ── Head group (sways gently) ───────────────────────────── */}
       <motion.g
-        animate={shouldAnimate ? headSway[swayPhase] : {}}
+        animate={(shouldAnimate ? headSway[swayPhase] : {}) as TargetAndTransition}
         style={{ originX: '100px', originY: '110px' }}
       >
         <motion.g animate={headControls} style={{ originX: '100px', originY: '82px' }}>
