@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, getSystemDb, aimsAssessments, conflictChecks, organizations, eq, and, sql } from '@aic/db';
+import { getTenantDb, getSystemDb, aimsAssessments, conflictChecks, organizations, eq, sql } from '@aic/db';
 import { auth } from '@aic/auth';
 import { z } from 'zod';
 import { isValidTransition } from '@/lib/state-machine';
@@ -176,7 +176,7 @@ export async function PATCH(
       check, 
       message: isCleared ? 'Auditor cleared and assigned.' : 'CONFLICT DETECTED: Two-year cooling-off period not met.' 
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Conflict check failed' }, { status: 400 });
   }
 }

@@ -31,7 +31,7 @@ export class EngineClient {
       resetTimeout: 30000, // 30 seconds before trying again
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const callEngine = async (params: { endpoint: string, method: string, body?: any, orgId?: string }) => {
       const { endpoint, method, body, orgId } = params;
       
@@ -98,7 +98,7 @@ export class EngineClient {
     this.breaker.on('close', () => console.info('[CIRCUIT_BREAKER] Engine circuit closed. Full intelligence restored.'));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   private static async request<T>(endpoint: string, method: string = 'GET', body?: any, orgId?: string): Promise<T> {
     this.initializeBreaker();
     return await this.breaker.fire({ endpoint, method, body, orgId }) as T;

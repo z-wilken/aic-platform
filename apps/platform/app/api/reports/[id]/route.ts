@@ -54,7 +54,7 @@ export async function GET(
       const pdfBuffer = await generatePDF(html);
 
       // 3. Return as PDF download
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       return new NextResponse(pdfBuffer as any, {
         headers: {
           'Content-Type': 'application/pdf',

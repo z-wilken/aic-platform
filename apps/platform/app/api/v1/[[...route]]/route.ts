@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
-import { getSystemDb, getTenantDb, sql, roles, capabilities, organizations, users, permissionAuditLogs, eq, and, isNotNull } from '@aic/db';
+import { getSystemDb, getTenantDb, sql, roles, organizations, eq } from '@aic/db';
 import { hasCapability } from '@/lib/rbac';
 
 /**
@@ -40,12 +40,6 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
 
   const userId = session?.user?.id;
   const orgId = session?.user?.orgId;
-
-  // Helper to get the correct DB instance based on session
-  const getDb = () => {
-    if (orgId) return getTenantDb(orgId);
-    return getSystemDb();
-  };
 
   // 2. Gateway Routing & Capability Enforcement
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTenantDb, practitionerCertifications, cpdLogs, users, eq, and, sql } from '@aic/db';
+import { getTenantDb, practitionerCertifications, cpdLogs, eq, and, sql } from '@aic/db';
 import { auth } from '@aic/auth';
 import { z } from 'zod';
 
@@ -40,8 +40,8 @@ export async function GET() {
         }
       });
     });
-  } catch (error) {
-    console.error('[PRACTITIONER_API] Error:', error);
+  } catch (_error) {
+    console.error('[PRACTITIONER_API] Error:', _error);
     return NextResponse.json({ error: 'Failed to fetch practitioner data' }, { status: 500 });
   }
 }
@@ -65,8 +65,8 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(newLog);
     });
-  } catch (error) {
-    console.error('[PRACTITIONER_CPD_API] Error:', error);
+  } catch (_error) {
+    console.error('[PRACTITIONER_CPD_API] Error:', _error);
     return NextResponse.json({ error: 'Failed to log CPD' }, { status: 400 });
   }
 }
