@@ -11,6 +11,7 @@ import {
   Code2,
   CheckCircle,
   ChevronRight,
+  Award,
 } from "lucide-react";
 
 const divisions = [
