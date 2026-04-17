@@ -130,7 +130,7 @@ export default function DisclosuresPage() {
       {/* Hero */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628]/80 via-[#0f1f3d]/75 to-[#0a1628]/70" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628]/90 via-[#0f1f3d]/85 to-[#0a1628]/80" />
         <div className="relative max-w-7xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="flex items-center gap-2 mb-4">
@@ -139,10 +139,10 @@ export default function DisclosuresPage() {
                 IAF MLA Mandatory Disclosures
               </span>
             </div>
-            <h1 className="text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h1 className="text-5xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
               Public Disclosures & Compliance
             </h1>
-            <p className="text-xl text-aic-paper/70 max-w-3xl leading-relaxed">
+            <p className="text-xl text-white/80 max-w-3xl leading-relaxed">
               As an IAF Multilateral Recognition Arrangement (MLA) signatory, AIC maintains full transparency regarding
               our impartiality, accreditation status, certified organizations, and appeals processes.
             </p>

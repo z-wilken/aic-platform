@@ -121,7 +121,7 @@ export default function CertificationPage() {
             className="max-w-3xl"
           >
             <div className="flex items-center gap-2 mb-6">
-              <span className="eyebrow px-3 py-1 bg-[#c9920a]/10 rounded-full border border-[#c9920a]/20">
+              <span className="eyebrow px-3 py-1 bg-[#c9920a]/10 rounded-full border border-[#c9920a]/20 text-white">
                 AIC Five-Division Framework
               </span>
             </div>

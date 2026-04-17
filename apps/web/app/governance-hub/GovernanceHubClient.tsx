@@ -164,17 +164,17 @@ export default function GovernanceHubClient({
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/80 to-[#0a1628]/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/90 to-[#0a1628]/80" />
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-2 mb-4">
             <BookOpen className="w-4 h-4 text-[#c9920a]" />
             <span className="text-[#c9920a] text-sm uppercase tracking-widest">Governance Hub</span>
           </div>
-          <h1 className="text-5xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
+          <h1 className="text-5xl text-white mb-4" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
             The Global Standard for<br />
             <span className="text-[#c9920a]">Algorithmic Rights</span>
           </h1>
-          <p className="text-aic-paper/70 text-lg max-w-2xl mb-8">
+          <p className="text-white/80 text-lg max-w-2xl mb-8">
             Access AIC&apos;s foundational Declaration of Algorithmic Rights, global standards maps, and real-time policy intelligence for researchers, regulators, and policymakers.
           </p>
           <div className="flex gap-4">

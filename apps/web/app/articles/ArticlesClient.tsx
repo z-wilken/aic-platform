@@ -130,10 +130,10 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 Knowledge Center
               </span>
             </div>
-            <h1 className="text-5xl md:text-6xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h1 className="text-5xl md:text-6xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
               Articles & Insights
             </h1>
-            <p className="text-xl text-aic-paper/70 leading-relaxed">
+            <p className="text-xl text-white/80 leading-relaxed">
               Expert analysis, research findings, and practical guidance on AI governance, certification, and the evolving landscape of algorithmic accountability.
             </p>
           </motion.div>
@@ -342,7 +342,7 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
             <h2 className="text-3xl text-aic-paper mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
               Stay Informed on AI Governance
             </h2>
-            <p className="text-aic-paper/70 mb-8 text-lg">
+            <p className="text-white/80 mb-8 text-lg">
               Subscribe to receive monthly insights on certification trends, policy updates, and best practices from AIC experts.
             </p>
             <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
@@ -353,8 +353,9 @@ export default function ArticlesClient({ initialArticles, initialNextCursor, her
                 placeholder="Enter your email"
                 aria-label="Email address for newsletter"
                 required
-                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-[#0f1f3d] placeholder-[#6b7280]/60 focus:outline-none focus:ring-2 focus:ring-[#c9920a]"
+                className="flex-1 px-4 py-3 rounded-lg bg-aic-paper text-[#0f1f3d] border-2 border-white/30 placeholder-[#6b7280]/60 focus:outline-none focus:ring-2 focus:ring-[#c9920a] focus:border-white"
               />
+
               <Button
                 type="submit"
                 disabled={newsletterLoading || newsletterSuccess}
