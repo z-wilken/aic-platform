@@ -144,8 +144,8 @@ export default function ContactPage() {
                       <Mail className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">General Inquiries</div>
-                      <div className="text-[#0f1f3d] font-medium">contact@aiccertified.cloud</div>
+                      <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">General Enquiries</div>
+                      <div className="text-[#0f1f3d] font-medium">albert@ztoaholdings.com</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -153,8 +153,8 @@ export default function ContactPage() {
                       <Shield className="w-5 h-5 text-[#c9920a]" />
                     </div>
                     <div>
-                      <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">Certification Support</div>
-                      <div className="text-[#0f1f3d] font-medium">support@aiccertified.cloud</div>
+                      <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">Strategic Partnerships</div>
+                      <div className="text-[#0f1f3d] font-medium">zander@ztoaholdings.com</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -163,7 +163,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">Headquarters</div>
-                      <div className="text-[#0f1f3d] font-medium">Johannesburg, South Africa<br />15 Smit Street, Gauteng, 2000</div>
+                      <div className="text-[#0f1f3d] font-medium">Johannesburg, South Africa<br />15 Smit Street, Johannesburg,<br />Gauteng, 2000</div>
                     </div>
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export default function ContactPage() {
                 <p className="text-sm text-[#0f1f3d] opacity-80 mb-4 font-medium">
                   Interested in certifying your entire team or organization? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
-                <a href="mailto:contact@aiccertified.cloud" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+                <a href="mailto:albert@ztoaholdings.com" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                   Contact Enterprise Sales <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
