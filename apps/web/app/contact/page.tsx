@@ -118,10 +118,10 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
+            <h1 className="text-4xl md:text-5xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
               Join the <span className="text-[#c9920a]">AIC Waiting List</span>
             </h1>
-            <p className="text-aic-paper/70 text-lg max-w-2xl mx-auto">
+            <p className="text-white/80 text-lg max-w-2xl mx-auto">
               Secure your place in the upcoming certification cohort. Professionals who join the waiting list receive early access, exclusive study materials, and a 25% discount.
             </p>
           </motion.div>
