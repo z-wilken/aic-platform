@@ -1,33 +1,45 @@
 'use client';
 
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { useSession } from 'next-auth/react'
-import { UserRole, AICSessionUser } from '@aic/types'
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { motion } from 'framer-motion';
+import { Shield, CheckCircle, AlertTriangle, Clock, ArrowRight } from 'lucide-react';
+import { UserRole, AICSessionUser } from '@aic/types';
+import { ScoreRing } from '@/app/components/ui/ScoreRing';
+import { Eyebrow, SectionCard, CopperTag } from '@/app/components/ui/Eyebrow';
+import { StatusChip } from '@/app/components/ui/StatusChip';
+import { UploadModal } from '@/app/components/ui/UploadModal';
 
-interface InternalStats {
-  pendingApplications: number;
-  activeCertifications: number;
-  totalLeads: number;
-  auditsTotal: number;
-}
+/* ── Static design data (replace with /api/dashboard when ready) ── */
+const RIGHTS = [
+  { id: 1, tag: 'RIGHT 01', label: 'Human Agency',  score: 71, flagged: 1 },
+  { id: 2, tag: 'RIGHT 02', label: 'Explanation',   score: 88, flagged: 0 },
+  { id: 3, tag: 'RIGHT 03', label: 'Empathy',        score: 54, flagged: 1 },
+  { id: 4, tag: 'RIGHT 04', label: 'Correction',     score: 79, flagged: 0 },
+  { id: 5, tag: 'RIGHT 05', label: 'Truth',          score: 95, flagged: 0 },
+];
+
+const UPCOMING = [
+  { label: 'Remediation deadline',  date: 'May 2, 2026',   urgent: true  },
+  { label: 'Walk-Me-Through call',  date: 'May 8, 2026',   urgent: false },
+  { label: 'Auditor review begins', date: 'May 12, 2026',  urgent: false },
+  { label: 'Certificate renewal',   date: 'Apr 12, 2027',  urgent: false },
+];
+
+const MSGS = [
+  { id: 1, author: 'System Auditor', time: '2 hours ago', unread: true,
+    text: 'Right 3 (Empathy): the batch of 20 decline letters scored 54/100 — below the certification threshold of 60. Please submit revised templates with a clear next-steps section and plain-language appeal instruction before the remediation deadline.' },
+  { id: 2, author: 'System Auditor', time: 'Yesterday',   unread: false,
+    text: 'Right 1 (Human Agency): zero override events logged in April across 15,421 decisions. Please provide a written explanation from the Accountable Person before we classify this as a Critical Finding.' },
+];
 
 interface DashboardData {
-  stats: InternalStats;
-  activeOrgs: Array<{
-    name: string;
-    integrity_score: number;
-    tier: string;
-  }>;
+  stats: { pendingApplications: number; activeCertifications: number; totalLeads: number; auditsTotal: number };
+  activeOrgs: Array<{ name: string; integrity_score: number; tier: string }>;
 }
 
-interface InternalLinkCardProps {
-  title: string;
-  desc: string;
-  href: string;
-  allowedRoles: UserRole[];
-  currentRole: UserRole;
+function scoreColor(v: number) {
+  return v >= 80 ? '#16a34a' : v >= 60 ? '#c9920a' : '#dc2626';
 }
 
 export default function InternalDashboard() {
@@ -35,150 +47,250 @@ export default function InternalDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [uploadLabel, setUploadLabel] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
-    // Ported from admin logic
     fetch('/api/dashboard')
-        .then(res => res.json())
-        .then((dashData: DashboardData) => {
-            setData(dashData);
-            setLoading(false);
-        })
-        .catch(() => setLoading(false));
+      .then((r) => r.json())
+      .then((d: DashboardData) => { setData(d); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
   if (!mounted || loading) {
-    return <div className="flex items-center justify-center h-screen italic text-gray-500">Syncing with institutional registry...</div>;
+    return (
+      <div className="flex items-center justify-center h-64 text-[#6b7280] font-serif italic text-sm">
+        Syncing with institutional registry…
+      </div>
+    );
   }
 
-  const role = (session?.user as unknown as AICSessionUser)?.role || 'VIEWER';
+  const overall = Math.round(RIGHTS.reduce((a, r) => a + r.score, 0) / RIGHTS.length);
+  const totalFlagged = RIGHTS.reduce((a, r) => a + r.flagged, 0);
+
+  const stats = [
+    { label: 'Integrity Score',  value: `${overall}/100`, sub: 'Provisional Pass',       color: '#c9920a', Icon: Shield        },
+    { label: 'Evidence Met',     value: `11/15`,          sub: '73% complete',            color: '#16a34a', Icon: CheckCircle   },
+    { label: 'Critical Flags',   value: String(totalFlagged), sub: 'Require resolution',  color: '#dc2626', Icon: AlertTriangle },
+    { label: 'Days to Deadline', value: '14',             sub: 'Evidence submission',      color: '#b45309', Icon: Clock         },
+  ];
 
   return (
-    <div className="max-w-7xl mx-auto p-8 lg:p-12 space-y-12">
-      <header className="flex justify-between items-end border-b border-aic-paper/5 pb-8">
-        <div>
-          <h1 className="text-5xl font-serif font-bold text-aic-paper tracking-tighter mb-4">Internal Command.</h1>
-          <p className="text-gray-500 font-serif italic text-lg">Logged in as {session?.user?.name || 'Administrator'} ({role})</p>
-        </div>
-        <div className="text-right">
-          <span className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest block mb-2">Registry Status</span>
-          <div className="text-2xl font-serif text-green-500">CONNECTED</div>
-        </div>
-      </header>
+    <>
+      {uploadLabel && (
+        <UploadModal label={uploadLabel} onClose={() => setUploadLabel(null)} />
+      )}
 
-      {/* Metrics Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {[
-          { l: 'Pending Apps', v: data?.stats?.pendingApplications || 0, c: 'text-aic-paper' },
-          { l: 'Active Certs', v: data?.stats?.activeCertifications || 0, c: 'text-aic-gold' },
-          { l: 'Total Leads', v: data?.stats?.totalLeads || 0, c: 'text-blue-400' },
-          { l: 'Audits Ran', v: data?.stats?.auditsTotal || 0, c: 'text-green-400' }
-        ].map((s, i) => (
-          <motion.div 
-            key={s.l}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-[#080808] border border-aic-paper/5 p-8 rounded-3xl"
-          >
-            <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">{s.l}</p>
-            <p className={`text-4xl font-serif font-medium ${s.c}`}>{s.v}</p>
-          </motion.div>
-        ))}
-      </div>
+      <div className="space-y-5">
+        <Eyebrow>Certification Overview</Eyebrow>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Certification Pipeline (Visible to AUDITOR and ADMIN) */}
-        {(role === 'ADMIN' || role === 'AUDITOR' || role === 'COMPLIANCE_OFFICER') && (
-          <div className="lg:col-span-2 space-y-6">
-            <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Certification Pipeline</h3>
-            <div className="bg-[#080808] border border-aic-paper/5 rounded-[2.5rem] p-8">
-              <div className="space-y-8">
-                {(data?.activeOrgs || []).map((org, i) => (
-                  <div key={i} className="space-y-2">
-                    <div className="flex justify-between items-end text-xs font-mono">
-                      <span className="text-aic-paper font-bold uppercase tracking-widest">{org.name}</span>
-                      <span className="text-gray-500">{org.tier} — {org.integrity_score}%</span>
+        {/* Stat cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+            >
+              <SectionCard className="p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-[0.15em] text-[#6b7280]">
+                    {s.label}
+                  </span>
+                  <s.Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: s.color }} />
+                </div>
+                <div className="font-mono text-2xl font-bold leading-none mb-1.5" style={{ color: s.color }}>
+                  {s.value}
+                </div>
+                <div className="text-xs text-[#6b7280]">{s.sub}</div>
+              </SectionCard>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
+
+          {/* Left column */}
+          <div className="space-y-4">
+
+            {/* Evidence by Algorithmic Right */}
+            <SectionCard>
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280]">
+                  Evidence by Algorithmic Right
+                </span>
+                <a
+                  href="/evidence"
+                  className="font-mono text-[9px] font-bold text-[#c9920a] flex items-center gap-1 hover:underline"
+                >
+                  View All <ArrowRight className="w-3 h-3" />
+                </a>
+              </div>
+              <div className="divide-y divide-[#f3f4f6]">
+                {RIGHTS.map((r) => {
+                  const col = scoreColor(r.score);
+                  return (
+                    <div key={r.id} className="flex items-center gap-3 py-2.5">
+                      <CopperTag>{r.tag}</CopperTag>
+                      <span className="flex-1 text-xs font-semibold text-[#0f1f3d]">{r.label}</span>
+                      {r.flagged > 0 && (
+                        <span className="font-mono text-[8px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
+                          {r.flagged} FLAGGED
+                        </span>
+                      )}
+                      <div className="w-20 h-1.5 bg-[#e5e7eb] rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${r.score}%`, background: col }}
+                        />
+                      </div>
+                      <span
+                        className="font-mono text-xs font-bold w-7 text-right"
+                        style={{ color: col }}
+                      >
+                        {r.score}
+                      </span>
                     </div>
-                    <div className="h-1 w-full bg-aic-paper/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${org.integrity_score}%` }}
-                        className={`h-full ${org.integrity_score === 100 ? 'bg-green-500' : 'bg-aic-gold'}`}
-                      />
+                  );
+                })}
+              </div>
+            </SectionCard>
+
+            {/* Recent Correspondence */}
+            <SectionCard>
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280]">
+                  Recent Correspondence
+                </span>
+                <a
+                  href="/correspondence"
+                  className="font-mono text-[9px] font-bold text-[#c9920a] flex items-center gap-1 hover:underline"
+                >
+                  View All <ArrowRight className="w-3 h-3" />
+                </a>
+              </div>
+              <div className="divide-y divide-[#f3f4f6]">
+                {MSGS.map((m) => (
+                  <div key={m.id} className="flex gap-3 py-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#f0f4f8] flex items-center justify-center font-mono text-[9px] font-bold text-[#c9920a] flex-shrink-0">
+                      AIC
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between mb-1">
+                        <span className="text-xs font-semibold text-[#0f1f3d]">{m.author}</span>
+                        <div className="flex items-center gap-2">
+                          {m.unread && (
+                            <span className="font-mono text-[8px] font-bold text-[#c9920a] bg-amber-50 px-1.5 py-0.5 rounded">
+                              UNREAD
+                            </span>
+                          )}
+                          <span className="font-mono text-[8px] text-[#9ca3af]">{m.time}</span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-[#6b7280] leading-relaxed line-clamp-2">{m.text}</p>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        )}
+            </SectionCard>
 
-        {/* Verification Queue (AUDITOR specific) */}
-        {((role as string) === 'AUDITOR' || (role as string) === 'ADMIN') && (
-          <div className="space-y-6">
-            <h3 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em]">Verification Feed</h3>
-            <div className="bg-[#080808] border border-aic-paper/5 rounded-[2.5rem] p-8">
-              <p className="text-xs text-gray-500 font-serif italic mb-8">Pending auditor sign-off on technical evidence.</p>
-              <div className="space-y-4">
-                {/* Simulated alerts */}
-                <div className="p-4 bg-aic-paper/5 border border-aic-paper/5 rounded-xl border-l-aic-gold border-l-2">
-                  <p className="text-xs font-bold text-aic-paper uppercase tracking-tighter">Bias Audit Verification</p>
-                  <p className="text-[10px] text-gray-500 font-mono mt-1">STANDARD BANK • 2H AGO</p>
+            {/* Pipeline (from live API) */}
+            {data?.activeOrgs && data.activeOrgs.length > 0 && (
+              <SectionCard>
+                <Eyebrow>Certification Pipeline</Eyebrow>
+                <div className="space-y-4">
+                  {data.activeOrgs.map((org, i) => (
+                    <div key={i}>
+                      <div className="flex justify-between text-xs font-mono mb-1.5">
+                        <span className="font-bold text-[#0f1f3d] uppercase tracking-wide">{org.name}</span>
+                        <span className="text-[#6b7280]">{org.tier} — {org.integrity_score}%</span>
+                      </div>
+                      <div className="h-1 w-full bg-[#f0f4f8] rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${org.integrity_score}%` }}
+                          transition={{ duration: 0.8, delay: i * 0.1 }}
+                          className="h-full rounded-full"
+                          style={{ background: org.integrity_score === 100 ? '#22c55e' : '#c9920a' }}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="p-4 bg-aic-paper/5 border border-aic-paper/5 rounded-xl border-l-aic-gold border-l-2">
-                  <p className="text-xs font-bold text-aic-paper uppercase tracking-tighter">POPIA Section 71 Review</p>
-                  <p className="text-[10px] text-gray-500 font-mono mt-1">INVESTEC • 5H AGO</p>
-                </div>
+              </SectionCard>
+            )}
+          </div>
+
+          {/* Right rail */}
+          <div className="space-y-4">
+            {/* Score ring card */}
+            <SectionCard className="text-center p-6">
+              <div className="flex justify-center mb-4">
+                <ScoreRing value={overall} size={100} thickness={6} />
               </div>
-              <Link href="/verification" className="block text-center mt-8 text-[10px] font-mono font-bold text-aic-gold hover:text-aic-paper transition-colors uppercase tracking-widest">
-                Access Gateway →
-              </Link>
-            </div>
+              <div className="font-serif text-sm font-bold text-[#0f1f3d] mb-1">Provisional Pass</div>
+              <p className="text-xs text-[#6b7280] mb-5 leading-relaxed">
+                Right 3 (Empathy) is the primary risk to full certification.
+              </p>
+              <button
+                onClick={() => setUploadLabel('All Outstanding Evidence')}
+                className="w-full inline-flex items-center justify-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] bg-[#c9920a] text-white rounded-full px-5 py-2.5 hover:bg-[#b07d08] transition-colors shadow-lg shadow-amber-500/20"
+              >
+                Submit Evidence <ArrowRight className="w-3 h-3" />
+              </button>
+            </SectionCard>
+
+            {/* Upcoming actions */}
+            <SectionCard className="p-4">
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                Upcoming Actions
+              </div>
+              <div className="divide-y divide-[#f3f4f6]">
+                {UPCOMING.map((a) => (
+                  <div key={a.label} className="flex justify-between items-center py-2">
+                    <span
+                      className={`text-xs ${a.urgent ? 'text-red-600 font-semibold' : 'text-[#0f1f3d]'}`}
+                    >
+                      {a.label}
+                    </span>
+                    <span
+                      className={`font-mono text-[9px] font-bold ${
+                        a.urgent ? 'text-red-600' : 'text-[#9ca3af]'
+                      }`}
+                    >
+                      {a.date}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+
+            {/* Live API stats */}
+            {data?.stats && (
+              <SectionCard className="p-4">
+                <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                  Registry
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { l: 'Pending Apps',  v: data.stats.pendingApplications },
+                    { l: 'Active Certs',  v: data.stats.activeCertifications },
+                    { l: 'Total Leads',   v: data.stats.totalLeads },
+                    { l: 'Audits Ran',    v: data.stats.auditsTotal },
+                  ].map((s) => (
+                    <div key={s.l}>
+                      <div className="font-mono text-[8px] text-[#9ca3af] uppercase tracking-wide mb-0.5">{s.l}</div>
+                      <div className="font-mono text-lg font-bold text-[#0f1f3d]">{s.v}</div>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+            )}
           </div>
-        )}
+        </div>
       </div>
-
-      {/* Internal Routing Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
-        <InternalLinkCard 
-          title="Growth & CRM" 
-          desc="Pipeline and lead management." 
-          href="/crm" 
-          allowedRoles={['ADMIN', 'COMPLIANCE_OFFICER']} 
-          currentRole={role}
-        />
-        <InternalLinkCard 
-          title="Audit Factory" 
-          desc="Evidence and certification management." 
-          href="/audits" 
-          allowedRoles={['ADMIN', 'AUDITOR', 'COMPLIANCE_OFFICER']} 
-          currentRole={role}
-        />
-        <InternalLinkCard 
-          title="Intelligence" 
-          desc="Engine telemetry and performance." 
-          href="/intelligence/engine" 
-          allowedRoles={['ADMIN']} 
-          currentRole={role}
-        />
-      </div>
-    </div>
-  )
-}
-
-function InternalLinkCard({ title, desc, href, allowedRoles, currentRole }: InternalLinkCardProps) {
-  const isAllowed = allowedRoles.includes(currentRole);
-  
-  if (!isAllowed) return null;
-
-  return (
-    <Link href={href} className="group">
-      <div className="bg-[#080808] border border-aic-paper/5 p-8 rounded-3xl group-hover:border-aic-gold transition-all">
-        <h4 className="font-serif text-xl font-bold text-aic-paper mb-2">{title}</h4>
-        <p className="text-sm text-gray-500 font-serif italic">{desc}</p>
-      </div>
-    </Link>
-  )
+    </>
+  );
 }

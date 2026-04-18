@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk, Merriweather } from "next/font/google";
 import Script from "next/script";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
@@ -11,6 +11,14 @@ const crimsonPro = Crimson_Pro({
   variable: "--font-crimson-pro",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+  display: "swap",
+});
+
+const merriweather = Merriweather({
+  variable: "--font-merriweather",
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -58,7 +66,7 @@ export default async function RootLayout({
           `}
         </Script>
       </head>
-      <body className={`${crimsonPro.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased bg-aic-navy text-aic-paper font-sans`}>
+      <body className={`${crimsonPro.variable} ${merriweather.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased font-sans`}>
         <Providers>
           <div className="flex">
             <Sidebar navItems={navItems} />
