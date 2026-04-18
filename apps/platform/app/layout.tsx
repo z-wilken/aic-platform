@@ -3,8 +3,6 @@ import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk, Merriweather } from "next/fo
 import Script from "next/script";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
-import { Sidebar } from "./components/Sidebar";
-import { getNavigation } from "@/lib/navigation";
 import "./globals.css";
 
 const crimsonPro = Crimson_Pro({
@@ -42,12 +40,11 @@ export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navItems = await getNavigation();
   const gaId = "G-G7QB1VX27Q";
 
   return (
@@ -68,12 +65,7 @@ export default async function RootLayout({
       </head>
       <body className={`${crimsonPro.variable} ${merriweather.variable} ${ibmPlexMono.variable} ${spaceGrotesk.variable} antialiased font-sans`}>
         <Providers>
-          <div className="flex">
-            <Sidebar navItems={navItems} />
-            <main className="flex-1 ml-64 min-h-screen">
-              {children}
-            </main>
-          </div>
+          {children}
           <Toaster position="bottom-right" richColors />
         </Providers>
       </body>
