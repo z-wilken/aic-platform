@@ -88,7 +88,7 @@ export default function KeysPage() {
                 ))}
               </div>
               <div className="mt-4">
-                <button className="inline-flex items-center gap-2 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
+                <button type="button" className="inline-flex items-center gap-2 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
                   <Plus className="w-3.5 h-3.5" /> Generate New Key
                 </button>
               </div>
@@ -103,10 +103,11 @@ export default function KeysPage() {
                 <pre className="font-mono text-xs text-white/80 leading-relaxed m-0">{SDK_SNIPPET}</pre>
               </div>
               <div className="flex gap-2.5">
-                <button className="inline-flex items-center gap-1.5 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
+                <button type="button" className="inline-flex items-center gap-1.5 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
                   <ExternalLink className="w-3 h-3" /> SDK Documentation
                 </button>
                 <button
+                  type="button"
                   onClick={handleCopy}
                   className="inline-flex items-center gap-1.5 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors"
                 >

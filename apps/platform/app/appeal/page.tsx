@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AppealPortal() {
     const [step, setStep] = useState(1);
+    const [trackingRef, setTrackingRef] = useState('');
+    useEffect(() => {
+        setTrackingRef('AIC-INC-' + Math.random().toString(36).substring(7).toUpperCase());
+    }, []);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         orgName: '',
@@ -140,7 +144,7 @@ export default function AppealPortal() {
                                 Your representation has been securely hashed and recorded in the organization's accountability queue. A human officer is required to review this within 72 hours.
                             </p>
                             <p className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Tracking Reference</p>
-                            <p className="font-mono text-xs text-aic-gold select-all">AIC-INC-{Math.random().toString(36).substring(7).toUpperCase()}</p>
+                            <p className="font-mono text-xs text-aic-gold select-all">{trackingRef || 'AIC-INC-\u2026'}</p>
                         </motion.div>
                     )}
                 </AnimatePresence>

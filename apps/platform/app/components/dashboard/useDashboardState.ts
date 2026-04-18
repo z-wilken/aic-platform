@@ -34,13 +34,9 @@ export function useDashboardState() {
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'connected') {
-          console.log('[SSE] Hardened link established');
-          return;
+        if (data.type !== 'connected') {
+          fetchNotifs();
         }
-        
-        // Refresh notifications on any event (or handle specific types)
-        fetchNotifs();
       } catch {
         console.error('[SSE] Failed to parse event block');
       }

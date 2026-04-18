@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Crimson_Pro, IBM_Plex_Mono, Space_Grotesk, Merriweather } from "next/font/google";
 import Script from "next/script";
 import { Providers } from "./providers";
@@ -33,6 +33,11 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "AIC Pulse | Compliance Dashboard",

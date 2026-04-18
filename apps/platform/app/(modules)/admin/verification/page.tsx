@@ -121,9 +121,10 @@ export default function VerificationPage() {
                                         {req.evidence_url && (
                                             <div className="mb-6">
                                                 <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-2">Submitted Evidence</p>
-                                                <a 
-                                                    href={req.evidence_url} 
-                                                    target="_blank" 
+                                                <a
+                                                    href={req.evidence_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-2 text-aic-gold hover:underline font-mono text-xs"
                                                 >
                                                     View Document ↗

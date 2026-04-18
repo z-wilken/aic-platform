@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -129,9 +130,9 @@ export default function LoginPage() {
                     <div>
                         <div className="flex justify-between items-center mb-3">
                             <label htmlFor="password" className="block text-[10px] font-bold text-gray-400 font-mono uppercase tracking-widest">Access Key</label>
-                            <a href="/forgot-password" title="Forgot Password" className="text-[10px] font-bold text-gray-500 hover:text-aic-gold transition-colors font-mono uppercase tracking-widest">
+                            <Link href="/forgot-password" title="Forgot Password" className="text-[10px] font-bold text-gray-500 hover:text-aic-gold transition-colors font-mono uppercase tracking-widest">
                                 Forgot?
-                            </a>
+                            </Link>
                         </div>
                         <input 
                             id="password" 
