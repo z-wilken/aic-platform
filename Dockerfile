@@ -44,7 +44,9 @@ ENV NEXT_PUBLIC_GA_ID=$NEXT_PUBLIC_GA_ID
 # Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
 
-COPY --from=installer /app/node_modules ./node_modules
+# Copy ALL installed node_modules (including workspace-nested ones like apps/platform/node_modules)
+COPY --from=installer /app/ .
+# Overwrite with actual source files (replaces package manifests with full source)
 COPY --from=pruner /app/out/full/ .
 
 RUN npm install -g turbo@2

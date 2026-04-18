@@ -15,6 +15,7 @@
   "dependencies": {
     "@aic/auth": "*",
     "@aic/db": "*",
+    "@aic/notifications": "*",
     "@aic/types": "*",
     "@aic/ui": "*",
     "@sentry/nextjs": "^10.38.0",
