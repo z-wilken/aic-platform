@@ -10,6 +10,7 @@ export default withSentryConfig(nextConfig, {
   silent: true,
   org: "aic-pulse",
   project: "platform",
-  // Skip source map upload if no auth token (e.g. Coolify builds without Sentry configured)
-  disableSourceMapUpload: !process.env.SENTRY_AUTH_TOKEN,
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+  },
 });
