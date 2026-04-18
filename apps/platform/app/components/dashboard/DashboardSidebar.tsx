@@ -12,7 +12,7 @@ import {
   LayoutDashboard,
   Server,
 } from 'lucide-react';
-import { AICLogo } from '../../../../web/app/components/AICLogo';
+import { AICLogo } from '@aic/ui';
 
 const navItems = [
   { label: 'Overview',          href: '/',               section: 'Command',      icon: <LayoutDashboard className="w-4 h-4" /> },

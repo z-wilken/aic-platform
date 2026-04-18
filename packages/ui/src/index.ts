@@ -1,3 +1,4 @@
+export * from './AICLogo';
 export * from './AlphaSeal';
 export { default as AICCharacter } from './AICCharacter';
 export * from './TrustBadge';
