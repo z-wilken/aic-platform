@@ -131,7 +131,7 @@ export default function PractitionerPage() {
                 CAAP launches Q3 2027. Register now to be notified when enrolment opens and to secure Founding
                 Partner pricing.
               </p>
-              <button className="w-full inline-flex items-center justify-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] bg-[#c9920a] text-white rounded-full py-2.5 hover:bg-[#b07d08] transition-colors">
+              <button type="button" className="w-full inline-flex items-center justify-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] bg-[#c9920a] text-white rounded-full py-2.5 hover:bg-[#b07d08] transition-colors">
                 Register Interest <ArrowRight className="w-3 h-3" />
               </button>
             </SectionCard>
