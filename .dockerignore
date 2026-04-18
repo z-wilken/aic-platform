@@ -50,6 +50,7 @@ Thumbs.db
 # Docker files (prevent recursive context)
 docker-compose.yml
 Dockerfile.next
+Dockerfile.platform.prod
 
 # CI/CD
 .github/
