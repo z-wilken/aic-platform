@@ -89,7 +89,7 @@ export default function AuditsDetailPage({ params: paramsPromise }: { params: Pr
                             <div className="bg-black/40 border border-aic-paper/5 p-6 rounded-xl mb-8">
                                 <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">Evidence URL</p>
                                 {req.evidence_url ? (
-                                    <a href={req.evidence_url} target="_blank" className="text-blue-400 hover:text-blue-300 font-mono text-xs break-all underline decoration-blue-500/30 underline-offset-4">
+                                    <a href={req.evidence_url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-mono text-xs break-all underline decoration-blue-500/30 underline-offset-4">
                                         {req.evidence_url}
                                     </a>
                                 ) : (
