@@ -9,14 +9,14 @@ import { getSystemDb, organizations, decisionRecords, sql, eq, count, and } from
  * 2. Human Override Rate (Decision Integrity)
  * 3. Recent Bias Incident Volume
  */
-export async function GET(req: NextRequest) {
-  const apiKey = req.headers.get('x-api-key');
+export async function GET(request: NextRequest) {
+  const apiKey = request.headers.get('x-api-key');
   // In production, validate against insurance_partner_keys table
   if (!apiKey || apiKey !== 'mock_insurance_key_2026') {
     return NextResponse.json({ error: 'Invalid API Key' }, { status: 401 });
   }
 
-  const { searchParams } = new URL(req.url);
+  const { searchParams } = new URL(request.url);
   const orgId = searchParams.get('orgId');
 
   if (!orgId) {

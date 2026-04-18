@@ -28,7 +28,7 @@ export async function GET(_request: NextRequest) {
 }
 
 // POST /api/auth/mfa/setup - Verify and enable MFA
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
     try {
         const session = await auth();
         if (!session?.user?.id) {

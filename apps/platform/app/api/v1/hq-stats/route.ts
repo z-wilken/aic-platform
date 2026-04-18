@@ -45,7 +45,7 @@ export async function GET() {
 
     return NextResponse.json({
       pipeline,
-      metrics: stats,
+      metrics: _stats,
       integrityVelocity: `${velocityNum > 0 ? '+' : ''}${velocity}%`,
       citizenAppeals: 3,
       auditorUtilization: '68%'

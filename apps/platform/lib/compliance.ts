@@ -40,6 +40,6 @@ export async function getLedgerHealthStatus(orgId: string) {
   return { 
     healthy: true, 
     nodeCount: entries.length, 
-    lastHash: entries[entries.length-1].currentHash 
+    lastHash: (entries[entries.length-1] as any).current_hash
   };
 }

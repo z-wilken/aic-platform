@@ -9,7 +9,7 @@ import { AICSessionUser } from '@aic/types';
  * Provides a persistent connection for real-time dashboard updates.
  * Strictly tenant-isolated via session-based orgId verification.
  */
-export async function GET(req: NextRequest) {
+export async function GET(request: Request) {
   const session = await auth() as { user: AICSessionUser } | null;
 
   if (!session?.user?.orgId) {
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
       });
 
       // 3. Handle connection close
-      req.signal.addEventListener('abort', () => {
+      request.signal.addEventListener('abort', () => {
         console.log(`[SSE] Client ${orgId} disconnected`);
         cleanup();
       });

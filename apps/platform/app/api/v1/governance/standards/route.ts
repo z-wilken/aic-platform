@@ -12,7 +12,7 @@ const StandardSchema = z.object({
   alignment: z.number().min(0).max(100),
 });
 
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   try {
     const db = getSystemDb();
     const { searchParams } = new URL(request.url);

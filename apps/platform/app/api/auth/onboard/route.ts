@@ -11,9 +11,9 @@ const OnboardSchema = z.object({
   orgId: z.string().uuid().optional().nullable(),
 });
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = await req.json();
+    const body = await request.json();
     const validation = OnboardSchema.safeParse(body);
     
     if (!validation.success) {
