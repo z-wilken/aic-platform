@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSystemDb, organizations, auditLedger, sql, desc, avg } from '@aic/db';
+import { getSystemDb, sql } from '@aic/db';
 
 export async function GET() {
   try {

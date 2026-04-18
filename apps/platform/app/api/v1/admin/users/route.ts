@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
-import { getSystemDb, sql, users, organizations, eq } from '@aic/db';
+import { getSystemDb, sql, users, eq } from '@aic/db';
 import { hasCapability } from '@/lib/rbac';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
@@ -35,7 +35,7 @@ export async function GET() {
       ORDER BY u.created_at DESC
     `);
     return NextResponse.json(allUsers.rows);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
   }
 }

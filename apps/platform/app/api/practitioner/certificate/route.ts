@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { generatePDF } from '../../../../lib/pdf-generator';
 import { getCertificateTemplate } from '../../../../lib/artifact-generator';
 import { auth } from '@aic/auth';

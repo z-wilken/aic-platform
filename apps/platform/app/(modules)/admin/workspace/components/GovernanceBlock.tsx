@@ -27,7 +27,7 @@ interface GovernanceBlockProps {
 }
 
 export const GovernanceBlock = ({ block, onUpdate, onDelete, impactMagnitude }: GovernanceBlockProps) => {
-  const isHighImpact = impactMagnitude > 7;
+  const _isHighImpact = impactMagnitude > 7;
 
   return (
     <motion.div

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from 'react';
 import AdminShell from '../../components/AdminShell';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export default function AuditsDetailPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
     const params = use(paramsPromise);

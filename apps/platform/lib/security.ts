@@ -1,4 +1,4 @@
-import { getSystemDb, revokedTokens, loginAttempts, users, eq, and, sql, desc, lt } from '@aic/db';
+import { getSystemDb, revokedTokens, loginAttempts, users, eq, and, sql } from '@aic/db';
 
 /**
  * Checks if a JWT ID (JTI) has been revoked (logged out).

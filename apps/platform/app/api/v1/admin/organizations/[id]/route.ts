@@ -19,7 +19,7 @@ export async function PATCH(
     const db = getSystemDb();
 
     // Partial update (Institutional Safety: filter out sensitive fields if necessary)
-    const { id: _, createdAt: __, ...updateData } = body;
+    const { id: _id, createdAt: _createdAt, ...updateData } = body;
 
     await db.update(organizations)
       .set({ 
@@ -29,7 +29,7 @@ export async function PATCH(
       .where(eq(organizations.id, id));
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Update failed' }, { status: 500 });
   }
 }

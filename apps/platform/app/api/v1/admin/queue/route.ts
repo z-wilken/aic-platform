@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
 import { getSystemDb, sql } from '@aic/db';
 import { hasCapability } from '@/lib/rbac';

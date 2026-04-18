@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
 import { getSystemDb, sql } from '@aic/db';
 import { hasCapability } from '@/lib/rbac';
@@ -35,7 +35,7 @@ export async function GET() {
       breakdown: revenueStats.rows,
       trend: '+12%'
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to fetch revenue data' }, { status: 500 });
   }
 }

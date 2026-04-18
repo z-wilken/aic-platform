@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSystemDb, organizations, issuedCertifications, eq, sql } from '@aic/db';
+import { getSystemDb, organizations, issuedCertifications, eq } from '@aic/db';
 import { auth } from '@aic/auth';
 import { isValidTransition } from '@/lib/state-machine';
 

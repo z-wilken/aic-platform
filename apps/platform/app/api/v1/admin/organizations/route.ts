@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth } from '@aic/auth';
 import { getSystemDb, organizations } from '@aic/db';
 import { hasCapability } from '@/lib/rbac';
@@ -14,7 +14,7 @@ export async function GET() {
     const db = getSystemDb();
     const allOrgs = await db.select().from(organizations).orderBy(organizations.name);
     return NextResponse.json(allOrgs);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to fetch organizations' }, { status: 500 });
   }
 }
