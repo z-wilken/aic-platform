@@ -1,242 +1,191 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Check, X, AlertTriangle } from 'lucide-react';
 import DashboardShell from '../components/DashboardShell';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Eyebrow, SectionCard } from '../components/ui/Eyebrow';
+
+export const dynamic = 'force-dynamic';
+
+const RIGHTS = [
+  { label: 'Human Agency', score: 71 },
+  { label: 'Explanation',  score: 88 },
+  { label: 'Empathy',      score: 54 },
+  { label: 'Correction',   score: 79 },
+  { label: 'Truth',        score: 95 },
+];
+
+const BARS = [
+  { month: 'Nov', v: 12400 },
+  { month: 'Dec', v: 13100 },
+  { month: 'Jan', v: 14200 },
+  { month: 'Feb', v: 13800 },
+  { month: 'Mar', v: 14900 },
+  { month: 'Apr', v: 15421 },
+];
+
+const LOG = [
+  { id: 'DEC-4821', sys: 'Credit Scoring v2', type: 'Loan Application',  outcome: 'Declined',     reviewed: true,  overridden: false, time: '10:42:11' },
+  { id: 'DEC-4820', sys: 'Credit Scoring v2', type: 'Loan Application',  outcome: 'Approved',     reviewed: true,  overridden: false, time: '10:39:04' },
+  { id: 'DEC-4819', sys: 'HR Screening',      type: 'Job Application',   outcome: 'Screened Out', reviewed: false, overridden: false, time: '10:35:22' },
+  { id: 'DEC-4818', sys: 'Credit Scoring v2', type: 'Loan Application',  outcome: 'Declined',     reviewed: true,  overridden: true,  time: '10:31:58' },
+  { id: 'DEC-4817', sys: 'Insurance Risk',    type: 'Risk Assessment',   outcome: 'High Risk',    reviewed: false, overridden: false, time: '10:28:14' },
+];
+
+const maxV = Math.max(...BARS.map((b) => b.v));
+
+function scoreColor(v: number) {
+  return v >= 80 ? '#16a34a' : v >= 60 ? '#c9920a' : '#dc2626';
+}
 
 export default function PulsePage() {
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [systemLogs, setSystemLogs] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+  return (
+    <DashboardShell>
+      <div className="space-y-5">
+        <Eyebrow>Live Pulse Telemetry</Eyebrow>
 
-    const fetchLogs = () => {
-        fetch('/api/audit-logs')
-            .then(res => res.json())
-            .then(data => {
-                setSystemLogs(data.logs || []);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
-    };
+        {/* Override rate alert */}
+        <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-start gap-3">
+          <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-red-700 font-medium leading-relaxed">
+            <strong>Override Rate Alert:</strong> Zero human overrides logged in April across 15,421 decisions.
+            Explanation required from Accountable Person before May 2.
+          </p>
+        </div>
 
-    useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        fetchLogs();
-        
-        // Polling for real logs
-        const logTimer = setInterval(fetchLogs, 10000);
-        
-        return () => {
-            clearInterval(timer);
-            clearInterval(logTimer);
-        };
-    }, []);
+        {/* 5 stat cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {[
+            { l: 'Decisions (Apr)',   v: '15,421', col: '#0f1f3d' },
+            { l: 'Requiring Review',  v: '2,108',  col: '#0f1f3d' },
+            { l: 'Reviews Completed', v: '2,108',  col: '#16a34a' },
+            { l: 'Override Rate',     v: '0.00%',  col: '#dc2626' },
+            { l: 'Dignity Score',     v: '54/100', col: '#dc2626' },
+          ].map((s) => (
+            <SectionCard key={s.l} className="p-3.5">
+              <div className="font-mono text-[8px] uppercase tracking-[0.12em] text-[#6b7280] mb-1.5">{s.l}</div>
+              <div className="font-mono text-xl font-bold" style={{ color: s.col }}>{s.v}</div>
+            </SectionCard>
+          ))}
+        </div>
 
-    const [empathyText, setEmpathyText] = useState('');
-    const [empathyResult, setEmpathyResult] = useState<any>(null);
-
-    const handleEmpathyCheck = async () => {
-        const res = await fetch('/api/empathy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: empathyText })
-        });
-        if (res.ok) {
-            const data = await res.json();
-            setEmpathyResult(data);
-            fetchLogs();
-        }
-    };
-
-    return (
-        <DashboardShell>
-            <div className="max-w-6xl mx-auto pb-24">
-                {/* ... existing header ... */}
-                <div className="flex justify-between items-end mb-12">
-                    <div>
-                        <h1 className="text-3xl font-serif font-bold text-aic-black underline decoration-aic-gold underline-offset-8 decoration-2">AIC Pulse™</h1>
-                        <p className="text-gray-500 font-serif mt-4 italic">Real-time accountability telemetry for your automated systems.</p>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-1">Telemetry Clock</p>
-                        <p className="text-xl font-mono text-aic-black font-bold">{currentTime.toLocaleTimeString()}</p>
-                    </div>
-                </div>
-
-                {/* Empathy Auditor - NEW SECTION */}
-                <div className="mb-12 bg-aic-paper border border-aic-black/5 rounded-[2.5rem] p-12 shadow-sm">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                        <div>
-                            <h3 className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-6">Empathy Auditor</h3>
-                            <p className="font-serif text-lg text-gray-500 mb-8 italic">Ensure your automated communications maintain human dignity (Right to Empathy).</p>
-                            <textarea 
-                                className="w-full bg-aic-paper/50 border border-aic-black/10 rounded-2xl p-6 font-serif text-sm focus:border-aic-gold outline-none transition-all"
-                                rows={4}
-                                placeholder="Paste your automated rejection or notification text here..."
-                                value={empathyText}
-                                onChange={(e) => setEmpathyText(e.target.value)}
-                            />
-                            <button 
-                                onClick={handleEmpathyCheck}
-                                className="mt-6 bg-aic-black text-aic-paper px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all"
-                            >
-                                ANALYZE TONE
-                            </button>
-                        </div>
-                        
-                        <AnimatePresence>
-                            {empathyResult && (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="bg-aic-paper/30 border border-aic-black/5 rounded-3xl p-8"
-                                >
-                                    <div className="flex justify-between items-center mb-8">
-                                        <span className={`text-[10px] font-mono font-bold px-3 py-1 rounded-full border ${
-                                            empathyResult.status === 'PASS' ? 'text-green-600 bg-green-50 border-green-200' : 'text-aic-red bg-red-50 border-red-200'
-                                        }`}>
-                                            {empathyResult.empathy_level}
-                                        </span>
-                                        <span className="text-4xl font-serif">{Math.round(empathyResult.empathy_score)}%</span>
-                                    </div>
-                                    <p className="text-sm font-serif text-gray-600 leading-relaxed mb-6">"{empathyResult.recommendation}"</p>
-                                    <div className="space-y-2">
-                                        {empathyResult.specific_feedback.map((f: string, i: number) => (
-                                            <div key={i} className="flex gap-2 text-[10px] font-mono text-aic-red items-center">
-                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                                                <span>{f}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-                    {/* Gauge 1: Bias Stability */}
-                    <div className="glass-panel p-8 rounded-3xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-green-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
-                        <div className="flex justify-between items-start mb-8">
-                            <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Bias Stability</h3>
-                            <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">99.2%</div>
-                        <p className="text-[10px] text-green-600 font-mono font-bold uppercase tracking-tighter flex items-center gap-1">
-                            <svg className="w-2 h-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clipRule="evenodd" /></svg>
-                            0.4% vs Baseline
-                        </p>
-                        <div className="mt-8 flex gap-1 items-end h-12">
-                            {[40, 70, 45, 90, 65, 80, 85, 100, 95, 92].map((h, i) => (
-                                <motion.div 
-                                    key={i} 
-                                    initial={{ height: 0 }}
-                                    animate={{ height: `${h}%` }}
-                                    className="flex-1 bg-aic-black/5 rounded-t-sm group-hover:bg-aic-gold/20 transition-colors"
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Gauge 2: Human Agency */}
-                    <div className="glass-panel p-8 rounded-3xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-aic-gold/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
-                        <div className="flex justify-between items-start mb-8">
-                            <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Human Agency</h3>
-                            <svg className="w-4 h-4 text-aic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                        </div>
-                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">14</div>
-                        <p className="text-[10px] text-gray-400 font-mono font-bold uppercase tracking-tighter">Overrides / 24h</p>
-                        <div className="mt-8 flex gap-1 items-end h-12">
-                            {[20, 30, 60, 40, 50, 70, 30, 45, 25, 40].map((h, i) => (
-                                <motion.div 
-                                    key={i} 
-                                    initial={{ height: 0 }}
-                                    animate={{ height: `${h}%` }}
-                                    className="flex-1 bg-aic-black/5 rounded-t-sm group-hover:bg-aic-gold/20 transition-colors"
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Gauge 3: Explainability */}
-                    <div className="glass-panel p-8 rounded-3xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-aic-red/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
-                        <div className="flex justify-between items-start mb-8">
-                            <h3 className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">Explainability</h3>
-                            <svg className="w-4 h-4 text-aic-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <div className="text-5xl font-serif font-medium text-aic-black mb-2 tracking-tight">88%</div>
-                        <p className="text-[10px] text-aic-red font-mono font-bold uppercase tracking-tighter italic">Needs Review (Model B)</p>
-                        <div className="mt-8 flex gap-1 items-end h-12">
-                            {[80, 85, 88, 87, 82, 80, 75, 70, 72, 78].map((h, i) => (
-                                <motion.div 
-                                    key={i} 
-                                    initial={{ height: 0 }}
-                                    animate={{ height: `${h}%` }}
-                                    className="flex-1 bg-aic-black/5 rounded-t-sm group-hover:bg-aic-red/20 transition-colors"
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Live Stream Section */}
-                <div className="bg-[#121212] rounded-[2.5rem] p-12 text-aic-paper overflow-hidden relative border border-aic-paper/5">
-                    <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                        <div className="text-[15vw] font-bold leading-none">PULSE</div>
-                    </div>
-                    
-                    <div className="relative z-10">
-                        <div className="flex justify-between items-center mb-12 border-b border-aic-paper/10 pb-8">
-                            <h3 className="font-serif text-2xl tracking-tight text-aic-paper">Live Accountability Stream</h3>
-                            <div className="flex items-center gap-3 px-4 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
-                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-                                <span className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">Active Monitoring</span>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <AnimatePresence>
-                                {loading ? (
-                                    <div className="text-center p-12 text-gray-500 font-serif italic text-sm">Accessing encrypted telemetry...</div>
-                                ) : systemLogs.length === 0 ? (
-                                    <div className="text-center p-12 text-gray-500 font-serif italic text-sm">No live events recorded. System waiting for model triggers.</div>
-                                ) : systemLogs.slice(0, 5).map((log) => (
-                                    <motion.div 
-                                        key={log.id}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, scale: 0.95 }}
-                                        className="flex items-center justify-between p-6 bg-aic-paper/[0.03] border border-aic-paper/5 rounded-2xl hover:bg-aic-paper/[0.06] transition-all group"
-                                    >
-                                        <div className="flex items-center gap-8">
-                                            <span className="font-mono text-[9px] text-gray-500 w-20 tracking-tighter">{new Date(log.created_at).toLocaleTimeString()}</span>
-                                            <div>
-                                                <span className="font-serif text-lg block text-aic-paper group-hover:text-aic-gold transition-colors">{log.event_type}</span>
-                                                <span className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">{log.system_name}</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="text-right hidden md:block">
-                                                <p className="text-[7px] font-mono text-gray-600 uppercase tracking-widest mb-1">Integrity Hash</p>
-                                                <p className="text-[8px] font-mono text-gray-400">SHA256-{(log.integrity_hash || 'PENDING').substring(0,8)}</p>
-                                            </div>
-                                            <span className={`font-mono text-[9px] font-bold px-3 py-1 rounded border border-green-400/20 bg-green-400/5 text-green-400 tracking-widest`}>
-                                                VERIFIED
-                                            </span>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
-                        </div>
-                    </div>
-                </div>
+        {/* Charts row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Bar chart — Decision Volume */}
+          <SectionCard>
+            <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-4">
+              Decision Volume — Last 6 Months
             </div>
-        </DashboardShell>
-    );
+            <div className="flex items-end gap-2" style={{ height: 120 }}>
+              {BARS.map((b, i) => {
+                const h = Math.round((b.v / maxV) * 100);
+                const isLast = i === BARS.length - 1;
+                return (
+                  <div key={b.month} className="flex-1 flex flex-col items-center gap-1">
+                    <span className={`font-mono text-[8px] ${isLast ? 'text-[#c9920a]' : 'text-[#9ca3af]'}`}>
+                      {b.v.toLocaleString()}
+                    </span>
+                    <div className="w-full flex items-end flex-1">
+                      <div
+                        className="w-full rounded-t-sm transition-all"
+                        style={{
+                          height: `${h}%`,
+                          background: isLast ? '#c9920a' : '#e5e7eb',
+                        }}
+                      />
+                    </div>
+                    <span className={`font-mono text-[8px] ${isLast ? 'text-[#c9920a]' : 'text-[#9ca3af]'}`}>
+                      {b.month}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </SectionCard>
+
+          {/* Score breakdown by Right */}
+          <SectionCard>
+            <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-4">
+              Integrity Score — By Right
+            </div>
+            <div className="space-y-3">
+              {RIGHTS.map((r) => {
+                const col = scoreColor(r.score);
+                return (
+                  <div key={r.label}>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-xs font-medium text-[#0f1f3d]">{r.label}</span>
+                      <span className="font-mono text-xs font-bold" style={{ color: col }}>{r.score}</span>
+                    </div>
+                    <div className="h-1 bg-[#e5e7eb] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${r.score}%`, background: col }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </SectionCard>
+        </div>
+
+        {/* Decision log */}
+        <SectionCard>
+          <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-4">
+            Recent Decision Log
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-[#e5e7eb]">
+                  {['Decision ID','System','Type','Outcome','Reviewed','Overridden','Time'].map((h) => (
+                    <th
+                      key={h}
+                      className="font-mono text-[8px] font-bold uppercase tracking-[0.12em] text-[#9ca3af] pb-2 px-2 first:pl-0"
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {LOG.map((row) => (
+                  <tr key={row.id} className="border-b border-[#f3f4f6]">
+                    <td className="py-2.5 px-2 first:pl-0 font-mono text-[10px] font-bold text-[#c9920a]">
+                      {row.id}
+                    </td>
+                    <td className="py-2.5 px-2 text-xs text-[#0f1f3d]">{row.sys}</td>
+                    <td className="py-2.5 px-2 text-xs text-[#6b7280]">{row.type}</td>
+                    <td className="py-2.5 px-2">
+                      <span
+                        className={`font-mono text-[9px] font-bold ${
+                          row.outcome === 'Approved' ? 'text-green-600' : 'text-red-600'
+                        }`}
+                      >
+                        {row.outcome}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-2">
+                      {row.reviewed
+                        ? <Check className="w-3.5 h-3.5 text-green-600" />
+                        : <X className="w-3.5 h-3.5 text-red-600" />}
+                    </td>
+                    <td className="py-2.5 px-2">
+                      {row.overridden
+                        ? <Check className="w-3.5 h-3.5 text-[#c9920a]" />
+                        : <span className="font-mono text-[9px] text-[#9ca3af]">—</span>}
+                    </td>
+                    <td className="py-2.5 px-2 font-mono text-[9px] text-[#9ca3af]">{row.time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 font-mono text-[9px] text-[#9ca3af] text-center">
+            Showing 5 of 15,421 decisions this month · Connected via Pulse SDK v2.1
+          </p>
+        </SectionCard>
+      </div>
+    </DashboardShell>
+  );
 }

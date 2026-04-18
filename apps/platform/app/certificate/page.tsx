@@ -1,162 +1,158 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Download, ExternalLink, Copy, Check } from 'lucide-react';
 import DashboardShell from '../components/DashboardShell';
-import { AlphaSeal } from '@aic/ui';
-import { motion, AnimatePresence } from 'framer-motion';
-import { generateCertificatePDF } from '@/lib/cert-generator';
+import { Eyebrow, SectionCard } from '../components/ui/Eyebrow';
+
+const CERT_NUM = 'AIC-2026-MFG-001';
+
+function BrandMark({ size = 60 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 110 180" style={{ height: size, width: 'auto', flexShrink: 0 }}>
+      <path d="M36,1 L1,1 L1,179 L36,179" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square"/>
+      <path d="M74,1 L109,1 L109,179 L74,179" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square"/>
+      <text x="55" y="20" fontSize="7" fill="#fff" textAnchor="middle" letterSpacing="2.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">METHODOLOGY</text>
+      <text x="55" y="31" fontSize="7" fill="#fff" textAnchor="middle" letterSpacing="2.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">ASSESSED</text>
+      <line x1="8" y1="41" x2="102" y2="41" stroke="#fff" strokeWidth="1" opacity="0.3"/>
+      <text x="55" y="100" fontSize="40" fontWeight="700" fill="#fff" textAnchor="middle" letterSpacing="5" fontFamily="Space Grotesk,sans-serif">AIC</text>
+      <line x1="8" y1="122" x2="102" y2="122" stroke="#fff" strokeWidth="1" opacity="0.3"/>
+      <text x="55" y="148" fontSize="5" fill="#c9920a" textAnchor="middle" letterSpacing="1.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">AICCERTIFIED.CLOUD</text>
+    </svg>
+  );
+}
+
+const CERT_FIELDS = [
+  { k: 'Division',            v: 'Division 2 — Supervised'   },
+  { k: 'Certification Status',v: 'Certified — Provisional'   },
+  { k: 'Accountable Person',  v: 'Dr. Sarah Chen, CRO'       },
+  { k: 'Certificate No.',     v: CERT_NUM                    },
+  { k: 'Date of Issue',       v: 'Apr 12, 2026'              },
+  { k: 'Date of Expiry',      v: 'Apr 12, 2027'              },
+];
+
+const PERMITTED = [
+  'Organisation website (homepage)',
+  'Email signatures — Accountable Person',
+  'RFP and tender responses',
+  'Annual reports and ESG disclosures',
+  `Must link to: aiccertified.cloud/registry/${CERT_NUM}`,
+];
 
 export default function CertificatePage() {
-  const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/stats')
-      .then(res => res.json())
-      .then(data => {
-        setStats(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
-
-  const handleDownloadCert = async () => {
-    if (!stats) return;
-    setIsGenerating(true);
-    await generateCertificatePDF({
-        orgName: stats.orgName || 'Your Organization',
-        tier: stats.tier || 'TIER_1',
-        orgId: stats.orgId || '0000',
-        issuedDate: new Date().toLocaleDateString(),
-        expiryDate: '01 FEB 2027'
-    });
-    setIsGenerating(false);
+  const handleCopy = () => {
+    navigator.clipboard?.writeText(CERT_NUM).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
-
-  if (loading) return <DashboardShell><div className="p-12 text-center text-gray-500">Retrieving credentials...</div></DashboardShell>;
-
-  const isCertified = stats?.score === 100;
 
   return (
     <DashboardShell>
-      <div className="max-w-5xl mx-auto pb-24">
-        <div className="mb-12 flex justify-between items-end border-b border-aic-black/5 pb-8">
-            <div>
-                <h2 className="text-3xl font-serif font-bold">Certification Status</h2>
-                <p className="text-gray-500 font-serif mt-2 italic">Official credentials generated via POPIA Sec. 71 Audit.</p>
+      <div className="space-y-5">
+        <Eyebrow>My Certificate</Eyebrow>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 items-start">
+          {/* Certificate card */}
+          <SectionCard className="p-0 overflow-hidden">
+            {/* Dark header */}
+            <div className="bg-[#0a1628] px-8 py-8 flex gap-6 items-center">
+              <BrandMark size={72} />
+              <div className="flex-1 min-w-0">
+                <div className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-[#c9920a] mb-2">
+                  Certificate of AI Accountability
+                </div>
+                <h2 className="font-serif text-xl font-bold text-white leading-snug mb-1">
+                  Meridian Financial Group
+                </h2>
+                <div className="font-mono text-[10px] text-white/50 tracking-[0.1em]">Reg. 2024/102938/07</div>
+              </div>
+              <div className="ml-auto text-right flex-shrink-0">
+                <div className="font-mono text-3xl font-bold text-[#c9920a] leading-none">77</div>
+                <div className="font-mono text-[9px] text-white/40 tracking-[0.15em] mt-1">INTEGRITY SCORE</div>
+              </div>
             </div>
-            {isCertified && (
-                <button 
-                    onClick={handleDownloadCert}
-                    disabled={isGenerating}
-                    className="bg-aic-black text-aic-paper px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-red transition-colors disabled:opacity-50"
-                >
-                    {isGenerating ? 'PREPARING DOCUMENT...' : 'Download Official PDF'}
+
+            {/* Details */}
+            <div className="p-6">
+              {/* 3×2 grid of cert fields */}
+              <div className="grid grid-cols-3 border border-[#e5e7eb] rounded-xl overflow-hidden mb-5">
+                {CERT_FIELDS.map((r, i) => (
+                  <div
+                    key={r.k}
+                    className="p-3"
+                    style={{
+                      borderRight:   i % 3 !== 2 ? '1px solid #e5e7eb' : undefined,
+                      borderBottom:  i < 3       ? '1px solid #e5e7eb' : undefined,
+                    }}
+                  >
+                    <div className="font-mono text-[8px] text-[#9ca3af] uppercase tracking-[0.1em] mb-1">{r.k}</div>
+                    <div className="text-xs font-semibold text-[#0f1f3d]">{r.v}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Provisional notice */}
+              <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 mb-5">
+                <p className="text-xs text-amber-800 leading-relaxed">
+                  <strong>Provisional Status:</strong> Certification is active but 3 Critical findings remain open.
+                  Full "Certified — Active" status requires all Critical findings to be resolved. The certificate
+                  remains valid while you are within the remediation window.
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-wrap gap-2.5">
+                <button className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] bg-[#c9920a] text-white rounded-full px-5 py-2.5 hover:bg-[#b07d08] transition-colors">
+                  <Download className="w-3.5 h-3.5" /> Download PDF
                 </button>
-            )}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* The Certificate / Placeholder */}
-            <div className="lg:col-span-8">
-                <AnimatePresence mode="wait">
-                    {isCertified ? (
-                        <motion.div 
-                            key="cert"
-                            initial={{ opacity: 0, scale: 0.98 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-aic-paper p-16 shadow-2xl relative overflow-hidden border border-gray-100 aspect-[1/1.414]"
-                        >
-                            <div className="border-4 border-double border-aic-gold p-12 h-full flex flex-col">
-                                <div className="text-center mb-16">
-                                    <h1 className="font-serif text-5xl font-medium text-aic-black mb-4">AIC.</h1>
-                                    <p className="font-mono text-[10px] text-gray-400 uppercase tracking-[0.4em]">AI Integrity Certification</p>
-                                </div>
-
-                                <div className="text-center space-y-8 mb-16">
-                                    <p className="font-serif text-xl text-gray-500 italic">This document certifies that the automated systems of</p>
-                                    <h2 className="font-serif text-4xl font-bold text-aic-black border-b-2 border-aic-black/5 inline-block pb-4 px-12">
-                                        {stats?.orgName || 'Your Organization'}
-                                    </h2>
-                                    <p className="font-serif text-xl text-gray-500 italic">have been rigorously audited and verified as</p>
-                                </div>
-
-                                <div className="flex justify-center mb-16">
-                                    <div className="text-center">
-                                        <div className={`text-2xl font-mono font-bold uppercase tracking-widest mb-2 ${stats?.tier === 'TIER_1' ? 'text-aic-red' : 'text-aic-gold'}`}>
-                                            {stats?.tier?.replace('_', ' ')}: HUMAN-ACCOUNTABLE
-                                        </div>
-                                        <p className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">Verification ID: AIC-2026-{stats?.orgId?.substring(0,4)}</p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-auto flex justify-between items-end border-t border-gray-100 pt-12">
-                                    <div className="text-left font-mono text-[9px] text-gray-400 space-y-1">
-                                        <p>VALID UNTIL: FEB 2027</p>
-                                        <p>LOCATION: JOHANNESBURG, SA</p>
-                                    </div>
-                                    <div className="w-24 h-24 grayscale opacity-80">
-                                        <AlphaSeal tier={stats?.tier === 'TIER_1' ? 1 : 2} variant="detailed" />
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ) : (
-                        <motion.div 
-                            key="pending"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="bg-aic-paper/50 border-2 border-dashed border-aic-black/10 rounded-3xl p-24 text-center flex flex-col items-center justify-center min-h-[600px]"
-                        >
-                            <span className="text-6xl mb-8 grayscale opacity-20">🏆</span>
-                            <h3 className="font-serif text-2xl text-gray-400">Certification Pending</h3>
-                            <p className="text-gray-500 font-serif mt-4 max-w-sm mx-auto leading-relaxed">
-                                Complete all remediation steps in your <a href="/roadmap" className="text-aic-gold underline decoration-aic-gold/30">Roadmap</a> to unlock your official Integrity Certificate.
-                            </p>
-                            <div className="mt-12 w-full max-w-xs space-y-4">
-                                <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                                    <div className="h-full bg-aic-black/20" style={{ width: `${stats?.score || 0}%` }} />
-                                </div>
-                                <p className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest">
-                                    Current Audit Score: {stats?.score || 0}%
-                                </p>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                <button className="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-5 py-2.5 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
+                  <ExternalLink className="w-3.5 h-3.5" /> Public Registry
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-2 font-mono text-[10px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-5 py-2.5 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? 'Copied!' : 'Copy Cert No.'}
+                </button>
+              </div>
             </div>
+          </SectionCard>
 
-            {/* Sidebar Details */}
-            <div className="lg:col-span-4 space-y-8">
-                <div className="glass-panel p-8 rounded-2xl">
-                    <h4 className="font-mono text-[10px] font-bold text-aic-gold uppercase tracking-widest mb-6 border-b border-aic-gold/10 pb-4">Digital Seal</h4>
-                    <div className="flex justify-center mb-8 bg-aic-paper/50 p-8 rounded-xl border border-aic-black/5">
-                        <AlphaSeal tier={stats?.tier === 'TIER_1' ? 1 : 2} variant="shield" className="opacity-50" />
-                    </div>
-                    <p className="text-xs text-gray-500 font-serif leading-relaxed italic">
-                        The AIC Alpha Seal is a cryptographic badge proof of your commitment to POPIA Sec. 71. It can be embedded in your website or application UI once 100% compliance is achieved.
-                    </p>
-                </div>
+          {/* Trust mark rail */}
+          <div className="space-y-3">
+            <SectionCard className="p-5 text-center">
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                AIC Trust Mark
+              </div>
+              <div className="bg-[#0a1628] rounded-xl p-5 inline-block mb-3">
+                <BrandMark size={60} />
+              </div>
+              <p className="text-xs text-[#6b7280] leading-relaxed mb-3">
+                Display on your website, RFP responses, and annual reports. Must include certificate number and
+                link to public registry.
+              </p>
+              <button className="w-full inline-flex items-center justify-center gap-2 font-mono text-[10px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full py-2.5 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
+                <Download className="w-3.5 h-3.5" /> Download SVG
+              </button>
+            </SectionCard>
 
-                <div className="bg-aic-black p-8 rounded-2xl text-aic-paper">
-                    <h4 className="font-mono text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">Upcoming Milestones</h4>
-                    <div className="space-y-6">
-                        {[
-                            { t: 'Bi-Annual Audit', d: 'Aug 2026' },
-                            { t: 'SANAS Review', d: 'Jan 2027' }
-                        ].map(m => (
-                            <div key={m.t} className="flex justify-between items-center border-b border-aic-paper/5 pb-4">
-                                <span className="text-xs font-serif">{m.t}</span>
-                                <span className="text-[10px] font-mono text-aic-gold">{m.d}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <SectionCard className="p-4">
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                Permitted Usage
+              </div>
+              <div className="space-y-2">
+                {PERMITTED.map((r) => (
+                  <div key={r} className="flex gap-2 items-start">
+                    <Check className="w-3.5 h-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs text-[#6b7280] leading-relaxed">{r}</span>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+          </div>
         </div>
       </div>
     </DashboardShell>

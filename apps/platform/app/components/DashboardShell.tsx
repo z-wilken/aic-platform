@@ -4,6 +4,7 @@ import { useDashboardState } from './dashboard/useDashboardState';
 import { DashboardSidebar } from './dashboard/DashboardSidebar';
 import { DashboardHeader } from './dashboard/DashboardHeader';
 import { PhaseTracker } from './ui/PhaseTracker';
+import { PulseBar } from './ui/PulseBar';
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const {
@@ -11,11 +12,8 @@ export default function DashboardShell({ children }: { children: React.ReactNode
     notifications,
     showNotifs,
     setShowNotifs,
-    searchQuery,
-    setSearchQuery,
     showMobileMenu,
     setShowMobileMenu,
-    handleSearch,
     markAsRead,
     isActive,
     unreadCount,
@@ -37,15 +35,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       )}
 
       <div className="flex-1 flex flex-col md:ml-64 min-h-screen">
-        {/* Phase tracker — persistent below header */}
-        <PhaseTracker currentPhase={2} />
-
-        <div className="flex-1 px-6 py-4">
+        {/* Sticky header stack: Header → PhaseTracker → PulseBar */}
+        <div className="sticky top-0 z-30">
           <DashboardHeader
             pathname={pathname}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
             onMenuOpen={() => setShowMobileMenu(true)}
             unreadCount={unreadCount}
             showNotifs={showNotifs}
@@ -53,8 +46,11 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             notifications={notifications}
             markAsRead={markAsRead}
           />
-          <main className="fade-up">{children}</main>
+          <PhaseTracker currentPhase={2} />
+          <PulseBar />
         </div>
+
+        <main className="flex-1 px-7 py-6 fade-up">{children}</main>
       </div>
     </div>
   );

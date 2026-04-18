@@ -1,152 +1,210 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import DashboardShell from './components/DashboardShell';
-import { motion } from 'framer-motion';
-import { 
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-    AreaChart, Area
-} from 'recharts';
-import { StatsResponse } from '@aic/types';
-import { Layout, GraduationCap, Globe, Zap, ArrowRight, ShieldCheck, Lock } from 'lucide-react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { SovereignButton } from './components/SovereignButton';
+import { Shield, CheckCircle2, AlertTriangle, FileText, ArrowRight } from 'lucide-react';
+import DashboardShell from './components/DashboardShell';
+import { Eyebrow, SectionCard, CopperTag } from './components/ui/Eyebrow';
+import { ScoreRing } from './components/ui/ScoreRing';
+import { UploadModal } from './components/ui/UploadModal';
 
-export default function PlatformDashboard() {
-    const [stats, setStats] = useState<StatsResponse | null>(null);
-    const [loading, setLoading] = useState(true);
+const RIGHTS = [
+  { id: 1, tag: 'RIGHT 01', label: 'Human Agency', score: 71, flagged: 1 },
+  { id: 2, tag: 'RIGHT 02', label: 'Explanation',  score: 88, flagged: 0 },
+  { id: 3, tag: 'RIGHT 03', label: 'Empathy',      score: 54, flagged: 1 },
+  { id: 4, tag: 'RIGHT 04', label: 'Correction',   score: 79, flagged: 0 },
+  { id: 5, tag: 'RIGHT 05', label: 'Truth',        score: 95, flagged: 0 },
+];
 
-    useEffect(() => {
-        fetch('/api/stats')
-            .then(res => res.json())
-            .then(data => {
-                setStats(data);
-                setLoading(false);
-            });
-    }, []);
+const MSGS = [
+  {
+    id: 1, initials: 'AIC', author: 'System Auditor', time: '2 hours ago',
+    text: 'Right 3 (Empathy): the batch of 20 decline letters scored 54/100 — below the certification threshold of 60. Please submit revised templates with a clear next-steps section and plain-language appeal instruction before the remediation deadline.',
+  },
+  {
+    id: 2, initials: 'AIC', author: 'System Auditor', time: 'Yesterday',
+    text: 'Right 1 (Human Agency): zero override events logged in April across 15,421 decisions. Please provide a written explanation from the Accountable Person before we classify this as a Critical Finding.',
+  },
+];
 
-    if (loading) return (
-        <DashboardShell>
-            <div className="flex flex-col items-center justify-center h-[70vh] space-y-6">
-                <div className="h-12 w-12 border-4 border-aic-cyan border-t-transparent rounded-full animate-spin" />
-                <p className="font-serif italic text-aic-slate text-xl">Initializing Sovereign Intelligence Core...</p>
-            </div>
-        </DashboardShell>
-    );
+const ACTIONS = [
+  { label: 'Remediation deadline', date: 'May 2, 2026',  urgent: true  },
+  { label: 'Walk-Me-Through call', date: 'May 8, 2026',  urgent: false },
+  { label: 'Auditor review begins',date: 'May 12, 2026', urgent: false },
+  { label: 'Certificate renewal',  date: 'Apr 12, 2027', urgent: false },
+];
 
-    const quickActions = [
-        { title: 'Governance Workspace', desc: 'Manage your living audit trail and AI systems.', href: '/workspace', icon: Layout, color: 'text-aic-cyan' },
-        { title: 'Practitioner Portal', desc: 'Track your professional ethical certification.', href: '/practitioner', icon: GraduationCap, color: 'text-aic-gold' },
-        { title: 'Global Index', desc: 'View institutional accountability rankings.', href: '/leaderboard', icon: Globe, color: 'text-aic-cyan' },
-    ];
-
-    return (
-        <DashboardShell>
-            <div className="max-w-7xl mx-auto space-y-16">
-                {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-aic-paper/5 pb-12 gap-8">
-                    <div>
-                        <div className="flex items-center gap-3 mb-4">
-                            <Zap className="w-5 h-5 text-aic-cyan fill-aic-cyan" />
-                            <span className="text-[10px] font-mono font-bold text-aic-slate uppercase tracking-[0.4em]">Intelligence Center v4.0</span>
-                        </div>
-                        <h1 className="text-6xl font-serif font-bold text-aic-paper tracking-tighter">Sovereign Command<span className="text-aic-cyan">.</span></h1>
-                        <p className="text-xl text-aic-slate font-serif mt-4 italic">{stats?.orgName} • {stats?.tier?.replace('_', ' ')} Institutional Status</p>
-                    </div>
-                    <div className="bg-aic-paper/[0.03] border border-aic-paper/10 p-8 rounded-[2.5rem] text-right min-w-[240px] backdrop-blur-xl">
-                        <span className="text-xs font-mono font-bold text-aic-cyan uppercase tracking-widest block mb-2">Aggregate Integrity</span>
-                        <div className="text-7xl font-serif font-bold text-aic-paper tracking-tighter">{stats?.score}</div>
-                    </div>
-                </div>
-
-                {/* Quick Navigation Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {quickActions.map((action, i) => (
-                        <Link href={action.href} key={i}>
-                            <motion.div 
-                                whileHover={{ y: -10, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                                className="bg-aic-paper/[0.02] border border-aic-paper/5 p-10 rounded-[3rem] h-full flex flex-col group transition-all duration-500"
-                            >
-                                <div className={`p-4 bg-aic-paper/5 rounded-2xl w-fit mb-8 group-hover:bg-aic-cyan/10 transition-colors ${action.color}`}>
-                                    <action.icon className="w-6 h-6" />
-                                </div>
-                                <h3 className="text-2xl font-serif font-bold text-aic-paper mb-3">{action.title}</h3>
-                                <p className="text-aic-slate text-sm leading-relaxed mb-8">{action.desc}</p>
-                                <div className="mt-auto flex items-center gap-2 text-[10px] font-mono font-bold text-aic-cyan uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                                    Initialize <ArrowRight className="w-3 h-3" />
-                                </div>
-                            </motion.div>
-                        </Link>
-                    ))}
-                </div>
-
-                {/* Main Data Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    <div className="lg:col-span-2 bg-aic-paper/[0.02] p-10 rounded-[3.5rem] border border-aic-paper/5 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-10 opacity-[0.02] font-serif italic text-8xl pointer-events-none select-none">Velocity</div>
-                        <h3 className="text-[10px] font-mono font-bold text-aic-slate uppercase tracking-widest mb-10 flex items-center gap-3">
-                            <BarChart3 className="w-4 h-4 text-aic-cyan" /> Integrity Telemetry (Live)
-                        </h3>
-                        <div className="h-[350px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={stats?.velocityData}>
-                                    <defs>
-                                        <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#00F5FF" stopOpacity={0.2}/>
-                                            <stop offset="95%" stopColor="#00F5FF" stopOpacity={0}/>
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#64748B', fontFamily: 'monospace'}} />
-                                    <YAxis hide domain={[0, 100]} />
-                                    <Tooltip contentStyle={{backgroundColor: '#0A0A0A', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px'}} />
-                                    <Area type="monotone" dataKey="score" stroke="#00F5FF" fillOpacity={1} fill="url(#colorScore)" strokeWidth={4} />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-
-                    <div className="bg-aic-obsidian p-10 rounded-[3.5rem] border border-aic-paper/10 shadow-2xl flex flex-col relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-aic-cyan/[0.02] opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <h3 className="text-[10px] font-mono font-bold text-aic-slate uppercase tracking-widest mb-10 relative z-10">Framework Distribution</h3>
-                        <div className="h-[350px] w-full mt-auto relative z-10">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={stats?.radarData}>
-                                    <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                                    <PolarAngleAxis dataKey="subject" tick={{fill: '#64748B', fontSize: 9, fontFamily: 'monospace'}} />
-                                    <Radar name="Compliance" dataKey="A" stroke="#00F5FF" fill="#00F5FF" fillOpacity={0.5} />
-                                </RadarChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Quick Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    {[
-                        { l: 'Verification Ratio', v: `${stats?.verifiedRequirements}/${stats?.totalRequirements}`, c: 'text-aic-paper' },
-                        { l: 'Open Incidents', v: stats?.openIncidents || 0, c: (stats?.openIncidents || 0) > 0 ? 'text-aic-red font-bold' : 'text-green-500' },
-                        { l: 'Ledger Health', v: '100% Cryptographic', c: 'text-aic-cyan' },
-                        { l: 'AIMS Readiness', v: 'Level 3/4', c: 'text-aic-gold' }
-                    ].map((s, i) => (
-                        <div key={i} className="bg-aic-paper/[0.02] p-8 border border-aic-paper/5 rounded-3xl group hover:border-aic-cyan/30 transition-all duration-500">
-                            <p className="text-[9px] font-mono font-bold text-aic-slate uppercase tracking-widest mb-4">{s.l}</p>
-                            <p className={`text-3xl font-serif font-bold ${s.c}`}>{s.v}</p>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="p-16 border border-dashed border-aic-paper/10 rounded-[4rem] text-center bg-aic-paper/[0.01] relative overflow-hidden group">
-                    <ShieldCheck className="w-12 h-12 text-aic-slate mx-auto mb-6 group-hover:text-aic-cyan transition-colors" />
-                    <p className="text-aic-slate font-serif italic text-lg leading-relaxed">
-                        Sovereign Governance Engine v4.2 <br />
-                        <span className="text-[10px] font-mono uppercase tracking-[0.2em] mt-2 block opacity-50">Data verified against the AIC Immutable Trust Registry.</span>
-                    </p>
-                </div>
-            </div>
-        </DashboardShell>
-    );
+function scoreColor(v: number) {
+  return v >= 80 ? '#16a34a' : v >= 60 ? '#c9920a' : '#dc2626';
 }
 
-import { BarChart3 } from 'lucide-react';
+const MET = 8;
+const TOT = 13;
+const OVERALL = Math.round(RIGHTS.reduce((a, r) => a + r.score, 0) / RIGHTS.length);
+const FLAGGED = RIGHTS.reduce((a, r) => a + r.flagged, 0);
+
+export default function DashboardPage() {
+  const [upload, setUpload] = useState<string | null>(null);
+
+  return (
+    <DashboardShell>
+      {upload && <UploadModal label={upload} onClose={() => setUpload(null)} />}
+
+      <div>
+        <Eyebrow>Certification Overview</Eyebrow>
+
+        {/* 4 stat cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+          {[
+            { label: 'Integrity Score',    value: `${OVERALL}/100`,           sub: 'Provisional Pass',    icon: Shield,        color: '#c9920a' },
+            { label: 'Evidence Met',       value: `${MET}/${TOT}`,            sub: `${Math.round(MET/TOT*100)}% complete`, icon: CheckCircle2, color: '#16a34a' },
+            { label: 'Critical Flags',     value: String(FLAGGED),            sub: 'Require resolution',  icon: AlertTriangle, color: '#dc2626' },
+            { label: 'Days to Deadline',   value: '14',                       sub: 'Evidence submission', icon: FileText,      color: '#b45309' },
+          ].map((s) => {
+            const Icon = s.icon;
+            return (
+              <SectionCard key={s.label} className="p-4">
+                <div className="flex justify-between items-start mb-2.5">
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-[0.15em] text-[#6b7280]">
+                    {s.label}
+                  </span>
+                  <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: s.color }} />
+                </div>
+                <div
+                  className="font-mono text-2xl font-bold leading-none mb-1"
+                  style={{ color: s.color }}
+                >
+                  {s.value}
+                </div>
+                <div className="text-xs text-[#6b7280]">{s.sub}</div>
+              </SectionCard>
+            );
+          })}
+        </div>
+
+        {/* Two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
+          {/* Left column */}
+          <div className="space-y-4">
+            {/* Evidence by Algorithmic Right */}
+            <SectionCard>
+              <div className="flex justify-between items-center mb-3.5">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280]">
+                  Evidence by Algorithmic Right
+                </span>
+                <Link
+                  href="/evidence"
+                  className="font-mono text-[9px] font-bold text-[#c9920a] flex items-center gap-1 hover:underline"
+                >
+                  View All <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              {RIGHTS.map((r) => {
+                const col = scoreColor(r.score);
+                return (
+                  <div
+                    key={r.id}
+                    className="flex items-center gap-3 py-2.5 border-b border-[#f3f4f6] last:border-0"
+                  >
+                    <CopperTag>{r.tag}</CopperTag>
+                    <span className="flex-1 text-xs font-semibold text-[#0f1f3d]">{r.label}</span>
+                    {r.flagged > 0 && (
+                      <span className="font-mono text-[8px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
+                        {r.flagged} FLAGGED
+                      </span>
+                    )}
+                    <div className="w-20 h-1 bg-[#e5e7eb] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${r.score}%`, background: col }}
+                      />
+                    </div>
+                    <span
+                      className="font-mono text-[10px] font-bold w-7 text-right"
+                      style={{ color: col }}
+                    >
+                      {r.score}
+                    </span>
+                  </div>
+                );
+              })}
+            </SectionCard>
+
+            {/* Recent Correspondence */}
+            <SectionCard>
+              <div className="flex justify-between items-center mb-3.5">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280]">
+                  Recent Correspondence
+                </span>
+                <Link
+                  href="/correspondence"
+                  className="font-mono text-[9px] font-bold text-[#c9920a] flex items-center gap-1 hover:underline"
+                >
+                  View All <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              {MSGS.map((m) => (
+                <div key={m.id} className="flex gap-2.5 py-3 border-b border-[#f3f4f6] last:border-0">
+                  <div className="w-8 h-8 rounded-lg bg-[#0f1f3d] flex items-center justify-center font-mono text-[8px] font-bold text-[#c9920a] flex-shrink-0">
+                    {m.initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between mb-0.5">
+                      <span className="text-xs font-semibold text-[#0f1f3d]">{m.author}</span>
+                      <span className="font-mono text-[8px] text-[#9ca3af]">{m.time}</span>
+                    </div>
+                    <p className="text-xs text-[#6b7280] leading-relaxed line-clamp-2">{m.text}</p>
+                  </div>
+                </div>
+              ))}
+            </SectionCard>
+          </div>
+
+          {/* Right rail */}
+          <div className="space-y-3">
+            {/* Score ring card */}
+            <SectionCard className="text-center p-6">
+              <div className="flex justify-center mb-3.5">
+                <ScoreRing value={OVERALL} size={100} thickness={6} />
+              </div>
+              <div className="font-serif text-sm font-bold text-[#0f1f3d] mb-1.5">Provisional Pass</div>
+              <p className="text-xs text-[#6b7280] leading-relaxed mb-4">
+                Right 3 (Empathy) is the primary risk to full certification.
+              </p>
+              <button
+                onClick={() => setUpload('All Outstanding Evidence')}
+                className="w-full inline-flex items-center justify-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] bg-[#c9920a] text-white rounded-full py-2.5 hover:bg-[#b07d08] transition-colors"
+              >
+                Submit Evidence <ArrowRight className="w-3 h-3" />
+              </button>
+            </SectionCard>
+
+            {/* Upcoming actions */}
+            <SectionCard className="p-4">
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                Upcoming Actions
+              </div>
+              {ACTIONS.map((a) => (
+                <div
+                  key={a.label}
+                  className="flex justify-between items-center py-1.5 border-b border-[#f3f4f6] last:border-0"
+                >
+                  <span
+                    className={`text-xs ${a.urgent ? 'font-semibold text-red-600' : 'text-[#0f1f3d]'}`}
+                  >
+                    {a.label}
+                  </span>
+                  <span
+                    className={`font-mono text-[9px] ${a.urgent ? 'font-bold text-red-600' : 'text-[#9ca3af]'}`}
+                  >
+                    {a.date}
+                  </span>
+                </div>
+              ))}
+            </SectionCard>
+          </div>
+        </div>
+      </div>
+    </DashboardShell>
+  );
+}

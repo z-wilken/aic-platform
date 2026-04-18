@@ -1,194 +1,140 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { ArrowRight } from 'lucide-react';
 import DashboardShell from '../components/DashboardShell';
-import { CPDProgressBar } from './components/CPDProgressBar';
-import { motion } from 'framer-motion';
-import { 
-  Shield, 
-  BookOpen, 
-  GraduationCap, 
-  Lock, 
-  Award, 
-  CheckCircle2, 
-  ChevronRight, 
-  Loader2, 
-  Download,
-  Fingerprint
-} from 'lucide-react';
-import { SovereignButton, ButtonState } from '../components/SovereignButton';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { Eyebrow, SectionCard, CopperTag } from '../components/ui/Eyebrow';
 
-function cn(...inputs: any[]) {
-  return twMerge(clsx(inputs));
+function BrandMark({ size = 60 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 110 180" style={{ height: size, width: 'auto', flexShrink: 0 }}>
+      <path d="M36,1 L1,1 L1,179 L36,179" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square"/>
+      <path d="M74,1 L109,1 L109,179 L74,179" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square"/>
+      <text x="55" y="20" fontSize="7" fill="#fff" textAnchor="middle" letterSpacing="2.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">METHODOLOGY</text>
+      <text x="55" y="31" fontSize="7" fill="#fff" textAnchor="middle" letterSpacing="2.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">ASSESSED</text>
+      <line x1="8" y1="41" x2="102" y2="41" stroke="#fff" strokeWidth="1" opacity="0.3"/>
+      <text x="55" y="100" fontSize="40" fontWeight="700" fill="#fff" textAnchor="middle" letterSpacing="5" fontFamily="Space Grotesk,sans-serif">AIC</text>
+      <line x1="8" y1="122" x2="102" y2="122" stroke="#fff" strokeWidth="1" opacity="0.3"/>
+      <text x="55" y="148" fontSize="5" fill="#c9920a" textAnchor="middle" letterSpacing="1.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">AICCERTIFIED.CLOUD</text>
+    </svg>
+  );
 }
 
-export default function PractitionerDashboard() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [downloadState, setDownloadState] = useState<ButtonState>('idle');
+const DOMAINS = [
+  { d: 'Domain 1', t: 'Human Agency in AI Systems',    desc: 'Design and evaluate human oversight processes. Detect theatrical oversight.' },
+  { d: 'Domain 2', t: 'Explainability & Transparency', desc: 'Evaluate AI explanations for affected persons. Apply SHAP/LIME principles.' },
+  { d: 'Domain 3', t: 'Empathy & Dignity',             desc: 'Apply the AIC Empathy Engine rubric. Identify dignity failures in automated comms.' },
+  { d: 'Domain 4', t: 'Correction & Appeal',           desc: 'Design functioning correction pipelines. Conduct adverse scenario testing.' },
+  { d: 'Domain 5', t: 'Disclosure & Truth',            desc: 'Assess AI disclosure compliance. Identify AI washing.' },
+];
 
-  useEffect(() => {
-    fetch('/api/practitioner')
-      .then(res => res.json())
-      .then(d => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+const EXAM_PARTS = [
+  { part: 'Part A', title: 'Knowledge Assessment',  detail: '80 MCQ + 20 short answer · 3 hours · Closed-book · Pass mark: 65%' },
+  { part: 'Part B', title: 'Applied Simulation',    detail: 'Full audit simulation · 4 hours · Open-book · Assessed: Satisfactory' },
+];
 
-  const handleDownloadLicense = async () => {
-    setDownloadState('loading');
-    try {
-      const response = await fetch('/api/practitioner/certificate');
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `AIC-Practitioner-License.pdf`;
-        a.click();
-        setDownloadState('success');
-        setTimeout(() => setDownloadState('idle'), 2000);
-      } else {
-        setDownloadState('error');
-      }
-    } catch {
-      setDownloadState('error');
-    }
-  };
+const FEES = [
+  { l: 'Enrolment (incl. study pack)', v: 'R 5,000'   },
+  { l: 'Part A Examination',           v: 'R 3,500'   },
+  { l: 'Part B Examination',           v: 'R 6,500'   },
+  { l: 'Annual CPD Maintenance',       v: 'R 3,500/yr' },
+];
 
-  if (loading) return (
-    <DashboardShell>
-      <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
-        <Loader2 className="w-10 h-10 animate-spin text-aic-cyan" />
-        <p className="italic text-aic-slate font-serif">Syncing with global professional registry...</p>
-      </div>
-    </DashboardShell>
-  );
-
-  const exams = data?.exams || [];
-
+export default function PractitionerPage() {
   return (
     <DashboardShell>
-      <div className="max-w-6xl mx-auto space-y-16">
-        {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 border-b border-aic-paper/5 pb-12">
-          <div className="space-y-6">
-            <div className="flex items-center gap-3 text-aic-cyan font-mono text-[10px] font-bold uppercase tracking-[0.4em]">
-              <Award className="w-4 h-4" />
-              Certified Practitioner Portal
+      <div className="space-y-5">
+        <Eyebrow>Practitioner Certification — CAAP</Eyebrow>
+
+        {/* Hero banner */}
+        <div className="bg-[#0a1628] rounded-2xl px-8 py-8 flex gap-6 items-center">
+          <BrandMark size={60} />
+          <div className="flex-1 min-w-0">
+            <div className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#c9920a] mb-2">
+              Certified AI Accountability Professional
             </div>
-            <h1 className="text-6xl font-serif font-bold text-aic-paper tracking-tighter leading-none">
-              Professional Identity<span className="text-aic-cyan">.</span>
-            </h1>
-            <p className="text-xl text-aic-slate font-serif leading-relaxed italic max-w-2xl">
-              ISO/IEC 17024 compliant professional development tracking. This is your Sovereign cryptographic proof of ethical competency.
+            <h2 className="font-serif text-xl font-bold text-white leading-snug mb-1.5">The CAAP Credential</h2>
+            <p className="text-sm text-white/60 leading-relaxed max-w-xl">
+              CAAP is to AI accountability what CA(SA) is to accounting — a professional designation proving that
+              an individual has the knowledge and commitment to manage AI governance responsibly.
             </p>
           </div>
-          <div className="bg-aic-paper/[0.03] border border-aic-paper/10 p-8 rounded-[2.5rem] shadow-2xl backdrop-blur-xl min-w-[260px] text-center group hover:border-aic-cyan transition-all">
-            <span className="text-[9px] font-mono font-bold text-aic-cyan uppercase tracking-widest block mb-3 opacity-60">Identity Status</span>
-            <div className="text-2xl font-serif font-bold text-aic-paper tracking-tight">{data?.identity?.level || 'CANDIDATE'}</div>
-            <div className="mt-4 flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity">
-              {[...Array(5)].map((_, i) => <div key={i} className="h-1 w-4 bg-aic-cyan rounded-full" />)}
-            </div>
+          <div className="ml-auto flex-shrink-0 text-right">
+            <div className="font-mono text-[9px] font-bold uppercase tracking-[0.15em] text-white/40 mb-1">Launching</div>
+            <div className="font-serif text-xl font-bold text-[#c9920a]">Q3 2027</div>
           </div>
-        </header>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* CPD Column */}
-          <div className="lg:col-span-2 space-y-12">
-            <CPDProgressBar 
-              progress={data?.cpd?.progress || 0} 
-              label={data?.cpd?.label || "Annual Certification Cycle"} 
-              sublabel={`Reporting Period: ${data?.cpd?.cycle || '2026'}`}
-            />
-
-            <div className="space-y-8">
-              <h3 className="text-[10px] font-mono font-bold text-aic-slate uppercase tracking-[0.4em] px-2 flex items-center gap-3">
-                <BookOpen className="w-3 h-3 text-aic-cyan" />
-                Knowledge Repository (Item Bank)
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {exams.map((exam: any) => (
-                  <motion.div 
-                    key={exam.id}
-                    whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                    className={cn(
-                      "p-8 rounded-[2.5rem] border transition-all duration-500",
-                      exam.status === 'COMPLETED' 
-                        ? "bg-aic-cyan/5 border-aic-cyan/20" 
-                        : "bg-aic-paper/[0.02] border-aic-paper/5 shadow-sm"
-                    )}
-                  >
-                    <div className="flex justify-between items-start mb-6">
-                      <div className={cn(
-                        "p-4 rounded-2xl",
-                        exam.status === 'LOCKED' ? "bg-aic-paper/5 text-aic-slate" : "bg-aic-cyan/10 text-aic-cyan"
-                      )}>
-                        {exam.status === 'LOCKED' ? <Lock className="w-5 h-5" /> : <BookOpen className="w-5 h-5" />}
-                      </div>
-                      {exam.status === 'COMPLETED' && (
-                        <span className="px-3 py-1 bg-aic-cyan text-black text-[8px] font-bold font-mono rounded uppercase tracking-widest">Verified</span>
-                      )}
-                    </div>
-                    <h4 className="font-serif text-xl font-bold mb-2 text-aic-paper">{exam.name}</h4>
-                    <p className="text-[9px] text-aic-slate font-mono uppercase tracking-widest leading-relaxed">
-                      {exam.status === 'LOCKED' ? `Prerequisite: ${exam.requirement}` : exam.status === 'COMPLETED' ? `Earned: ${exam.date}` : 'Examination Session Ready'}
-                    </p>
-                    
-                    {exam.status === 'AVAILABLE' && (
-                      <button className="mt-8 flex items-center gap-2 text-[10px] font-mono font-bold text-aic-cyan hover:text-aic-paper transition-all uppercase tracking-widest group">
-                        Enter Secure Gateway <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                    )}
-                  </motion.div>
-                ))}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 items-start">
+          {/* Left */}
+          <div className="space-y-4">
+            {/* 5 Competency Domains */}
+            <SectionCard>
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-4">
+                5 Competency Domains
               </div>
-            </div>
-          </div>
-
-          {/* Verification Sidebar */}
-          <div className="space-y-10">
-            <div className="bg-aic-cyan/10 border border-aic-cyan/20 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-12 opacity-5 font-serif italic text-7xl select-none uppercase pointer-events-none group-hover:opacity-10 transition-opacity">Proof</div>
-              <h3 className="text-[10px] font-mono font-bold text-aic-cyan uppercase tracking-[0.4em] mb-10 relative z-10">Institutional Shield</h3>
-              <div className="space-y-8 relative z-10">
-                {[
-                  "ISO 17024 Accredited Exam Proctoring",
-                  "Biometric Identity Verification",
-                  "Encrypted Item Bank Protection"
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-5">
-                    <div className="p-1.5 rounded-full bg-aic-cyan shadow-[0_0_10px_#00F5FF]">
-                      <CheckCircle2 className="w-3 h-3 text-black" />
+              <div className="divide-y divide-[#f3f4f6]">
+                {DOMAINS.map((d) => (
+                  <div key={d.d} className="flex gap-3 py-3">
+                    <CopperTag>{d.d}</CopperTag>
+                    <div>
+                      <div className="text-xs font-semibold text-[#0f1f3d] mb-0.5">{d.t}</div>
+                      <div className="text-xs text-[#6b7280] leading-relaxed">{d.desc}</div>
                     </div>
-                    <span className="text-xs font-serif italic text-aic-slate">{item}</span>
                   </div>
                 ))}
               </div>
-              
-              <SovereignButton 
-                variant="primary"
-                state={downloadState}
-                onClick={handleDownloadLicense}
-                className="w-full mt-12 py-5"
-                leftIcon={<Download className="w-4 h-4" />}
-              >
-                Download License
-              </SovereignButton>
-            </div>
+            </SectionCard>
 
-            <div className="p-10 bg-aic-paper/[0.02] border border-dashed border-aic-paper/10 rounded-[3rem] text-center group hover:border-aic-cyan/30 transition-all">
-              <Fingerprint className="w-10 h-10 text-aic-slate mx-auto mb-6 group-hover:text-aic-cyan transition-colors" />
-              <p className="text-xs text-aic-slate font-serif italic leading-relaxed">
-                Your CPD telemetry is linked to the Sovereign Professional Registry. 
-                <br /><br />
-                Last synchronized: {new Date().toLocaleTimeString()}
+            {/* Examination Structure */}
+            <SectionCard>
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-4">
+                Examination Structure
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {EXAM_PARTS.map((p) => (
+                  <div key={p.part} className="bg-[#f9fafb] rounded-xl p-4">
+                    <CopperTag>{p.part}</CopperTag>
+                    <div className="text-xs font-bold text-[#0f1f3d] mt-2 mb-1">{p.title}</div>
+                    <div className="text-xs text-[#6b7280] leading-relaxed">{p.detail}</div>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+          </div>
+
+          {/* Right rail */}
+          <div className="space-y-3">
+            <SectionCard className="p-4">
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                Fee Structure (ZAR)
+              </div>
+              <div className="divide-y divide-[#f3f4f6]">
+                {FEES.map((f) => (
+                  <div key={f.l} className="flex justify-between py-2">
+                    <span className="text-xs text-[#6b7280]">{f.l}</span>
+                    <span className="font-mono text-xs font-bold text-[#0f1f3d]">{f.v}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 bg-amber-50 border border-amber-200/80 rounded-lg px-3 py-2">
+                <span className="font-mono text-[9px] text-[#c9920a] font-bold">
+                  Founding Partner discount: 30% off all fees for Meridian Financial staff
+                </span>
+              </div>
+            </SectionCard>
+
+            <SectionCard className="p-4">
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-2">
+                Register Interest
+              </div>
+              <p className="text-xs text-[#6b7280] leading-relaxed mb-4">
+                CAAP launches Q3 2027. Register now to be notified when enrolment opens and to secure Founding
+                Partner pricing.
               </p>
-            </div>
+              <button className="w-full inline-flex items-center justify-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] bg-[#c9920a] text-white rounded-full py-2.5 hover:bg-[#b07d08] transition-colors">
+                Register Interest <ArrowRight className="w-3 h-3" />
+              </button>
+            </SectionCard>
           </div>
         </div>
       </div>

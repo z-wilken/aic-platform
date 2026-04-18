@@ -1,145 +1,155 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { Plus, Copy, Check, ExternalLink, Lock } from 'lucide-react';
 import DashboardShell from '../../components/DashboardShell';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Eyebrow, SectionCard } from '../../components/ui/Eyebrow';
+import { StatusChip } from '../../components/ui/StatusChip';
 
-export default function APIKeysPage() {
-    const [keys, setKeys] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [newKey, setNewKey] = useState<string | null>(null);
+const PROD_KEY = 'AIC-SDK-PROD-a7f3c9e2-b1d4-4e8a-9c2f-3d6e8f1a2b3c';
 
-    const fetchKeys = () => {
-        fetch('/api/keys')
-            .then(res => res.json())
-            .then(data => {
-                setKeys(data.keys || []);
-                setLoading(false);
-            });
-    };
+const KEYS = [
+  { name: 'Pulse SDK — Production', created: 'Apr 1, 2026',  used: 'Today',      status: 'active'  as const },
+  { name: 'Pulse SDK — Staging',    created: 'Mar 15, 2026', used: '2 days ago', status: 'active'  as const },
+  { name: 'Legacy Integration v1',  created: 'Jan 2, 2026',  used: '60 days ago',status: 'expired' as const },
+];
 
-    useEffect(() => {
-        fetchKeys();
-    }, []);
+const SYSTEMS = [
+  { name: 'Credit Scoring v2', status: 'active'  as const },
+  { name: 'HR Screening',      status: 'active'  as const },
+  { name: 'Insurance Risk',    status: 'partial' as const },
+];
 
-    const handleGenerateKey = async () => {
-        const label = prompt("Key Label (e.g., CI/CD Production):");
-        if (!label) return;
+const SECURITY_RULES = [
+  'Keys are scoped to your organisation only',
+  'Rotate keys immediately if compromised',
+  'Never expose keys in client-side code',
+  'Keys can be revoked instantly from this panel',
+];
 
-        const res = await fetch('/api/keys', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ label })
-        });
+const SDK_SNIPPET = `{
+  "decision_id":           "unique-id",
+  "system_name":           "credit-scoring-v2",
+  "decision_type":         "loan-approval",
+  "outcome":               "declined",
+  "affected_person_ref":   "anonymised-hash",
+  "timestamp":             "2026-04-19T10:00:00Z",
+  "human_review_required":  true,
+  "human_review_completed": false,
+  "human_reviewer_id":     null,
+  "override_applied":      false,
+  "correction_requested":  false
+}`;
 
-        if (res.ok) {
-            const data = await res.json();
-            setNewKey(data.apiKey);
-            fetchKeys();
-        }
-    };
+export default function KeysPage() {
+  const [copied, setCopied] = useState(false);
 
-    return (
-        <DashboardShell>
-            <div className="max-w-5xl mx-auto pb-24 space-y-12">
-                <div className="flex justify-between items-end border-b border-aic-black/5 pb-8">
+  const handleCopy = () => {
+    navigator.clipboard?.writeText(SDK_SNIPPET).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <DashboardShell>
+      <div className="space-y-5">
+        <Eyebrow>API & Access Keys</Eyebrow>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 items-start">
+          {/* Left */}
+          <div className="space-y-4">
+            {/* Keys table */}
+            <SectionCard>
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-4">
+                Active Keys
+              </div>
+              <div className="border border-[#e5e7eb] rounded-xl overflow-hidden">
+                {/* Table header */}
+                <div className="grid grid-cols-[1fr_100px_100px_110px] px-4 py-2.5 bg-[#f9fafb] border-b border-[#e5e7eb]">
+                  {['Key / Name', 'Created', 'Last Used', 'Status'].map((h) => (
+                    <span key={h} className="font-mono text-[8px] font-bold uppercase tracking-[0.12em] text-[#9ca3af]">{h}</span>
+                  ))}
+                </div>
+                {KEYS.map((k) => (
+                  <div
+                    key={k.name}
+                    className="grid grid-cols-[1fr_100px_100px_110px] px-4 py-3 border-b border-[#f3f4f6] last:border-0 items-center"
+                  >
                     <div>
-                        <h1 className="text-3xl font-serif font-bold text-aic-black underline decoration-aic-gold underline-offset-8">Integration Core</h1>
-                        <p className="text-gray-500 font-serif mt-4 italic">Automate your bias audits directly via the AIC technical engine.</p>
+                      <div className="text-xs font-semibold text-[#0f1f3d] mb-0.5">{k.name}</div>
+                      <div className="font-mono text-[9px] text-[#9ca3af]">
+                        {k.status === 'active' ? `••••••••••••${PROD_KEY.slice(-6)}` : 'Revoked'}
+                      </div>
                     </div>
-                    <button 
-                        onClick={handleGenerateKey}
-                        className="bg-aic-black text-aic-paper px-8 py-3 font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-aic-gold hover:text-black transition-all shadow-xl"
-                    >
-                        Generate Integration Key
-                    </button>
-                </div>
+                    <span className="font-mono text-[9px] text-[#9ca3af]">{k.created}</span>
+                    <span className="font-mono text-[9px] text-[#9ca3af]">{k.used}</span>
+                    <StatusChip status={k.status} />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4">
+                <button className="inline-flex items-center gap-2 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
+                  <Plus className="w-3.5 h-3.5" /> Generate New Key
+                </button>
+              </div>
+            </SectionCard>
 
-                <AnimatePresence>
-                    {newKey && (
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="bg-aic-gold/10 border-2 border-aic-gold p-8 rounded-3xl"
-                        >
-                            <p className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-widest mb-4">CRITICAL: Save this key now</p>
-                            <div className="flex items-center gap-4 bg-aic-paper/50 p-4 rounded-xl border border-aic-gold/20">
-                                <code className="flex-1 font-mono text-xs font-bold break-all">{newKey}</code>
-                                <button 
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(newKey);
-                                        alert("Copied to clipboard.");
-                                    }}
-                                    className="text-[10px] font-mono font-bold uppercase underline"
-                                >
-                                    Copy
-                                </button>
-                            </div>
-                            <p className="text-[9px] font-mono text-gray-500 mt-4 uppercase">For security, this key will never be shown again.</p>
-                            <button onClick={() => setNewKey(null)} className="mt-6 text-xs font-bold underline decoration-aic-gold">I have saved it</button>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+            {/* SDK snippet */}
+            <SectionCard>
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                Pulse SDK — Minimum Viable Event
+              </div>
+              <div className="bg-[#0a1628] rounded-xl p-4 overflow-x-auto mb-3">
+                <pre className="font-mono text-xs text-white/80 leading-relaxed m-0">{SDK_SNIPPET}</pre>
+              </div>
+              <div className="flex gap-2.5">
+                <button className="inline-flex items-center gap-1.5 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors">
+                  <ExternalLink className="w-3 h-3" /> SDK Documentation
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-1.5 font-mono text-[9px] font-bold text-[#6b7280] border border-[#e5e7eb] rounded-full px-4 py-2 hover:border-[#c9920a] hover:text-[#c9920a] transition-colors"
+                >
+                  {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                  {copied ? 'Copied!' : 'Copy Schema'}
+                </button>
+              </div>
+            </SectionCard>
+          </div>
 
-                <div className="bg-aic-paper border border-aic-black/5 rounded-[2.5rem] overflow-hidden shadow-sm">
-                    <table className="w-full text-left text-sm font-serif">
-                        <thead className="bg-aic-paper/50 border-b border-aic-black/5">
-                            <tr>
-                                <th className="p-6 font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">Key Identifier</th>
-                                <th className="p-6 font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">Prefix</th>
-                                <th className="p-6 font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Last Used</th>
-                                <th className="p-6 text-right font-mono text-[10px] font-bold text-gray-400 uppercase tracking-widest">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-aic-black/5">
-                            {loading ? (
-                                <tr><td colSpan={4} className="p-12 text-center text-gray-400 italic">Syncing with secure vault...</td></tr>
-                            ) : keys.length === 0 ? (
-                                <tr><td colSpan={4} className="p-16 text-center text-gray-500 font-serif italic">No integration keys found. Create one to begin automated auditing.</td></tr>
-                            ) : keys.map((k, i) => (
-                                <motion.tr 
-                                    key={k.id}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="hover:bg-aic-paper/30 transition-colors group"
-                                >
-                                    <td className="p-6 font-bold text-aic-black">{k.label}</td>
-                                    <td className="p-6"><code className="bg-gray-100 px-2 py-1 rounded font-mono text-[10px]">{k.key_prefix}****</code></td>
-                                    <td className="p-6 text-center text-gray-400 font-mono text-[10px]">
-                                        {k.last_used_at ? new Date(k.last_used_at).toLocaleString() : 'Never'}
-                                    </td>
-                                    <td className="p-6 text-right">
-                                        <button className="text-aic-gold hover:text-aic-paper transition-colors">Revoke</button>
-                                    </td>
-                                </motion.tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+          {/* Right rail */}
+          <div className="space-y-3">
+            <SectionCard className="p-4">
+              <Lock className="w-5 h-5 text-[#c9920a] mb-2.5" />
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                Key Security
+              </div>
+              <div className="space-y-2">
+                {SECURITY_RULES.map((r) => (
+                  <div key={r} className="flex gap-2 items-start">
+                    <Check className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-xs text-[#6b7280] leading-relaxed">{r}</span>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12">
-                    <div className="bg-aic-black p-12 rounded-[3rem] text-aic-paper">
-                        <span className="text-[10px] font-mono font-bold text-aic-gold uppercase tracking-[0.4em] mb-8 block">Developer Documentation</span>
-                        <h3 className="font-serif text-3xl mb-6 tracking-tight">Direct Engine API</h3>
-                        <p className="text-gray-400 font-serif leading-relaxed mb-12">
-                            Integrate our Four-Fifths analysis directly into your CI/CD pipeline. Every API call generates an immutable audit record in your AIC Roadmap.
-                        </p>
-                        <code className="block bg-aic-paper/5 p-4 rounded-xl border border-aic-paper/10 text-[10px] font-mono text-aic-gold mb-8">
-                            POST /api/audit-logs <br />
-                            Authorization: Bearer {'<your_key>'}
-                        </code>
-                        <a href="#" className="font-mono text-[10px] font-bold uppercase tracking-widest underline decoration-aic-gold">View Technical Docs</a>
-                    </div>
-                    
-                    <div className="p-12 border border-aic-black/5 rounded-[3rem] bg-aic-paper flex flex-col justify-center text-center">
-                        <div className="w-16 h-16 rounded-full bg-aic-gold/10 flex items-center justify-center mx-auto mb-8">
-                            <span className="text-2xl">⚡</span>
-                        </div>
-                        <h4 className="font-serif text-2xl mb-4">Pioneer Performance</h4>
-                        <p className="text-gray-500 font-serif text-sm">Automated audits reduce certification time by up to 60%. Establish continuous trust through programmatic verification.</p>
-                    </div>
-                </div>
-            </div>
-        </DashboardShell>
-    );
+            <SectionCard className="p-4">
+              <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
+                Integration Status
+              </div>
+              <div className="divide-y divide-[#f3f4f6]">
+                {SYSTEMS.map((s) => (
+                  <div key={s.name} className="flex justify-between items-center py-2">
+                    <span className="text-xs text-[#0f1f3d]">{s.name}</span>
+                    <StatusChip status={s.status} />
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+          </div>
+        </div>
+      </div>
+    </DashboardShell>
+  );
 }
