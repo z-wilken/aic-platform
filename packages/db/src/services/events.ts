@@ -15,6 +15,7 @@ let pgPool: Pool | null = null;
 function getPubClient() {
   if (!pubClient) {
     pubClient = new Redis(redisUrl, {
+      lazyConnect: true,
       maxRetriesPerRequest: null,
       retryStrategy: (times) => Math.min(times * 50, 2000),
     });
@@ -32,6 +33,7 @@ function getPubClient() {
 function getSubClient() {
   if (!subClient) {
     subClient = new Redis(redisUrl, {
+      lazyConnect: true,
       maxRetriesPerRequest: null,
       retryStrategy: (times) => Math.min(times * 50, 2000),
     });
