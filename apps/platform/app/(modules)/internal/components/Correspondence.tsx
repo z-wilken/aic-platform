@@ -1,24 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Send, Info, Check } from 'lucide-react';
 import { Eyebrow, SectionCard } from '@/app/components/ui/Eyebrow';
 import { StatusChip } from '@/app/components/ui/StatusChip';
 
-const MSGS = [
-  {
-    id: 1, author: 'System Auditor', initials: 'AIC', time: '2 hours ago', unread: true,
-    text: 'Right 3 (Empathy): the batch of 20 decline letters scored 54/100 — below the certification threshold of 60. Please submit revised templates with a clear next-steps section and plain-language appeal instruction before the remediation deadline.',
-  },
-  {
-    id: 2, author: 'System Auditor', initials: 'AIC', time: 'Yesterday', unread: false,
-    text: 'Right 1 (Human Agency): zero override events logged in April across 15,421 decisions. Please provide a written explanation from the Accountable Person before we classify this as a Critical Finding.',
-  },
-  {
-    id: 3, author: 'System Auditor', initials: 'AIC', time: '3 days ago', unread: false,
-    text: 'Evidence receipt confirmed (DOC-011): SHAP Feature Importance Report received and logged. Tier A classification applied. This satisfies requirement EX-1 in full.',
-  },
-];
+type Message = {
+  id: string;
+  title: string | null;
+  message: string | null;
+  type: string | null;
+  status: string;
+  createdAt: string;
+};
 
 const RULES = [
   'All correspondence is logged and forms part of the audit record (DOC-015)',
@@ -27,54 +21,88 @@ const RULES = [
 ];
 
 export default function Correspondence() {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState('');
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  const handleSend = () => {
-    if (!message.trim()) return;
-    setSent(true);
-    setMessage('');
-    setTimeout(() => setSent(false), 3000);
+  const fetchMessages = () => {
+    fetch('/api/notifications')
+      .then(r => r.json())
+      .then(d => setMessages(d.notifications ?? []))
+      .catch(() => {});
   };
+
+  useEffect(() => { fetchMessages(); }, []);
+
+  const handleSend = async () => {
+    if (!message.trim()) return;
+    setSending(true);
+    try {
+      await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: 'Client Message', message, type: 'CORRESPONDENCE' }),
+      });
+      setSent(true);
+      setMessage('');
+      setTimeout(() => setSent(false), 3000);
+      fetchMessages();
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const unreadCount = messages.filter(m => m.status === 'UNREAD').length;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5 items-start">
-      {/* Main thread */}
       <div className="space-y-4">
         <Eyebrow>Auditor Correspondence</Eyebrow>
 
-        {/* Thread */}
         <SectionCard>
           <div className="flex justify-between items-center mb-4">
             <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280]">
-              Thread — AIC-2026-MFG-001
+              Correspondence Thread
             </span>
-            <StatusChip status="partial" />
+            {unreadCount > 0 && <StatusChip status="partial" />}
           </div>
 
-          <div className="divide-y divide-[#f3f4f6]">
-            {MSGS.map((m) => (
-              <div key={m.id} className="flex gap-3 py-4">
-                <div className="w-9 h-9 rounded-lg bg-[#f0f4f8] flex items-center justify-center font-mono text-[9px] font-bold text-[#c9920a] flex-shrink-0">
-                  {m.initials}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-xs font-semibold text-[#0f1f3d]">{m.author}</span>
-                    <div className="flex items-center gap-2">
-                      {m.unread && (
-                        <span className="font-mono text-[8px] font-bold text-[#c9920a] bg-amber-50 px-1.5 py-0.5 rounded">
-                          UNREAD
-                        </span>
-                      )}
-                      <span className="font-mono text-[8px] text-[#9ca3af]">{m.time}</span>
-                    </div>
+          {messages.length === 0 ? (
+            <div className="py-6 text-center text-xs text-[#9ca3af]">
+              No correspondence yet. Messages from your auditor will appear here.
+            </div>
+          ) : (
+            <div className="divide-y divide-[#f3f4f6]">
+              {messages.map((m) => (
+                <div key={m.id} className="flex gap-3 py-4">
+                  <div className="w-9 h-9 rounded-lg bg-[#f0f4f8] flex items-center justify-center font-mono text-[9px] font-bold text-[#c9920a] flex-shrink-0">
+                    {m.type === 'CORRESPONDENCE' ? 'YOU' : 'AIC'}
                   </div>
-                  <p className="text-xs text-[#6b7280] leading-relaxed">{m.text}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs font-semibold text-[#0f1f3d]">
+                        {m.type === 'CORRESPONDENCE' ? 'You' : 'System Auditor'}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        {m.status === 'UNREAD' && (
+                          <span className="font-mono text-[8px] font-bold text-[#c9920a] bg-amber-50 px-1.5 py-0.5 rounded">
+                            UNREAD
+                          </span>
+                        )}
+                        <span className="font-mono text-[8px] text-[#9ca3af]">
+                          {new Date(m.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-[#6b7280] leading-relaxed">
+                      {m.message ?? m.title ?? '—'}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {sent && (
             <div className="mt-3 px-3 py-2.5 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
@@ -84,7 +112,6 @@ export default function Correspondence() {
           )}
         </SectionCard>
 
-        {/* Compose */}
         <SectionCard>
           <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
             Reply to Auditor
@@ -98,16 +125,15 @@ export default function Correspondence() {
           <div className="flex justify-end mt-3">
             <button
               onClick={handleSend}
-              disabled={!message.trim()}
+              disabled={!message.trim() || sending}
               className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.15em] bg-[#c9920a] text-white rounded-full px-5 py-2.5 hover:bg-[#b07d08] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <Send className="w-3 h-3" /> Send Message
+              <Send className="w-3 h-3" /> {sending ? 'Sending…' : 'Send Message'}
             </button>
           </div>
         </SectionCard>
       </div>
 
-      {/* Info rail */}
       <div className="space-y-4">
         <SectionCard className="p-4">
           <div className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#6b7280] mb-3">
@@ -122,10 +148,9 @@ export default function Correspondence() {
               <div className="font-mono text-[9px] text-[#c9920a]">AI Integrity Certification</div>
             </div>
           </div>
-          <p className="text-xs text-[#6b7280] leading-relaxed mb-3">
-            Your assigned auditor will respond within 2 business days. For urgent matters, email your account manager directly.
+          <p className="text-xs text-[#6b7280] leading-relaxed">
+            Your assigned auditor will respond within 2 business days.
           </p>
-          <div className="font-mono text-[8px] text-[#9ca3af] tracking-wide">REF: AIC-2026-MFG-001</div>
         </SectionCard>
 
         <SectionCard className="p-4">

@@ -85,3 +85,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to generate cryptographic key' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getSession() as Session | null;
+    if (!session || !session.user?.orgId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Only administrators can revoke API keys' }, { status: 403 });
+    }
+
+    const { keyId } = await request.json();
+    if (!keyId) {
+      return NextResponse.json({ error: 'keyId is required' }, { status: 400 });
+    }
+
+    const orgId = session.user.orgId;
+    const db = getTenantDb(orgId);
+
+    return await db.query(async (tx) => {
+      await tx
+        .update(apiKeys)
+        .set({ isActive: false })
+        .where(and(eq(apiKeys.id, keyId), eq(apiKeys.orgId, orgId)));
+
+      return NextResponse.json({ success: true });
+    });
+  } catch (error) {
+    console.error('[SECURITY] Key Revocation Failure:', error);
+    return NextResponse.json({ error: 'Failed to revoke key' }, { status: 500 });
+  }
+}

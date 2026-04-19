@@ -1,15 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSystemDb, organizations, eq } from '@aic/db';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
-  const payload = await req.json();
+  const rawBody = await req.text();
+  const sig = req.headers.get('stripe-signature');
+
+  if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
+  }
+
+  let payload: Stripe.Event;
+  try {
+    payload = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+  }
+
   const db = getSystemDb();
 
-  // Unified Backend Logic: Map Stripe events to DB Capabilities
   switch (payload.type) {
     case 'checkout.session.completed': {
-      const session = payload.data.object;
-      const customerId = session.customer;
+      const session = payload.data.object as Stripe.Checkout.Session;
+      const customerId = typeof session.customer === 'string' ? session.customer : null;
+      if (!customerId) break;
       const planId = session.metadata?.planId || 'PRO_CERT';
 
       await db.update(organizations)
@@ -25,12 +41,14 @@ export async function POST(req: NextRequest) {
     }
 
     case 'invoice.payment_failed': {
-      const failedInvoice = payload.data.object;
+      const failedInvoice = payload.data.object as Stripe.Invoice;
+      const failedCustomerId = typeof failedInvoice.customer === 'string' ? failedInvoice.customer : null;
+      if (!failedCustomerId) break;
       await db.update(organizations)
         .set({ billingStatus: 'PAST_DUE' })
-        .where(eq(organizations.stripeCustomerId, failedInvoice.customer));
+        .where(eq(organizations.stripeCustomerId, failedCustomerId));
       
-      console.log(`[STRIPE] Revoking capabilities for customer ${failedInvoice.customer} due to payment failure`);
+      console.log(`[STRIPE] Revoking capabilities for customer ${failedCustomerId} due to payment failure`);
       break;
     }
   }

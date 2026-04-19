@@ -1,90 +1,91 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
+type PipelineData = {
+  unqualified: number;
+  discovery:   number;
+  alpha:        number;
+  certified:    number;
+};
+
 export default function RevenueVelocityPage() {
-    const segments = [
-        { label: 'Unqualified Leads', value: 124, amount: 'R 0.0M', color: 'bg-zinc-800' },
-        { label: 'Discovery Phase', value: 42, amount: 'R 1.2M', color: 'bg-blue-900/40' },
-        { label: 'Alpha Program', value: 12, amount: 'R 4.2M', color: 'bg-aic-gold/40' },
-        { label: 'Certified Institutional', value: 3, amount: 'R 7.0M', color: 'bg-green-900/40' }
-    ];
+  const [data, setData] = useState<PipelineData | null>(null);
 
-    return (
-        <div className="space-y-16">
-            <div className="flex justify-between items-end border-b border-aic-paper/5 pb-12">
-                <div>
-                    <h1 className="text-5xl font-serif font-medium tracking-tight tracking-tighter mb-4">Pipeline Velocity</h1>
-                    <p className="text-gray-500 font-serif italic text-lg max-w-2xl">
-                        Tracking institutional revenue flow and market expansion speed.
-                    </p>
-                </div>
-                <div className="text-right">
-                    <p className="text-[10px] font-mono font-bold text-gray-600 uppercase tracking-[0.4em] mb-2">Total Lifecycle Value</p>
-                    <div className="text-4xl font-serif text-aic-paper uppercase tracking-widest">R 12.4M</div>
-                </div>
-            </div>
+  useEffect(() => {
+    fetch('/api/leads?limit=100')
+      .then(r => r.json())
+      .then(d => {
+        const leads: Array<{ status: string }> = d.leads ?? [];
+        setData({
+          unqualified: leads.filter(l => ['NEW', 'PROSPECT'].includes(l.status)).length,
+          discovery:   leads.filter(l => ['HIGH_INTENT', 'ALPHA_APPLIED', 'RE-ENGAGED'].includes(l.status)).length,
+          alpha:       leads.filter(l => l.status === 'CONVERTED').length,
+          certified:   leads.filter(l => l.status === 'CERTIFIED').length,
+        });
+      })
+      .catch(() => {});
+  }, []);
 
-            <div className="grid grid-cols-1 gap-4">
-                {segments.map((s, i) => (
-                    <motion.div 
-                        key={s.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="bg-[#080808] border border-aic-paper/5 p-10 rounded-[2.5rem] relative overflow-hidden group hover:border-aic-paper/10 transition-all"
-                    >
-                        <div className={`absolute top-0 right-0 w-1/3 h-full ${s.color} blur-[100px] opacity-20 pointer-events-none group-hover:opacity-40 transition-opacity`} />
-                        
-                        <div className="flex justify-between items-center relative z-10">
-                            <div>
-                                <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-2">{s.label}</p>
-                                <h3 className="text-3xl font-serif font-bold text-aic-paper tracking-tight">{s.amount}</h3>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-[8px] font-mono text-gray-600 uppercase mb-1">Entity Count</p>
-                                <p className="text-2xl font-serif text-aic-gold">{s.value}</p>
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+  const segments = [
+    { label: 'Unqualified Leads',       value: data?.unqualified ?? '—', color: 'bg-zinc-800' },
+    { label: 'Discovery / High Intent', value: data?.discovery   ?? '—', color: 'bg-blue-900/40' },
+    { label: 'Converted to Org',        value: data?.alpha       ?? '—', color: 'bg-aic-gold/40' },
+    { label: 'Certified Institutional', value: data?.certified   ?? '—', color: 'bg-green-900/40' },
+  ];
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-aic-paper/[0.01] border border-aic-paper/5 p-12 rounded-[3rem]">
-                    <h4 className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-8">Quarterly Growth (Q1 2026)</h4>
-                    <div className="space-y-6">
-                        {[
-                            { m: 'January', v: 'R 1.2M', p: 40 },
-                            { m: 'February', v: 'R 4.2M', p: 100 },
-                            { m: 'March (Target)', v: 'R 7.0M', p: 160 }
-                        ].map(month => (
-                            <div key={month.m} className="space-y-2">
-                                <div className="flex justify-between font-mono text-[9px]">
-                                    <span className="text-gray-400 uppercase">{month.m}</span>
-                                    <span className="text-aic-paper font-bold">{month.v}</span>
-                                </div>
-                                <div className="h-1 bg-aic-paper/5 rounded-full overflow-hidden">
-                                    <motion.div 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${(month.p / 160) * 100}%` }}
-                                        className="h-full bg-aic-gold"
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="bg-[#080808] border border-aic-paper/5 p-12 rounded-[3rem] flex flex-col justify-center">
-                    <h4 className="font-serif text-2xl text-aic-paper mb-4 italic">Efficiency Insight</h4>
-                    <p className="text-gray-500 font-serif text-sm leading-relaxed mb-8 italic">
-                        Conversion from Alpha to Certified Institutional has accelerated by 12% following the deployment of the Insurance Risk API.
-                    </p>
-                    <button className="bg-aic-paper text-black px-10 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold transition-all">
-                        EXPORT_GROWTH_MANIFEST
-                    </button>
-                </div>
-            </div>
+  const total = data ? data.unqualified + data.discovery + data.alpha + data.certified : null;
+
+  return (
+    <div className="space-y-16">
+      <div className="flex justify-between items-end border-b border-aic-paper/5 pb-12">
+        <div>
+          <h1 className="text-5xl font-serif font-medium tracking-tight tracking-tighter mb-4">Pipeline Velocity</h1>
+          <p className="text-gray-500 font-serif italic text-lg max-w-2xl">
+            Tracking institutional pipeline flow and market expansion speed.
+          </p>
         </div>
-    );
+        <div className="text-right">
+          <p className="text-[10px] font-mono font-bold text-gray-600 uppercase tracking-[0.4em] mb-2">Total Pipeline</p>
+          <div className="text-4xl font-serif text-aic-paper uppercase tracking-widest">
+            {total !== null ? total : '—'} orgs
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
+        {segments.map((s, i) => (
+          <motion.div
+            key={s.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="bg-[#080808] border border-aic-paper/5 p-10 rounded-[2.5rem] relative overflow-hidden group hover:border-aic-paper/10 transition-all"
+          >
+            <div className={`absolute top-0 right-0 w-1/3 h-full ${s.color} blur-[100px] opacity-20 pointer-events-none group-hover:opacity-40 transition-opacity`} />
+            <div className="flex justify-between items-center relative z-10">
+              <div>
+                <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest mb-2">{s.label}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[8px] font-mono text-gray-600 uppercase mb-1">Entity Count</p>
+                <p className="text-2xl font-serif text-aic-gold">{s.value}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="bg-[#080808] border border-aic-paper/5 p-12 rounded-[3rem] flex flex-col justify-center">
+        <h4 className="font-serif text-2xl text-aic-paper mb-4 italic">Pipeline Insight</h4>
+        <p className="text-gray-500 font-serif text-sm leading-relaxed mb-8 italic">
+          Real-time entity counts from the growth registry. Revenue projections require Stripe billing integration.
+        </p>
+        <button className="bg-aic-paper text-black px-10 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-aic-gold transition-all">
+          EXPORT_GROWTH_MANIFEST
+        </button>
+      </div>
+    </div>
+  );
 }

@@ -165,16 +165,22 @@ export default function Home() {
                 className="flex flex-wrap gap-4"
               >
                 <Link
-                  href="/certification"
+                  href="/waiting-list"
                   className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-10 py-5 rounded-full transition-all text-sm font-bold shadow-2xl shadow-[#c9920a]/30 hover:-translate-y-1"
                 >
-                  SEE HOW CERTIFICATION WORKS <ArrowRight className="w-4 h-4" />
+                  APPLY FOR CERTIFICATION <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/certification"
+                  className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-10 py-5 rounded-full transition-all text-sm font-bold hover:-translate-y-1"
+                >
+                  SEE HOW IT WORKS <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/governance-hub"
-                  className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-10 py-5 rounded-full transition-all text-sm font-bold hover:-translate-y-1"
+                  className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/70 border border-white/10 px-10 py-5 rounded-full transition-all text-sm font-bold hover:-translate-y-1"
                 >
-                  EXPLORE ALGORITHMIC RIGHTS <ArrowRight className="w-4 h-4" />
+                  ALGORITHMIC RIGHTS <ArrowRight className="w-4 h-4" />
                 </Link>
               </motion.div>
             </motion.div>

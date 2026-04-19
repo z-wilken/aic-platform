@@ -28,6 +28,36 @@ export async function GET() {
   }
 }
 
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getSession() as Session | null;
+    if (!session || !session.user?.orgId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const orgId = session.user.orgId;
+    const { title, message, type } = await request.json();
+
+    if (!message?.trim()) {
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    }
+
+    const db = getTenantDb(orgId);
+    return await db.query(async (tx) => {
+      await tx.insert(notifications).values({
+        orgId,
+        title: title ?? 'Client Message',
+        message,
+        type: type ?? 'CORRESPONDENCE',
+        status: 'READ',
+      });
+      return NextResponse.json({ success: true });
+    });
+  } catch (error) {
+    console.error('[SECURITY] Notifications POST Error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getSession() as Session | null;
