@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSystemDb, organizations, eq } from '@aic/db';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 export async function POST(req: NextRequest) {
+  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
+  }
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const rawBody = await req.text();
   const sig = req.headers.get('stripe-signature');
 
-  if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+  if (!sig) {
     return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
   }
 

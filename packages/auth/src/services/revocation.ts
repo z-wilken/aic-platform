@@ -10,6 +10,7 @@ function getRedis() {
     if (!redis && isRedisAvailable) {
         try {
             redis = new Redis(redisUrl, {
+                lazyConnect: true,
                 maxRetriesPerRequest: 1,
                 connectTimeout: 2000,
                 retryStrategy: (times) => {
