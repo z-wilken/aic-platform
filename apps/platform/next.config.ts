@@ -3,6 +3,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  serverExternalPackages: [
+    'minio',
+    '@aws-sdk/client-s3',
+    '@aws-sdk/s3-request-presigner',
+    'puppeteer',
+    'pg',
+  ],
   async headers() {
     return [
       {

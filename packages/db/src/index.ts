@@ -1,7 +1,8 @@
 export * from './db';
 export * from './schema';
 export * from './services/intelligence';
-export * from './services/storage';
+// StorageService is NOT exported here — import directly from '@aic/db/src/services/storage'
+// to keep minio out of the Edge Runtime (middleware) bundle.
 export * from './services/ledger';
 export * from './services/events';
 export * from './services/encryption';
