@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
         destination: process.env.NEXT_PUBLIC_PLATFORM_URL || 'https://app.aiccertified.cloud/login',
         permanent: false,
       },
+      {
+        source: '/waiting-list',
+        destination: '/contact',
+        permanent: true,
+      },
     ];
   },
 };

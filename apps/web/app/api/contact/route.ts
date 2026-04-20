@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Client } from "@notionhq/client";
 
 const RATE_LIMIT_MAP = new Map<string, { count: number; timestamp: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_WINDOW = 60 * 1000;
 const RATE_LIMIT_MAX = 3;
 
 function getClientIp(req: NextRequest): string {
@@ -10,6 +11,40 @@ function getClientIp(req: NextRequest): string {
     req.headers.get("x-real-ip") ??
     "unknown"
   );
+}
+
+async function saveToNotion(data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  organization: string;
+  role: string;
+  country: string;
+  enquiryType: string;
+  message?: string;
+}) {
+  const apiKey = process.env.NOTION_API_KEY;
+  const databaseId = process.env.NOTION_CONTACT_DATABASE_ID;
+  if (!apiKey || !databaseId) return;
+
+  const notion = new Client({ auth: apiKey });
+
+  await notion.pages.create({
+    parent: { database_id: databaseId },
+    properties: {
+      Name: {
+        title: [{ text: { content: `${data.firstName} ${data.lastName}` } }],
+      },
+      Email: { email: data.email },
+      Company: { rich_text: [{ text: { content: data.organization } }] },
+      "Job Title": { rich_text: [{ text: { content: data.role } }] },
+      Country: { rich_text: [{ text: { content: data.country } }] },
+      "Enquiry Type": { select: { name: data.enquiryType } },
+      Message: { rich_text: [{ text: { content: data.message || "" } }] },
+      Status: { select: { name: "New" } },
+      "Submitted At": { date: { start: new Date().toISOString() } },
+    },
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -33,8 +68,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  // Support both legacy field names (organization/role/enquiryType) and
-  // current form field names (company/jobTitle/certificationType)
   const firstName = body.firstName;
   const lastName = body.lastName;
   const email = body.email;
@@ -48,7 +81,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  // Forward to HQ if configured, otherwise log and return success
+  // Save to Notion (non-blocking — form success doesn't depend on this)
+  saveToNotion({ firstName, lastName, email, organization, role, country, enquiryType, message })
+    .catch((err) => console.error("[Contact] Notion save failed:", err));
+
+  // Forward to HQ if configured
   const hqUrl = process.env.HQ_URL;
   if (hqUrl) {
     try {
@@ -57,9 +94,7 @@ export async function POST(req: NextRequest) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firstName, lastName, email, organization, role, country, enquiryType, message }),
       });
-      if (!hqRes.ok) {
-        console.error("HQ contact forward failed:", hqRes.status);
-      }
+      if (!hqRes.ok) console.error("HQ contact forward failed:", hqRes.status);
     } catch (err) {
       console.error("HQ contact forward error:", err);
     }

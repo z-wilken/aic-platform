@@ -6,17 +6,24 @@ import {
   Shield,
   CheckCircle,
   Clock,
-  Award,
   Globe,
   Users,
   MapPin,
   Mail,
   ArrowRight,
+  Briefcase,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
+
+const enquiryTypes = [
+  { value: "Corporate Certification", label: "Corporate Certification", description: "ISO/IEC 42001 certification for your organisation" },
+  { value: "Professional Certification", label: "Professional Certification", description: "CAEL, SAIGS, or AAEP individual certification" },
+  { value: "Partnership / Media", label: "Partnership / Media", description: "Strategic partnership, press, or research inquiry" },
+  { value: "General Enquiry", label: "General Enquiry", description: "Other questions or feedback" },
+];
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -26,30 +33,53 @@ export default function ContactPage() {
     company: "",
     jobTitle: "",
     country: "",
-    certificationType: "",
+    enquiryType: "",
     message: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send data to an API
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    setLoading(true);
+    setError("");
 
-  const certificationTypes = [
-    { value: "SAIGS", label: "SAIGS", description: "Senior AI Governance Specialist" },
-    { value: "CAEL", label: "CAEL", description: "Certified AI Ethics Lead" },
-    { value: "AIGA", label: "AIGA", description: "AI Governance Auditor" },
-    { value: "other", label: "Other Inquiry", description: "General partnership or corporate inquiry" },
-  ];
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          company: formData.company,
+          jobTitle: formData.jobTitle,
+          country: formData.country,
+          enquiryType: formData.enquiryType,
+          message: formData.message,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (submitted) {
     return (
@@ -65,10 +95,10 @@ export default function ContactPage() {
               <CheckCircle className="w-10 h-10 text-[#c9920a]" />
             </div>
             <h2 className="text-3xl font-bold text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
-              You&apos;re on the List!
+              Message Received
             </h2>
             <p className="text-[#6b7280] text-lg mb-6 leading-relaxed">
-              Thank you for joining the AIC waiting list, <strong>{formData.firstName}</strong>. We&apos;ve received your application.
+              Thank you, <strong>{formData.firstName}</strong>. We&apos;ve received your enquiry and will be in touch shortly.
             </p>
             <div className="bg-[#f0f4f8] border border-[#e5e7eb] rounded-lg p-6 mb-8 text-left">
               <h3 className="font-semibold text-[#0f1f3d] mb-3 flex items-center gap-2">
@@ -78,30 +108,24 @@ export default function ContactPage() {
               <ul className="space-y-2 text-sm text-[#0f1f3d]">
                 <li className="flex items-start gap-2">
                   <span className="text-[#c9920a] font-bold">1.</span>
-                  <span>You&apos;ll receive exclusive pre-launch updates and study materials</span>
+                  <span>Our team reviews your enquiry — usually within one business day</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#c9920a] font-bold">2.</span>
-                  <span>Get notified 48 hours before registration opens to the public</span>
+                  <span>You&apos;ll receive a tailored response with next steps for your certification path</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-[#c9920a] font-bold">3.</span>
-                  <span>Access your exclusive 25% early bird discount code</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#c9920a] font-bold">4.</span>
-                  <span>Join our private pre-certification community forum</span>
+                  <span>If applicable, we&apos;ll schedule a scoping call to discuss your requirements</span>
                 </li>
               </ul>
             </div>
-            <div className="flex gap-4 justify-center">
-              <Button
-                onClick={() => setSubmitted(false)}
-                className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-8"
-              >
-                Back to Portal
-              </Button>
-            </div>
+            <Button
+              onClick={() => { setSubmitted(false); setFormData({ firstName: "", lastName: "", email: "", company: "", jobTitle: "", country: "", enquiryType: "", message: "" }); }}
+              className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-8"
+            >
+              Back to Contact
+            </Button>
           </Card>
         </motion.div>
       </div>
@@ -124,15 +148,15 @@ export default function ContactPage() {
             <div className="flex items-center gap-2 mb-4">
               <Mail className="w-4 h-4 text-[#c9920a]" />
               <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">
-                Contact & Support
+                Contact AIC
               </span>
             </div>
             <h1 className="text-5xl md:text-6xl text-white mb-6" style={{ fontFamily: "'Merriweather', serif", fontWeight: 700 }}>
-              Join the AIC<br />
-              <span className="text-[#c9920a]">Waiting List</span>
+              Get in Touch<br />
+              <span className="text-[#c9920a]">With Our Team</span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl">
-              Secure your place in the upcoming certification cohort. Professionals who join the waiting list receive early access, exclusive study materials, and a 25% discount.
+              Whether you&apos;re exploring corporate certification, pursuing professional credentials, or looking to partner with AIC — we&apos;d like to hear from you.
             </p>
           </motion.div>
         </div>
@@ -182,7 +206,7 @@ export default function ContactPage() {
               <div className="p-6 bg-[#f0f4f8] rounded-xl border border-[#e5e7eb]">
                 <h3 className="font-semibold text-[#0f1f3d] mb-4">Enterprise Solutions</h3>
                 <p className="text-sm text-[#0f1f3d] opacity-80 mb-4 font-medium">
-                  Interested in certifying your entire team or organization? We offer enterprise-wide conformity assessment and bulk certification packages.
+                  Certifying your entire organisation? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
                 <a href="mailto:albert@ztoaholdings.com" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                   Contact Enterprise Sales <ArrowRight className="w-4 h-4" />
@@ -194,7 +218,7 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <Card className="p-8 md:p-10 shadow-xl border-[#e5e7eb] relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#f0f4f8] rounded-bl-full -mr-10 -mt-10 opacity-50" />
-                
+
                 <form onSubmit={handleSubmit} className="space-y-6 relative">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
@@ -239,11 +263,11 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="company" className="text-sm font-medium text-[#0f1f3d]">Company / Organization</label>
+                      <label htmlFor="company" className="text-sm font-medium text-[#0f1f3d]">Company / Organisation</label>
                       <Input
                         id="company"
                         name="company"
-                        placeholder="Organization Name"
+                        placeholder="Organisation Name"
                         value={formData.company}
                         onChange={handleChange}
                         required
@@ -271,7 +295,7 @@ export default function ContactPage() {
                       <Input
                         id="country"
                         name="country"
-                        placeholder="United Kingdom"
+                        placeholder="South Africa"
                         value={formData.country}
                         onChange={handleChange}
                         required
@@ -281,25 +305,25 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-4 pt-2">
-                    <label className="text-sm font-medium text-[#0f1f3d] block flex items-center gap-2">
-                      <Award className="w-4 h-4 text-[#c9920a]" />
-                      I&apos;m Interested In
+                    <label className="text-sm font-medium text-[#0f1f3d] flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-[#c9920a]" />
+                      What are you looking for?
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {certificationTypes.map((type) => (
+                      {enquiryTypes.map((type) => (
                         <label
                           key={type.value}
                           className={`flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${
-                            formData.certificationType === type.value
+                            formData.enquiryType === type.value
                               ? "border-[#c9920a] bg-[#c9920a]/5 ring-1 ring-[#c9920a]"
-                              : "border-[#e5e7eb] hover:border-[#e5e7eb] hover:bg-[#f0f4f8]"
+                              : "border-[#e5e7eb] hover:border-[#c9920a]/30 hover:bg-[#f0f4f8]"
                           }`}
                         >
                           <input
                             type="radio"
-                            name="certificationType"
+                            name="enquiryType"
                             value={type.value}
-                            checked={formData.certificationType === type.value}
+                            checked={formData.enquiryType === type.value}
                             onChange={handleChange}
                             className="mt-1 w-4 h-4 text-[#c9920a] border-[#e5e7eb] focus:ring-[#c9920a]"
                             required
@@ -314,26 +338,33 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2 pt-2">
-                    <label htmlFor="message" className="text-sm font-medium text-[#0f1f3d]">Message (Optional)</label>
+                    <label htmlFor="message" className="text-sm font-medium text-[#0f1f3d]">Message <span className="text-[#6b7280] font-normal">(Optional)</span></label>
                     <Textarea
                       id="message"
                       name="message"
-                      placeholder="Tell us about your background or specific requirements..."
+                      placeholder="Tell us about your organisation, your AI systems, or your specific requirements..."
                       value={formData.message}
                       onChange={handleChange}
                       className="bg-aic-paper border-[#e5e7eb] focus:ring-[#c9920a]/20 focus:border-[#c9920a] min-h-[120px]"
                     />
                   </div>
 
+                  {error && (
+                    <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+                      {error}
+                    </p>
+                  )}
+
                   <div className="pt-4">
                     <Button
                       type="submit"
-                      className="w-full bg-[#c9920a] hover:bg-[#b07d08] text-white py-6 text-lg font-bold shadow-lg shadow-[#c9920a]/20 transition-all"
+                      disabled={loading}
+                      className="w-full bg-[#c9920a] hover:bg-[#b07d08] text-white py-6 text-lg font-bold shadow-lg shadow-[#c9920a]/20 transition-all disabled:opacity-60"
                     >
-                      Join the Waiting List
+                      {loading ? "Sending..." : "Send Enquiry"}
                     </Button>
                     <p className="text-center text-xs text-[#6b7280]/60 mt-4">
-                      By submitting this form, you agree to our privacy policy and terms of service. We will only contact you regarding AIC certification updates.
+                      By submitting this form, you agree to our privacy policy and terms of service. We will only contact you regarding your enquiry.
                     </p>
                   </div>
                 </form>
@@ -353,10 +384,10 @@ export default function ContactPage() {
           >
             <Users className="w-12 h-12 text-[#c9920a] mx-auto mb-6" />
             <h2 className="text-3xl text-[#0f1f3d] mb-4" style={{ fontFamily: "'Merriweather', serif" }}>
-              Join Thousands of AI Leaders
+              Join Leading AI Governance Professionals
             </h2>
             <p className="text-[#6b7280] text-lg leading-relaxed max-w-2xl mx-auto">
-              Professionals from Fortune 500 companies, government agencies, and leading research institutions are already on the waiting list. Position yourself at the forefront of AI governance.
+              Professionals from financial institutions, government agencies, and leading enterprises are already working with AIC. Position your organisation at the forefront of AI accountability.
             </p>
           </motion.div>
         </div>

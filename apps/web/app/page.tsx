@@ -165,7 +165,7 @@ export default function Home() {
                 className="flex flex-wrap gap-4"
               >
                 <Link
-                  href="/waiting-list"
+                  href="/contact"
                   className="inline-flex items-center gap-2 bg-[#c9920a] hover:bg-[#b07d08] text-white px-10 py-5 rounded-full transition-all text-sm font-bold shadow-2xl shadow-[#c9920a]/30 hover:-translate-y-1"
                 >
                   APPLY FOR CERTIFICATION <ArrowRight className="w-4 h-4" />
