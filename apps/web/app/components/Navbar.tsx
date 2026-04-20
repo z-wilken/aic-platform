@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, Shield, BookOpen, FileText, Newspaper, Menu, X, LogIn } from "lucide-react";
+import { Globe, Shield, BookOpen, FileText, Newspaper, Menu, X } from "lucide-react";
 
 export const navItems = [
   { href: "/certification",  label: "Certification",         icon: Shield,    description: "Five-Division Accountability Framework" },
@@ -73,15 +73,6 @@ export default function Navbar() {
                 </Link>
               ))}
               
-              {/* Login link */}
-              <Link
-                href="/login"
-                className="ml-2 px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1.5 text-[#6b7280] hover:text-[#0f1f3d] hover:bg-[#f0f4f8]"
-              >
-                <LogIn className="w-3.5 h-3.5" />
-                Login
-              </Link>
-
               {/* Burgundy CTA */}
               <Link
                 href="/contact"
@@ -128,14 +119,6 @@ export default function Navbar() {
                 );
               })}
               <div className="pt-4 mt-2 border-t border-[rgba(0,0,0,0.1)] flex flex-col gap-3">
-                <Link
-                  href="/login"
-                  className="flex items-center justify-center gap-2 text-base border border-[rgba(0,0,0,0.1)] text-[#0f1f3d] px-4 py-3 rounded font-medium transition-all hover:bg-[#f0f4f8]"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <LogIn className="w-4 h-4" />
-                  Login to Platform
-                </Link>
                 <Link
                   href="/contact"
                   className="flex items-center justify-center text-base bg-[#c9920a] text-white px-4 py-4 rounded font-bold transition-all hover:bg-[#b07d08]"
