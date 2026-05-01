@@ -4,7 +4,7 @@ import { navItems } from "./Navbar";
 
 const standards = [
   { label: "ISO/IEC 42001 (AIMS)",      url: "https://www.iso.org/standard/81230.html" },
-  { label: "ISO/IEC 17024 (Personnel)", url: "https://www.iso.org/standard/52993.html" },
+  { label: "POPIA Section 71",          url: "https://popia.co.za/section-71-automated-decision-making/" },
   { label: "NIST AI RMF",               url: "https://airc.nist.gov/RMF" },
   { label: "EU AI Act Alignment",       url: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" },
   { label: "IEEE 7000 Series",          url: "https://standards.ieee.org/ieee/IEEE-7000/6781/" },
@@ -61,7 +61,7 @@ export default function Footer() {
             </p>
             <div className="pt-2 flex items-center gap-2 text-[10px] text-[#c9920a] font-mono uppercase tracking-widest">
               <Shield className="w-3.5 h-3.5 shrink-0" />
-              <span>IAF MLA Accredited · ISO/IEC 17024</span>
+              <span>METHODOLOGY ASSESSED</span>
             </div>
           </div>
 

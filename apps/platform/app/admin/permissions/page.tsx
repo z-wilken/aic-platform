@@ -206,8 +206,7 @@ export default function AdminPermissions() {
           <div>
             <h4 className="font-bold text-amber-800 mb-1">Administrative Critical Path</h4>
             <p className="text-amber-700 text-sm leading-relaxed">
-              You are currently in <strong>God Mode</strong>. Changes made here bypass standard approval flows and are logged directly to the Sovereign System Ledger. Ensure all custom role creations align with the AIC Personnel Certification Manual (ISO/IEC 17024).
-            </p>
+              You are currently in <strong>God Mode</strong>. Changes made here bypass standard approval flows and are logged directly to the Sovereign System Ledger. Ensure all custom role creations align with the AIC Personnel Certification Manual.            </p>
           </div>
         </div>
       </div>

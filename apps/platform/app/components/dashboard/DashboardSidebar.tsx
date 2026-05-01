@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import {
   LayoutDashboard, ShieldCheck, Activity, AlertTriangle,
   FileCheck, MessageSquare, Award, GraduationCap, Key, Building2, LogOut,
@@ -139,7 +140,10 @@ export function DashboardSidebar({
             <div className="font-mono text-[9px] font-bold text-white">Live — Secure</div>
           </div>
         </div>
-        <button className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-white/30 text-xs transition-colors hover:text-red-400">
+        <button 
+          onClick={() => signOut({ callbackUrl: '/login' })}
+          className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-white/30 text-xs transition-colors hover:text-red-400"
+        >
           <LogOut className="w-3.5 h-3.5" /> Sign Out
         </button>
       </div>

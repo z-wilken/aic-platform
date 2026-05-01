@@ -31,7 +31,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
               <Globe className="w-3 h-3" />
-              IAF MLA Accredited Body
+              METHODOLOGY ASSESSED
             </span>
             <span className="hidden sm:flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#c9920a] inline-block" />

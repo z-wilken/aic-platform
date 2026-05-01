@@ -12,11 +12,8 @@ import {
   CheckCircle,
   AlertCircle,
   Globe,
-  Lock,
   Users,
   Building2,
-  Calendar,
-  Eye,
 } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -149,8 +146,7 @@ export default function DisclosuresPage() {
               <span className="text-[#c9920a]">Compliance</span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed">
-              As an IAF Multilateral Recognition Arrangement (MLA) signatory, AIC maintains full transparency regarding
-              our impartiality, accreditation status, certified organizations, and appeals processes.
+              AIC maintains full transparency regarding our methodology, impartiality, certified organizations, and appeals processes.
             </p>
           </motion.div>
         </div>
@@ -161,10 +157,10 @@ export default function DisclosuresPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { icon: Shield, label: "IAF MLA Accredited", value: "Since 2023" },
-              { icon: Globe, label: "Recognition", value: "100+ Countries" },
-              { icon: Building2, label: "Certified Orgs", value: "340+" },
-              { icon: Users, label: "Certified Professionals", value: "4,200+" },
+              { icon: Shield, label: "Methodology", value: "Assessed" },
+              { icon: Globe, label: "Recognition", value: "Global" },
+              { icon: Building2, label: "Certified Orgs", value: "Verified" },
+              { icon: Users, label: "Certified Professionals", value: "Active" },
             ].map((item, i) => {
               const Icon = item.icon;
               return (
@@ -221,9 +217,7 @@ export default function DisclosuresPage() {
                     <div>
                       <h3 className="font-semibold text-[#0f1f3d] mb-2">Core Principle</h3>
                       <p>
-                        The AI Certification Institute (AIC) operates as an independent, third-party accreditation and
-                        certification body. We maintain strict impartiality in all certification activities and do not
-                        provide consultancy services to organizations seeking certification.
+                        AI Integrity Certification (Pty) Ltd (AIC) operates as an independent, third-party certification body. We maintain strict impartiality in all certification activities and do not provide consultancy services to organizations seeking certification.
                       </p>
                     </div>
 
@@ -287,13 +281,7 @@ export default function DisclosuresPage() {
                       <div className="bg-aic-paper border border-[#e5e7eb] rounded-lg p-4">
                         <div className="text-sm space-y-2">
                           <div>
-                            <strong>Ethics Hotline:</strong> +1 (202) 555-0199 (24/7 voicemail)
-                          </div>
-                          <div>
-                            <strong>Email:</strong> ethics@aic-cert.org
-                          </div>
-                          <div>
-                            <strong>Postal Mail:</strong> AIC Ethics Committee, PO Box 8402, Washington, DC 20044
+                            <strong>Email:</strong> info@aiccertified.cloud
                           </div>
                         </div>
                       </div>
@@ -303,10 +291,6 @@ export default function DisclosuresPage() {
                       <Button className="bg-[#0a1628] hover:bg-[#0f1f3d] text-white">
                         <Download className="w-4 h-4 mr-2" />
                         Download Full Impartiality Policy (PDF)
-                      </Button>
-                      <Button variant="outline">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        IAF Impartiality Requirements
                       </Button>
                     </div>
                   </div>
@@ -329,95 +313,12 @@ export default function DisclosuresPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h2 className="text-2xl font-semibold text-[#0f1f3d]">Current Accreditation Status</h2>
-                          <Badge className="bg-[#c9920a]/10 text-[#c9920a]">Active</Badge>
+                          <h2 className="text-2xl font-semibold text-[#0f1f3d]">Methodology Assessment</h2>
                         </div>
-                        <p className="text-sm text-[#6b7280]/80">Last verified: February 20, 2026</p>
+                        <p className="text-sm text-[#6b7280]/80">AIC&apos;s certification methodology is currently undergoing assessment to ensure alignment with international best practices.</p>
                       </div>
                     </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      {[
-                        {
-                          label: "Accrediting Body",
-                          value: "ANAB (ANSI National Accreditation Board)",
-                          icon: Building2,
-                        },
-                        {
-                          label: "Accreditation Standard",
-                          value: "ISO/IEC 17024:2012 (Personnel Certification)",
-                          icon: FileText,
-                        },
-                        {
-                          label: "Accreditation Number",
-                          value: "PCT-1847",
-                          icon: Lock,
-                        },
-                        {
-                          label: "Valid Through",
-                          value: "December 31, 2027",
-                          icon: Calendar,
-                        },
-                        {
-                          label: "IAF MLA Signatory",
-                          value: "Yes (Full Recognition)",
-                          icon: Globe,
-                        },
-                        {
-                          label: "Last Surveillance Audit",
-                          value: "November 2025 (No findings)",
-                          icon: Eye,
-                        },
-                      ].map((item, i) => {
-                        const Icon = item.icon;
-                        return (
-                          <div key={i} className="flex items-start gap-3 p-4 bg-[#f0f4f8] rounded-lg">
-                            <Icon className="w-5 h-5 text-[#c9920a] shrink-0 mt-0.5" />
-                            <div>
-                              <div className="text-sm text-[#6b7280]/80 mb-1">{item.label}</div>
-                              <div className="font-medium text-[#0f1f3d]">{item.value}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
                   </Card>
-
-                  <Card className="p-8">
-                    <h3 className="font-semibold text-[#0f1f3d] mb-4">What IAF MLA Recognition Means</h3>
-                    <p className="text-[#0f1f3d] mb-6 leading-relaxed">
-                      The International Accreditation Forum (IAF) Multilateral Recognition Arrangement (MLA) ensures that
-                      certificates issued by AIC are recognized globally. This means organizations certified by AIC do not
-                      need additional certifications when operating in other countries within the MLA network.
-                    </p>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      {[
-                        { region: "North America", signatories: "4" },
-                        { region: "Europe", signatories: "32" },
-                        { region: "Asia-Pacific", signatories: "28" },
-                        { region: "Latin America", signatories: "12" },
-                        { region: "Africa", signatories: "14" },
-                        { region: "Middle East", signatories: "10" },
-                      ].map((region, i) => (
-                        <div key={i} className="text-center p-4 bg-[#f0f4f8] rounded-lg border border-[#e5e7eb]">
-                          <Globe className="w-6 h-6 text-[#c9920a] mx-auto mb-2" />
-                          <div className="font-semibold text-[#0f1f3d]">{region.region}</div>
-                          <div className="text-sm text-[#6b7280]/80">{region.signatories} MLA Signatories</div>
-                        </div>
-                      ))}
-                    </div>
-                  </Card>
-
-                  <div className="flex gap-3">
-                    <Button className="bg-[#0a1628] hover:bg-[#0f1f3d] text-white">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download Accreditation Certificate
-                    </Button>
-                    <Button variant="outline">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Verify on ANAB Registry
-                    </Button>
-                  </div>
                 </div>
               </motion.div>
             </TabsContent>
@@ -510,7 +411,7 @@ export default function DisclosuresPage() {
                   </div>
 
                   <div className="mt-6 text-center">
-                    <p className="text-sm text-[#6b7280]/80 mb-3">Showing 5 of 340+ certified organizations</p>
+                    <p className="text-sm text-[#6b7280]/80 mb-3">Showing verified organizations</p>
                     <Button variant="outline">Load More Organizations</Button>
                   </div>
                 </Card>
@@ -584,17 +485,7 @@ export default function DisclosuresPage() {
                         <div className="bg-aic-paper border border-[#e5e7eb] rounded-lg p-5">
                           <div className="space-y-3 text-sm">
                             <div>
-                              <strong>Email:</strong> appeals@aic-cert.org
-                            </div>
-                            <div>
-                              <strong>Online Portal:</strong>{" "}
-                              <a href="#" className="text-[#c9920a] hover:underline">
-                                aic-cert.org/appeals
-                              </a>
-                            </div>
-                            <div>
-                              <strong>Postal Mail:</strong> AIC Appeals Committee, 1225 Eye Street NW, Suite 550,
-                              Washington, DC 20005
+                              <strong>Email:</strong> info@aiccertified.cloud
                             </div>
                             <div className="pt-3 border-t border-[#e5e7eb]">
                               <strong>Required Information:</strong> Certificate number (if applicable), detailed
@@ -668,10 +559,6 @@ export default function DisclosuresPage() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button className="bg-[#0a1628] hover:bg-[#0f1f3d] text-white px-8 py-3">Contact Compliance Team</Button>
-            <Button variant="outline" className="px-8 py-3">
-              <ExternalLink className="w-4 h-4 mr-2" />
-              IAF Public Registry
-            </Button>
           </div>
         </div>
       </section>

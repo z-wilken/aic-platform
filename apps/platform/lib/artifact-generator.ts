@@ -89,7 +89,7 @@ export function getModelCardTemplate(data: {
       <div class="footer">
         This artifact is cryptographically linked to AIC Audit Ledger Hash: SHA256-${Math.random().toString(36).substring(7).toUpperCase()}
         <br/>
-        Valid for professional review under POPIA Section 71 and ISO/IEC 17024 guidelines.
+        Valid for professional review under POPIA Section 71 and AIC governance guidelines.
       </div>
     </body>
     </html>
@@ -152,7 +152,7 @@ export function getCertificateTemplate(data: {
           <div class="id-section">
             <p>LICENSE NO: ${data.licenseNumber}</p>
             <p>VALID UNTIL: ${data.validUntil}</p>
-            <p>ISO/IEC 17024 COMPLIANT</p>
+            <p>AIC METHODOLOGY ASSESSED</p>
           </div>
         </div>
       </div>

@@ -243,8 +243,8 @@ export default function CorporatePortalPage() {
             {/* Trust indicators */}
             <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
-                { icon: Globe, label: "48+ countries", sub: "Internationally recognized" },
-                { icon: Lock, label: "IAF MLA", sub: "Multilateral recognition" },
+                { icon: Globe, label: "Global Presence", sub: "Internationally recognized" },
+                { icon: Lock, label: "Methodology", sub: "Assessed & verified" },
                 { icon: RefreshCw, label: "3-year cycle", sub: "With annual surveillance" },
                 { icon: Users, label: "Dedicated CRM", sub: "Your account manager" },
               ].map((item, i) => {
@@ -428,7 +428,7 @@ export default function CorporatePortalPage() {
                 Certified Organizations
               </h2>
               <p className="text-[#6b7280] max-w-2xl text-sm">
-                Publicly searchable registry of ISO/IEC 42001-certified organizations. This directory is maintained per IAF MLA public disclosure requirements.
+                Publicly searchable registry of ISO/IEC 42001-certified organizations. This directory is maintained for public transparency and verification.
               </p>
             </div>
 

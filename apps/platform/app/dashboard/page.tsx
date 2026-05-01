@@ -2,235 +2,173 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Shield,
-  FileText,
-  UploadCloud,
-  CheckCircle2,
   MessageSquare,
-  Building,
-  AlertCircle
+  ShieldCheck,
+  Globe,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Card } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Progress } from '../components/ui/progress';
+import { IntegrityScore } from './components/IntegrityScore';
+import { RightsRibbon } from './components/RightsRibbon';
+import { PulseMonitor } from './components/PulseMonitor';
+import { JourneyTracker } from './components/JourneyTracker';
+import { EvidenceByRight } from './components/EvidenceByRight';
+import { ActionItems } from './components/ActionItems';
+import { AccountablePerson } from './components/AccountablePerson';
 
-const STEP_LABELS = ['Application', 'Evidence Review', 'Proctored Exam', 'Final Certification'];
-
-type Slot = {
-  type: string;
-  label: string;
-  required: boolean;
-  uploaded: boolean;
-};
-
-type EvidenceData = {
-  organization: { name: string; primaryAiOfficer: string | null };
-  slots: Slot[];
-  certStep: number;
-  certificationStatus: string | null;
+// Mock data based on the redesign spec
+const MOCK_DATA = {
+  org: {
+    name: 'Meridian Financial Group',
+    division: 'Division 2',
+    divisionName: 'Supervised',
+  },
+  score: {
+    overall: 77,
+    trend: '+2 from last month',
+    bottleneck: 'Right 3 (Empathy) is the bottleneck. Dignity score is below the certification threshold.',
+    methodology: [
+      { label: 'Evidence Completeness', weight: 40, score: 72 },
+      { label: 'Override Rate Health', weight: 20, score: 55 },
+      { label: 'Dignity Score', weight: 20, score: 54 },
+      { label: 'Findings Severity', weight: 10, score: 90 },
+      { label: 'Appeal SLA Adherence', weight: 10, score: 100 },
+    ],
+  },
+  rights: [
+    { id: 1, name: 'Human Agency', score: 71, trend: '↑', trendDir: 'up', metric: '47 overrides in Q1 · 0 in Q2', status: 'attention' },
+    { id: 2, name: 'Explanation', score: 88, trend: '→', trendDir: 'flat', metric: 'Decision notices reviewed · Plain language confirmed', status: 'healthy' },
+    { id: 3, name: 'Empathy', score: 54, trend: '↓', trendDir: 'down', metric: 'Dignity score 54/100 — below threshold', status: 'action' },
+    { id: 4, name: 'Correction', score: 79, trend: '↑', trendDir: 'up', metric: 'Avg 7.4 BD resolution · 3 open', status: 'attention' },
+    { id: 5, name: 'Truth', score: 95, trend: '→', trendDir: 'flat', metric: 'All disclosures verified · Full compliance', status: 'healthy' },
+  ],
+  pulse: {
+    decisionsToday: 1243,
+    overrideRate: 0.0,
+    overrideHealthMin: 1.0,
+    overrideHealthMax: 8.0,
+    openFindings: 3,
+    findingsMaxSev: 'critical',
+    daysToMilestone: 14,
+    milestoneLabel: 'Evidence deadline',
+    sparkline: [980, 1102, 1340, 1189, 1420, 1380, 1243],
+  },
+  stages: [
+    { id: 1, label: 'Intake', status: 'past', date: 'Mar 28' },
+    { id: 2, label: 'Onboarding', status: 'past', date: 'Apr 01' },
+    { id: 3, label: 'Evidence Submission', status: 'active', progress: 42, nextAction: 'Upload outstanding Right 3 (Empathy) evidence', cta: 'Vault', daysIn: 14 },
+    { id: 4, label: 'Auditor Review', status: 'future' },
+    { id: 5, label: 'Final Certification', status: 'future' },
+  ],
+  actions: [
+    { id: 1, urgency: 'high', title: 'Submit Right 3 (Empathy) evidence', why: 'Dignity score 54/100 blocks certification. Threshold is 60.', deadline: '2 May 2026', cta: 'Evidence Vault' },
+    { id: 2, urgency: 'high', title: 'Explain zero override rate (April)', why: '15,421 decisions with no human override logged. Auditor requires explanation.', deadline: '2 May 2026', cta: 'Correspondence' },
+    { id: 3, urgency: 'medium', title: 'Complete Appeal Mechanism documentation', why: 'Tier 1 escalation path is missing — significant finding.', deadline: '2 May 2026', cta: 'Evidence Vault' },
+  ],
 };
 
 export default function ClientDashboard() {
-  const [data, setData] = useState<EvidenceData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/evidence')
-      .then(r => r.json())
-      .then(d => { if (!d.error) setData(d); })
-      .catch(() => {});
+    // Simulate loading
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
   }, []);
 
-  const slots = data?.slots ?? [];
-  const mandatoryCount = slots.filter(s => s.required).length;
-  const mandatoryUploaded = slots.filter(s => s.required && s.uploaded).length;
-  const isComplete = mandatoryCount > 0 && mandatoryUploaded === mandatoryCount;
-  const certStep = data?.certStep ?? 0;
-
-  const steps = STEP_LABELS.map((label, i) => ({
-    id: label.toLowerCase().replace(/\s+/g, '-'),
-    label,
-    status: i < certStep ? 'completed' : i === certStep ? 'current' : 'upcoming',
-  }));
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-aic-paper flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-aic-gold border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-aic-paper">
-      <div className="max-w-[1600px] mx-auto px-8 py-12">
-        <header className="flex justify-between items-end mb-12">
+      <div className="max-w-[1400px] mx-auto px-6 py-10 space-y-6">
+        {/* Header */}
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-[#0A1728] mb-2">
-              {data ? `Welcome, ${data.organization.name}` : 'Loading…'}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-mono text-[10px] font-bold text-aic-gold uppercase tracking-[0.2em]">Meridian Financial Group</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            </div>
+            <h1 className="font-serif text-4xl font-bold text-aic-navy tracking-tight">
+              AIC Pulse Dashboard
             </h1>
-            <p className="text-gray-500">Manage your ISO/IEC 42001 certification lifecycle.</p>
           </div>
-          <div className="text-right">
-            <div className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1">Evidence Readiness</div>
-            <div className="flex items-center gap-3">
-              <span className="text-5xl font-black text-[#0A1728]">
-                {mandatoryCount > 0 ? Math.round((mandatoryUploaded / mandatoryCount) * 100) : 0}
-                <span className="text-[#c36c32]">/100</span>
-              </span>
-              <div className="w-12 h-12 rounded-full border-4 border-[#c36c32] border-t-transparent animate-spin-slow"></div>
+          
+          <div className="flex items-center gap-3">
+            <div className="px-4 py-2 bg-white border border-gray-100 rounded-full flex items-center gap-2 shadow-sm">
+              <Globe className="w-3.5 h-3.5 text-gray-400" />
+              <span className="font-mono text-[10px] font-bold text-gray-500 uppercase tracking-widest">{MOCK_DATA.org.division} — {MOCK_DATA.org.divisionName}</span>
+            </div>
+            <div className="px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-full flex items-center gap-2 shadow-sm">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="font-mono text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Integrity: Secure</span>
             </div>
           </div>
         </header>
 
-        {/* Status Stepper */}
-        <div className="bg-gray-50 rounded-3xl p-8 mb-12 border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-center relative">
-            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 -translate-y-1/2 z-0"></div>
-            {steps.map((step, idx) => (
-              <div key={step.id} className="relative z-10 flex flex-col items-center bg-gray-50 px-4">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 transition-all duration-500 ${
-                  step.status === 'completed' ? 'bg-[#0A1728] text-aic-paper' :
-                  step.status === 'current'   ? 'bg-[#c36c32] text-aic-paper scale-110 shadow-lg' :
-                  'bg-aic-paper border-2 border-gray-200 text-gray-400'
-                }`}>
-                  {step.status === 'completed' ? <CheckCircle2 className="w-6 h-6" /> : idx + 1}
-                </div>
-                <span className={`text-sm font-bold ${step.status === 'upcoming' ? 'text-gray-400' : 'text-[#0A1728]'}`}>
-                  {step.label}
-                </span>
-              </div>
-            ))}
+        {/* Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <IntegrityScore 
+            overall={MOCK_DATA.score.overall}
+            trend={MOCK_DATA.score.trend}
+            bottleneck={MOCK_DATA.score.bottleneck}
+            methodology={MOCK_DATA.score.methodology}
+          />
+          
+          <div className="hidden lg:block">
+            <JourneyTracker stages={MOCK_DATA.stages as any} />
+          </div>
+
+          <RightsRibbon rights={MOCK_DATA.rights as any} />
+          
+          <div className="hidden lg:block">
+            <AccountablePerson 
+              name="Dr. Sarah Chen"
+              role="Chief Risk Officer"
+              initials="SC"
+              caapStatus="pending"
+            />
+          </div>
+
+          <PulseMonitor {...MOCK_DATA.pulse as any} />
+          
+          <ActionItems 
+            items={MOCK_DATA.actions as any} 
+            onAction={(id, cta) => console.log('Action:', id, cta)} 
+          />
+
+          <EvidenceByRight 
+            rights={MOCK_DATA.rights as any} 
+            onViewAll={() => console.log('View all')} 
+          />
+
+          <div className="lg:col-span-1">
+             <Card className="p-6 bg-gray-50 border-gray-100 border-dashed flex flex-col items-center justify-center text-center h-full min-h-[200px]">
+                <MessageSquare className="w-8 h-8 text-gray-300 mb-4" />
+                <h3 className="text-sm font-bold text-aic-navy mb-2">Auditor Correspondence</h3>
+                <p className="text-xs text-gray-400 max-w-[200px] mb-6 leading-relaxed">Direct line to your assigned AIC System Auditor.</p>
+                <Button variant="outline" className="font-mono text-[10px] uppercase tracking-widest h-9 px-6 rounded-full bg-white">
+                  Open Chat
+                </Button>
+             </Card>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Vault Section */}
-          <div className="lg:col-span-2 space-y-8">
-            <section>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-[#0A1728] flex items-center gap-2">
-                  <Shield className="w-6 h-6 text-[#c36c32]" />
-                  Secure Audit Vault
-                </h2>
-                <Badge variant="outline" className="text-[#c36c32] border-[#c36c32]/20">
-                  {mandatoryUploaded}/{mandatoryCount} Mandatory Files
-                </Badge>
-              </div>
-
-              {slots.length === 0 ? (
-                <div className="text-center text-gray-400 text-sm py-8">Loading vault…</div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {slots.map(slot => (
-                    <Card
-                      key={slot.type}
-                      className={`p-6 border-2 transition-all ${slot.uploaded ? 'border-emerald-100 bg-emerald-50/30' : 'border-gray-100 hover:border-gray-300'}`}
-                    >
-                      <div className="flex justify-between items-start mb-4">
-                        <div className={`p-2 rounded-lg ${slot.uploaded ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-400'}`}>
-                          <FileText className="w-5 h-5" />
-                        </div>
-                        {slot.uploaded ? (
-                          <Badge className="bg-emerald-500">Uploaded</Badge>
-                        ) : (
-                          <Badge variant="secondary">Missing</Badge>
-                        )}
-                      </div>
-                      <h3 className="font-bold text-[#0A1728] mb-1">{slot.label}</h3>
-                      <p className="text-xs text-gray-500 mb-4">
-                        {slot.required ? 'Mandatory for Submission' : 'Recommended Evidence'}
-                      </p>
-                      {!slot.uploaded ? (
-                        <Button variant="outline" className="w-full border-dashed border-2 hover:bg-gray-50">
-                          <UploadCloud className="w-4 h-4 mr-2" /> Upload
-                        </Button>
-                      ) : (
-                        <div className="flex items-center gap-2 text-xs text-emerald-600 font-medium">
-                          <CheckCircle2 className="w-4 h-4" /> Uploaded
-                        </div>
-                      )}
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            {/* In-Portal Communication */}
-            <section className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
-              <h2 className="text-xl font-bold text-[#0A1728] mb-6 flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-[#c36c32]" />
-                Auditor Correspondence
-              </h2>
-              <div className="text-sm text-gray-400 italic mb-4">
-                Correspondence with your assigned auditor will appear here.
-              </div>
-              <div className="relative">
-                <textarea
-                  placeholder="Type a message to your auditor…"
-                  className="w-full bg-aic-paper border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#c36c32]/20 min-h-[100px]"
-                />
-                <Button className="absolute bottom-3 right-3 bg-[#0A1728] text-aic-paper">Send</Button>
-              </div>
-            </section>
+        {/* Footer Info */}
+        <footer className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="font-mono text-[9px] text-gray-400 uppercase tracking-[0.2em]">
+            AIC Platform v2.4.0 — All sessions are cryptographically logged.
           </div>
-
-          {/* Sidebar */}
-          <div className="space-y-8">
-            <div className="bg-[#0A1728] rounded-3xl p-8 text-aic-paper">
-              <h3 className="text-xl font-bold mb-4">Completeness Gauge</h3>
-              <div className="mb-6">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-aic-paper/60">Readiness for Audit</span>
-                  <span className="font-bold">
-                    {mandatoryCount > 0 ? `${Math.round((mandatoryUploaded / mandatoryCount) * 100)}%` : '0%'}
-                  </span>
-                </div>
-                <Progress
-                  value={mandatoryCount > 0 ? (mandatoryUploaded / mandatoryCount) * 100 : 0}
-                  className="bg-aic-paper/10"
-                />
-              </div>
-
-              {!isComplete && (
-                <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl mb-6">
-                  <p className="text-xs text-amber-200 leading-relaxed">
-                    <strong>Submission Locked:</strong> Upload all mandatory documents to trigger human review.
-                  </p>
-                </div>
-              )}
-
-              <Button
-                disabled={!isComplete}
-                className={`w-full py-6 rounded-xl font-bold transition-all ${isComplete ? 'bg-[#c36c32] hover:bg-[#c36c32]' : 'bg-aic-paper/5 text-aic-paper/20'}`}
-              >
-                Submit for AIC Audit
-              </Button>
-            </div>
-
-            <Card className="p-6">
-              <h3 className="font-bold text-[#0A1728] mb-4 flex items-center gap-2">
-                <Building className="w-5 h-5 text-[#c36c32]" />
-                Profile Command
-              </h3>
-              <div className="space-y-4 text-sm">
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="text-[10px] text-gray-400 uppercase font-bold mb-1">Company Name</div>
-                  <div className="font-medium">{data?.organization.name ?? '—'}</div>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-lg">
-                  <div className="text-[10px] text-gray-400 uppercase font-bold mb-1">Primary AI Officer</div>
-                  <div className="font-medium">{data?.organization.primaryAiOfficer ?? '—'}</div>
-                </div>
-                <Button variant="outline" className="w-full text-xs">Update Global Metadata</Button>
-              </div>
-            </Card>
-
-            <div className="p-6 border border-emerald-100 bg-emerald-50/30 rounded-2xl">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-emerald-600 mt-0.5" />
-                <div>
-                  <h4 className="font-bold text-sm text-emerald-900">IAF Status: Active</h4>
-                  <p className="text-xs text-emerald-700 mt-1">
-                    {data?.certificationStatus ?? 'Certification status loading…'}
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center gap-6">
+            <button className="font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest hover:text-aic-gold transition-colors">Documentation</button>
+            <button className="font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest hover:text-aic-gold transition-colors">Support</button>
+            <button className="font-mono text-[9px] font-bold text-gray-400 uppercase tracking-widest hover:text-aic-gold transition-colors">Legal</button>
           </div>
-        </div>
+        </footer>
       </div>
     </div>
   );

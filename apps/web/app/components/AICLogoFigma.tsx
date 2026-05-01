@@ -95,7 +95,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
           fontFamily="'Space Grotesk', sans-serif"
           letterSpacing="3"
         >
-          AI CERTIFICATION INSTITUTE
+          AI INTEGRITY CERTIFICATION
         </text>
       </svg>
     );
@@ -166,7 +166,7 @@ export function AICLogoFigma({ variant = "full", className = "", size = "md" }: 
           fontFamily="'Space Grotesk', sans-serif"
           letterSpacing="2"
         >
-          AI CERTIFICATION INSTITUTE
+          AI INTEGRITY CERTIFICATION
         </text>
         
         {/* Accent Line */}

@@ -16,39 +16,35 @@ import {
 const algorithmicRights = [
   {
     icon: Eye,
-    title: "Algorithmic Transparency",
-    description: "Every individual has the right to know when an AI system is making decisions that affect them and to understand the logic behind those decisions.",
+    title: "Human Agency",
+    description: "Every consequential automated decision must be reviewable and overridable by a named, accountable human being.",
   },
   {
     icon: MessageSquare,
-    title: "Algorithmic Explainability",
-    description: "Individuals have the right to receive meaningful, human-readable explanations of automated outcomes that affect their rights, welfare, or opportunities.",
+    title: "Explanation",
+    description: "Individuals have the right to receive a meaningful, human-readable explanation of any autooutcome that affects their rights, welfare, or opportunities.",
   },
   {
     icon: Bell,
-    title: "Right to be Informed",
-    description: "All persons must be notified whenever they are interacting with or being evaluated by an automated system, prior to the interaction taking place.",
+    title: "Empathy",
+    description: "Automated communications — rejections, decisions, notifications — must meet minimum standards of human dignity. Cold, algorithmic language that strips the humanity from consequential outcomes is a governance failure.",
   },
   {
     icon: RefreshCw,
-    title: "Decision Recourse",
-    description: "No individual shall be subject to a decision based solely on automated processing that significantly affects their legal rights or personal circumstances.",
+    title: "Correction",
+    description: "No individual shall be permanently bound by an algorithmic decision. Every person has the right to trigger a review, receive a human reconsideration, and have errors corrected within a documented timeframe.",
   },
   {
     icon: UserCheck,
-    title: "Human Interaction Choice",
-    description: "Every person retains the fundamental right to opt out of AI-mediated services and request human service in any context affecting their material interests.",
+    title: "Truth",
+    description: "Every person must be informed when they are interacting with or being evaluated by an AI system, prior to that interaction affecting them.",
   },
 ];
 
 const standards = [
   { code: "ISO/IEC 42001", name: "AI Management Systems", desc: "Framework for establishing, implementing, and continually improving an Artificial Intelligence Management System." },
-  { code: "ISO/IEC 17024", name: "Personnel Certification", desc: "General requirements for bodies operating certification of persons, ensuring consistent and internationally recognized credentials." },
+  { code: "POPIA / GDPR", name: "Privacy & Data Rights", desc: "Frameworks for protecting individual data rights and ensuring lawful processing of personal information in automated systems." },
   { code: "NIST AI RMF", name: "Risk Management Framework", desc: "Voluntary framework for managing AI risks across the full lifecycle, mapping to Govern, Map, Measure, and Manage functions." },
-];
-
-const counters = [
-  { value: 95, label: "POPIA · §71", suffix: "%" },
 ];
 
 const alignmentBars = [
@@ -86,7 +82,7 @@ function Counter({ value, label, suffix = "" }: { value: number; label: string; 
   );
 }
 
-export default function Home() {
+export default function MarketingPage() {
   const headlineHuman = "Human".split("");
 
   return (
@@ -253,7 +249,7 @@ export default function Home() {
               {
                 tag: "The Answer",
                 heading: "AIC certifies the humans behind the algorithm.",
-                body: "We are the world's only accreditation body focused on the professionals responsible for AI governance. Our certification is built on ISO/IEC 17024, aligned to the EU AI Act, NIST AI RMF, and POPIA — and it means something when it matters most.",
+                body: "We are the world's only certification body focused on the professionals responsible for AI governance. Our certification is built on global best practices, aligned to the EU AI Act, NIST AI RMF, and POPIA — and it means something when it matters most.",
               },
             ].map((item, i) => (
               <motion.div

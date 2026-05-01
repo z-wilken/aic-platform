@@ -76,7 +76,7 @@ const companies: CertifiedCompany[] = [
     website: "https://microsoft.com",
     integrityScore: 96,
     leadAuditor: "Dr. Sarah Chen (AIC Senior Fellow)",
-    accreditationBody: "IAF MLA / SANAS Accredited",
+    accreditationBody: "AIC Methodology Assessed",
     transparencyUrl: "https://microsoft.com/ai/transparency",
     aiEthicsOfficer: "Natasha Crampton",
     complianceMatrix: [
@@ -104,7 +104,7 @@ const companies: CertifiedCompany[] = [
     website: "https://jpmorganchase.com",
     integrityScore: 92,
     leadAuditor: "Marcus Thorne (Certified Lead Auditor)",
-    accreditationBody: "IAF MLA Accredited",
+    accreditationBody: "AIC Methodology Assessed",
     transparencyUrl: "https://jpmorganchase.com/ai-governance",
     aiEthicsOfficer: "James Cummins",
     complianceMatrix: [
@@ -131,7 +131,7 @@ const companies: CertifiedCompany[] = [
     website: "https://sovereign.bank",
     integrityScore: 94,
     leadAuditor: "Thabo Mbeki (AIC RSA Division)",
-    accreditationBody: "SANAS / IAF MLA",
+    accreditationBody: "AIC Methodology Assessed",
     transparencyUrl: "https://sovereign.bank/governance",
     aiEthicsOfficer: "Elena Rodriguez",
     complianceMatrix: [

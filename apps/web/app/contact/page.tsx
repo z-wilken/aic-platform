@@ -179,7 +179,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <div className="text-sm text-[#0f1f3d] uppercase tracking-wider font-bold opacity-70">General Enquiries</div>
-                      <div className="text-[#0f1f3d] font-medium">albert@ztoaholdings.com</div>
+                      <div className="text-[#0f1f3d] font-medium">info@aiccertified.cloud</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
@@ -208,7 +208,7 @@ export default function ContactPage() {
                 <p className="text-sm text-[#0f1f3d] opacity-80 mb-4 font-medium">
                   Certifying your entire organisation? We offer enterprise-wide conformity assessment and bulk certification packages.
                 </p>
-                <a href="mailto:albert@ztoaholdings.com" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+                <a href="mailto:info@aiccertified.cloud" className="text-[#c9920a] text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all">
                   Contact Enterprise Sales <ArrowRight className="w-4 h-4" />
                 </a>
               </div>

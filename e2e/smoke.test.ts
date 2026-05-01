@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('marketing home page loads', async ({ page }) => {
   await page.goto('/');
-  await expect(page).toHaveTitle(/AIC - AI Certification Institute/);
+  await expect(page).toHaveTitle(/AI Integrity Certification/);
   // Verify main header
   await expect(page.locator('h1')).toContainText('Certifying the Human Behind the Algorithm');
   // Verify key section

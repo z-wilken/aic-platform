@@ -113,13 +113,13 @@ export default function ProfessionalPortalPage() {
           >
             <div className="flex items-center gap-2 mb-4">
               <Award className="w-6 h-6 text-[#c9920a]" />
-              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">ISO/IEC 17024 Personnel Certification</span>
+              <span className="text-[#c9920a] text-sm uppercase tracking-widest font-medium">METHODOLOGY ASSESSED</span>
             </div>
             <h1 className="text-5xl text-aic-paper mb-6" style={{ fontFamily: "'Merriweather', serif" }}>
               Professional Portal
             </h1>
             <p className="text-xl text-aic-paper/70 max-w-3xl leading-relaxed">
-              Earn your AIC credential — the globally recognized standard for AI Ethics Leads, Chief AI Officers, and governance professionals. ISO/IEC 17024 accredited and accepted in 100+ jurisdictions.
+              Earn your AIC credential — the globally recognized standard for AI Ethics Leads, Chief AI Officers, and governance professionals. Accepted in major jurisdictions worldwide.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
               <Button className="bg-[#c9920a] hover:bg-[#b07d08] text-white px-6 py-3">
@@ -138,10 +138,10 @@ export default function ProfessionalPortalPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { value: "4,200+", label: "Certified Professionals", icon: Users },
-              { value: "89%", label: "Pass Rate (First Attempt)", icon: TrendingUp },
-              { value: "48", label: "Countries Represented", icon: Globe },
-              { value: "$125K", label: "Average Salary Increase", icon: Briefcase },
+              { value: "Growing", label: "Certified Professionals", icon: Users },
+              { value: "High", label: "Pass Rate (First Attempt)", icon: TrendingUp },
+              { value: "Global", label: "Reach & Impact", icon: Globe },
+              { value: "Leader", label: "Governance Standards", icon: Briefcase },
             ].map((stat, i) => {
               const Icon = stat.icon;
               return (
@@ -183,7 +183,7 @@ export default function ProfessionalPortalPage() {
                     Certification Pathways
                   </h2>
                   <p className="text-[#6b7280] max-w-2xl mx-auto">
-                    AIC offers three levels of ISO/IEC 17024 accredited personnel certification, designed to match your career stage and governance responsibilities.
+                    AIC offers three levels of professional certification, designed to match your career stage and governance responsibilities.
                   </p>
                 </div>
 
@@ -265,7 +265,7 @@ export default function ProfessionalPortalPage() {
                     Upcoming Examinations
                   </h2>
                   <p className="text-[#6b7280] max-w-2xl mx-auto">
-                    All exams are proctored in accordance with ISO/IEC 17024 standards. Online and in-person options available.
+                    All exams are proctored in accordance with AIC governance standards. Online and in-person options available.
                   </p>
                 </div>
 
@@ -458,7 +458,7 @@ export default function ProfessionalPortalPage() {
                     Certified Professional Directory
                   </h2>
                   <p className="text-[#6b7280] max-w-2xl mx-auto">
-                    Search our public directory of AIC-certified professionals. All certifications are independently verified and maintained in our ISO/IEC 17024 registry.
+                    Search our public directory of AIC-certified professionals. All certifications are independently verified and maintained in our public registry.
                   </p>
                 </div>
 
@@ -517,7 +517,7 @@ export default function ProfessionalPortalPage() {
                 </div>
 
                 <div className="mt-6 text-center">
-                  <p className="text-sm text-[#6b7280] mb-3">Showing 4 of 4,200+ certified professionals</p>
+                  <p className="text-sm text-[#6b7280] mb-3">Showing verified professionals</p>
                   <Button variant="outline">Load More Results</Button>
                 </div>
               </div>
