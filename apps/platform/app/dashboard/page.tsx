@@ -7,6 +7,7 @@ import {
   Globe,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
 import { IntegrityScore } from './components/IntegrityScore';
 import { RightsRibbon } from './components/RightsRibbon';
 import { PulseMonitor } from './components/PulseMonitor';
