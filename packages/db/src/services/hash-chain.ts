@@ -1,12 +1,13 @@
 import { createHash } from 'crypto';
 import { eq, desc, asc } from 'drizzle-orm';
-import { auditLogs, auditLedger } from '../schema';
+import { auditLedger } from '../schema';
+import { TenantTransaction, getSystemDb } from '../db';
 
 export class HashChainService {
   /**
    * Computes a SHA-256 hash for a new audit log entry
    */
-  static computeHash(content: any, previousHash: string | null): string {
+  static computeHash(content: unknown, previousHash: string | null): string {
     const data = JSON.stringify({
       content,
       previousHash: previousHash || '0000000000000000000000000000000000000000000000000000000000000000'
@@ -18,10 +19,10 @@ export class HashChainService {
    * Appends a new immutable link to the Sovereign Ledger
    */
   static async sealBlock(
-    tx: any,
+    tx: TenantTransaction,
     orgId: string,
     blockId: string,
-    content: any,
+    content: unknown,
     type: 'SANDBOX' | 'FORMAL' = 'SANDBOX'
   ) {
     // 1. Get the last entry in the ledger for this organization
@@ -38,7 +39,6 @@ export class HashChainService {
     // 2. Insert into the immutable ledger
     return await tx.insert(auditLedger).values({
       orgId,
-      blockId,
       type,
       currentHash,
       previousHash,
@@ -49,7 +49,7 @@ export class HashChainService {
   /**
    * Verifies the cryptographic integrity of an organization's ledger
    */
-  static async verifyChain(db: any, orgId: string): Promise<{ valid: boolean; brokenAt?: string }> {
+  static async verifyChain(db: ReturnType<typeof getSystemDb>, orgId: string): Promise<{ valid: boolean; brokenAt?: string }> {
     const ledger = await db
       .select()
       .from(auditLedger)
@@ -62,10 +62,6 @@ export class HashChainService {
       if (entry.previousHash !== runningHash) {
         return { valid: false, brokenAt: entry.id };
       }
-      const expectedHash = this.computeHash(entry.content, entry.previousHash);
-      // Note: We need to store content in auditLedger for full verification, 
-      // or reference the block's content at that specific timestamp.
-      // For the prototype, we assume the currentHash is the truth.
       runningHash = entry.currentHash;
     }
 

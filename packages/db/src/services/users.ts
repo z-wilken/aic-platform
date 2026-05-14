@@ -1,5 +1,4 @@
 import { users, eq, getTenantDb, getSystemDb } from '../db';
-import { UserRole } from '@aic/types';
 
 /**
  * INSTITUTIONAL USER SERVICE

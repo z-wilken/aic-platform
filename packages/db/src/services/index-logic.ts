@@ -1,4 +1,4 @@
-import { getSystemDb, decisionRecords, publicIndexRankings, eq, sql, and } from '../db';
+import { getSystemDb, decisionRecords, publicIndexRankings, eq, sql } from '../db';
 
 export class IndexIntelligenceService {
   /**
@@ -24,11 +24,7 @@ export class IndexIntelligenceService {
 
     // 2. Update the public index
     await db.update(publicIndexRankings)
-      .set({
-        humanOverrideRate: overrideRate,
-        policyHitRate: hitRate,
-        lastAssessedAt: new Date()
-      })
+      .set({ lastAssessedAt: new Date() })
       .where(eq(publicIndexRankings.linkedOrgId, orgId));
     
     return { overrideRate, hitRate };
@@ -50,10 +46,10 @@ export class IndexIntelligenceService {
 
     // Institutional Scoring Logic
     const score = Math.round(
-        (ranking.boardOversightScore * 0.3) +
-        (ranking.rightsComplianceScore * 0.4) +
-        (ranking.transparencyScore * 0.2) +
-        (ranking.riskManagementScore * 0.1)
+        ((ranking.boardOversightScore ?? 0) * 0.3) +
+        ((ranking.rightsComplianceScore ?? 0) * 0.4) +
+        ((ranking.transparencyScore ?? 0) * 0.2) +
+        ((ranking.riskManagementScore ?? 0) * 0.1)
     );
 
     await db.update(publicIndexRankings)
