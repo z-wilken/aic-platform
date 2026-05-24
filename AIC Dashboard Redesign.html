@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AIC Pulse — Meridian Financial Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Neutrals — warm grey, not blue-grey */
+  --n0:#ffffff;
+  --n50:#faf9f7;
+  --n100:#f4f2ef;
+  --n200:#e8e5e0;
+  --n300:#d0ccc4;
+  --n400:#a09990;
+  --n500:#6b6560;
+  --n700:#2c2824;
+  --n900:#0f1f3d;
+  /* Navy sidebar */
+  --navy:#0f1f3d;
+  --navy2:#162840;
+  /* Accent — AIC gold/amber, used sparingly */
+  --gold:#c9920a;
+  --gold-lo:rgba(201,146,10,.10);
+  --gold-gl:rgba(201,146,10,.18);
+  /* Status — calm palette */
+  --green:#15803d;
+  --green-bg:rgba(21,128,61,.08);
+  --amber:#b45309;
+  --amber-bg:rgba(180,83,9,.08);
+  --red:#b91c1c;
+  --red-bg:rgba(185,28,28,.07);
+  /* Type */
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Merriweather',Georgia,serif;
+  /* Scale */
+  --t12:12px; --t14:14px; --t16:16px; --t20:20px; --t28:28px; --t40:40px;
+  /* Layout */
+  --radius:8px;
+  --shadow:0 1px 4px rgba(15,31,61,.08);
+  --sidebar-w:220px;
+}
+html,body{height:100%;background:var(--n50);color:var(--n900);font-family:var(--sans);font-size:var(--t14);line-height:1.5;-webkit-font-smoothing:antialiased}
+#root{display:flex;min-height:100vh}
+button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--n200);border-radius:2px}
+a{color:inherit;text-decoration:none}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes pulse3{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tick{from{stroke-dashoffset:var(--dash)}to{stroke-dashoffset:0}}
+
+/* ── Skeleton shimmer ── */
+.skel{background:linear-gradient(90deg,var(--n100) 25%,var(--n50) 50%,var(--n100) 75%);background-size={800}px 100%;animation:shimmer 1.4s infinite linear;border-radius:var(--radius)}
+
+/* ── Cards ── */
+.card{background:var(--n0);border:1px solid var(--n200);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-p{padding:20px}
+
+/* ── Mono label ── */
+.mono-label{font-family:var(--mono);font-size={10}px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--n400)}
+
+/* ── Tooltip ── */
+.tip-wrap{position:relative;display:inline-flex;align-items:center}
+.tip-wrap:hover .tip{opacity:1;pointer-events:auto;transform:translateY(0)}
+.tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:var(--n900);color:var(--n0);font-size={11}px;line-height:1.5;padding:8px 12px;border-radius:6px;white-space:normal;width:220px;z-index:400;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;text-align:left;font-weight:400}
+.tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--n900)}
+
+/* ── Responsive main padding ── */
+.main-content{padding:24px;max-width:1200px;width:100%;margin:0 auto}
+@media(min-width:1280px){.main-content{padding:32px}}
+@media(max-width:900px){.main-content{padding:16px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback,useMemo}=React;
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DATA MODEL — all UI reads from here; wire to real queries without
+   restructuring markup.
+══════════════════════════════════════════════════════════════════════════ */
+const DATA={
+  org:{name:'Meridian Financial Group',reg:'2024/102938/07',division:'Division 2',divisionName:'Supervised',sector:'Financial Services — FSB Regulated',employees:'340–500'},
+  accountablePerson:{name:'Dr. Sarah Chen',role:'Chief Risk Officer',caap:'pending',verifiedOn:'Apr 1, 2026',initials:'SC'},
+  certification:{
+    ref:'AIC-2026-MFG-001',stage:2,stageLabel:'Evidence Submission',totalStages:6,
+    stageProgress:42,daysInStage:14,nextAction:'Upload outstanding Right 3 (Empathy) evidence',
+    ctaLabel:'Go to Evidence Vault',ctaTarget:'Evidence Vault',
+    stageHistory:[
+      {id:0,label:'Intake',date:'Mar 28, 2026'},
+      {id:1,label:'Onboarding',date:'Apr 1, 2026'},
+    ],
+    futureStages:['Auto Review','Auditor Review','Decision','Continuous Governance'],
+  },
+  score:{
+    overall:77,
+    methodology:[
+      {label:'Evidence Completeness', weight:40, score:72},
+      {label:'Override Rate Health',  weight:20, score:55},
+      {label:'Dignity Score',         weight:20, score:54},
+      {label:'Findings Severity',     weight:10, score:90},
+      {label:'Appeal SLA Adherence',  weight:10, score:100},
+    ],
+    bottleneck:'Right 3 (Empathy) is the bottleneck. Dignity score is below the certification threshold.',
+    trend:'+2 from last month',
+  },
+  rights:[
+    {id:1,name:'Human Agency', score:71,trend:'↑',trendDir:'up',  metric:'47 overrides in Q1 · 0 in Q2',status:'attention',
+     evidenceMet:3,evidenceTotal:5,items:[
+      {id:'HU-1',label:'AI Systems Register',         tier:'A',status:'verified',note:'Pulse SDK — 3 systems active'},
+      {id:'HU-2',label:'Human Override Records (Q1)', tier:'B',status:'verified',note:'47 override events'},
+      {id:'HU-3',label:'Override Rate Evidence (Q2)', tier:'B',status:'flagged',note:'Zero overrides Apr — explanation required'},
+      {id:'HU-4',label:'Accountable Person RACI',     tier:'C',status:'partial',note:'Awaiting auditor review'},
+      {id:'HU-5',label:'Tier 1 Decision SLA Policy',  tier:'C',status:'missing',note:null},
+    ]},
+    {id:2,name:'Explanation', score:88,trend:'→',trendDir:'flat', metric:'Decision notices reviewed · Plain language confirmed',status:'healthy',
+     evidenceMet:3,evidenceTotal:3,items:[
+      {id:'EX-1',label:'SHAP Feature Importance Report',tier:'A',status:'verified',note:'Credit model v2.4'},
+      {id:'EX-2',label:'Sample Decision Notices (10)', tier:'B',status:'verified',note:'Plain language confirmed'},
+      {id:'EX-3',label:'Explanation Mechanism Policy', tier:'C',status:'verified',note:null},
+    ]},
+    {id:3,name:'Empathy',     score:54,trend:'↓',trendDir:'down', metric:'Dignity score 54/100 — below threshold',status:'action',
+     evidenceMet:0,evidenceTotal:3,items:[
+      {id:'EM-1',label:'Decline Letter Samples (20)',tier:'B',status:'flagged',note:'Dignity score 54/100 — below 60 threshold'},
+      {id:'EM-2',label:'Communication Review Policy',tier:'C',status:'partial',note:'Appeal language missing'},
+      {id:'EM-3',label:'Customer Feedback Dataset',  tier:'A',status:'missing',note:null},
+    ]},
+    {id:4,name:'Correction',  score:79,trend:'↑',trendDir:'up',  metric:'Avg 7.4 BD resolution · 3 open',status:'attention',
+     evidenceMet:2,evidenceTotal:3,items:[
+      {id:'CO-1',label:'Correction SLA Policy (≤10 BD)',    tier:'C',status:'verified',note:null},
+      {id:'CO-2',label:'Resolved Correction Case Records',   tier:'B',status:'verified',note:'Avg 7.4 BD resolution'},
+      {id:'CO-3',label:'Appeal Mechanism Documentation',     tier:'C',status:'partial',note:'Tier 1 escalation path missing'},
+    ]},
+    {id:5,name:'Truth',       score:95,trend:'→',trendDir:'flat', metric:'All disclosures verified · Full compliance',status:'healthy',
+     evidenceMet:3,evidenceTotal:3,items:[
+      {id:'TR-1',label:'AI Disclosure Statement (Website)',  tier:'B',status:'verified',note:null},
+      {id:'TR-2',label:'Application-stage AI Notice',        tier:'B',status:'verified',note:null},
+      {id:'TR-3',label:'Decision Communication Disclosure',  tier:'B',status:'verified',note:null},
+    ]},
+  ],
+  pulse:{
+    decisionsToday:1243,
+    overrideRate:0.0,overrideHealthMin:1,overrideHealthMax:8,
+    openFindings:3,findingsMaxSev:'critical',
+    daysToMilestone:14,milestoneLabel:'Evidence deadline',
+    sparkline:[980,1102,1340,1189,1420,1380,1243],
+    lastUpdated:new Date(),
+    decisionVolume:[
+      {month:'Nov',v:12400},{month:'Dec',v:13100},{month:'Jan',v:14200},
+      {month:'Feb',v:13800},{month:'Mar',v:14900},{month:'Apr',v:15421},
+    ],
+  },
+  findings:[
+    {id:'CF-01',sev:'critical',right:'Right 1 — Human Agency',title:'Override Rate Evidence (Q2) — Not Submitted',
+     found:'Zero override events logged across 15,421 April decisions. Q2 evidence meets Tier D only — no operational data supplied.',
+     needed:'Pulse log data (Tier A) showing override events, or a written explanation from the Accountable Person confirming why zero overrides occurred and confirming oversight remained active.',
+     deadline:'2 May 2026',status:'open'},
+    {id:'CF-02',sev:'critical',right:'Right 3 — Empathy',title:'Decline Letters — Below Dignity Threshold',
+     found:'20 decline letter samples scored an aggregate dignity score of 54/100 — below the 60-point certification threshold. Failures include no next-steps, legal-first structure, and no appeal reference.',
+     needed:'Revised decline letter templates scoring ≥ 60 on the AIC Empathy Engine rubric, including plain-language reasoning, a clear right of appeal, and a human contact.',
+     deadline:'2 May 2026',status:'open'},
+    {id:'CF-03',sev:'critical',right:'Right 1 — Human Agency',title:'Tier 1 Decision SLA Policy — Not Submitted',
+     found:'No SLA policy submitted for Tier 1 decisions. Mandatory for Division 2 certification.',
+     needed:'A board-approved SLA policy specifying the maximum time from AI recommendation to human decision for Tier 1 decisions.',
+     deadline:'2 May 2026',status:'open'},
+    {id:'SF-01',sev:'significant',right:'Right 4 — Correction',title:'Appeal Mechanism — Missing Tier 1 Escalation Path',
+     found:'Appeal mechanism documentation does not describe an escalation path for Tier 1 decisions.',
+     needed:'Amended appeal documentation specifying the Tier 1 escalation path, responsible person, and SLA.',
+     deadline:'2 May 2026',status:'open'},
+    {id:'SF-02',sev:'significant',right:'Right 1 — Human Agency',title:'Accountable Person RACI — Partial',
+     found:'RACI submitted but requires minor revision before Tier C can be confirmed.',
+     needed:'Clarify individual authority levels and confirm Accountable Person has direct override authority, not only escalation.',
+     deadline:'2 May 2026',status:'partial'},
+  ],
+  activity:[
+    {type:'finding',label:'Critical finding raised',desc:'Right 3 — Decline letters scored below dignity threshold',time:'2h ago',sev:'critical'},
+    {type:'evidence_accepted',label:'Evidence accepted',desc:'EX-1: SHAP Feature Importance Report — Tier A confirmed',time:'Yesterday'},
+    {type:'anomaly',label:'Pulse anomaly detected',desc:'Override rate dropped to 0.00% for April — flagged for review',time:'2 days ago',sev:'significant'},
+    {type:'score',label:'Integrity score updated',desc:'Score moved from 75 → 77 following Right 2 evidence review',time:'3 days ago'},
+    {type:'auditor',label:'Auditor assigned',desc:'AIC System Auditor assigned to assessment AIC-2026-MFG-001',time:'Apr 3, 2026'},
+  ],
+  actions:[
+    {id:1,urgency:'high',  title:'Submit Right 3 (Empathy) evidence',why:'Dignity score 54/100 blocks certification. Threshold is 60.',deadline:'2 May 2026',cta:'Evidence Vault'},
+    {id:2,urgency:'high',  title:'Explain zero override rate (April)',why:'15,421 decisions with no human override logged. Auditor requires explanation or evidence.',deadline:'2 May 2026',cta:'Correspondence'},
+    {id:3,urgency:'medium',title:'Complete Appeal Mechanism documentation',why:'Tier 1 escalation path is missing — significant finding.',deadline:'2 May 2026',cta:'Evidence Vault'},
+    {id:4,urgency:'low',   title:'Book Walk-Me-Through call',why:'Auditor will schedule a 30-min call to review outstanding items.',deadline:'8 May 2026',cta:'Correspondence'},
+  ],
+  reports:[
+    {month:'April 2026',score:77,change:-4,flags:['Zero override rate (Apr)','Dignity score 54/100'],current:true},
+    {month:'March 2026',score:81,change:+2,flags:['Correction pipeline SLA met'],current:false},
+    {month:'February 2026',score:79,change:+4,flags:['Empathy score improving'],current:false},
+    {month:'January 2026',score:75,change:0,flags:['Baseline assessment'],current:false},
+  ],
+  agreements:[
+    {id:'DOC-004',name:'Assessment Agreement',date:'Apr 1, 2026',status:'signed'},
+    {id:'DOC-005',name:'Accountable Person Declaration',date:'Apr 1, 2026',status:'signed'},
+    {id:'DOC-006',name:'Data Processing Agreement',date:'Apr 1, 2026',status:'signed'},
+    {id:'DOC-007',name:'Evidence Checklist',date:'Apr 3, 2026',status:'signed'},
+    {id:'DOC-008',name:'Pulse SDK Integration Guide',date:'Apr 3, 2026',status:'signed'},
+  ],
+  messages:[
+    {id:1,author:'System Auditor',initials:'AIC',time:'2 hours ago',unread:true,
+     text:'Right 3 (Empathy): the batch of 20 decline letters scored 54/100 — below the certification threshold of 60. Please submit revised templates with a clear next-steps section and plain-language appeal instruction before the remediation deadline.'},
+    {id:2,author:'System Auditor',initials:'AIC',time:'Yesterday',unread:false,
+     text:'Right 1 (Human Agency): zero override events logged in April across 15,421 decisions. Please provide a written explanation from the Accountable Person before we classify this as a Critical Finding.'},
+    {id:3,author:'System Auditor',initials:'AIC',time:'3 days ago',unread:false,
+     text:'Evidence receipt confirmed (DOC-011): SHAP Feature Importance Report received and logged. Tier A classification applied. This satisfies requirement EX-1 in full.'},
+  ],
+  keys:[
+    {name:'Pulse SDK — Production',created:'Apr 1, 2026',used:'Today',status:'active',suffix:'3d6e8f'},
+    {name:'Pulse SDK — Staging',created:'Mar 15, 2026',used:'2 days ago',status:'active',suffix:'9c2f1a'},
+    {name:'Legacy Integration v1',created:'Jan 2, 2026',used:'60 days ago',status:'expired',suffix:'b1d4e8'},
+  ],
+  aiSystems:[
+    {name:'Credit Scoring v2',tier:'Tier 1',status:'active'},
+    {name:'HR Screening',tier:'Tier 2',status:'active'},
+    {name:'Insurance Risk Assessment',tier:'Tier 2',status:'partial'},
+  ],
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ICON SYSTEM
+══════════════════════════════════════════════════════════════════════════ */
+const ICONS={
+  grid:    `<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>`,
+  shield:  `<path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z"/>`,
+  activity:`<polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>`,
+  alert:   `<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>`,
+  file:    `<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/>`,
+  message: `<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>`,
+  badge:   `<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>`,
+  user:    `<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
+  key:     `<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>`,
+  building:`<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M12 2v4"/>`,
+  bell:    `<path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>`,
+  upload:  `<polyline points="16,16 12,12 8,16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>`,
+  check:   `<polyline points="20,6 9,17 4,12"/>`,
+  chevron: `<polyline points="6,9 12,15 18,9"/>`,
+  chevronR:`<polyline points="9,18 15,12 9,6"/>`,
+  logout:  `<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/>`,
+  send:    `<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/>`,
+  arrowR:  `<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/>`,
+  pulse:   `<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>`,
+  x:       `<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>`,
+  cloud:   `<polyline points="16,16 12,12 8,16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>`,
+  doc:     `<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>`,
+  info:    `<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>`,
+  copy:    `<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>`,
+  download:`<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/>`,
+  eye:     `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`,
+  plus:    `<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>`,
+  external:`<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/>`,
+  lock:    `<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>`,
+  refresh: `<polyline points="23,4 23,11 16,11"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 11"/>`,
+};
+const Ic=({n,size=16,col='currentColor',style={}})=>(
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={col} strokeWidth="1.5"
+    strokeLinecap="round" strokeLinejoin="round"
+    style={{display:'inline-block',flexShrink:0,...style}}
+    dangerouslySetInnerHTML={{__html:ICONS[n]||''}}/>
+);
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ATOMS
+══════════════════════════════════════════════════════════════════════════ */
+
+/* Status pill — 3 states only */
+const STATUS={
+  healthy:{label:'Healthy',   bg:' var(--green-bg)',col:'var(--green)'},
+  attention:{label:'Attention',bg:'var(--amber-bg)', col:'var(--amber)'},
+  action:{label:'Action Required',bg:'var(--red-bg)', col:'var(--red)'},
+  complete:{label:'Complete',  bg:'var(--green-bg)',col:'var(--green)'},
+  'in-progress':{label:'In Progress',bg:'var(--amber-bg)',col:'var(--amber)'},
+  required:{label:'Required',  bg:'var(--red-bg)',  col:'var(--red)'},
+  overdue:{label:'Overdue',    bg:'var(--red-bg)',  col:'var(--red)'},
+  verified:{label:'Verified',  bg:'var(--green-bg)',col:'var(--green)'},
+  partial:{label:'Partial',    bg:'var(--amber-bg)',col:'var(--amber)'},
+  flagged:{label:'Flagged',    bg:'var(--red-bg)',  col:'var(--red)'},
+  missing:{label:'Missing',    bg:'rgba(107,101,96,.09)',col:'var(--n400)'},
+  active:{label:'Active',      bg:'var(--green-bg)',col:'var(--green)'},
+  expired:{label:'Expired',    bg:'var(--red-bg)',  col:'var(--red)'},
+  signed:{label:'Signed',      bg:'var(--green-bg)',col:'var(--green)'},
+  pending:{label:'Pending',    bg:'var(--amber-bg)',col:'var(--amber)'},
+  critical:{label:'Critical',  bg:'var(--red-bg)',  col:'var(--red)'},
+  significant:{label:'Significant',bg:'var(--amber-bg)',col:'var(--amber)'},
+  open:{label:'Open',          bg:'var(--red-bg)',  col:'var(--red)'},
+  resolved:{label:'Resolved',  bg:'var(--green-bg)',col:'var(--green)'},
+};
+const Pill=({s,small})=>{
+  const d=STATUS[s]||{label:s,bg:'rgba(107,101,96,.09)',col:'var(--n400)'};
+  return <span style={{display:'inline-flex',alignItems:'center',gap:5,background:d.bg,color:d.col,
+    fontFamily:'var(--mono)',fontSize:small?9:10,fontWeight:600,textTransform:'uppercase',
+    letterSpacing:'.12em',padding:small?'2px 7px':'3px 9px',borderRadius:4,whiteSpace:'nowrap'}}>
+    <span style={{width:4,height:4,borderRadius:'50%',background:d.col,flexShrink:0}}/>{d.label}</span>;
+};
+
+/* Tooltip wrapper */
+const Tip=({text,children})=>(
+  <span className="tip-wrap">{children}<span className="tip">{text}</span></span>
+);
+
+/* MonoTag */
+const MonoTag=({children,col='var(--gold)',bg='var(--gold-lo)'})=>(
+  <span style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:600,textTransform:'uppercase',
+    letterSpacing:'.14em',color:col,background:bg,padding:'2px 7px',borderRadius:4,whiteSpace:'nowrap'}}>
+    {children}
+  </span>
+);
+
+/* Primary button */
+const Btn=({children,onClick,variant='primary',size='md',disabled,full,style={}})=>{
+  const pad=size==='sm'?'7px 16px':'10px 20px';
+  const fs=size==='sm'?12:13;
+  if(variant==='primary') return(
+    <button onClick={onClick} disabled={disabled} style={{display:'inline-flex',alignItems:'center',gap:6,
+      background:disabled?'var(--n200)':'var(--gold)',color:disabled?'var(--n400)':'#fff',
+      fontFamily:'var(--mono)',fontSize:fs,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',
+      borderRadius:100,padding:pad,cursor:disabled?'not-allowed':'pointer',transition:'background .12s',
+      width:full?'100%':'auto',justifyContent:'center',...style}}
+      onMouseEnter={e=>{if(!disabled)e.currentTarget.style.background='var(--amber)'}}
+      onMouseLeave={e=>{if(!disabled)e.currentTarget.style.background='var(--gold)'}}
+    >{children}</button>
+  );
+  return(
+    <button onClick={onClick} disabled={disabled} style={{display:'inline-flex',alignItems:'center',gap:6,
+      background:'transparent',color:disabled?'var(--n300)':'var(--n500)',
+      fontFamily:'var(--mono)',fontSize:fs,fontWeight:600,letterSpacing:'.1em',textTransform:'uppercase',
+      borderRadius:100,padding:pad,border:'1px solid var(--n200)',transition:'all .12s',
+      width:full?'100%':'auto',justifyContent:'center',...style}}
+      onMouseEnter={e=>{if(!disabled){e.currentTarget.style.borderColor='var(--gold)';e.currentTarget.style.color='var(--gold)';}}}
+      onMouseLeave={e=>{if(!disabled){e.currentTarget.style.borderColor='var(--n200)';e.currentTarget.style.color='var(--n500)';}}}
+    >{children}</button>
+  );
+};
+
+/* Section eyebrow */
+const Eyebrow=({children,action,onAction})=>(
+  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
+    <div style={{display:'flex',alignItems:'center',gap:8}}>
+      <span style={{width:14,height:1.5,background:'var(--gold)',display:'inline-block'}}/>
+      <span className="mono-label" style={{color:'var(--gold)'}}>{children}</span>
+    </div>
+    {action&&<button onClick={onAction} style={{fontFamily:'var(--mono)',fontSize:10,fontWeight:600,
+      color:'var(--gold)',textTransform:'uppercase',letterSpacing:'.1em',display:'flex',alignItems:'center',gap:4}}>
+      {action}<Ic n="arrowR" size={11} col="var(--gold)"/></button>}
+  </div>
+);
+
+/* Score ring */
+const ScoreRing=({val,size=88,thick=6})=>{
+  const r=size/2-thick-2; const c=2*Math.PI*r;
+  const col=val>=71?'var(--green)':val>=41?'var(--gold)':'var(--red)';
+  return(
+    <svg width={size} height={size} style={{transform:'rotate(-90deg)',flexShrink:0}}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--n100)" strokeWidth={thick}/>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={col} strokeWidth={thick}
+        strokeDasharray={`${c*(val/100)} ${c}`} strokeLinecap="round"
+        style={{transition:'stroke-dasharray 1s ease'}}/>
+    </svg>
+  );
+};
+
+/* Skeleton */
+const Skel=({w='100%',h=16,style={}})=>(
+  <div className="skel" style={{width:w,height:h,borderRadius:4,...style}}/>
+);
+
+/* Brand mark */
+const BrandMark=({size=44})=>(
+  <svg viewBox="0 0 110 180" style={{height:size,width:'auto',flexShrink:0}}>
+    <path d="M36,1 L1,1 L1,179 L36,179" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square"/>
+    <path d="M74,1 L109,1 L109,179 L74,179" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square"/>
+    <text x="55" y="20" fontSize="7" fill="#fff" textAnchor="middle" letterSpacing="2.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">METHODOLOGY</text>
+    <text x="55" y="31" fontSize="7" fill="#fff" textAnchor="middle" letterSpacing="2.5" fontFamily="Space Grotesk,sans-serif" fontWeight="700">ASSESSED</text>
+    <line x1="8" y1="41" x2="102" y2="41" stroke="#fff" strokeWidth="1" opacity="0.25"/>
+    <text x="55" y="97" fontSize="38" fontWeight="700" fill="#fff" textAnchor="middle" letterSpacing="5" fontFamily="Space Grotesk,sans-serif">AIC</text>
+    <line x1="8" y1="120" x2="102" y2="120" stroke="#fff" strokeWidth="1" opacity="0.25"/>
+    <text x="55" y="145" fontSize="5" fill="#c9920a" textAnchor="middle" letterSpacing="1.5" fontFamily="Space Grotesk,sans-serif" fontWeight="600">AICCERTIFIED.CLOUD</text>
+  </svg>
+);
+
+/* Upload Modal */
+function UploadModal({label,onClose}){
+  const [drag,setDrag]=useState(false);
+  const [files,setFiles]=useState([]);
+  const [busy,setBusy]=useState(false);
+  const [done,setDone]=useState(false);
+  const ref=useRef();
+  const drop=useCallback(e=>{e.preventDefault();setDrag(false);setFiles(f=>[...f,...e.dataTransfer.files]);},[]);
+  const submit=async()=>{setBusy(true);await new Promise(r=>setTimeout(r,1600));setDone(true);};
+  return(
+    <div onClick={e=>{if(e.target===e.currentTarget)onClose();}}
+      style={{position:'fixed',inset:0,background:'rgba(15,31,61,.4)',zIndex:500,
+        display:'flex',alignItems:'center',justifyContent:'center',backdropFilter:'blur(4px)'}}>
+      <div className="card" style={{width:520,maxWidth:'95vw',animation:'fadeUp .2s ease',overflow:'hidden',boxShadow:'0 24px 64px rgba(15,31,61,.18)'}}>
+        <div style={{padding:'20px 24px 16px',borderBottom:'1px solid var(--n200)',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+          <div>
+            <div className="mono-label" style={{color:'var(--gold)',marginBottom:6}}>Submit Evidence</div>
+            <h2 style={{fontFamily:'var(--serif)',fontSize:16,fontWeight:700,color:'var(--n900)',lineHeight:1.3}}>{label}</h2>
+            <p style={{fontSize:12,color:'var(--n400)',marginTop:4}}>Hashed & timestamped on submission. AIC confirms receipt within 2 business days.</p>
+          </div>
+          <button onClick={onClose} style={{padding:4,color:'var(--n400)',borderRadius:6,marginLeft:12,flexShrink:0}}><Ic n="x" size={16}/></button>
+        </div>
+        <div style={{padding:'20px 24px 24px'}}>
+          {done?(
+            <div style={{textAlign:'center',padding:'28px 0'}}>
+              <div style={{width:48,height:48,borderRadius:'50%',background:'var(--green-bg)',
+                border:'1.5px solid var(--green)',display:'flex',alignItems:'center',justifyContent:'center',
+                margin:'0 auto 12px'}}><Ic n="check" size={20} col="var(--green)"/></div>
+              <div style={{fontFamily:'var(--serif)',fontSize:16,fontWeight:700,color:'var(--n900)',marginBottom:6}}>Submitted</div>
+              <p style={{fontSize:13,color:'var(--n500)',marginBottom:20}}>{files.length} file{files.length!==1?'s':''} logged. Evidence receipt (DOC-011) generated.</p>
+              <Btn onClick={onClose}>Close</Btn>
+            </div>
+          ):(
+            <>
+              <div onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={drop}
+                onClick={()=>ref.current.click()}
+                style={{border:`1.5px dashed ${drag?'var(--gold)':'var(--n200)'}`,borderRadius:8,padding:'24px 20px',
+                  textAlign:'center',background:drag?'var(--gold-lo)':'var(--n50)',cursor:'pointer',transition:'all .12s',marginBottom:12}}>
+                <Ic n="cloud" size={24} col={drag?'var(--gold)':'var(--n400)'} style={{marginBottom:8}}/>
+                <div style={{fontSize:13,fontWeight:600,color:'var(--n700)',marginBottom:2}}>Drop files or <span style={{color:'var(--gold)'}}>browse</span></div>
+                <div className="mono-label">PDF · DOCX · XLSX · PNG — max 50MB</div>
+                <input ref={ref} type="file" multiple style={{display:'none'}} onChange={e=>setFiles(f=>[...f,...e.target.files])}/>
+              </div>
+              {files.length>0&&<div style={{marginBottom:12}}>{files.map((f,i)=>(
+                <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'7px 10px',
+                  background:'var(--n50)',borderRadius:7,marginBottom:4,border:'1px solid var(--n200)'}}>
+                  <Ic n="doc" size={13} col="var(--gold)"/>
+                  <span style={{flex:1,fontSize:12,fontWeight:500,color:'var(--n700)'}}>{f.name}</span>
+                  <span className="mono-label">{(f.size/1024).toFixed(0)} KB</span>
+                  <button onClick={()=>setFiles(fs=>fs.filter((_,j)=>j!==i))} style={{color:'var(--n400)'}}><Ic n="x" size={11}/></button>
+                </div>
+              ))}</div>}
+              <div style={{background:'var(--gold-lo)',border:'1px solid var(--gold-gl)',borderRadius:8,
+                padding:'9px 12px',marginBottom:16,display:'flex',gap:7}}>
+                <Ic n="info" size={13} col="var(--gold)" style={{flexShrink:0,marginTop:1}}/>
+                <p style={{fontSize:11,color:'var(--n700)',lineHeight:1.6}}>Submission confirms evidence accurately reflects current governance. False submissions may void certification.</p>
+              </div>
+              <div style={{display:'flex',gap:8}}>
+                <Btn variant="outline" onClick={onClose}>Cancel</Btn>
+                <Btn onClick={submit} disabled={files.length===0||busy} full>
+                  {busy?<><span style={{width:11,height:11,border:'2px solid rgba(255,255,255,.3)',
+                    borderTopColor:'#fff',borderRadius:'50%',animation:'spin 0.7s linear infinite'}}/>Submitting…</>
+                    :<><Ic n="upload" size={12} col="#fff"/>Submit {files.length>0?`${files.length} File${files.length>1?'s':''}`:''}</>}
+                </Btn>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════════════════════════════════ */
+const NAV=[
+  {section:'My Certification',items:[
+    {id:'Dashboard',           icon:'grid',    stage:`Stage ${DATA.certification.stage+1} of ${DATA.certification.totalStages}`},
+    {id:'Evidence Vault',      icon:'shield',  desc:'Upload & manage evidence per Algorithmic Right'},
+    {id:'Pulse Monitor',       icon:'activity',desc:'Live AI decision telemetry'},
+  ]},
+  {section:'Review & Findings',items:[
+    {id:'Findings',            icon:'alert',   badge:DATA.findings.filter(f=>f.status==='open').length, desc:'Critical findings to resolve'},
+    {id:'Compliance Reports',  icon:'file',    desc:'Monthly integrity reports'},
+    {id:'Correspondence',      icon:'message', dot:true, desc:'Messages with your auditor'},
+  ]},
+  {section:'Certification',items:[
+    {id:'My Certificate',      icon:'badge',   desc:'View & download your certificate'},
+    {id:'Practitioner (CAAP)', icon:'user',    desc:'Individual AI accountability credential'},
+  ]},
+  {section:'Account',items:[
+    {id:'API & Access Keys',   icon:'key',     desc:'Pulse SDK integration keys'},
+    {id:'Organisation Profile',icon:'building',desc:'Metadata, agreements, contacts'},
+  ]},
+];
+
+function Sidebar({page,setPage}){
+  return(
+    <aside style={{width:'var(--sidebar-w)',minWidth:'var(--sidebar-w)',background:'var(--navy)',
+      display:'flex',flexDirection:'column',position:'sticky',top:0,height:'100vh',
+      overflowY:'auto',flexShrink:0}}>
+      {/* Logo */}
+      <div style={{padding:'20px 16px 18px',borderBottom:'1px solid rgba(255,255,255,.06)',
+        display:'flex',alignItems:'center',gap:10}}>
+        <BrandMark size={40}/>
+        <div>
+          <div style={{fontFamily:'var(--mono)',fontSize:8,fontWeight:600,letterSpacing:'.18em',
+            textTransform:'uppercase',color:'rgba(255,255,255,.35)',marginBottom:1}}>Client Portal</div>
+          <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.80)',lineHeight:1.2}}>
+            {DATA.org.name.split(' ').slice(0,2).join(' ')}
+          </div>
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav style={{flex:1,padding:'14px 8px',overflowY:'auto'}}>
+        {NAV.map(g=>(
+          <div key={g.section} style={{marginBottom:18}}>
+            <div style={{fontFamily:'var(--mono)',fontSize:8,fontWeight:600,letterSpacing:'.22em',
+              textTransform:'uppercase',color:'rgba(255,255,255,.22)',padding:'0 8px',marginBottom:4}}>
+              {g.section}
+            </div>
+            {g.items.map(item=>{
+              const on=page===item.id;
+              return(
+                <button key={item.id} onClick={()=>setPage(item.id)} style={{
+                  width:'100%',display:'flex',alignItems:'center',gap:8,padding:'8px',
+                  borderRadius:6,marginBottom:1,textAlign:'left',transition:'all .12s',
+                  background:on?'rgba(255,255,255,.08)':'transparent',
+                  color:on?'rgba(255,255,255,.95)':'rgba(255,255,255,.40)',
+                  borderLeft:on?'2px solid var(--gold)':'2px solid transparent',
+                }}
+                  onMouseEnter={e=>{if(!on){e.currentTarget.style.background='rgba(255,255,255,.04)';e.currentTarget.style.color='rgba(255,255,255,.65)';}}}
+                  onMouseLeave={e=>{if(!on){e.currentTarget.style.background='transparent';e.currentTarget.style.color='rgba(255,255,255,.40)';}}}
+                >
+                  <Ic n={item.icon} size={14} col={on?'var(--gold)':'currentColor'}/>
+                  <span style={{flex:1,fontSize:13,fontWeight:500}}>{item.id}</span>
+                  {item.badge>0&&<span style={{background:'var(--gold)',color:on?'var(--navy)':'var(--navy)',
+                    borderRadius:10,fontFamily:'var(--mono)',fontSize:9,fontWeight:700,
+                    padding:'1px 6px',minWidth:18,textAlign:'center'}}>{item.badge}</span>}
+                  {item.stage&&<span style={{fontFamily:'var(--mono)',fontSize:8,
+                    color:'rgba(255,255,255,.30)',letterSpacing:'.05em'}}>{item.stage}</span>}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div style={{padding:'10px 10px 18px',borderTop:'1px solid rgba(255,255,255,.06)'}}>
+        <div style={{background:'rgba(255,255,255,.04)',borderRadius:7,padding:'8px 10px',
+          display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+          <span style={{width:6,height:6,borderRadius:'50%',background:'var(--green)',
+            boxShadow:'0 0 6px var(--green)',animation:'pulse3 2s infinite',flexShrink:0}}/>
+          <div>
+            <div style={{fontFamily:'var(--mono)',fontSize:7,color:'rgba(255,255,255,.3)',
+              textTransform:'uppercase',letterSpacing:'.12em'}}>Pulse</div>
+            <div style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:600,color:'rgba(255,255,255,.75)'}}>Live · Secure</div>
+          </div>
+        </div>
+        <button style={{width:'100%',display:'flex',alignItems:'center',gap:7,padding:'6px 8px',
+          borderRadius:6,color:'rgba(255,255,255,.28)',fontSize:12,transition:'color .12s'}}
+          onMouseEnter={e=>e.currentTarget.style.color='var(--red)'}
+          onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,.28)'}
+        ><Ic n="logout" size={13}/> Sign Out</button>
+      </div>
+    </aside>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════════════════ */
+function Header({page,setPage,notifOpen,setNotifOpen}){
+  const unread=DATA.messages.filter(m=>m.unread).length;
+  return(
+    <div style={{background:'var(--n0)',borderBottom:'1px solid var(--n200)',
+      padding:'12px 24px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,
+      position:'sticky',top:0,zIndex:100}}>
+      <div>
+        <div style={{fontFamily:'var(--mono)',fontSize:10,fontWeight:600,textTransform:'uppercase',
+          letterSpacing:'.2em',color:'var(--gold)',display:'flex',alignItems:'center',gap:7,marginBottom:3}}>
+          <span style={{width:12,height:1.5,background:'var(--gold)',display:'inline-block'}}/>{page}
+        </div>
+        <h1 style={{fontFamily:'var(--serif)',fontSize:18,fontWeight:700,color:'var(--n900)',
+          letterSpacing:'-.02em',lineHeight:1}}>{DATA.org.name}</h1>
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:8}}>
+        <div style={{border:'1px solid var(--n200)',borderRadius:100,padding:'4px 12px',
+          fontFamily:'var(--mono)',fontSize:9,fontWeight:600,textTransform:'uppercase',
+          letterSpacing:'.1em',color:'var(--n500)',display:'flex',alignItems:'center',gap:5}}>
+          <span style={{color:'var(--gold)'}}>◆</span>{DATA.org.division} — {DATA.org.divisionName}
+        </div>
+        <div style={{background:'var(--green-bg)',border:'1px solid rgba(21,128,61,.15)',
+          borderRadius:100,padding:'4px 12px',display:'flex',alignItems:'center',gap:5}}>
+          <span style={{width:5,height:5,borderRadius:'50%',background:'var(--green)',flexShrink:0}}/>
+          <span style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:600,color:'var(--green)',
+            textTransform:'uppercase',letterSpacing:'.1em'}}>Integrity: Secure</span>
+        </div>
+        {/* Bell */}
+        <div style={{position:'relative'}}>
+          <button onClick={()=>setNotifOpen(s=>!s)} style={{padding:7,borderRadius:7,
+            background:notifOpen?'var(--n100)':'transparent',border:'1px solid var(--n200)',
+            color:'var(--n500)',position:'relative',transition:'all .12s'}}>
+            <Ic n="bell" size={15}/>
+            {unread>0&&<span style={{position:'absolute',top:4,right:4,width:7,height:7,
+              background:'var(--gold)',borderRadius:'50%',border:'1.5px solid var(--n0)'}}/>}
+          </button>
+          {notifOpen&&(
+            <div className="card" style={{position:'absolute',top:42,right:0,width:300,
+              zIndex:200,animation:'fadeUp .12s ease',boxShadow:'0 12px 40px rgba(15,31,61,.12)'}}>
+              <div style={{padding:'12px 14px 10px',borderBottom:'1px solid var(--n200)',
+                display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <span className="mono-label">Alerts</span>
+                {unread>0&&<MonoTag>{unread} unread</MonoTag>}
+              </div>
+              {DATA.messages.filter(m=>m.unread).map(m=>(
+                <div key={m.id} style={{padding:'10px 14px',borderBottom:'1px solid var(--n100)'}}>
+                  <div style={{fontSize:11,fontWeight:600,color:'var(--n900)',marginBottom:3}}>{m.author}
+                    <span style={{fontFamily:'var(--mono)',fontSize:8,color:'var(--n400)',fontWeight:400,marginLeft:6}}>{m.time}</span>
+                  </div>
+                  <p style={{fontSize:11,color:'var(--n500)',lineHeight:1.5}}>{m.text.slice(0,90)}…</p>
+                </div>
+              ))}
+              {DATA.messages.filter(m=>m.unread).length===0&&(
+                <div style={{padding:'20px 14px',textAlign:'center',fontSize:12,color:'var(--n400)'}}>No unread alerts.</div>
+              )}
+              <div style={{padding:'10px 14px'}}>
+                <button onClick={()=>{setPage('Findings');setNotifOpen(false);}}
+                  style={{fontFamily:'var(--mono)',fontSize:10,fontWeight:600,color:'var(--gold)',
+                    textTransform:'uppercase',letterSpacing:'.1em',display:'flex',alignItems:'center',gap:4}}>
+                  View all findings <Ic n="arrowR" size={11} col="var(--gold)"/></button>
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Avatar */}
+        <div style={{display:'flex',alignItems:'center',gap:8,paddingLeft:10,borderLeft:'1px solid var(--n200)'}}>
+          <div style={{textAlign:'right'}}>
+            <div style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{DATA.accountablePerson.name}</div>
+            <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--gold)',
+              textTransform:'uppercase',letterSpacing:'.1em'}}>Accountable Person</div>
+          </div>
+          <div style={{width:32,height:32,borderRadius:8,background:'var(--navy)',
+            display:'flex',alignItems:'center',justifyContent:'center',
+            fontFamily:'var(--mono)',fontSize:10,fontWeight:700,color:'var(--gold)'}}>
+            {DATA.accountablePerson.initials}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE: DASHBOARD
+══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Integrity Score Headline */
+function ScoreCard({setPage}){
+  const {overall,methodology,bottleneck,trend}=DATA.score;
+  const [showMethod,setShowMethod]=useState(false);
+  const col=overall>=71?'var(--green)':overall>=41?'var(--gold)':'var(--red)';
+  const band=overall>=71?'Healthy':overall>=41?'Attention':'Action Required';
+  return(
+    <div className="card card-p" style={{gridColumn:'1 / 3'}}>
+      <div style={{display:'flex',alignItems:'flex-start',gap:20,flexWrap:'wrap'}}>
+        {/* Ring + score */}
+        <div style={{position:'relative',width:88,height:88,flexShrink:0}}>
+          <ScoreRing val={overall} size={88} thick={6}/>
+          <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',
+            alignItems:'center',justifyContent:'center'}}>
+            <span style={{fontFamily:'var(--mono)',fontSize:22,fontWeight:700,color:col,lineHeight:1}}>{overall}</span>
+            <span style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)'}}>/ 100</span>
+          </div>
+        </div>
+        {/* Text */}
+        <div style={{flex:1,minWidth:160}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+            <span style={{fontFamily:'var(--serif)',fontSize:20,fontWeight:700,color:'var(--n900)'}}>Integrity Score</span>
+            <Pill s={band==='Healthy'?'healthy':band==='Attention'?'attention':'action'}/>
+            <Tip text="The Integrity Score (0–100) is AIC's continuous measure of your organisation's AI accountability health. It is calculated from five weighted components. A score of 60+ is required for certification.">
+              <span style={{color:'var(--n300)',cursor:'help'}}><Ic n="info" size={13}/></span>
+            </Tip>
+          </div>
+          <p style={{fontSize:13,color:'var(--n500)',marginBottom:10,lineHeight:1.5}}>{bottleneck}</p>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+            <span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--n400)'}}>Trend: <strong style={{color:overall>=71?'var(--green)':'var(--amber)'}}>{trend}</strong></span>
+            <button onClick={()=>setShowMethod(s=>!s)}
+              style={{fontFamily:'var(--mono)',fontSize:10,fontWeight:600,color:'var(--gold)',
+                textTransform:'uppercase',letterSpacing:'.08em',display:'flex',alignItems:'center',gap:4}}>
+              Score methodology <Ic n="chevron" size={10} col="var(--gold)"
+                style={{transform:showMethod?'rotate(180deg)':'none',transition:'transform .15s'}}/>
+            </button>
+          </div>
+          {showMethod&&(
+            <div style={{marginTop:12,display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:8}}>
+              {methodology.map(m=>{
+                const mc=m.score>=71?'var(--green)':m.score>=41?'var(--gold)':'var(--red)';
+                return(
+                  <div key={m.label} style={{background:'var(--n50)',borderRadius:7,padding:'10px 12px',border:'1px solid var(--n200)'}}>
+                    <div style={{fontSize:11,fontWeight:600,color:'var(--n700)',marginBottom:4}}>{m.label}</div>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5}}>
+                      <span className="mono-label">Weight {m.weight}%</span>
+                      <span style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:700,color:mc}}>{m.score}</span>
+                    </div>
+                    <div style={{height:3,background:'var(--n200)',borderRadius:2}}>
+                      <div style={{width:`${m.score}%`,height:'100%',background:mc,borderRadius:2}}/>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        {/* CTA */}
+        <div style={{display:'flex',flexDirection:'column',gap:8,alignSelf:'center',flexShrink:0}}>
+          <Btn onClick={()=>setPage('Evidence Vault')}>Submit Evidence <Ic n="arrowR" size={12} col="#fff"/></Btn>
+          <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)',textAlign:'center'}}>14 days to deadline</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* 2. Five Rights Ribbon */
+function RightsRibbon({setPage}){
+  const statusMap={healthy:'healthy',attention:'attention',action:'action'};
+  const trendCol={up:'var(--green)',flat:'var(--n400)',down:'var(--red)'};
+  return(
+    <div style={{gridColumn:'1 / 3'}}>
+      <Eyebrow action="Evidence Vault" onAction={()=>setPage('Evidence Vault')}>Five Algorithmic Rights</Eyebrow>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:8}}>
+        {DATA.rights.map(r=>{
+          const col=r.score>=71?'var(--green)':r.score>=41?'var(--gold)':'var(--red)';
+          const bg=r.score>=71?'var(--green-bg)':r.score>=41?'var(--gold-lo)':'var(--red-bg)';
+          return(
+            <button key={r.id} className="card" onClick={()=>setPage('Evidence Vault')}
+              style={{padding:'14px',textAlign:'left',cursor:'pointer',transition:'box-shadow .12s',width:'100%'}}
+              onMouseEnter={e=>e.currentTarget.style.boxShadow='0 4px 16px rgba(15,31,61,.10)'}
+              onMouseLeave={e=>e.currentTarget.style.boxShadow='var(--shadow)'}
+            >
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8}}>
+                <MonoTag>{`R${r.id}`}</MonoTag>
+                <span style={{fontFamily:'var(--mono)',fontSize:12,color:trendCol[r.trendDir]}}>{r.trend}</span>
+              </div>
+              <div style={{fontFamily:'var(--serif)',fontSize:13,fontWeight:700,color:'var(--n900)',marginBottom:3}}>{r.name}</div>
+              <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
+                <span style={{fontFamily:'var(--mono)',fontSize:22,fontWeight:700,color:col,lineHeight:1}}>{r.score}</span>
+                <span style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)'}}>/100</span>
+              </div>
+              <div style={{height:3,background:'var(--n100)',borderRadius:2,marginBottom:8}}>
+                <div style={{width:`${r.score}%`,height:'100%',background:col,borderRadius:2,transition:'width 1s ease'}}/>
+              </div>
+              <div style={{fontSize:10,color:'var(--n500)',lineHeight:1.4,marginBottom:8}}>{r.metric}</div>
+              <Pill s={statusMap[r.status]} small/>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* 3. Certification Journey */
+function JourneyCard({setPage}){
+  const cert=DATA.certification;
+  const allStages=[
+    ...cert.stageHistory.map(s=>({...s,past:true})),
+    {id:cert.stage,label:cert.stageLabel,active:true,progress:cert.stageProgress,
+     daysIn:cert.daysInStage,nextAction:cert.nextAction,cta:cert.ctaLabel,ctaTarget:cert.ctaTarget},
+    ...cert.futureStages.map((l,i)=>({id:cert.stage+1+i,label:l,future:true})),
+  ];
+  return(
+    <div className="card card-p">
+      <Eyebrow>Certification Journey</Eyebrow>
+      <div style={{display:'flex',flexDirection:'column',gap:0}}>
+        {allStages.map((s,i)=>{
+          if(s.past) return(
+            <div key={i} style={{display:'flex',gap:12,alignItems:'center',padding:'8px 0',
+              borderBottom:'1px solid var(--n100)'}}>
+              <div style={{width:22,height:22,borderRadius:'50%',background:'var(--green)',
+                display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <Ic n="check" size={11} col="#fff"/>
+              </div>
+              <div style={{flex:1}}>
+                <span style={{fontSize:12,fontWeight:600,color:'var(--n500)'}}>{s.label}</span>
+              </div>
+              <span className="mono-label">{s.date}</span>
+            </div>
+          );
+          if(s.active) return(
+            <div key={i} style={{padding:'14px 0',borderBottom:'1px solid var(--n100)'}}>
+              <div style={{display:'flex',gap:12,alignItems:'flex-start'}}>
+                <div style={{width:22,height:22,borderRadius:'50%',background:'var(--gold)',
+                  display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,
+                  boxShadow:'0 0 0 4px var(--gold-lo)'}}>
+                  <span style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:700,color:'#fff'}}>{s.id}</span>
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+                    <span style={{fontSize:13,fontWeight:700,color:'var(--n900)'}}>{s.label}</span>
+                    <Pill s="attention" small/>
+                  </div>
+                  <div style={{height:4,background:'var(--n100)',borderRadius:2,marginBottom:6}}>
+                    <div style={{width:`${s.progress}%`,height:'100%',background:'var(--gold)',borderRadius:2}}/>
+                  </div>
+                  <p style={{fontSize:12,color:'var(--n500)',marginBottom:6}}>{s.nextAction}</p>
+                  <div style={{display:'flex',gap:10,alignItems:'center'}}>
+                    <Btn size="sm" onClick={()=>setPage(s.ctaTarget)}>{s.cta} <Ic n="arrowR" size={11} col="#fff"/></Btn>
+                    <span className="mono-label">Day {s.daysIn} in this stage</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+          return(
+            <div key={i} style={{display:'flex',gap:12,alignItems:'center',padding:'7px 0',
+              borderBottom:i<allStages.length-1?'1px solid var(--n100)':'none'}}>
+              <div style={{width:22,height:22,borderRadius:'50%',border:'1px solid var(--n200)',
+                display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <span style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n300)'}}>{s.id}</span>
+              </div>
+              <span style={{fontSize:12,color:'var(--n300)'}}>{s.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* 4. Pulse Strip */
+function PulseStrip(){
+  const [time,setTime]=useState(new Date());
+  useEffect(()=>{const t=setInterval(()=>setTime(new Date()),5000);return()=>clearInterval(t);},[]);
+  const {decisionsToday,overrideRate,overrideHealthMin,overrideHealthMax,
+         openFindings,findingsMaxSev,daysToMilestone,milestoneLabel,sparkline}=DATA.pulse;
+
+  const orPct=Math.min(overrideRate/overrideHealthMax,1)*100;
+  const orHealthy=overrideRate>=overrideHealthMin&&overrideRate<=overrideHealthMax;
+  const orCol=orHealthy?'var(--green)':overrideRate<overrideHealthMin?'var(--amber)':'var(--red)';
+  const orStatus=orHealthy?'Healthy':overrideRate<overrideHealthMin?'Too low — review oversight':'Too high — investigate';
+
+  const spMax=Math.max(...sparkline);
+  const spMin=Math.min(...sparkline);
+  const spNorm=sparkline.map(v=>(v-spMin)/(spMax-spMin||1));
+
+  const svgW=100,svgH=28;
+  const pts=spNorm.map((v,i)=>`${(i/(sparkline.length-1))*svgW},${svgH-(v*svgH*0.85+svgH*0.07)}`).join(' ');
+
+  return(
+    <div className="card card-p" style={{gridColumn:'1 / 3'}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+        <Eyebrow>Pulse Telemetry</Eyebrow>
+        <span className="mono-label" style={{display:'flex',alignItems:'center',gap:6}}>
+          <span style={{width:5,height:5,borderRadius:'50%',background:'var(--green)',animation:'pulse3 2s infinite',display:'inline-block'}}/>
+          Updated {time.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+        </span>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:12}}>
+        {/* Decisions today */}
+        <Tip text="Total AI decisions processed today across all systems integrated with AIC Pulse.">
+          <div style={{background:'var(--n50)',borderRadius:7,padding:'12px',border:'1px solid var(--n200)',cursor:'help'}}>
+            <div className="mono-label" style={{marginBottom:6}}>Decisions Today</div>
+            <div style={{fontFamily:'var(--mono)',fontSize:28,fontWeight:700,color:'var(--n900)',lineHeight:1,marginBottom:2}}>{decisionsToday.toLocaleString()}</div>
+          </div>
+        </Tip>
+
+        {/* Override Rate — AIC-specific health band */}
+        <Tip text={`Override rate measures how often a human reviewer changes the AI's recommendation. Healthy band: ${overrideHealthMin}–${overrideHealthMax}%. Too low suggests rubber-stamping; too high suggests a poorly-calibrated model.`}>
+          <div style={{background:'var(--n50)',borderRadius:7,padding:'12px',border:'1px solid var(--n200)',cursor:'help'}}>
+            <div className="mono-label" style={{marginBottom:6}}>Override Rate</div>
+            <div style={{fontFamily:'var(--mono)',fontSize:28,fontWeight:700,color:orCol,lineHeight:1,marginBottom:6}}>{overrideRate.toFixed(1)}%</div>
+            {/* Health band visual */}
+            <div style={{position:'relative',height:6,background:'var(--n200)',borderRadius:3,marginBottom:4,overflow:'hidden'}}>
+              {/* green zone */}
+              <div style={{position:'absolute',left:`${(overrideHealthMin/overrideHealthMax/1.5)*100}%`,
+                width:`${((overrideHealthMax-overrideHealthMin)/overrideHealthMax/1.5)*100}%`,
+                height:'100%',background:'var(--green-bg)',opacity:.6}}/>
+              {/* current marker */}
+              <div style={{position:'absolute',top:0,bottom:0,width:2,borderRadius:1,
+                background:orCol,left:`calc(${Math.min(orPct,98)}% - 1px)`,transition:'left 1s ease'}}/>
+            </div>
+            <div style={{fontSize:10,color:orCol,fontWeight:500}}>{orStatus}</div>
+          </div>
+        </Tip>
+
+        {/* Open Findings */}
+        <Tip text="Total open audit findings (critical + significant). All critical findings must be resolved before certification can proceed.">
+          <div style={{background:findingsMaxSev==='critical'?'var(--red-bg)':'var(--amber-bg)',
+            borderRadius:7,padding:'12px',border:`1px solid ${findingsMaxSev==='critical'?'rgba(185,28,28,.15)':'rgba(180,83,9,.15)'}`,cursor:'help'}}>
+            <div className="mono-label" style={{color:findingsMaxSev==='critical'?'var(--red)':'var(--amber)',marginBottom:6}}>Open Findings</div>
+            <div style={{fontFamily:'var(--mono)',fontSize:28,fontWeight:700,
+              color:findingsMaxSev==='critical'?'var(--red)':'var(--amber)',lineHeight:1,marginBottom:2}}>{openFindings}</div>
+            <Pill s={findingsMaxSev} small/>
+          </div>
+        </Tip>
+
+        {/* Days to milestone */}
+        <Tip text={`Days until: ${milestoneLabel}. After this date, unresolved Critical findings will cause the assessment to lapse.`}>
+          <div style={{background:'var(--n50)',borderRadius:7,padding:'12px',border:'1px solid var(--n200)',cursor:'help'}}>
+            <div className="mono-label" style={{marginBottom:6}}>Days to Deadline</div>
+            <div style={{fontFamily:'var(--mono)',fontSize:28,fontWeight:700,
+              color:daysToMilestone<=7?'var(--red)':daysToMilestone<=14?'var(--amber)':'var(--n900)',
+              lineHeight:1,marginBottom:2}}>{daysToMilestone}</div>
+            <div style={{fontSize:10,color:'var(--n500)'}}>{milestoneLabel}</div>
+          </div>
+        </Tip>
+      </div>
+
+      {/* Sparkline */}
+      <div style={{display:'flex',alignItems:'center',gap:10}}>
+        <div className="mono-label">7-day decision volume</div>
+        <svg width="100%" height="28" viewBox={`0 0 ${svgW} ${svgH}`} preserveAspectRatio="none"
+          style={{flex:1,maxHeight:28}}>
+          <polyline fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+            points={pts}/>
+        </svg>
+        <span className="mono-label">{sparkline[sparkline.length-1].toLocaleString()} today</span>
+      </div>
+    </div>
+  );
+}
+
+/* 5. Evidence by Right */
+function EvidenceByRight({setPage}){
+  return(
+    <div className="card card-p">
+      <Eyebrow action="View All" onAction={()=>setPage('Evidence Vault')}>Evidence by Right</Eyebrow>
+      {DATA.rights.length===0?(
+        <div style={{padding:'24px 0',textAlign:'center',color:'var(--n400)',fontSize:12}}>
+          No evidence requirements yet. Your checklist will appear once onboarding is complete.
+        </div>
+      ):(
+        <div style={{display:'flex',flexDirection:'column',gap:0}}>
+          {DATA.rights.map((r,i)=>{
+            const pct=Math.round(r.evidenceMet/r.evidenceTotal*100);
+            const col=pct===100?'var(--green)':pct>=50?'var(--gold)':'var(--red)';
+            const st=pct===100?'complete':pct>=50?'in-progress':'required';
+            const flag=st==='required'||st==='overdue';
+            return(
+              <button key={r.id} onClick={()=>setPage('Evidence Vault')}
+                style={{display:'flex',alignItems:'center',gap:10,padding:'10px 0',
+                  borderBottom:i<DATA.rights.length-1?'1px solid var(--n100)':'none',
+                  textAlign:'left',width:'100%',cursor:'pointer',transition:'background .1s'}}
+                onMouseEnter={e=>e.currentTarget.style.background='var(--n50)'}
+                onMouseLeave={e=>e.currentTarget.style.background='transparent'}
+              >
+                <MonoTag>{`R${r.id}`}</MonoTag>
+                <span style={{fontSize:12,fontWeight:600,color:flag?'var(--n900)':'var(--n700)',flex:1}}>{r.name}</span>
+                <span className="mono-label">{r.evidenceMet}/{r.evidenceTotal}</span>
+                <div style={{width:72,height:4,background:'var(--n100)',borderRadius:2,flexShrink:0}}>
+                  <div style={{width:`${pct}%`,height:'100%',background:col,borderRadius:2,transition:'width 1s ease'}}/>
+                </div>
+                <Pill s={st} small/>
+                <Ic n="chevronR" size={12} col="var(--n300)"/>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* 6. Recent Activity */
+function ActivityFeed(){
+  const typeIcon={finding:'alert',evidence_accepted:'check',evidence_rejected:'x',
+    anomaly:'pulse',auditor:'user',stage:'arrowR',score:'activity',appeal:'file'};
+  const typeCol={finding:'var(--red)',evidence_accepted:'var(--green)',evidence_rejected:'var(--red)',
+    anomaly:'var(--amber)',auditor:'var(--n500)',stage:'var(--gold)',score:'var(--n500)',appeal:'var(--n500)'};
+  return(
+    <div className="card card-p">
+      <Eyebrow>Recent Activity</Eyebrow>
+      {DATA.activity.length===0?(
+        <div style={{padding:'24px 0',textAlign:'center'}}>
+          <div style={{color:'var(--n400)',fontSize:12,lineHeight:1.6}}>
+            No audit activity yet.<br/>Your activity feed will populate after the first auditor review.
+          </div>
+        </div>
+      ):(
+        <div>
+          {DATA.activity.map((a,i)=>{
+            const ic=typeIcon[a.type]||'file';
+            const col=typeCol[a.type]||'var(--n400)';
+            return(
+              <div key={i} style={{display:'flex',gap:10,padding:'9px 0',
+                borderBottom:i<DATA.activity.length-1?'1px solid var(--n100)':'none',alignItems:'flex-start'}}>
+                <div style={{width:26,height:26,borderRadius:6,
+                  background:`${col.replace('var(','').replace(')','') === '--red'?'var(--red-bg)':col==='var(--green)'?'var(--green-bg)':col==='var(--amber)'?'var(--amber-bg)':'var(--n100)'}`,
+                  display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                  <Ic n={ic} size={12} col={col}/>
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:12,fontWeight:600,color:'var(--n900)',marginBottom:1}}>{a.label}</div>
+                  <div style={{fontSize:11,color:'var(--n500)',lineHeight:1.4}}>{a.desc}</div>
+                </div>
+                <span className="mono-label" style={{flexShrink:0}}>{a.time}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* 7. Action Items */
+function ActionItems({setPage,openUpload}){
+  const urgCol={high:'var(--red)',medium:'var(--amber)',low:'var(--n400)'};
+  return(
+    <div className="card card-p">
+      <Eyebrow>Action Items</Eyebrow>
+      {DATA.actions.length===0?(
+        <div style={{padding:'20px',textAlign:'center',background:'var(--n50)',borderRadius:7,border:'1px solid var(--n200)'}}>
+          <Ic n="check" size={20} col="var(--green)" style={{marginBottom:8}}/>
+          <div style={{fontSize:13,fontWeight:600,color:'var(--n700)',marginBottom:4}}>All caught up</div>
+          <div style={{fontSize:12,color:'var(--n500)'}}>Next milestone in {DATA.pulse.daysToMilestone} days.</div>
+        </div>
+      ):(
+        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+          {DATA.actions.map(a=>{
+            const uc=urgCol[a.urgency]||'var(--n400)';
+            return(
+              <div key={a.id} style={{background:'var(--n50)',border:'1px solid var(--n200)',
+                borderRadius:7,padding:'12px',borderLeft:`3px solid ${uc}`}}>
+                <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:8,marginBottom:4}}>
+                  <span style={{fontSize:12,fontWeight:700,color:'var(--n900)'}}>{a.title}</span>
+                  <MonoTag col={uc} bg={`${uc === 'var(--red)'?'var(--red-bg)':uc==='var(--amber)'?'var(--amber-bg)':'var(--n100)'}`}>{a.urgency}</MonoTag>
+                </div>
+                <p style={{fontSize:11,color:'var(--n500)',marginBottom:8,lineHeight:1.5}}>{a.why}</p>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span className="mono-label">Due {a.deadline}</span>
+                  <Btn size="sm" onClick={()=>a.cta==='Evidence Vault'?openUpload(a.title):setPage(a.cta)}>
+                    {a.cta==='Evidence Vault'?'Upload Evidence':'Reply to Auditor'} <Ic n="arrowR" size={11} col="#fff"/>
+                  </Btn>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* 8. Accountable Person Card */
+function AccountablePersonCard(){
+  const ap=DATA.accountablePerson;
+  const caapStatus={verified:'healthy',pending:'attention',expired:'action'};
+  const caapLabel={verified:'CAAP Verified',pending:'CAAP Pending',expired:'CAAP Expired'};
+  return(
+    <div className="card card-p">
+      <Eyebrow>Accountable Person</Eyebrow>
+      <Tip text="The Accountable Person is the named individual at your organisation who holds personal responsibility for every AI decision made in scope. This is AIC's signature requirement — it answers the question 'who is responsible?' that every competitor fails to answer.">
+        <div style={{display:'flex',gap:12,alignItems:'flex-start',cursor:'help',width:'100%'}}>
+          <div style={{width:44,height:44,borderRadius:10,background:'var(--navy)',
+            display:'flex',alignItems:'center',justifyContent:'center',
+            fontFamily:'var(--mono)',fontSize:14,fontWeight:700,color:'var(--gold)',flexShrink:0}}>
+            {ap.initials}
+          </div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:14,fontWeight:700,color:'var(--n900)',marginBottom:1}}>{ap.name}</div>
+            <div style={{fontSize:12,color:'var(--n500)',marginBottom:8}}>{ap.role}</div>
+            <div style={{display:'flex',gap:6,alignItems:'center',flexWrap:'wrap'}}>
+              <Pill s={caapStatus[ap.caap]} small/>
+              <span className="mono-label">{caapLabel[ap.caap]}</span>
+              {ap.caap==='verified'&&<span className="mono-label">· {ap.verifiedOn}</span>}
+            </div>
+          </div>
+        </div>
+      </Tip>
+      <div style={{marginTop:12,paddingTop:12,borderTop:'1px solid var(--n100)',display:'flex',gap:8}}>
+        <button style={{fontFamily:'var(--mono)',fontSize:10,fontWeight:600,color:'var(--gold)',
+          textTransform:'uppercase',letterSpacing:'.08em',display:'flex',alignItems:'center',gap:4}}>
+          View attestation <Ic n="external" size={11} col="var(--gold)"/>
+        </button>
+      </div>
+      {ap.caap==='pending'&&(
+        <div style={{marginTop:8,padding:'8px 10px',background:'var(--amber-bg)',borderRadius:6,
+          border:'1px solid rgba(180,83,9,.15)'}}>
+          <p style={{fontSize:11,color:'var(--amber)',lineHeight:1.5}}>CAAP certification launches Q3 2027. Register your interest to be notified when enrolment opens.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Dashboard layout */
+function PageDashboard({setPage,openUpload}){
+  return(
+    <div style={{animation:'fadeUp .2s ease'}}>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+        <ScoreCard setPage={setPage}/>
+        <RightsRibbon setPage={setPage}/>
+        <PulseStrip/>
+        <div style={{display:'grid',gridTemplateColumns:'1fr',gap:16}}>
+          <JourneyCard setPage={setPage}/>
+          <AccountablePersonCard/>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr',gap:16}}>
+          <EvidenceByRight setPage={setPage}/>
+          <ActivityFeed/>
+        </div>
+        <ActionItems setPage={setPage} openUpload={openUpload}/>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE: EVIDENCE VAULT
+══════════════════════════════════════════════════════════════════════════ */
+function PageEvidenceVault({openUpload}){
+  const [openR,setOpenR]=useState({1:true,3:true});
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'grid',gridTemplateColumns:'1fr 256px',gap:16,alignItems:'flex-start'}}>
+      <div>
+        <Eyebrow>Phase 2 — Audit Vault · 5 Algorithmic Rights</Eyebrow>
+        {DATA.rights.map(r=>{
+          const open=!!openR[r.id];
+          const v=r.items.filter(i=>i.status==='verified').length;
+          const fl=r.items.filter(i=>i.status==='flagged').length;
+          const col=r.score>=71?'var(--green)':r.score>=41?'var(--gold)':'var(--red)';
+          return(
+            <div key={r.id} className="card" style={{marginBottom:8,overflow:'hidden'}}>
+              <button onClick={()=>setOpenR(s=>({...s,[r.id]:!s[r.id]}))}
+                style={{width:'100%',display:'flex',alignItems:'center',gap:10,padding:'12px 16px',
+                  textAlign:'left',transition:'background .1s'}}
+                onMouseEnter={e=>e.currentTarget.style.background='var(--n50)'}
+                onMouseLeave={e=>e.currentTarget.style.background='transparent'}
+              >
+                <MonoTag>{`R${r.id}`}</MonoTag>
+                <span style={{fontFamily:'var(--serif)',fontSize:13,fontWeight:700,color:'var(--n900)'}}>{r.name}</span>
+                {fl>0&&<span style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:600,
+                  background:'var(--red-bg)',color:'var(--red)',padding:'2px 7px',borderRadius:4}}>{fl} flagged</span>}
+                <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:14}}>
+                  <span className="mono-label">{v}/{r.items.length} verified</span>
+                  <span style={{fontFamily:'var(--mono)',fontSize:14,fontWeight:700,color:col}}>{r.score}</span>
+                  <Ic n="chevron" size={13} col="var(--n400)" style={{transform:open?'rotate(180deg)':'none',transition:'transform .2s'}}/>
+                </div>
+              </button>
+              {open&&(
+                <div style={{borderTop:'1px solid var(--n200)',padding:'4px 6px 10px'}}>
+                  <p style={{fontSize:11,color:'var(--n500)',padding:'7px 10px 10px',lineHeight:1.6}}>{r.desc}</p>
+                  {r.items.map(item=>{
+                    const canUp=item.status==='missing'||item.status==='partial';
+                    return(
+                      <div key={item.id} style={{display:'flex',alignItems:'center',gap:8,padding:'9px 10px',
+                        borderRadius:6,transition:'background .1s',marginBottom:2,
+                        background:item.status==='flagged'?'var(--red-bg)':'transparent',
+                        border:item.status==='flagged'?'1px solid rgba(185,28,28,.12)':'1px solid transparent'}}
+                        onMouseEnter={e=>{if(item.status!=='flagged')e.currentTarget.style.background='var(--n50)';}}
+                        onMouseLeave={e=>{if(item.status!=='flagged')e.currentTarget.style.background='transparent';}}
+                      >
+                        <span className="mono-label" style={{width:36,flexShrink:0}}>{item.id}</span>
+                        <MonoTag>{`Tier ${item.tier}`}</MonoTag>
+                        <span style={{flex:1,fontSize:12,fontWeight:500,color:item.status==='missing'?'var(--n400)':'var(--n900)'}}>{item.label}</span>
+                        {item.note&&<span style={{fontSize:11,color:item.status==='flagged'?'var(--red)':'var(--n500)',maxWidth:180,textAlign:'right'}}>{item.note}</span>}
+                        {canUp
+                          ?<button onClick={()=>openUpload(item.label)}
+                            style={{display:'flex',alignItems:'center',gap:5,background:'transparent',
+                              border:'1px dashed var(--n300)',borderRadius:6,padding:'4px 10px',
+                              color:'var(--n400)',fontSize:11,fontFamily:'var(--mono)',fontWeight:500,flexShrink:0,
+                              transition:'all .1s'}}
+                            onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--gold)';e.currentTarget.style.color='var(--gold)';}}
+                            onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--n300)';e.currentTarget.style.color='var(--n400)';}}
+                          ><Ic n="upload" size={10}/>Upload</button>
+                          :<Pill s={item.status} small/>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {/* Rail */}
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p">
+          <Eyebrow>Tier Guide</Eyebrow>
+          {[['A','System data','1.0×'],['B','Third-party docs','0.8×'],['C','Self-certified','0.6×'],['D','Attestation only','0.4×']].map(([t,l,w])=>(
+            <div key={t} style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+              <MonoTag>{`Tier ${t}`}</MonoTag>
+              <span style={{flex:1,fontSize:11,color:'var(--n700)'}}>{l}</span>
+              <span style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--gold)',fontWeight:600}}>{w}</span>
+            </div>
+          ))}
+        </div>
+        <div className="card card-p">
+          <div className="mono-label" style={{marginBottom:8}}>Deadline</div>
+          <div style={{fontFamily:'var(--serif)',fontSize:22,fontWeight:700,color:'var(--red)',marginBottom:4}}>14 days</div>
+          <p style={{fontSize:11,color:'var(--n500)',marginBottom:14,lineHeight:1.5}}>All Critical findings must be resolved before AIC proceeds to Auditor Review.</p>
+          <Btn onClick={()=>openUpload('All Outstanding Evidence')} full>Submit All <Ic n="arrowR" size={11} col="#fff"/></Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE: PULSE MONITOR
+══════════════════════════════════════════════════════════════════════════ */
+function PagePulse(){
+  const {decisionVolume,overrideRate,overrideHealthMin,overrideHealthMax}=DATA.pulse;
+  const maxV=Math.max(...decisionVolume.map(b=>b.v));
+  const orHealthy=overrideRate>=overrideHealthMin&&overrideRate<=overrideHealthMax;
+  const orCol=orHealthy?'var(--green)':overrideRate<overrideHealthMin?'var(--amber)':'var(--red)';
+  const log=[
+    {id:'DEC-4821',sys:'Credit Scoring v2',outcome:'Declined', reviewed:true, overridden:false,time:'10:42'},
+    {id:'DEC-4820',sys:'Credit Scoring v2',outcome:'Approved', reviewed:true, overridden:false,time:'10:39'},
+    {id:'DEC-4819',sys:'HR Screening',     outcome:'Screened Out',reviewed:false,overridden:false,time:'10:35'},
+    {id:'DEC-4818',sys:'Credit Scoring v2',outcome:'Declined', reviewed:true, overridden:true, time:'10:31'},
+    {id:'DEC-4817',sys:'Insurance Risk',   outcome:'High Risk', reviewed:false,overridden:false,time:'10:28'},
+  ];
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'flex',flexDirection:'column',gap:16}}>
+      <div style={{background:'var(--red-bg)',border:'1px solid rgba(185,28,28,.15)',
+        borderRadius:8,padding:'12px 16px',display:'flex',alignItems:'center',gap:10}}>
+        <Ic n="alert" size={14} col="var(--red)"/>
+        <span style={{fontSize:13,color:'var(--red)',fontWeight:500}}>
+          <strong>Override Rate Alert:</strong> Zero overrides logged in April across 15,421 decisions. Explanation required by 2 May 2026.
+        </span>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+        {/* Volume chart */}
+        <div className="card card-p">
+          <Eyebrow>Decision Volume — 6 Months</Eyebrow>
+          <div style={{display:'flex',alignItems:'flex-end',gap:6,height:100}}>
+            {decisionVolume.map((b,i)=>{
+              const h=Math.round((b.v/maxV)*80);
+              const last=i===decisionVolume.length-1;
+              return(
+                <div key={b.month} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+                  <span style={{fontFamily:'var(--mono)',fontSize:8,color:last?'var(--gold)':'var(--n400)'}}>{b.v.toLocaleString()}</span>
+                  <div style={{width:'100%',height:80,display:'flex',alignItems:'flex-end'}}>
+                    <div style={{width:'100%',height:`${h}%`,background:last?'var(--gold)':'var(--n200)',borderRadius:'3px 3px 0 0',transition:'height 1s ease'}}/>
+                  </div>
+                  <span style={{fontFamily:'var(--mono)',fontSize:8,color:last?'var(--gold)':'var(--n400)'}}>{b.month}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {/* Override rate detail */}
+        <div className="card card-p">
+          <Eyebrow>Override Rate Health</Eyebrow>
+          <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:12}}>
+            <div style={{position:'relative',width:72,height:72,flexShrink:0}}>
+              <ScoreRing val={Math.min(overrideRate/overrideHealthMax*100,100)} size={72} thick={5}/>
+              <div style={{position:'absolute',inset:0,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+                <span style={{fontFamily:'var(--mono)',fontSize:16,fontWeight:700,color:orCol,lineHeight:1}}>{overrideRate.toFixed(1)}</span>
+                <span style={{fontFamily:'var(--mono)',fontSize:8,color:'var(--n400)'}}>%</span>
+              </div>
+            </div>
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:'var(--n900)',marginBottom:4}}>Current: {overrideRate.toFixed(1)}%</div>
+              <div style={{fontSize:11,color:'var(--n500)',marginBottom:4}}>Healthy band: {overrideHealthMin}–{overrideHealthMax}%</div>
+              <Pill s={orHealthy?'healthy':overrideRate<overrideHealthMin?'attention':'action'} small/>
+            </div>
+          </div>
+          <div style={{background:'var(--n50)',borderRadius:7,padding:'10px 12px',border:'1px solid var(--n200)'}}>
+            <p style={{fontSize:11,color:'var(--n500)',lineHeight:1.6}}>
+              A rate of 0% suggests human reviewers are approving all AI recommendations without independent review — this is the "theatrical oversight" failure mode. AIC requires an explanation before this is classified as a Critical Finding.
+            </p>
+          </div>
+        </div>
+      </div>
+      {/* Decision log */}
+      <div className="card card-p">
+        <Eyebrow>Recent Decision Log</Eyebrow>
+        <table style={{width:'100%',borderCollapse:'collapse'}}>
+          <thead>
+            <tr style={{borderBottom:'1px solid var(--n200)'}}>
+              {['Decision ID','System','Outcome','Reviewed','Overridden','Time'].map(h=>(
+                <th key={h} style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:600,textTransform:'uppercase',
+                  letterSpacing:'.1em',color:'var(--n400)',padding:'0 8px 8px',textAlign:'left'}}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {log.map(row=>(
+              <tr key={row.id} style={{borderBottom:'1px solid var(--n100)'}}>
+                <td style={{padding:'9px 8px',fontFamily:'var(--mono)',fontSize:10,color:'var(--gold)',fontWeight:600}}>{row.id}</td>
+                <td style={{padding:'9px 8px',fontSize:12,color:'var(--n700)'}}>{row.sys}</td>
+                <td style={{padding:'9px 8px'}}>
+                  <span style={{fontFamily:'var(--mono)',fontSize:10,color:row.outcome.includes('Approved')?'var(--green)':'var(--red)'}}>{row.outcome}</span>
+                </td>
+                <td style={{padding:'9px 8px'}}>{row.reviewed?<Ic n="check" size={13} col="var(--green)"/>:<Ic n="x" size={13} col="var(--red)"/>}</td>
+                <td style={{padding:'9px 8px'}}>{row.overridden?<Ic n="check" size={13} col="var(--gold)"/>:<span style={{color:'var(--n300)'}}>—</span>}</td>
+                <td style={{padding:'9px 8px',fontFamily:'var(--mono)',fontSize:10,color:'var(--n400)'}}>{row.time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{marginTop:10,fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)',textAlign:'center'}}>
+          Showing 5 of {DATA.pulse.decisionsToday.toLocaleString()} decisions today · Pulse SDK v2.1
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE: FINDINGS
+══════════════════════════════════════════════════════════════════════════ */
+function PageFindings({openUpload}){
+  const crit=DATA.findings.filter(f=>f.sev==='critical');
+  const sig=DATA.findings.filter(f=>f.sev==='significant');
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'flex',flexDirection:'column',gap:16}}>
+      <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+        {[{l:'Critical',v:crit.length,col:'var(--red)',bg:'var(--red-bg)'},{l:'Significant',v:sig.length,col:'var(--amber)',bg:'var(--amber-bg)'},{l:'Observations',v:0,col:'var(--n400)',bg:'var(--n100)'}].map(s=>(
+          <div key={s.l} style={{background:s.bg,border:`1px solid ${s.col}30`,borderRadius:7,
+            padding:'10px 16px',display:'flex',gap:10,alignItems:'center'}}>
+            <span style={{fontFamily:'var(--mono)',fontSize:24,fontWeight:700,color:s.col,lineHeight:1}}>{s.v}</span>
+            <span className="mono-label" style={{color:s.col}}>{s.l}</span>
+          </div>
+        ))}
+        <div style={{marginLeft:'auto',background:'var(--amber-bg)',border:'1px solid rgba(180,83,9,.2)',
+          borderRadius:7,padding:'10px 16px',display:'flex',alignItems:'center'}}>
+          <span className="mono-label" style={{color:'var(--amber)'}}>Remediation Deadline: 2 May 2026</span>
+        </div>
+      </div>
+      {DATA.findings.map(f=>{
+        const sc=f.sev==='critical'?{col:'var(--red)',bg:'var(--red-bg)'}:{col:'var(--amber)',bg:'var(--amber-bg)'};
+        return(
+          <div key={f.id} className="card card-p" style={{borderLeft:`3px solid ${sc.col}`}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,flexWrap:'wrap'}}>
+              <MonoTag col={sc.col} bg={sc.bg}>{f.id}</MonoTag>
+              <Pill s={f.sev} small/>
+              <span className="mono-label">{f.right}</span>
+              <Pill s={f.status==='partial'?'partial':'open'} small style={{marginLeft:'auto'}}/>
+            </div>
+            <h3 style={{fontFamily:'var(--serif)',fontSize:14,fontWeight:700,color:'var(--n900)',marginBottom:10}}>{f.title}</h3>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14,marginBottom:12}}>
+              <div>
+                <div className="mono-label" style={{marginBottom:5}}>What AIC Found</div>
+                <p style={{fontSize:12,color:'var(--n700)',lineHeight:1.65}}>{f.found}</p>
+              </div>
+              <div>
+                <div className="mono-label" style={{marginBottom:5}}>What Is Needed</div>
+                <p style={{fontSize:12,color:'var(--n700)',lineHeight:1.65}}>{f.needed}</p>
+              </div>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
+              <span className="mono-label">Deadline: {f.deadline}</span>
+              <div style={{marginLeft:'auto',display:'flex',gap:8}}>
+                <Btn variant="outline" size="sm">Request Extension</Btn>
+                <Btn size="sm" onClick={()=>openUpload(f.title)}><Ic n="upload" size={11} col="#fff"/>Submit Remediation</Btn>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE: REPORTS
+══════════════════════════════════════════════════════════════════════════ */
+function PageReports(){
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'flex',flexDirection:'column',gap:12}}>
+      <div style={{background:'var(--gold-lo)',border:'1px solid var(--gold-gl)',borderRadius:8,
+        padding:'11px 14px',display:'flex',gap:8}}>
+        <Ic n="info" size={13} col="var(--gold)" style={{flexShrink:0,marginTop:1}}/>
+        <p style={{fontSize:12,color:'var(--n900)',lineHeight:1.55}}>Monthly Compliance Reports (DOC-023) are auto-generated from Pulse telemetry on the 1st of each month. All 12 reports are required for certificate renewal.</p>
+      </div>
+      {DATA.reports.map(r=>{
+        const col=r.score>=71?'var(--green)':r.score>=41?'var(--gold)':'var(--red)';
+        const chg=r.change>0?`↑ +${r.change}`:r.change<0?`↓ ${r.change}`:'—';
+        const chgC=r.change>0?'var(--green)':r.change<0?'var(--red)':'var(--n400)';
+        return(
+          <div key={r.month} className="card" style={{display:'flex',alignItems:'center',gap:14,padding:'14px 16px'}}>
+            <div style={{position:'relative',width:48,height:48,flexShrink:0}}>
+              <ScoreRing val={r.score} size={48} thick={4}/>
+              <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',
+                fontFamily:'var(--mono)',fontSize:11,fontWeight:700,color:col}}>{r.score}</div>
+            </div>
+            <div style={{flex:1}}>
+              <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+                <span style={{fontFamily:'var(--serif)',fontSize:14,fontWeight:700,color:'var(--n900)'}}>{r.month}</span>
+                {r.current&&<MonoTag>Current</MonoTag>}
+                <span style={{fontFamily:'var(--mono)',fontSize:10,fontWeight:600,color:chgC}}>{chg} pts</span>
+              </div>
+              <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+                {r.flags.map(f=>(
+                  <span key={f} style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n500)',
+                    background:'var(--n100)',border:'1px solid var(--n200)',borderRadius:4,padding:'1px 7px'}}>{f}</span>
+                ))}
+              </div>
+            </div>
+            <div style={{display:'flex',gap:6}}>
+              <Btn variant="outline" size="sm"><Ic n="eye" size={11}/>View</Btn>
+              <Btn variant="outline" size="sm"><Ic n="download" size={11}/>PDF</Btn>
+            </div>
+          </div>
+        );
+      })}
+      <div className="card card-p" style={{background:'var(--n50)'}}>
+        <div className="mono-label" style={{marginBottom:6}}>Report Frequency</div>
+        <p style={{fontSize:12,color:'var(--n500)',lineHeight:1.6}}>Generated automatically on the 1st of each month from Pulse telemetry. If Pulse integration is inactive, reports are generated from manually submitted evidence. Certificate renewal is conditional on all 12 monthly reports being present in the audit record.</p>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE: PROFILE (combined org + keys + CAAP)
+══════════════════════════════════════════════════════════════════════════ */
+function PageProfile(){
+  const [tab,setTab]=useState('org');
+  const tabs=[{id:'org',label:'Organisation'},{id:'keys',label:'API Keys'},{id:'caap',label:'Practitioner (CAAP)'}];
+  const [copied,setCopied]=useState(null);
+  const copy=(v)=>{navigator.clipboard?.writeText(v).catch(()=>{});setCopied(v);setTimeout(()=>setCopied(null),2000);};
+  return(
+    <div style={{animation:'fadeUp .2s ease'}}>
+      {/* Tab bar */}
+      <div style={{display:'flex',gap:4,marginBottom:16,borderBottom:'1px solid var(--n200)',paddingBottom:0}}>
+        {tabs.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{
+            fontFamily:'var(--mono)',fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'.1em',
+            padding:'8px 16px',borderRadius:'6px 6px 0 0',transition:'all .12s',
+            background:tab===t.id?'var(--n0)':'transparent',
+            color:tab===t.id?'var(--gold)':'var(--n400)',
+            borderBottom:tab===t.id?'2px solid var(--gold)':'2px solid transparent',
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {tab==='org'&&(
+        <div style={{display:'grid',gridTemplateColumns:'1fr 280px',gap:16,alignItems:'flex-start'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div className="card card-p">
+              <Eyebrow>Organisation Details</Eyebrow>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                {[
+                  {k:'Registered Name',  v:DATA.org.name+' (Pty) Ltd'},
+                  {k:'Registration No.', v:DATA.org.reg},
+                  {k:'Industry / Sector',v:DATA.org.sector},
+                  {k:'Employees',        v:DATA.org.employees},
+                  {k:'Assessment Ref.',  v:DATA.certification.ref},
+                  {k:'Division',         v:`${DATA.org.division} — ${DATA.org.divisionName}`},
+                ].map(r=>(
+                  <div key={r.k} style={{padding:'10px',background:'var(--n50)',borderRadius:7,border:'1px solid var(--n200)'}}>
+                    <div className="mono-label" style={{marginBottom:3}}>{r.k}</div>
+                    <div style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{r.v}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{marginTop:12}}><Btn variant="outline" size="sm"><Ic n="building" size={11}/>Request Metadata Update</Btn></div>
+            </div>
+            <div className="card card-p">
+              <Eyebrow>Executed Agreements</Eyebrow>
+              {DATA.agreements.map(a=>(
+                <div key={a.id} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 0',borderBottom:'1px solid var(--n100)'}}>
+                  <MonoTag>{a.id}</MonoTag>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:12,fontWeight:500,color:'var(--n900)'}}>{a.name}</div>
+                    <div className="mono-label">Signed {a.date}</div>
+                  </div>
+                  <Pill s="signed" small/>
+                  <button style={{color:'var(--n400)'}}><Ic n="download" size={13}/></button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div className="card card-p">
+              <Eyebrow>Accountable Person</Eyebrow>
+              <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:12}}>
+                <div style={{width:40,height:40,borderRadius:9,background:'var(--navy)',
+                  display:'flex',alignItems:'center',justifyContent:'center',
+                  fontFamily:'var(--mono)',fontSize:12,fontWeight:700,color:'var(--gold)',flexShrink:0}}>
+                  {DATA.accountablePerson.initials}
+                </div>
+                <div>
+                  <div style={{fontSize:13,fontWeight:700,color:'var(--n900)'}}>{DATA.accountablePerson.name}</div>
+                  <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--gold)'}}>{DATA.accountablePerson.role}</div>
+                </div>
+              </div>
+              {[{k:'Declaration Signed',v:'Apr 1, 2026 (DOC-005)'},{k:'Override Authority',v:'Confirmed — direct authority'}].map(r=>(
+                <div key={r.k} style={{padding:'7px 0',borderBottom:'1px solid var(--n100)'}}>
+                  <div className="mono-label" style={{marginBottom:2}}>{r.k}</div>
+                  <div style={{fontSize:12,color:'var(--n900)'}}>{r.v}</div>
+                </div>
+              ))}
+              <Btn variant="outline" full style={{marginTop:12}}><Ic n="user" size={11}/>Change Accountable Person</Btn>
+            </div>
+            <div className="card card-p">
+              <Eyebrow>AI Systems in Scope</Eyebrow>
+              {DATA.aiSystems.map(s=>(
+                <div key={s.name} style={{display:'flex',alignItems:'center',gap:8,padding:'7px 0',borderBottom:'1px solid var(--n100)'}}>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{s.name}</div>
+                    <div className="mono-label">{s.tier}</div>
+                  </div>
+                  <Pill s={s.status} small/>
+                </div>
+              ))}
+              <button style={{width:'100%',marginTop:10,display:'flex',alignItems:'center',justifyContent:'center',
+                gap:6,padding:'7px',border:'1px dashed var(--n300)',borderRadius:7,
+                fontFamily:'var(--mono)',fontSize:10,fontWeight:600,color:'var(--n400)',transition:'all .1s'}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--gold)';e.currentTarget.style.color='var(--gold)';}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--n300)';e.currentTarget.style.color='var(--n400)';}}>
+                <Ic n="plus" size={11}/>Declare New AI System
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tab==='keys'&&(
+        <div style={{display:'grid',gridTemplateColumns:'1fr 260px',gap:16,alignItems:'flex-start'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div className="card card-p">
+              <Eyebrow>Active Keys</Eyebrow>
+              {DATA.keys.map(k=>(
+                <div key={k.name} style={{display:'flex',alignItems:'center',gap:10,padding:'11px 0',borderBottom:'1px solid var(--n100)'}}>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:12,fontWeight:600,color:'var(--n900)',marginBottom:2}}>{k.name}</div>
+                    <div style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--n400)'}}>
+                      {k.status==='active'?`••••••••••••••${k.suffix}`:' Revoked'}
+                    </div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div className="mono-label">Created {k.created}</div>
+                    <div className="mono-label">Used {k.used}</div>
+                  </div>
+                  <Pill s={k.status} small/>
+                  {k.status==='active'&&<button onClick={()=>copy(k.suffix)} style={{color:'var(--n400)'}}><Ic n="copy" size={13}/></button>}
+                </div>
+              ))}
+              <div style={{marginTop:12}}><Btn variant="outline" size="sm"><Ic n="plus" size={11}/>Generate New Key</Btn></div>
+            </div>
+            <div className="card card-p">
+              <Eyebrow>Pulse SDK — Minimum Viable Event</Eyebrow>
+              <div style={{background:'var(--navy)',borderRadius:8,padding:'14px',overflowX:'auto',marginBottom:10}}>
+                <pre style={{fontFamily:'var(--mono)',fontSize:11,color:'rgba(255,255,255,.8)',lineHeight:1.7,margin:0}}>{`{
+  "decision_id":           "unique-id",
+  "system_name":           "credit-scoring-v2",
+  "decision_type":         "loan-approval",
+  "outcome":               "declined",
+  "affected_person_ref":   "anonymised-hash",
+  "timestamp":             "2026-05-01T10:00:00Z",
+  "human_review_required": true,
+  "human_review_completed":false,
+  "human_reviewer_id":     null,
+  "override_applied":      false,
+  "correction_requested":  false
+}`}</pre>
+              </div>
+              <Btn variant="outline" size="sm"><Ic n="external" size={11}/>SDK Documentation</Btn>
+            </div>
+          </div>
+          <div className="card card-p">
+            <Ic n="lock" size={16} col="var(--gold)" style={{marginBottom:8}}/>
+            <div className="mono-label" style={{marginBottom:8}}>Key Security</div>
+            {['Keys are scoped to your organisation only','Rotate keys immediately if compromised','Never expose keys in client-side code','Keys can be revoked instantly from this panel'].map((r,i)=>(
+              <div key={i} style={{display:'flex',gap:7,marginBottom:8,alignItems:'flex-start'}}>
+                <Ic n="check" size={12} col="var(--green)" style={{flexShrink:0,marginTop:1}}/>
+                <span style={{fontSize:11,color:'var(--n500)',lineHeight:1.5}}>{r}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab==='caap'&&(
+        <div style={{display:'grid',gridTemplateColumns:'1fr 260px',gap:16}}>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div style={{background:'var(--navy)',borderRadius:12,padding:'24px',display:'flex',gap:20,alignItems:'center'}}>
+              <BrandMark size={52}/>
+              <div>
+                <div className="mono-label" style={{color:'var(--gold)',marginBottom:6}}>Certified AI Accountability Professional</div>
+                <h2 style={{fontFamily:'var(--serif)',fontSize:20,fontWeight:700,color:'#fff',marginBottom:6}}>The CAAP Credential</h2>
+                <p style={{fontSize:12,color:'rgba(255,255,255,.55)',maxWidth:480,lineHeight:1.6}}>CAAP is to AI accountability what CA(SA) is to accounting — a career-long designation proving structured competence in AI governance.</p>
+              </div>
+              <div style={{marginLeft:'auto',flexShrink:0,textAlign:'right'}}>
+                <div className="mono-label" style={{color:'rgba(255,255,255,.35)',marginBottom:2}}>Launching</div>
+                <div style={{fontFamily:'var(--serif)',fontSize:18,fontWeight:700,color:'var(--gold)'}}>Q3 2027</div>
+              </div>
+            </div>
+            <div className="card card-p">
+              <Eyebrow>5 Competency Domains</Eyebrow>
+              {[
+                ['Domain 1','Human Agency in AI Systems','Design and evaluate human oversight processes.'],
+                ['Domain 2','Explainability & Transparency','Apply SHAP/LIME principles for governance professionals.'],
+                ['Domain 3','Empathy & Dignity','Apply the AIC Empathy Engine rubric manually.'],
+                ['Domain 4','Correction & Appeal','Design functioning correction pipelines.'],
+                ['Domain 5','Disclosure & Truth','Identify AI washing. Assess disclosure compliance.'],
+              ].map(([d,t,desc])=>(
+                <div key={d} style={{display:'flex',gap:10,padding:'10px 0',borderBottom:'1px solid var(--n100)'}}>
+                  <MonoTag>{d}</MonoTag>
+                  <div>
+                    <div style={{fontSize:12,fontWeight:600,color:'var(--n900)',marginBottom:2}}>{t}</div>
+                    <div style={{fontSize:11,color:'var(--n500)'}}>{desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            <div className="card card-p">
+              <Eyebrow>Fee Structure (ZAR)</Eyebrow>
+              {[['Enrolment','R 5,000'],['Part A Exam','R 3,500'],['Part B Exam','R 6,500'],['CPD (annual)','R 3,500/yr']].map(([l,v])=>(
+                <div key={l} style={{display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--n100)'}}>
+                  <span style={{fontSize:11,color:'var(--n500)'}}>{l}</span>
+                  <span style={{fontFamily:'var(--mono)',fontSize:11,fontWeight:700,color:'var(--n900)'}}>{v}</span>
+                </div>
+              ))}
+              <div style={{marginTop:10,padding:'8px 10px',background:'var(--gold-lo)',borderRadius:6,
+                fontFamily:'var(--mono)',fontSize:9,color:'var(--gold)',fontWeight:600}}>
+                Founding Partner: 30% off all fees
+              </div>
+            </div>
+            <div className="card card-p">
+              <Eyebrow>Register Interest</Eyebrow>
+              <p style={{fontSize:11,color:'var(--n500)',lineHeight:1.6,marginBottom:12}}>CAAP launches Q3 2027. Register to be notified when enrolment opens and to lock in Founding Partner pricing.</p>
+              <Btn full>Register Interest <Ic n="arrowR" size={11} col="#fff"/></Btn>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Alias pages — each opens PageProfile on the correct tab */
+function PageCertificate(){
+  // Certificate lives in its own dedicated page
+  const [copied,setCopied]=useState(false);
+  const certNum='AIC-2026-MFG-001';
+  const copy=()=>{navigator.clipboard?.writeText(certNum).catch(()=>{}); setCopied(true); setTimeout(()=>setCopied(false),2000);};
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'grid',gridTemplateColumns:'1fr 280px',gap:16,alignItems:'flex-start'}}>
+      <div className="card" style={{padding:0,overflow:'hidden'}}>
+        <div style={{background:'var(--navy)',padding:'32px 36px',display:'flex',gap:24,alignItems:'center'}}>
+          <BrandMark size={64}/>
+          <div>
+            <div style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:600,textTransform:'uppercase',letterSpacing:'.3em',color:'var(--gold)',marginBottom:6}}>Certificate of AI Accountability</div>
+            <h2 style={{fontFamily:'var(--serif)',fontSize:20,fontWeight:700,color:'#fff',lineHeight:1.15,marginBottom:3}}>{DATA.org.name}</h2>
+            <div style={{fontFamily:'var(--mono)',fontSize:9,color:'rgba(255,255,255,.4)',letterSpacing:'.1em'}}>{DATA.org.reg}</div>
+          </div>
+          <div style={{marginLeft:'auto',textAlign:'right'}}>
+            <div style={{fontFamily:'var(--mono)',fontSize:36,fontWeight:700,color:'var(--gold)',lineHeight:1}}>77</div>
+            <div style={{fontFamily:'var(--mono)',fontSize:9,color:'rgba(255,255,255,.4)',letterSpacing:'.15em'}}>Integrity Score</div>
+          </div>
+        </div>
+        <div style={{padding:'24px 32px'}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:0,border:'1px solid var(--n200)',borderRadius:8,overflow:'hidden',marginBottom:20}}>
+            {[
+              {k:'Division',v:'Division 2 — Supervised'},
+              {k:'Certification Status',v:'Certified — Provisional'},
+              {k:'Accountable Person',v:'Dr. Sarah Chen, CRO'},
+              {k:'Certificate No.',v:certNum},
+              {k:'Date of Issue',v:'Apr 12, 2026'},
+              {k:'Date of Expiry',v:'Apr 12, 2027'},
+            ].map((r,i)=>(
+              <div key={r.k} style={{padding:'12px 16px',borderRight:i%3!==2?'1px solid var(--n200)':'none',borderBottom:i<3?'1px solid var(--n200)':'none'}}>
+                <div style={{fontFamily:'var(--mono)',fontSize:8,color:'var(--n400)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:3}}>{r.k}</div>
+                <div style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{r.v}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{background:'var(--amber-bg)',border:'1px solid rgba(180,83,9,.2)',borderRadius:8,padding:'10px 14px',marginBottom:20}}>
+            <p style={{fontSize:11,color:'var(--amber)',lineHeight:1.55}}><strong>Provisional Status:</strong> 3 Critical findings remain open. Full "Certified — Active" status requires all Critical findings to be resolved. The certificate remains valid while you are within the remediation window.</p>
+          </div>
+          <div style={{display:'flex',gap:10}}>
+            <Btn><Ic n="download" size={12} col="#fff"/>Download PDF</Btn>
+            <Btn variant="outline"><Ic n="external" size={12}/>Public Registry</Btn>
+            <button onClick={copy} style={{display:'flex',alignItems:'center',gap:6,padding:'9px 16px',border:'1px solid var(--n200)',borderRadius:100,fontFamily:'var(--mono)',fontSize:10,fontWeight:600,color:'var(--n500)',transition:'all .12s'}}
+              onMouseEnter={e=>e.currentTarget.style.borderColor='var(--gold)'}
+              onMouseLeave={e=>e.currentTarget.style.borderColor='var(--n200)'}
+            ><Ic n="copy" size={11}/>{copied?'Copied!':'Copy Cert No.'}</button>
+          </div>
+        </div>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p" style={{textAlign:'center'}}>
+          <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)',textTransform:'uppercase',letterSpacing:'.2em',marginBottom:12}}>AIC Trust Mark</div>
+          <div style={{background:'var(--navy)',borderRadius:8,padding:'20px',display:'inline-block',marginBottom:12}}>
+            <BrandMark size={56}/>
+          </div>
+          <p style={{fontSize:11,color:'var(--n500)',lineHeight:1.6,marginBottom:12}}>Display on your website, RFP responses, and annual reports. Must include certificate number and link to public registry.</p>
+          <Btn variant="outline" full><Ic n="download" size={12}/>Download SVG</Btn>
+        </div>
+        <div className="card card-p">
+          <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)',textTransform:'uppercase',letterSpacing:'.2em',marginBottom:10}}>Permitted Usage</div>
+          {['Organisation website (homepage)','Email signatures — Accountable Person','RFP and tender responses','Annual reports and ESG disclosures',`Must link to: aiccertified.cloud/registry/${certNum}`].map((r,i)=>(
+            <div key={i} style={{display:'flex',gap:7,marginBottom:8,alignItems:'flex-start'}}>
+              <Ic n="check" size={12} col="var(--green)" style={{flexShrink:0,marginTop:1}}/>
+              <span style={{fontSize:11,color:'var(--n500)',lineHeight:1.5}}>{r}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PageCAP(){
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'grid',gridTemplateColumns:'1fr 280px',gap:16}}>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div style={{background:'var(--navy)',borderRadius:12,padding:'28px',display:'flex',gap:20,alignItems:'center'}}>
+          <BrandMark size={56}/>
+          <div>
+            <div style={{fontFamily:'var(--mono)',fontSize:9,fontWeight:600,textTransform:'uppercase',letterSpacing:'.3em',color:'var(--gold)',marginBottom:6}}>Certified AI Accountability Professional</div>
+            <h2 style={{fontFamily:'var(--serif)',fontSize:20,fontWeight:700,color:'#fff',marginBottom:6}}>The CAAP Credential</h2>
+            <p style={{fontSize:12,color:'rgba(255,255,255,.55)',maxWidth:480,lineHeight:1.6}}>CAAP is to AI accountability what CA(SA) is to accounting — a career-long designation proving structured competence in AI governance.</p>
+          </div>
+          <div style={{marginLeft:'auto',flexShrink:0,textAlign:'right'}}>
+            <div style={{fontFamily:'var(--mono)',fontSize:9,color:'rgba(255,255,255,.35)',marginBottom:2}}>Launching</div>
+            <div style={{fontFamily:'var(--serif)',fontSize:18,fontWeight:700,color:'var(--gold)'}}>Q3 2027</div>
+          </div>
+        </div>
+        <div className="card card-p">
+          <Eyebrow>5 Competency Domains</Eyebrow>
+          {[
+            ['Domain 1','Human Agency in AI Systems','Design and evaluate human oversight processes. Detect theatrical oversight.'],
+            ['Domain 2','Explainability & Transparency','Apply SHAP/LIME principles for governance professionals.'],
+            ['Domain 3','Empathy & Dignity','Apply the AIC Empathy Engine rubric. Identify dignity failures in automated comms.'],
+            ['Domain 4','Correction & Appeal','Design functioning correction pipelines. Conduct adverse scenario testing.'],
+            ['Domain 5','Disclosure & Truth','Assess AI disclosure compliance. Identify AI washing.'],
+          ].map(([d,t,desc])=>(
+            <div key={d} style={{display:'flex',gap:10,padding:'10px 0',borderBottom:'1px solid var(--n100)'}}>
+              <MonoTag>{d}</MonoTag>
+              <div>
+                <div style={{fontSize:12,fontWeight:600,color:'var(--n900)',marginBottom:2}}>{t}</div>
+                <div style={{fontSize:11,color:'var(--n500)'}}>{desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="card card-p">
+          <Eyebrow>Examination Structure</Eyebrow>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+            {[
+              {part:'Part A',title:'Knowledge Assessment',detail:'80 MCQ + 20 short answer · 3 hours · Closed-book · Pass mark: 65%'},
+              {part:'Part B',title:'Applied Simulation',detail:'Full audit simulation · 4 hours · Open-book · Assessed: Satisfactory'},
+            ].map(p=>(
+              <div key={p.part} style={{background:'var(--n50)',borderRadius:8,padding:14,border:'1px solid var(--n200)'}}>
+                <MonoTag style={{marginBottom:8}}>{p.part}</MonoTag>
+                <div style={{fontSize:12,fontWeight:700,color:'var(--n900)',margin:'8px 0 4px'}}>{p.title}</div>
+                <div style={{fontSize:11,color:'var(--n500)',lineHeight:1.55}}>{p.detail}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p">
+          <Eyebrow>Fee Structure (ZAR)</Eyebrow>
+          {[['Enrolment (incl. study pack)','R 5,000'],['Part A Examination','R 3,500'],['Part B Examination','R 6,500'],['Annual CPD Maintenance','R 3,500/yr']].map(([l,v])=>(
+            <div key={l} style={{display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--n100)'}}>
+              <span style={{fontSize:11,color:'var(--n500)'}}>{l}</span>
+              <span style={{fontFamily:'var(--mono)',fontSize:11,fontWeight:700,color:'var(--n900)'}}>{v}</span>
+            </div>
+          ))}
+          <div style={{marginTop:10,padding:'8px 10px',background:'var(--gold-lo)',borderRadius:6,fontFamily:'var(--mono)',fontSize:9,color:'var(--gold)',fontWeight:600}}>
+            Founding Partner: 30% off all fees for {DATA.org.name} staff
+          </div>
+        </div>
+        <div className="card card-p">
+          <Eyebrow>Register Interest</Eyebrow>
+          <p style={{fontSize:11,color:'var(--n500)',lineHeight:1.6,marginBottom:12}}>CAAP launches Q3 2027. Register to be notified when enrolment opens and to lock in Founding Partner pricing.</p>
+          <Btn full>Register Interest <Ic n="arrowR" size={11} col="#fff"/></Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PageKeys(){
+  const [copied,setCopied]=useState(null);
+  const copy=(v)=>{navigator.clipboard?.writeText(v).catch(()=>{}); setCopied(v); setTimeout(()=>setCopied(null),2000);};
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'grid',gridTemplateColumns:'1fr 260px',gap:16,alignItems:'flex-start'}}>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p">
+          <Eyebrow>Active Keys</Eyebrow>
+          <div style={{border:'1px solid var(--n200)',borderRadius:8,overflow:'hidden'}}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 100px 100px 120px 40px',padding:'8px 14px',background:'var(--n50)',borderBottom:'1px solid var(--n200)'}}>
+              {['Key / Name','Created','Last Used','Status',''].map(h=>(
+                <span key={h} style={{fontFamily:'var(--mono)',fontSize:8,fontWeight:600,textTransform:'uppercase',letterSpacing:'.12em',color:'var(--n400)'}}>{h}</span>
+              ))}
+            </div>
+            {DATA.keys.map((k,i)=>(
+              <div key={k.name} style={{display:'grid',gridTemplateColumns:'1fr 100px 100px 120px 40px',padding:'12px 14px',borderBottom:i<DATA.keys.length-1?'1px solid var(--n100)':'none',alignItems:'center'}}>
+                <div>
+                  <div style={{fontSize:12,fontWeight:600,color:'var(--n900)',marginBottom:2}}>{k.name}</div>
+                  <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)'}}>{'•'.repeat(12)}{k.suffix}</div>
+                </div>
+                <span style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n500)'}}>{k.created}</span>
+                <span style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n500)'}}>{k.used}</span>
+                <Pill s={k.status} small/>
+                {k.status==='active'&&<button onClick={()=>copy(k.suffix)} style={{color:'var(--n400)',transition:'color .12s'}}
+                  onMouseEnter={e=>e.currentTarget.style.color='var(--gold)'}
+                  onMouseLeave={e=>e.currentTarget.style.color='var(--n400)'}
+                ><Ic n="copy" size={13}/></button>}
+              </div>
+            ))}
+          </div>
+          <div style={{marginTop:12}}><Btn variant="outline" size="sm"><Ic n="plus" size={11}/>Generate New Key</Btn></div>
+        </div>
+        <div className="card card-p">
+          <Eyebrow>Pulse SDK — Minimum Viable Event</Eyebrow>
+          <div style={{background:'var(--navy)',borderRadius:8,padding:'14px',overflowX:'auto',marginBottom:10}}>
+            <pre style={{fontFamily:'var(--mono)',fontSize:11,color:'rgba(255,255,255,.8)',lineHeight:1.7,margin:0}}>{`{
+  "decision_id":           "unique-id",
+  "system_name":           "credit-scoring-v2",
+  "decision_type":         "loan-approval",
+  "outcome":               "declined",
+  "affected_person_ref":   "anonymised-hash",
+  "timestamp":             "2026-05-01T10:00:00Z",
+  "human_review_required": true,
+  "human_review_completed":false,
+  "human_reviewer_id":     null,
+  "override_applied":      false,
+  "correction_requested":  false
+}`}</pre>
+          </div>
+          <Btn variant="outline" size="sm"><Ic n="external" size={11}/>SDK Documentation</Btn>
+        </div>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p">
+          <Ic n="lock" size={16} col="var(--gold)" style={{marginBottom:8}}/>
+          <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)',textTransform:'uppercase',letterSpacing:'.2em',marginBottom:8}}>Key Security</div>
+          {['Keys are scoped to your organisation only','Rotate keys immediately if compromised','Never expose keys in client-side code','Keys can be revoked instantly from this panel'].map((r,i)=>(
+            <div key={i} style={{display:'flex',gap:7,marginBottom:8,alignItems:'flex-start'}}>
+              <Ic n="check" size={11} col="var(--green)" style={{flexShrink:0,marginTop:1}}/>
+              <span style={{fontSize:11,color:'var(--n500)',lineHeight:1.5}}>{r}</span>
+            </div>
+          ))}
+        </div>
+        <div className="card card-p">
+          <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)',textTransform:'uppercase',letterSpacing:'.2em',marginBottom:10}}>Integration Status</div>
+          {DATA.aiSystems.map(s=>(
+            <div key={s.name} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'7px 0',borderBottom:'1px solid var(--n100)'}}>
+              <div>
+                <div style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{s.name}</div>
+                <div style={{fontFamily:'var(--mono)',fontSize:8,color:'var(--n400)'}}>{s.tier}</div>
+              </div>
+              <Pill s={s.status} small/>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PageOrg(){
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'grid',gridTemplateColumns:'1fr 280px',gap:16,alignItems:'flex-start'}}>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p">
+          <Eyebrow>Organisation Details</Eyebrow>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:12}}>
+            {[
+              {k:'Registered Name',v:`${DATA.org.name} (Pty) Ltd`},
+              {k:'Registration No.',v:DATA.org.reg},
+              {k:'Industry / Sector',v:DATA.org.sector},
+              {k:'Employees',v:DATA.org.employees},
+              {k:'Assessment Ref.',v:DATA.certification.ref},
+              {k:'Division',v:`${DATA.org.division} — ${DATA.org.divisionName}`},
+              {k:'Assessment Started',v:'April 1, 2026'},
+              {k:'Certificate Expiry',v:'Apr 12, 2027'},
+            ].map(r=>(
+              <div key={r.k} style={{padding:'10px',background:'var(--n50)',borderRadius:7,border:'1px solid var(--n200)'}}>
+                <div style={{fontFamily:'var(--mono)',fontSize:8,color:'var(--n400)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:3}}>{r.k}</div>
+                <div style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{r.v}</div>
+              </div>
+            ))}
+          </div>
+          <Btn variant="outline" size="sm"><Ic n="building" size={11}/>Request Metadata Update</Btn>
+        </div>
+        <div className="card card-p">
+          <Eyebrow>Executed Agreements</Eyebrow>
+          {DATA.agreements.length===0?(
+            <div style={{padding:'20px 0',textAlign:'center',color:'var(--n400)',fontSize:12}}>
+              Agreements will appear here once onboarding is complete.
+            </div>
+          ):DATA.agreements.map((a,i)=>(
+            <div key={a.id} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 0',borderBottom:i<DATA.agreements.length-1?'1px solid var(--n100)':'none'}}>
+              <MonoTag>{a.id}</MonoTag>
+              <div style={{flex:1}}>
+                <div style={{fontSize:12,fontWeight:500,color:'var(--n900)'}}>{a.name}</div>
+                <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--n400)'}}>Signed {a.date}</div>
+              </div>
+              <Pill s="signed" small/>
+              <button style={{color:'var(--n400)'}}><Ic n="download" size={13}/></button>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p">
+          <Eyebrow>Accountable Person</Eyebrow>
+          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:12}}>
+            <div style={{width:40,height:40,borderRadius:9,background:'var(--navy)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--mono)',fontSize:12,fontWeight:700,color:'var(--gold)',flexShrink:0}}>
+              {DATA.accountablePerson.initials}
+            </div>
+            <div>
+              <div style={{fontSize:13,fontWeight:700,color:'var(--n900)'}}>{DATA.accountablePerson.name}</div>
+              <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--gold)'}}>{DATA.accountablePerson.role}</div>
+            </div>
+          </div>
+          {[{k:'Email',v:'s.chen@meridianfin.co.za'},{k:'Phone',v:'+27 11 555 0192'},{k:'Declaration Signed',v:'Apr 1, 2026 (DOC-005)'},{k:'Authority',v:'Full override authority confirmed'}].map(r=>(
+            <div key={r.k} style={{padding:'7px 0',borderBottom:'1px solid var(--n100)'}}>
+              <div style={{fontFamily:'var(--mono)',fontSize:8,color:'var(--n400)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:2}}>{r.k}</div>
+              <div style={{fontSize:12,fontWeight:500,color:'var(--n900)'}}>{r.v}</div>
+            </div>
+          ))}
+          <Btn variant="outline" full style={{marginTop:12}}><Ic n="user" size={11}/>Change Accountable Person</Btn>
+        </div>
+        <div className="card card-p">
+          <Eyebrow>AI Systems in Scope</Eyebrow>
+          {DATA.aiSystems.map((s,i)=>(
+            <div key={s.name} style={{display:'flex',alignItems:'center',gap:8,padding:'8px 0',borderBottom:i<DATA.aiSystems.length-1?'1px solid var(--n100)':'none'}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{s.name}</div>
+                <div style={{fontFamily:'var(--mono)',fontSize:8,color:'var(--n400)'}}>{s.tier}</div>
+              </div>
+              <Pill s={s.status} small/>
+            </div>
+          ))}
+          <button style={{width:'100%',marginTop:10,display:'flex',alignItems:'center',justifyContent:'center',gap:6,padding:'8px',border:'1px dashed var(--n200)',borderRadius:7,fontFamily:'var(--mono)',fontSize:9,fontWeight:600,color:'var(--n400)',transition:'all .12s'}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--gold)';e.currentTarget.style.color='var(--gold)';}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--n200)';e.currentTarget.style.color='var(--n400)';}}
+          ><Ic n="plus" size={11}/>Declare New AI System</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE: CORRESPONDENCE (Findings > Correspondence tab)
+══════════════════════════════════════════════════════════════════════════ */
+function PageCorrespondence(){
+  const [msg,setMsg]=useState('');
+  const [sent,setSent]=useState(false);
+  const send=()=>{if(msg.trim()){setSent(true);setMsg('');setTimeout(()=>setSent(false),3000);}};
+  return(
+    <div style={{animation:'fadeUp .2s ease',display:'grid',gridTemplateColumns:'1fr 260px',gap:16,alignItems:'flex-start'}}>
+      <div>
+        <div className="card" style={{marginBottom:12}}>
+          <div style={{padding:'14px 16px',borderBottom:'1px solid var(--n200)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <span className="mono-label">Thread — {DATA.certification.ref}</span>
+            <Pill s="partial" small/>
+          </div>
+          {DATA.messages.map((m,i)=>(
+            <div key={m.id} style={{display:'flex',gap:10,padding:'12px 14px',
+              background:m.unread?'var(--n50)':'transparent',
+              borderBottom:i<DATA.messages.length-1?'1px solid var(--n100)':'none'}}>
+              <div style={{width:32,height:32,borderRadius:8,background:'var(--navy)',
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontFamily:'var(--mono)',fontSize:9,fontWeight:700,color:'var(--gold)',flexShrink:0}}>{m.initials}</div>
+              <div style={{flex:1}}>
+                <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+                  <span style={{fontSize:12,fontWeight:600,color:'var(--n900)'}}>{m.author}</span>
+                  <div style={{display:'flex',gap:7,alignItems:'center'}}>
+                    {m.unread&&<MonoTag>Unread</MonoTag>}
+                    <span className="mono-label">{m.time}</span>
+                  </div>
+                </div>
+                <p style={{fontSize:12,color:'var(--n500)',lineHeight:1.65}}>{m.text}</p>
+              </div>
+            </div>
+          ))}
+          {sent&&<div style={{padding:'10px 14px',background:'var(--green-bg)',display:'flex',gap:8,alignItems:'center'}}>
+            <Ic n="check" size={13} col="var(--green)"/><span style={{fontSize:12,color:'var(--green)',fontWeight:500}}>Message sent.</span>
+          </div>}
+        </div>
+        <div className="card card-p">
+          <div className="mono-label" style={{marginBottom:10}}>Reply to Auditor</div>
+          <textarea value={msg} onChange={e=>setMsg(e.target.value)} placeholder="Type your message…"
+            style={{width:'100%',background:'var(--n50)',border:'1px solid var(--n200)',borderRadius:7,
+              color:'var(--n900)',fontSize:13,padding:'10px 12px',resize:'vertical',minHeight:90,
+              outline:'none',lineHeight:1.6,transition:'border-color .12s'}}
+            onFocus={e=>e.target.style.borderColor='var(--gold)'}
+            onBlur={e=>e.target.style.borderColor='var(--n200)'}/>
+          <div style={{display:'flex',justifyContent:'flex-end',marginTop:10}}>
+            <Btn onClick={send} disabled={!msg.trim()}><Ic n="send" size={12} col="#fff"/>Send Message</Btn>
+          </div>
+        </div>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
+        <div className="card card-p">
+          <div className="mono-label" style={{marginBottom:10}}>Your Auditor</div>
+          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom:12}}>
+            <div style={{width:36,height:36,borderRadius:9,background:'var(--navy)',
+              display:'flex',alignItems:'center',justifyContent:'center',
+              fontFamily:'var(--mono)',fontSize:10,fontWeight:700,color:'var(--gold)',flexShrink:0}}>AIC</div>
+            <div>
+              <div style={{fontSize:13,fontWeight:700,color:'var(--n900)'}}>System Auditor</div>
+              <div style={{fontFamily:'var(--mono)',fontSize:9,color:'var(--gold)'}}>AI Integrity Certification</div>
+            </div>
+          </div>
+          <p style={{fontSize:11,color:'var(--n500)',lineHeight:1.6,marginBottom:8}}>Response within 2 business days. Ref: {DATA.certification.ref}</p>
+        </div>
+        <div className="card card-p">
+          <div className="mono-label" style={{marginBottom:10}}>Communication Rules</div>
+          {['All correspondence is logged as part of the audit record','Do not share personal information of affected persons in messages','Submit remediation evidence via Evidence Vault, not in messages'].map((r,i)=>(
+            <div key={i} style={{display:'flex',gap:7,marginBottom:8,alignItems:'flex-start'}}>
+              <Ic n="info" size={12} col="var(--gold)" style={{flexShrink:0,marginTop:1}}/>
+              <span style={{fontSize:11,color:'var(--n500)',lineHeight:1.5}}>{r}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MAIN APP
+══════════════════════════════════════════════════════════════════════════ */
+function App(){
+  const [page,setPage]=useState('Dashboard');
+  const [notifOpen,setNotifOpen]=useState(false);
+  const [modal,setModal]=useState(null);
+
+  // Close notif on outside click
+  const notifRef=useRef();
+
+  const PAGES={
+    'Dashboard':            <PageDashboard setPage={setPage} openUpload={setModal}/>,
+    'Evidence Vault':       <PageEvidenceVault openUpload={setModal}/>,
+    'Pulse Monitor':        <PagePulse/>,
+    'Findings':             <PageFindings openUpload={setModal}/>,
+    'Auditor Findings':     <PageFindings openUpload={setModal}/>,
+    'Compliance Reports':   <PageReports/>,
+    'Correspondence':       <PageCorrespondence/>,
+    'My Certificate':       <PageCertificate/>,
+    'Practitioner (CAAP)':  <PageCAP/>,
+    'API & Access Keys':    <PageKeys/>,
+    'Organisation Profile': <PageOrg/>,
+    'Profile':              <PageOrg/>,
+    'Reports':              <PageReports/>,
+  };
+
+  return(
+    <div style={{display:'flex',minHeight:'100vh',background:'var(--n50)'}}>
+      <Sidebar page={page} setPage={p=>{setPage(p);setNotifOpen(false);}}/>
+
+      <div style={{flex:1,display:'flex',flexDirection:'column',minWidth:0,overflowY:'auto'}}>
+        <Header page={page} setPage={setPage} notifOpen={notifOpen} setNotifOpen={setNotifOpen}/>
+
+        <main className="main-content">
+          {PAGES[page]||<PageDashboard setPage={setPage} openUpload={setModal}/>}
+        </main>
+      </div>
+
+      {modal&&<UploadModal label={modal} onClose={()=>setModal(null)}/>}
+
+      {/* Gemini data-wiring prompt — accessible via browser console */}
+      
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

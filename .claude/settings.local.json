@@ -12,7 +12,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git pull:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(xargs -I {} bash -c 'echo \"=== {} ===\" && head -3 {} | tail -1')",
+      "Bash(node -e \"require\\('@aws-sdk/client-s3'\\)\")",
+      "Bash(openssl rand *)"
     ]
   }
 }
