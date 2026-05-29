@@ -23,7 +23,7 @@ function getRedis() {
             });
             redis.on('error', () => { isRedisAvailable = false; });
             redis.on('connect', () => { isRedisAvailable = true; });
-        } catch (_e) {
+        } catch {
             isRedisAvailable = false;
         }
     }
@@ -64,8 +64,8 @@ export class RevocationService {
                 await client.set(`trl:${jti}`, 'revoked', 'EX', ttl);
                 console.log(`[AUTH] Token revoked in cache: ${jti} (TTL: ${ttl}s)`);
             }
-        } catch (_error) {
-            console.error('[AUTH] Cache Revocation failed:', _error);
+        } catch (err) {
+            console.error('[AUTH] Cache Revocation failed:', err);
         }
     }
 
@@ -81,7 +81,7 @@ export class RevocationService {
                 const client = getRedis();
                 const exists = await client.exists(`trl:${jti}`);
                 if (exists === 1) return true;
-            } catch (_error) {
+            } catch {
                 isRedisAvailable = false;
             }
         }
@@ -95,7 +95,7 @@ export class RevocationService {
                 .where(eq(revokedTokens.jti, jti))
                 .limit(1);
             return !!revoked;
-        } catch (_error) {
+        } catch {
             return false;
         }
     }

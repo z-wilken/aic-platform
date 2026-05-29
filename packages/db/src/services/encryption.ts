@@ -54,7 +54,7 @@ export class EncryptionService {
       decrypted += decipher.final('utf8');
       
       return decrypted;
-    } catch (_err) {
+    } catch {
       console.error('[SECURITY] Decryption failed. Possible key mismatch or data corruption.');
       return '[ENCRYPTED_DATA_UNREADABLE]';
     }

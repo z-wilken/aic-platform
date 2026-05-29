@@ -3,7 +3,7 @@ import { Pool } from 'pg';
 import * as schema from './schema';
 import * as dotenv from 'dotenv';
 import path from 'path';
-import { sql, ExtractTablesWithRelations } from 'drizzle-orm';
+import { sql, SQL, ExtractTablesWithRelations } from 'drizzle-orm';
 import { PgTransaction, PgQueryResultHKT } from 'drizzle-orm/pg-core';
 
 // Load .env from monorepo root
@@ -59,7 +59,7 @@ export function getTenantDb(orgId: string) {
     /**
      * Legacy/Compatibility: Executes raw queries with tenant context.
      */
-    execute: async (query: any): Promise<any> => {
+    execute: async (query: SQL<unknown>): Promise<unknown> => {
       return await rawDb.transaction(async (tx) => {
         await tx.execute(sql`SELECT set_config('app.current_org_id', ${orgId}, true)`);
         return await tx.execute(query);

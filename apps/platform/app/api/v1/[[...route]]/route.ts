@@ -186,14 +186,14 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     if (!orgId) return unauthorized();
     const db = getTenantDb(orgId);
     const stats = await db.execute(sql`
-      SELECT 
-        status, 
+      SELECT
+        status,
         COUNT(*) as count,
         AVG(EXTRACT(EPOCH FROM (updated_at - created_at))) / 3600 as avg_resolution_hours
       FROM incidents
       WHERE org_id = ${orgId}
       GROUP BY status
-    `);
+    `) as { rows: unknown[] };
     return NextResponse.json(stats.rows);
   }
 
@@ -201,13 +201,13 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     if (!orgId) return unauthorized();
     const db = getTenantDb(orgId);
     const stats = await db.execute(sql`
-      SELECT 
-        status, 
+      SELECT
+        status,
         COUNT(*) as count
       FROM correction_requests
       WHERE org_id = ${orgId}
       GROUP BY status
-    `);
+    `) as { rows: unknown[] };
     return NextResponse.json(stats.rows);
   }
 
@@ -215,13 +215,13 @@ async function handleRequest(req: NextRequest, route: string[], method: string) 
     if (!orgId) return unauthorized();
     const db = getTenantDb(orgId);
     const stats = await db.execute(sql`
-      SELECT 
-        is_human_override, 
+      SELECT
+        is_human_override,
         COUNT(*) as count
       FROM decision_records
       WHERE org_id = ${orgId}
       GROUP BY is_human_override
-    `);
+    `) as { rows: unknown[] };
     return NextResponse.json(stats.rows);
   }
 
