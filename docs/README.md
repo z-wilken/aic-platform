@@ -1,4 +1,4 @@
-# AIC Documentation (Obsidian Vault)
+# AIC Documentation Hub
 
 The central knowledge base for AI Integrity Certification (AIC). This vault contains strategic, technical, legal, and operational documentation for the global standard in human accountability for automated systems.
 
@@ -7,6 +7,17 @@ The central knowledge base for AI Integrity Certification (AIC). This vault cont
 ## 🏛️ Core Principle
 
 > "We certify that human empathy and accountability remain in the loop — for every consequential automated decision, everywhere."
+
+---
+
+## 🚀 Quick Start
+
+| Document | What It Is | Read When |
+|----------|-----------|-----------|
+| **[MASTER_PLAN.md](MASTER_PLAN.md)** | Complete consolidated overview | First read - understand everything |
+| **[OPERATIONAL_ROADMAP.md](OPERATIONAL_ROADMAP.md)** | Path to 10-employee company | Planning execution and hiring |
+| **[Strategic Roadmap](01-strategy/STRATEGIC_ROADMAP.md)** | Unified 5-phase execution plan | Planning phases |
+| **[Founder's Vision](01-strategy/FOUNDERS_VISION.md)** | The 30-year mission | Understanding the "why" |
 
 ---
 
@@ -34,7 +45,8 @@ The central knowledge base for AI Integrity Certification (AIC). This vault cont
 
 ### [01 - Strategy](./01-strategy/)
 *High-level vision, roadmaps, and executive planning.*
-- **[Master Plan](./01-strategy/MASTER_PLAN.md):** Complete business and execution strategy.
+- **[MASTER_PLAN.md](MASTER_PLAN.md):** Complete business and execution strategy.
+- **[OPERATIONAL_ROADMAP.md](OPERATIONAL_ROADMAP.md):** Path from 0 to 10 employees.
 - **[Strategic Roadmap](./01-strategy/STRATEGIC_ROADMAP.md):** 2025-2026 execution phases.
 - **[Founders Vision](./01-strategy/FOUNDERS_VISION.md):** The "Why" and constitutional values.
 - **[Platform Overview](./01-strategy/PLATFORM_OVERVIEW.md):** Unified ecosystem walkthrough.
