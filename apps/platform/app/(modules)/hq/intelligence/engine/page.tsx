@@ -1,9 +1,10 @@
 'use client';
 
+:apps/platform/app/(modules)/hq/intelligence/engine/page.tsx
 export default function EngineOpsPage() {
     return (
         <div className="space-y-12">
-            <div className="flex justify-between items-end border-b border-aic-paper/5 pb-12">
+            <div className="flex justify-between items-end border-b border-aic-paper/5 pb-12">:apps/hq/app/intelligence/engine/page.tsx
                 <div>
                     <h1 className="text-5xl font-serif font-medium tracking-tight tracking-tighter mb-4">Audit Engine Ops</h1>
                     <p className="text-gray-500 font-serif italic text-lg max-w-2xl">
@@ -11,6 +12,7 @@ export default function EngineOpsPage() {
                     </p>
                 </div>
                 <div className="text-right">
+:apps/platform/app/(modules)/hq/intelligence/engine/page.tsx
                     <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.4em] mb-2">Integration Status</p>
                     <div className="text-2xl font-serif text-aic-paper uppercase tracking-widest">Pending</div>
                 </div>
@@ -21,7 +23,7 @@ export default function EngineOpsPage() {
                 <h2 className="text-2xl font-serif text-aic-paper mb-3">Engine Telemetry Coming Soon</h2>
                 <p className="text-gray-500 text-sm max-w-sm mx-auto font-serif italic">
                     Real-time inference telemetry will appear here once the Audit Engine microservice is integrated.
-                </p>
+                </p>:apps/hq/app/intelligence/engine/page.tsx
             </div>
         </div>
     );

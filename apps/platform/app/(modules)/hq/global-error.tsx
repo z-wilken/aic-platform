@@ -1,7 +1,7 @@
 'use client';
 
 export default function GlobalError({
-
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
@@ -9,7 +9,7 @@ export default function GlobalError({
 }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif' }}>
+      <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif', backgroundColor: '#000' }}>
         <div style={{
           minHeight: '100vh',
           display: 'flex',
@@ -18,10 +18,9 @@ export default function GlobalError({
           justifyContent: 'center',
           padding: '24px',
           textAlign: 'center',
-          backgroundColor: '#FAFAF8',
         }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: 500, marginBottom: '16px', color: '#1A1A1A' }}>
-            Something went wrong.
+          <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '16px', color: '#fff' }}>
+            System Error.
           </h2>
           <p style={{ color: '#6B7280', marginBottom: '32px' }}>
             A critical error occurred. Please try refreshing the page.
@@ -30,8 +29,8 @@ export default function GlobalError({
             onClick={reset}
             style={{
               padding: '12px 32px',
-              backgroundColor: '#1A1A1A',
-              color: '#fff',
+              backgroundColor: '#D4AF37',
+              color: '#000',
               border: 'none',
               cursor: 'pointer',
               fontSize: '11px',
@@ -40,7 +39,7 @@ export default function GlobalError({
               textTransform: 'uppercase',
             }}
           >
-            Try Again
+            Retry
           </button>
         </div>
       </body>

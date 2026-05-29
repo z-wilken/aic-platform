@@ -39,7 +39,7 @@ aic-platform/
 - **Types:** TypeScript 5.9 (strict mode)
 
 ### Backend
-- **Unified API:** Next.js Route Handlers in `apps/platform/app/api/v1/`
+- **Unified API:** Next.js Route Handlers in `apps/platform/app/api/`
 - **Database:** PostgreSQL 15 (Drizzle ORM + raw `pg` driver)
 - **Auth:** NextAuth.js v5-beta (shared across `web` and `platform`)
 
@@ -74,38 +74,6 @@ npm run test:engine               # Python tests (pytest)
 npm run test:e2e                  # End-to-end tests (Playwright)
 ```
 
-## Testing
-
-### TypeScript (Vitest)
-- Config: `vitest.config.ts` at repo root
-- Tests: `apps/*/__tests__/**/*.test.ts`
-- Run: `npm test`
-
-### Python (pytest)
-- Config: `apps/engine/pytest.ini`
-- Tests: `apps/engine/tests/`
-- Run: `cd apps/engine && python -m pytest`
-
-## Key Conventions
-
-### File Organization
-- **App Router:** All routes in `app/` directory using folder-based routing
-- **API Routes:** Located at `app/api/[feature]/route.ts` or `app/api/v1/`
-- **Components:** In `app/components/` or co-located with routes
-- **Utilities:** In `lib/` directory (db.ts, auth.ts, etc.)
-
-### Engine Endpoint Pattern
-All engine endpoints follow this pattern with slowapi rate limiting:
-```python
-@router.post("/endpoint")
-@limiter.limit("30/minute")
-def endpoint_name(body: PydanticModel, request: Request):
-    # IMPORTANT: slowapi requires the Starlette Request param to be named `request`
-    result = service_function(body.field1, body.field2)
-    result["signature"] = signing_service.sign_hash(result["audit_hash"])
-    return result
-```
-
 ## Engine Services
 
 | Service | File | Purpose |
@@ -113,8 +81,11 @@ def endpoint_name(body: PydanticModel, request: Request):
 | Bias Analysis | `bias_analysis.py` | Four-fifths rule, disparate impact, chi-square tests |
 | Fairness Metrics | `fairness_metrics.py` | Theil index, Atkinson index, epsilon-differential fairness |
 | Explainability | `explainability.py` | SHAP-based feature importance (global + local) |
+| Drift Monitoring | `drift_monitoring.py` | PSI + Jensen-Shannon + KS test via `DriftMonitor` class |
 | Hash Chain | `hash_chain.py` | SHA-256 hash chain for audit immutability |
 | Scoring | `scoring.py` | Integrity score calculation |
+| Privacy Audit | `privacy_audit.py` | Data privacy compliance checks |
+| Labor Audit | `labor_audit.py` | Labor practice auditing |
 
 ## Authentication & RBAC
 
@@ -123,11 +94,6 @@ def endpoint_name(body: PydanticModel, request: Request):
 2. `AUDITOR` - Can view audit logs, triage certification queue
 3. `COMPLIANCE_OFFICER` - Can write audit logs, manage incidents
 4. `ADMIN` - Full system access, RBAC management, revenue metrics
-
-### Unified API Patterns
-- **Client Face:** `GET /api/v1/dashboard`, `POST /api/v1/ai-systems` (tenant-isolated via `getTenantDb`)
-- **Admin Face:** `GET /api/v1/admin/queue`, `POST /api/v1/admin/approve` (system-level via `getSystemDb`)
-- **Public Face:** `GET /api/v1/public/leaderboard` (unauthenticated)
 
 ## Key Rules
 
@@ -139,10 +105,10 @@ def endpoint_name(body: PydanticModel, request: Request):
 ## Project Documentation
 
 The repository follows an **Obsidian Vault** structure in the `docs/` folder:
-- `docs/01-strategy/STRATEGIC_ROADMAP.md` - Execution plan.
-- `docs/02-technical/ARCHITECTURE.md` - Technical details.
-- `docs/02-technical/DATABASE_SCHEMA.md` - Schema reference.
-- `docs/02-technical/API_ROUTES.md` - API documentation.
+- `docs/01-strategy/` - Business and strategic planning.
+- `docs/02-technical/` - Architecture, schema, and API docs.
+- `docs/03-legal-compliance/` - Legal frameworks and regulatory alignment.
+- `docs/04-business-ops/` - Operational guides and pitch materials.
 
 ---
 

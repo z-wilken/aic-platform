@@ -1,5 +1,6 @@
 'use client';
 
+:apps/platform/app/(modules)/hq/growth/revenue/page.tsx
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -87,5 +88,5 @@ export default function RevenueVelocityPage() {
         </button>
       </div>
     </div>
-  );
+  );:apps/hq/app/growth/revenue/page.tsx
 }
