@@ -8,7 +8,7 @@ AIC is the global standard for human accountability in automated decision system
 
 ## Architecture
 
-This is a **monorepo** using npm workspaces with 4 primary applications (Next.js and FastAPI) and 8 shared packages.
+This is a **monorepo** using npm workspaces with 4 primary applications (Next.js and FastAPI) and 7 shared packages.
 
 ```
 aic-platform/
@@ -32,7 +32,7 @@ aic-platform/
 ## Tech Stack
 
 ### Frontend (apps/web, apps/platform)
-- **Framework:** Next.js 16 (App Router)
+- **Framework:** Next.js 15 (App Router)
 - **Runtime:** React 19
 - **Styling:** Tailwind CSS 4 (PostCSS)
 - **Animations:** Framer Motion 12
@@ -40,7 +40,7 @@ aic-platform/
 
 ### Backend
 - **Unified API:** Next.js Route Handlers in `apps/platform/app/api/v1/`
-- **Database:** PostgreSQL 15 via Drizzle ORM
+- **Database:** PostgreSQL 15 (Drizzle ORM + raw `pg` driver)
 - **Auth:** NextAuth.js v5-beta (shared across `web` and `platform`)
 
 ### Audit Engine (apps/engine)
@@ -59,12 +59,62 @@ npm run dev
 npm run dev:web        # Marketing site on :3000
 npm run dev:platform   # Unified dashboard on :3001
 
-# Start database
+# Start database and infrastructure
 docker-compose up -d
 
 # Start engine
 cd apps/engine && uvicorn app.main:app --reload --port 8000
+
+# Build all apps
+npm run build
+
+# Run all tests
+npm test                          # TypeScript tests (Vitest, via Turborepo)
+npm run test:engine               # Python tests (pytest)
+npm run test:e2e                  # End-to-end tests (Playwright)
 ```
+
+## Testing
+
+### TypeScript (Vitest)
+- Config: `vitest.config.ts` at repo root
+- Tests: `apps/*/__tests__/**/*.test.ts`
+- Run: `npm test`
+
+### Python (pytest)
+- Config: `apps/engine/pytest.ini`
+- Tests: `apps/engine/tests/`
+- Run: `cd apps/engine && python -m pytest`
+
+## Key Conventions
+
+### File Organization
+- **App Router:** All routes in `app/` directory using folder-based routing
+- **API Routes:** Located at `app/api/[feature]/route.ts` or `app/api/v1/`
+- **Components:** In `app/components/` or co-located with routes
+- **Utilities:** In `lib/` directory (db.ts, auth.ts, etc.)
+
+### Engine Endpoint Pattern
+All engine endpoints follow this pattern with slowapi rate limiting:
+```python
+@router.post("/endpoint")
+@limiter.limit("30/minute")
+def endpoint_name(body: PydanticModel, request: Request):
+    # IMPORTANT: slowapi requires the Starlette Request param to be named `request`
+    result = service_function(body.field1, body.field2)
+    result["signature"] = signing_service.sign_hash(result["audit_hash"])
+    return result
+```
+
+## Engine Services
+
+| Service | File | Purpose |
+|---------|------|---------|
+| Bias Analysis | `bias_analysis.py` | Four-fifths rule, disparate impact, chi-square tests |
+| Fairness Metrics | `fairness_metrics.py` | Theil index, Atkinson index, epsilon-differential fairness |
+| Explainability | `explainability.py` | SHAP-based feature importance (global + local) |
+| Hash Chain | `hash_chain.py` | SHA-256 hash chain for audit immutability |
+| Scoring | `scoring.py` | Integrity score calculation |
 
 ## Authentication & RBAC
 
@@ -79,7 +129,7 @@ cd apps/engine && uvicorn app.main:app --reload --port 8000
 - **Admin Face:** `GET /api/v1/admin/queue`, `POST /api/v1/admin/approve` (system-level via `getSystemDb`)
 - **Public Face:** `GET /api/v1/public/leaderboard` (unauthenticated)
 
-## Key Conventions
+## Key Rules
 
 - **SQL Injection Prevention:** Always use parameterized queries via Drizzle ORM.
 - **Multi-tenancy:** Enforce tenant isolation using the `org_id` filter and `getTenantDb` helper.
@@ -89,11 +139,10 @@ cd apps/engine && uvicorn app.main:app --reload --port 8000
 ## Project Documentation
 
 The repository follows an **Obsidian Vault** structure in the `docs/` folder:
-- `docs/01-PLATFORM-OVERVIEW.md` - Core vision.
-- `docs/02-ARCHITECTURE.md` - Unified 2-app architecture details.
-- `docs/06-DATABASE-SCHEMA.md` - Drizzle-kit schema reference.
-- `docs/07-API-ROUTES.md` - Complete API endpoint documentation.
-- `docs/10-STRATEGY.md` - Master plan and market expansion strategy.
+- `docs/01-strategy/STRATEGIC_ROADMAP.md` - Execution plan.
+- `docs/02-technical/ARCHITECTURE.md` - Technical details.
+- `docs/02-technical/DATABASE_SCHEMA.md` - Schema reference.
+- `docs/02-technical/API_ROUTES.md` - API documentation.
 
 ---
 

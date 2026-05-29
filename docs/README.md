@@ -1,12 +1,32 @@
-# AIC Platform Documentation
+# AIC Documentation (Obsidian Vault)
 
-The central knowledge base for AI Integrity Certification (Pty) Ltd.
+The central knowledge base for AI Integrity Certification (AIC). This vault contains strategic, technical, legal, and operational documentation for the global standard in human accountability for automated systems.
 
 ---
 
 ## 🏛️ Core Principle
 
 > "We certify that human empathy and accountability remain in the loop — for every consequential automated decision, everywhere."
+
+---
+
+## 📊 Project Status (as of February 17, 2026)
+
+### Technical Platform Status
+
+| Component | Status | Tests |
+|-----------|--------|-------|
+| apps/web (Marketing) | ✅ MVP Complete | 51 tests |
+| apps/platform (Dashboard) | ✅ Live Data | 76 tests |
+| apps/engine (Audit) | ✅ Complete | 141 tests |
+| **Total Tests** | — | **268 passing** |
+
+### Key Technical Achievements
+- ✅ Automated testing infrastructure (268 tests)
+- ✅ CI/CD enforcement (3 GitHub Actions workflows)
+- ✅ Engine integration with circuit breaker
+- ✅ Real-time dashboard with live data
+- ✅ Shared package infrastructure (7 packages)
 
 ---
 
