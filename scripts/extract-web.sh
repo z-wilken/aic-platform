@@ -96,6 +96,12 @@ for route in alpha appeal assessment blog health registry; do
   fi
 done
 
+# Remove legacy lib/db.ts — it shadows lib/db/ directory and would break module resolution
+if [ -f "$DEST/lib/db.ts" ]; then
+  rm "$DEST/lib/db.ts"
+  echo "  ✓ Removed legacy lib/db.ts (shadowed lib/db/ directory)"
+fi
+
 # ── Step 4: Write standalone package.json ─────────────────────────────────────
 echo "→ Writing standalone package.json..."
 cat > "$DEST/package.json" << 'PKGJSON'
