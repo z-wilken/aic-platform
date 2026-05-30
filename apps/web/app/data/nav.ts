@@ -1,4 +1,4 @@
-import { Shield, Globe, Award, BarChart3, BookOpen, FileText } from "lucide-react";
+import { Shield, Award, BarChart3, BookOpen, FileText } from "lucide-react";
 
 export const navItems = [
   {

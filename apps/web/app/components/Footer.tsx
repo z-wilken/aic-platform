@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Shield, Mail, MapPin, ChevronRight } from "lucide-react";
 import { navItems } from "./Navbar";
 
@@ -48,7 +49,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
             <Link href="/" className="inline-block group">
-              <img
+              <Image
                 src="/AIC-Logo-White.svg"
                 alt="AI Integrity Certification — Methodology Assessed"
                 width={110}

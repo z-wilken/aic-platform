@@ -1,8 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle,
@@ -54,33 +53,6 @@ const alignmentBars = [
   { standard: "Singapore MGAI", alignment: 85 },
 ];
 
-
-function Counter({ value, label, suffix = "" }: { value: number; label: string; suffix?: string }) {
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, (latest) => Math.round(latest));
-  const [displayValue, setDisplayValue] = useState(0);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const controls = animate(count, value, { duration: 2, ease: "easeOut" });
-    return controls.stop;
-  }, [count, value]);
-
-  useEffect(() => {
-    return rounded.on("change", (latest) => setDisplayValue(latest));
-  }, [rounded]);
-
-  return (
-    <div className="text-center p-4" ref={ref}>
-      <div className="text-4xl md:text-5xl font-bold text-[#c9920a] mb-2 font-mono">
-        {displayValue}{suffix}
-      </div>
-      <div className="text-white/60 text-[0.7rem] uppercase tracking-widest max-w-[150px] mx-auto leading-tight">
-        {label}
-      </div>
-    </div>
-  );
-}
 
 export default function MarketingPage() {
   const headlineHuman = "Human".split("");
